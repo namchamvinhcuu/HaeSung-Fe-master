@@ -1,0 +1,23 @@
+{
+  "heading": "Hello <1>{{ libraryTitle }}</1>!",
+  "helpText": "Start changing language to see some magic",
+  "Delete": "Delete",
+  "AddNew": "Add New",
+  "Search": "Search",
+  "keyword": "keyword",
+  "AddDetail": "Add Detail",
+  "Download": "Download",
+  "placeholder.searchname": "Search name",
+  "AddMaster": "Add Master",
+  "StartDate": "Start Date",
+  "EndDate": "End Date",
+  "dashboard.inspector.title": "STATUS OF INSPECTOR",
+  "Good": "GOOD",
+  "NG": "NG",
+  "FIXED": "FIXED",
+  "Waiting": "Waiting",
+  "Expired​": "Expired​",
+  "Done": "Done",
+  "quantity": "quantity",
+  "ShowDeleteData": "Show data deleted"
+}

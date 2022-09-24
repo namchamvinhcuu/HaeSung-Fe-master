@@ -1,0 +1,6 @@
+{
+    "currentLanguage": "Current Language:",
+    "helpText": "<0>Note:</0> For demonstration purposes the languages <2>English</2>, <4>Chinese</4> and <6>Japanese</6> are <8>lazy-loaded locally</8> and <10>Spanish</10> (dynamic language) is lazy-loaded as a static asset."
+ 
+  }
+  

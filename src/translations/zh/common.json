@@ -1,0 +1,29 @@
+{
+    "heading": "你好 <1>{{ libraryTitle }}</1>!",
+    "helpText": "开始改变语言以看到一些魔法",
+    "Edit":"以看",
+    "Delete":"删除",
+    "Save": "節省",
+    "AddNew":"添新",
+    "Search":"搜索",
+    "keyword":" 你好",
+    "AddDetail":"你 好",
+    "Download":"下載",
+    "placeholder.searchname":"搜索名称",
+  "AddMaster":"添加大师",
+  "StartDate":"开始日期",
+  "EndDate":"结束日期",
+  "dashboard.inspector.title":"检查员的身份",
+  "Good":"上帝",
+  "NG":"NG",
+  "FIXED":"固定的",
+
+  "Waiting":"等待",
+  "Expired​":"已过期​",
+  "Done":"完毕",
+
+  "quantity":"数量"
+
+
+  }
+  
