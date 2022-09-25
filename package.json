@@ -8,7 +8,7 @@
     "build": "set NODE_OPTIONS=--openssl-legacy-provider && npm run clean  && webpack --mode production && npm run copy  ",
     "build2": "npm run clean  && webpack --mode production && npm run copy ",
     "copy": "@powershell copy 'web.config' 'public/'",
-    "dev": " webpack-dev-server --mode development",
+    "start": " webpack-dev-server --mode development",
     "dev2": "set NODE_OPTIONS=--openssl-legacy-provider && webpack-dev-server --mode development"
   },
   "author": "",

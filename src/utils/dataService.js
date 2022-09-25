@@ -15,6 +15,7 @@ function login(username, password, langcode, rememberMe) {
         withCredentials: true,
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        // body: JSON.stringify({ Account: username, Password: password })
         body: JSON.stringify({ userName: username, userPassword: password })
     };
 
@@ -23,6 +24,7 @@ function login(username, password, langcode, rememberMe) {
     return new Promise((resolve, reject) => {
 
         fetch(ConfigConstants.API_URL + 'login', requestOptions)
+            // fetch(ConfigConstants.API_URL + 'auth/login', requestOptions)
             .then(handleResponse, handleError)
             .then(result => {
                 if (result.HttpResponseCode === 200) {
@@ -73,7 +75,7 @@ function get_loginUserInfo() {
         headers: AuthHeader()
 
     };
-    return fetch(ConfigConstants.API_URL + 'Auth/getLoginUser', requestOptions).then(handleResponse, handleError);
+    return fetch(ConfigConstants.API_URL + 'login/getLoginUser', requestOptions).then(handleResponse, handleError);
 }
 
 //lấy dữ liệu từ backend thông qua httpGet
@@ -356,9 +358,11 @@ function clearAccessTokens() {
 
 function handleResponse(response) {
 
-    console.log(response)
+    // console.log(response)
     var status = response.status;
     var serve = response.data;
+
+    console.log(response)
     // Handling 401
     if (status === 401) {
 
@@ -375,9 +379,9 @@ function handleResponse(response) {
     }
 
     var access_token = response.headers.get("access-token");
-    var refresh_token = response.headers.get("x-access-token");
+    var refresh_token = response.headers.get("refresh-token");
 
-    console.log('access_token', access_token);
+    console.log('refresh_token', refresh_token);
 
     // Determine whether it is an invalid token
     if (access_token === "invalid_token") {
@@ -414,8 +418,6 @@ function handleResponse(response) {
                 resolve(response);
             }
         } else {
-
-
             try {
                 const { emitRedirectSignIn } = eventEmitterAuthenticate;
 

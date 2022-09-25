@@ -26,8 +26,8 @@ class Login extends Component {
       isLoading: false,
       langcode: "en-US",
     };
-    this.username = React.createRef('root');
-    this.password = React.createRef('1234@');
+    this.username = React.createRef();
+    this.password = React.createRef();
     // console.log(this.props.history.urlreturn)
     // this.username.current = 'root';
     // this.password.current = '1234@';
@@ -199,7 +199,7 @@ class Login extends Component {
                   fullWidth
                   name="password"
                   label="Password"
-                  value={'1234@'}
+                  // value={'1234@'}
                   type="password"
                   id="password"
                   autoComplete="current-password"
