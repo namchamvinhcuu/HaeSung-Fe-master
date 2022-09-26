@@ -84,7 +84,6 @@ class Login extends Component {
               isLoading: false,
             }));
 
-            console.log(data);
             var routername = this.props.history.urlreturn;
             firstLogin.isfirst = true;
 

@@ -4,16 +4,16 @@ import { Redirect, withRouter } from 'react-router-dom';
 import React from 'react';
 
 
-const firstLogin={}
+const firstLogin = {}
 const isAuthenticate = () => {
 
-   // return true;
+    // return true;
     let isAuthen = false;
     const currentUser = JSON.parse(localStorage.getItem(ConfigConstants.CURRENT_USER));
 
     if (currentUser) {
-   
-        if (currentUser.UserId) {
+
+        if (currentUser.userId) {
             isAuthen = true;
         }
     }
@@ -22,12 +22,12 @@ const isAuthenticate = () => {
 
 const AuthenticateRoute = (Component, route) => (props) => {
     if (!isAuthenticate()) {
-        return <Redirect  to={route || '/login'} />;
+        return <Redirect to={route || '/login'} />;
     }
     if (Component === null) {
         return null;
     }
- 
+
     return <Component {...props} />;
 }
 
@@ -36,7 +36,7 @@ const NotAuthenticateRoute = (Component, route) => (props) => {
         return <Redirect to={route || '/'} />;
     }
 
-   
+
     if (Component === null) {
         return null;
     }
@@ -59,7 +59,7 @@ export {
     isAuthenticate,
     AuthenticateRoute,
     NotAuthenticateRoute,
-   // checkExpired,
+    // checkExpired,
     logOut,
     LogoutRoute
 };

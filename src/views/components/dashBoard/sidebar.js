@@ -3,7 +3,7 @@ import { GetMenus_LoginUser } from "@utils";
 import { withRouter } from "react-router";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-class SlideBar extends Component {
+class SideBar extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -18,28 +18,29 @@ class SlideBar extends Component {
       e.preventDefault();
       this.props.history.push({
 
-        pathname:router,
-      //  is_reload_component:true
+        pathname: router,
+        //  is_reload_component:true
       });
     }
   };
 
   render() {
+
     return (
       <>
         <aside className="main-sidebar sidebar-dark-primary elevation-3">
           {/* <!-- Brand Logo --> */}
-          <a href="#" 
-          onClick={e=> e.preventDefault()}
-          className="brand-link">
+          <a href="#"
+            onClick={e => e.preventDefault()}
+            className="brand-link">
             <img
-                  src={require("@static/dist/img/logo.png")}
-            
+              src={require("@static/dist/img/hanlim-comp247004.png")}
+
               alt="Company Logo"
               className="brand-image img-circle elevation-1"
-            
+
             />
-            <span className="brand-text font-weight mx-2">HAESUNG</span>
+            <span className="brand-text font-weight mx-2">Hanlim</span>
           </a>
 
           {/* <!-- Sidebar --> */}
@@ -47,10 +48,10 @@ class SlideBar extends Component {
             {/* <!-- Sidebar user (optional) --> */}
             <div className="user-panel mt-3 pb-3 mb-3 d-flex">
               <div className="info">
-                <a href="#" className="d-block" onClick={e=> e.preventDefault()}>
+                <a href="#" className="d-block" onClick={e => e.preventDefault()}>
                   <img
                     src={require("@static/dist/img/avatar5.png")}
-                    alt="CCMS Logo"
+                    alt="User Logo"
                     className="brand-image img-circle elevation-3 mx-1"
                   />
                   <span>{this.props.FullNameLogin}</span>
@@ -80,4 +81,4 @@ class SlideBar extends Component {
     );
   }
 }
-export default withRouter(SlideBar);
+export default withRouter(SideBar);

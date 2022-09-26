@@ -4,7 +4,7 @@ import * as ConfigConstants from "@constants/ConfigConstants";
 import * as AllComponents from "@components";
 import * as AllContainers from "@containers";
 import store from "@states/store";
-import {createTab} from '@plugins/Tabplugin'
+import { createTab } from '@plugins/Tabplugin'
 import { ContentBox } from "@components";
 
 const listToTree = (list, tree, parentId) => {
@@ -30,28 +30,27 @@ const listToTree = (list, tree, parentId) => {
 
 
 
-function ComponentWrapper(name, code,component, router, title, InputComponent, breadcrumb_array) {
+function ComponentWrapper(name, code, component, router, title, InputComponent, breadcrumb_array) {
 
   return class extends React.Component {
 
     constructor(props) {
       super(props);
-      this.state={tabRender:null}
-    //  console.log(props)
+      this.state = { tabRender: null }
     }
-   
+
     UNSAFE_componentWillMount() {
-      var res= createTab({is_reload_component:this.props.location.is_reload_component,component:component, title:title, name: String(name).toUpperCase(), code: code, router,breadcrumb_array,ChildComponent:InputComponent});
-       this.setState({tabRender: res})
+      var res = createTab({ is_reload_component: this.props.location.is_reload_component, component: component, title: title, name: String(name).toUpperCase(), code: code, router, breadcrumb_array, ChildComponent: InputComponent });
+      this.setState({ tabRender: res })
 
     }
 
     render() {
       return (this.state.tabRender
         ? null
-      : <ContentBox title={title} code={code}  breadcrumb={breadcrumb_array}>
-      { InputComponent && <InputComponent  />}
-          </ContentBox> )
+        : <ContentBox title={title} code={code} breadcrumb={breadcrumb_array}>
+          {InputComponent && <InputComponent />}
+        </ContentBox>)
     }
   };
 }
@@ -68,28 +67,27 @@ const buildTreeMenu = (
 ) => {
   var html_child = "";
   list.forEach((item) => {
-    if (item.pid == parentId) {
+    if (item.parentId == parentId) {
       const child = {
         ...item,
-        key: item.Code || item.Id,
+        key: item.menuId,
 
         children: [],
       };
 
       if (!parentId) {
-       // console.log(item.name,item.visiable)
-        if (item.visiable === true) {
-          breadcrumb_array = [item.name];
-         
-        } else {
-         
-          breadcrumb_array = [];
-        }
-      } else if (parentId  ) {
-       
-          breadcrumb_array.push(item.name);
-       
-          
+        // console.log(item.name,item.visiable)
+        // if (item.visiable === true) {
+        //   breadcrumb_array = [item.menuName];
+
+        // } else {
+
+        //   breadcrumb_array = [];
+        // }
+        breadcrumb_array = [item.menuName];
+      } else if (parentId) {
+
+        breadcrumb_array.push(item.menuName);
       }
 
       //Iterate the list to find all submenus that match the current menu
@@ -97,7 +95,7 @@ const buildTreeMenu = (
         level + 1,
         list,
         child.children,
-        item.id,
+        item.menuId,
         breadcrumb_array,
         data,
         routers,
@@ -108,84 +106,92 @@ const buildTreeMenu = (
       var hasSub = false;
       if (child.children.length <= 0) {
         delete child.children;
-        if (item.component && item.router) {
+
+        if (item.menuComponent && item.navigateUrl) {
           routers.push(
             <Route
-              key={item.id}
-              path={item.router}
+              key={item.menuId}
+              path={item.navigateUrl}
 
               component={
                 ComponentWrapper(
-                  item.name,
-                  item.code,
-                  item.component,
-                  item.router,
-                  item.title,
-                  AllContainers[item.component] || AllComponents[item.component],
+                  item.menuName,//name
+                  item.menuName,//code
+                  item.menuComponent,//component
+                  item.navigateUrl,//router
+                  item.menuName,//title
+                  AllContainers[item.menuComponent] || AllComponents[item.menuComponent],//InputComponent
                   [...breadcrumb_array]
                 )
               }
             />
           );
 
-          if (item.isShowDefault === true && !Component_Show_Default.cmp) {
-            Component_Show_Default.cmp = ComponentWrapper(
-              item.name,
-              item.code,
-              item.component,
-              item.router,
-              item.title,
-              AllContainers[item.component] || AllComponents[item.component],
-              [...breadcrumb_array]
-            );
-          }
+          // console.log('routers', routers)
+
+          // if (item.isShowDefault === true && !Component_Show_Default.cmp) {
+          //   Component_Show_Default.cmp = ComponentWrapper(
+          //     item.menuName,
+          //     item.menuName,
+          //     item.menuId,
+          //     item.menuComponent,
+          //     item.navigateUrl,
+          //     item.menuName,
+          //     AllContainers[item.menuComponent] || AllComponents[item.menuComponent],
+          //     [...breadcrumb_array]
+          //   );
+          // }
+
           breadcrumb_array.pop();
-          if (item.visiable === true)
+
+          // if (item.visiable === true) {
           html_child += `<li class="nav-item">
-            <a href="#" router="${item.router ?? ""}"  class="nav-link">
-            <i class=" ${item.icon} nav-icon"></i>
-            <p>${item.name}</p> </a></li>
+            <a href="#" router="${item.navigateUrl ?? ""}"  class="nav-link">
+            <i class=" ${item.menuIcon} nav-icon"></i>
+            <p>${item.menuName}</p> </a></li>
              `;
+          // }
         }
-      } else {
-        if (child.visiable!==true) breadcrumb_array.pop();
+      }
+      else {
+        if (child.visiable !== true) { breadcrumb_array.pop(); }
+
         hasSub = true;
         res_html =
           '<ul class="nav nav-treeview sub-lever1">' + res_html + "</ul>";
       }
       // join the tree fa-tachometer-alt
+      // console.log('child', child)
       tree.push(child);
-      if (item.visiable === true) {
-        if (!parentId) {
-          data.html +=
-            ` <li class="nav-item ${item.isOpenSubmenu?"menu-is-opening menu-open":""}">
-              <a href="#" router="${
-                hasSub ? "" : item.router
-              }" class="nav-link" >
-              <i class="nav-icon  ${item.icon}"></i>
+      // if (item.visiable === true) {
+      if (!parentId) {
+        data.html +=
+          ` <li class="nav-item ${item.iconOpened ? "menu-is-opening menu-open" : ""}">
+              <a href="#" router="${hasSub ? "" : item.navigateUrl
+          }" class="nav-link" >
+              <i class="nav-icon  ${item.menuIcon}"></i>
               <p>
-                  ${item.name}
+                  ${item.menuName}
               ` +
-            (hasSub ? '<i class="right fas fa-angle-left"></i>' : "") +
-            `</p>
+          (hasSub ? '<i class="right fas fa-angle-left"></i>' : "") +
+          `</p>
               </a> ` +
-            res_html +
-            "</li>";
-        } else if (hasSub) {
-         
-          html_child += `<li class="nav-item">
+          res_html +
+          "</li>";
+      } else if (hasSub) {
+
+        html_child += `<li class="nav-item">
               <a href="#" router=""  class="nav-link">
-              <i class=" ${item.icon} nav-icon"></i>
+              <i class=" ${item.menuIcon} nav-icon"></i>
               <p>
-              ${item.name}
-              <i class="right fas fa-angle-left" style="margin-right:${
-                level * 15
-              }px;"></i>
+              ${item.menuName}
+              <i class="right fas fa-angle-left" style="margin-right:${level * 15
+          }px;"></i>
               </p>
               </a>${res_html}</li>
                `;
-        }
       }
+      // }
     }
   });
   return html_child;
@@ -202,24 +208,25 @@ const GetMenus_LoginUser = () => {
   if (user) {
     store.dispatch({ type: "Dashboard/USER_LOGIN" });
 
-   // HistoryElementTabs.splice(0,HistoryElementTabs.length)
-    const menus = user.user_info.menus;
-    //  console.log(menus)
+    // HistoryElementTabs.splice(0,HistoryElementTabs.length)
+    const menus = user.Menus;
     // Backend data
     buildTreeMenu(
-      0,
-      menus,
-      menuNav,
-      null,
-      [],
-      data,
-      routers,
-      Component_Show_Default
+      0,//level
+      menus,//list
+      menuNav,//tree
+      null,//parentId
+      [],//breadcrumb_array
+      data,//data
+      routers,//routers
+      Component_Show_Default//Component_Show_Default
     );
   }
 
+  // console.log('router', routers)
+
   if (!Component_Show_Default.cmp)
-    Component_Show_Default.cmp = ComponentWrapper("", "",null,"", null,null, []);
+    Component_Show_Default.cmp = ComponentWrapper("", "", null, "", null, null, []);
   return [menuNav, data.html, routers, user.Name, Component_Show_Default.cmp];
 };
 export { GetMenus_LoginUser };

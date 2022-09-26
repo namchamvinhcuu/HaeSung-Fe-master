@@ -9,14 +9,16 @@ import {
     UPDATE_TIME_AGO,
     SET_DATA_NOTIFY_USER
 } from './types';
-import { api_get, api_post, AlertSuccess, ErrorAlert,historyDashboard,firstLogin } from "@utils";
+import { api_get, api_post, AlertSuccess, ErrorAlert, historyDashboard, firstLogin } from "@utils";
 
 const appendTab = (data) => {
-    return  (dispatch,getState) => {
+
+    console.log('data')
+    return (dispatch, getState) => {
 
         dispatch({
             type: APPEND_TAB,
-            data:data
+            data: data
         });
 
 
@@ -27,33 +29,33 @@ const resetTab = (text) => {
     return dispatch => {
         dispatch({
             type: RESET_TAB,
-            data:text
+            data: text
         });
     };
 };
 const switchTab = (index) => {
     return dispatch => {
 
-       
+
         dispatch({
             type: SWITCH_TAB,
-            data:index
+            data: index
         });
     };
 };
 const deleteTab = (index) => {
-    return (dispatch,getState) => {
+    return (dispatch, getState) => {
         dispatch({
             type: DELETE_TAB,
-            index:index
+            index: index
         });
-        const {Dashboard_Reducer:{HistoryElementTabs,index_tab_active_array}}=getState().AppReducer;
+        const { Dashboard_Reducer: { HistoryElementTabs, index_tab_active_array } } = getState().AppReducer;
 
-        if (HistoryElementTabs.length){
-            const tab= HistoryElementTabs[index_tab_active_array];
+        if (HistoryElementTabs.length) {
+            const tab = HistoryElementTabs[index_tab_active_array];
             historyDashboard.push(tab.router)
         } else {
-            firstLogin.isfirst=null;
+            firstLogin.isfirst = null;
             historyDashboard.push({
                 pathname: '/'
             })
@@ -65,7 +67,7 @@ const deleteTab = (index) => {
 const deleteAll = () => {
     return dispatch => {
 
-       
+
         dispatch({
             type: DELETE_ALL
         });
@@ -77,7 +79,7 @@ const appendNotify = (data) => {
 
         dispatch({
             type: APPEND_NOTIFY,
-            data:data
+            data: data
         });
     };
 };
@@ -88,7 +90,7 @@ const updateTimeAgo = () => {
 
         dispatch({
             type: UPDATE_TIME_AGO
-            
+
         });
     };
 };
@@ -98,8 +100,8 @@ const updatenotify = (rows, total) => {
 
         dispatch({
             type: SET_DATA_NOTIFY_USER,
-            data:{rows,total}
-            
+            data: { rows, total }
+
         });
     };
 };

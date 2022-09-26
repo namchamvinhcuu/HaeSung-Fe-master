@@ -19,42 +19,42 @@ function login(username, password, langcode, rememberMe) {
         body: JSON.stringify({ userName: username, userPassword: password })
     };
 
-
     localStorage.setItem(ConfigConstants.LANG_CODE, langcode);
+
     return new Promise((resolve, reject) => {
 
         fetch(ConfigConstants.API_URL + 'login', requestOptions)
             // fetch(ConfigConstants.API_URL + 'auth/login', requestOptions)
             .then(handleResponse, handleError)
             .then(result => {
-                if (result.HttpResponseCode === 200) {
+                console.log('result', result)
+                if (result === 'general.success') {
 
-                    let data = jwt.decode(result.data);
+                    // let data = jwt.decode(result.data);
 
-                    // get_loginUserInfo().then(res2 => {
+                    getLoggedInUser().then(res => {
+                        if (res) {
 
-                    //     if (res2.succeeded) {
+                            // data.user_info = res.data;
 
-                    //         data.user_info = res2.data;
+                            localStorage.setItem(ConfigConstants.CURRENT_USER, JSON.stringify(res));
+                            //    
+                            store.dispatch({
+                                type: 'Dashboard/USER_LOGIN',
+                                //  data: {list:data.user_info.notifies,total: data.user_info.total_Notification}
 
-                    //         localStorage.setItem(ConfigConstants.CURRENT_USER, JSON.stringify(data));
-                    //         //    
-                    //         store.dispatch({
-                    //             type: 'Dashboard/USER_LOGIN',
-                    //             //  data: {list:data.user_info.notifies,total: data.user_info.total_Notification}
+                            });
 
-                    //         });
+                            resolve(res);
 
-                    //         resolve(data);
-
-                    //     } else {
-                    //         reject(res2.errors);
-                    //     }
-                    // });
+                        } else {
+                            reject();
+                        }
+                    });
 
 
                 } else
-                    reject(result.errors);
+                    reject(result);
             });
     });
 
@@ -69,13 +69,13 @@ function logout() {
 }
 
 //hàm nội tại, khi login thành công lấy thêm thông tin user
-function get_loginUserInfo() {
+function getLoggedInUser() {
     const requestOptions = {
         method: 'GET',
         headers: AuthHeader()
 
     };
-    return fetch(ConfigConstants.API_URL + 'login/getLoginUser', requestOptions).then(handleResponse, handleError);
+    return fetch(ConfigConstants.API_URL + 'login/getUserInfo', requestOptions).then(handleResponse, handleError);
 }
 
 //lấy dữ liệu từ backend thông qua httpGet
@@ -362,7 +362,7 @@ function handleResponse(response) {
     var status = response.status;
     var serve = response.data;
 
-    console.log(response)
+    // console.log(response)
     // Handling 401
     if (status === 401) {
 
@@ -380,8 +380,6 @@ function handleResponse(response) {
 
     var access_token = response.headers.get("access-token");
     var refresh_token = response.headers.get("refresh-token");
-
-    console.log('refresh_token', refresh_token);
 
     // Determine whether it is an invalid token
     if (access_token === "invalid_token") {
@@ -412,6 +410,7 @@ function handleResponse(response) {
             var contentType = response.headers.get("content-type")
             if (contentType && contentType.includes("application/json")) {
                 response.json().then(json => {
+                    console.log('jsonResponse', json)
                     resolve(json)
                 });
             } else {

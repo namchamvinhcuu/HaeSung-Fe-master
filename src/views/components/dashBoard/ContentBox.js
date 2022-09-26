@@ -3,11 +3,12 @@ import React, { Component } from "react";
 class ContentBox extends Component {
   constructor(props) {
     super(props);
-   
+
   }
   state = {};
   render() {
     const { breadcrumb } = this.props;
+
     return (
       <section className="content ">
         <div className="wrapper">
@@ -15,33 +16,22 @@ class ContentBox extends Component {
             <section className="content-header">
               <div className="container-fluid">
                 <div className="row mb-2">
-                <div className="col-sm-6">
+                  {/* <div className="col-sm-6">
                     <ol className="breadcrumb float-sm-left">
-                    {/* <a
-                        className="mx-2"
-                          href="#"
-
-                          title="refresh"
-                        
-                        >
-                      <i className="fa fa-refresh"  ></i>
-              </a> */}
-                       <span style={{color:'grey'}}><em> {this.props.title}</em></span>
-
+                      <span style={{ color: 'grey' }}><em> {this.props.title}</em></span>
                     </ol>
-                 
-                  </div>
+
+                  </div> */}
                   <div className="col-sm-6">
-                 
-                  
-                   <ol className="breadcrumb float-sm-right">
+                    <ol className="breadcrumb float-sm-left">
                       {breadcrumb.map((rank, i, row) => {
                         if (i + 1 === row.length) {
                           // Last one.
                           return (
                             <li key={i} className="breadcrumb-item active">
                               <a href="#" onClick={(e) => e.preventDefault()}>
-                                {row[i]}
+                                {/* {row[i]} */}
+                                <span className="badge badge-info" style={{ fontSize: '12px' }}>{this.props.code}</span>
                               </a>
                             </li>
                           );
@@ -57,22 +47,22 @@ class ContentBox extends Component {
                         }
                       })}
 
-<div className="align-middle ml-2">
-                        <span className="badge badge-info" style={{fontSize:'12px'}}>{this.props.code}</span>
-                    </div>
-                   
+                      {/* <div className="align-middle ml-2">
+                        <span className="badge badge-info" style={{ fontSize: '12px' }}>{this.props.code}</span>
+                      </div> */}
+
                     </ol>
-                 
+
                   </div>
-                 
+
                 </div>
               </div>
             </section>
 
             <div className="row ">
               <div className="col-12">
-               
-                  {/* <div className="card-header">
+
+                {/* <div className="card-header">
                                     <h3 className="card-title"><strong>{this.props.title}</strong></h3>
                                     <ol className="breadcrumb float-sm-right">
                                         <li className="breadcrumb-item"><a href="#">Home</a></li>
@@ -91,8 +81,8 @@ class ContentBox extends Component {
         
                                     </div>
                                 </div> */}
-                {this.props.children &&  this.props.children}
-                
+                {this.props.children && this.props.children}
+
               </div>
             </div>
           </div>

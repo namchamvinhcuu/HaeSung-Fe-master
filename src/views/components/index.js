@@ -12,6 +12,8 @@ import ReaderDeviceList from './standard_db/DataReaderDevice/ReaderDeviceList'
 import ReaderDetail from './standard_db/DataReaderDevice/ReaderDetail'
 import Product from './standard_db/Product'
 import TagBlackList from './standard_db/TagBlackList'
+import Menu from "./standard_db/Menu/Menu";
+import Permission from "./standard_db/Permission/Permission";
 
 import Staff from './standard_db/Staff'
 import TagList from './standard_db/TagList'
@@ -43,5 +45,8 @@ export {
   RFDI_Dashboard_Layout,
 
   UserList,
-  RoleList
+  RoleList,
+
+  Menu,
+  Permission
 };
