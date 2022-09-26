@@ -227,6 +227,6 @@ const GetMenus_LoginUser = () => {
 
   if (!Component_Show_Default.cmp)
     Component_Show_Default.cmp = ComponentWrapper("", "", null, "", null, null, []);
-  return [menuNav, data.html, routers, user.Name, Component_Show_Default.cmp];
+  return [menuNav, data.html, routers, user.userName, Component_Show_Default.cmp];
 };
 export { GetMenus_LoginUser };

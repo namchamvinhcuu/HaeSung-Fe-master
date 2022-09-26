@@ -141,7 +141,7 @@ class Login extends Component {
               alt="Welcome"
             /> */}
             <Box className="content-login">
-              <Typography variant="h3"> HAESUNG</Typography>
+              <Typography variant="h3">HANLIM</Typography>
             </Box>
 
           </Grid>
