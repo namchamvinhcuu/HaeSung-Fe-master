@@ -1,6 +1,5 @@
 import DashBoard from "./dashBoard";
 import Login from "./login";
-import LanguageSelect from "./login/LanguageSelect";
 import NavBar from "./dashBoard/NavBar";
 import TabListContent from "./dashBoard/TabListContent";
 
@@ -12,7 +11,6 @@ export {
   DashBoard,
   NavBar,
   Login,
-  LanguageSelect,
 
   Menu,
   Menu2,

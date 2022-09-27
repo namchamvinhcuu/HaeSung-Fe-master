@@ -4,8 +4,9 @@ import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { HasValue, MapFormToModelData } from "@plugins/helperJS";
 import { firstLogin, login } from "@utils";
@@ -25,9 +26,39 @@ class Login extends Component {
       errorMessages: [],
       isLoading: false,
       langcode: "en-US",
+      countries: [
+        {
+          code: 'en-US',
+          fcode: 'US',
+          label: 'English',
+        },
+        {
+          code: 'vi-VN'
+          , fcode: 'VN'
+          , label: 'Tiếng Việt'
+        },
+      ]
     };
     this.username = React.createRef();
     this.password = React.createRef();
+  }
+
+
+
+  componentDidMount = () => {
+
+  }
+
+  changeLangeValue = () => {
+    if (this.state.countries && this.state.countries.length > 0) {
+      if (this.props.language === "VI") {
+        return this.state.countries[1];
+      }
+      if (this.props.language === "EN") {
+        return this.state.countries[0];
+      }
+    }
+    return null;
   }
 
   download_apk(e) {
@@ -37,7 +68,6 @@ class Login extends Component {
 
   changeLanguage = async (language) => {
     //fire redux actions
-    console.log(language)
     this.props.changeLanguage(language);
   }
 
@@ -205,12 +235,9 @@ class Login extends Component {
                       label="Remember me"
                     /> */}
 
-                <LanguageSelect
+                {/* <LanguageSelect
                   onChange={(event, newValue) => {
-                    this.setState({ langcode: newValue.code });
-                    // console.log('current language: ', this.props.language)
-                    console.log('newValue.code: ', newValue.code)
-
+                    // this.setState({ langcode: newValue.code });
                     let langData = 'VI';
                     switch (newValue.code) {
                       case "vi-VN":
@@ -220,10 +247,32 @@ class Login extends Component {
                         langData = "EN"
                         break;
                     }
-
                     this.changeLanguage(langData);
                   }}
-                  language={this.props.language}
+                  language={this.props.language ?? null}
+                /> */}
+                <Autocomplete
+                  disablePortal
+                  autoHighlight
+                  options={this.state.countries}
+                  sx={{ mt: 1, backgroundColor: '#E8F0FE' }}
+                  defaultValue={this.changeLangeValue}
+                  onChange={(event, newValue) => {
+                    this.setState({ langcode: newValue.code });
+                    this.changeLanguage(newValue.code === "vi-VN" ? "VI" : "EN");
+                  }}
+                  renderOption={(props, option) => (
+                    <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                      {
+                        option.fcode === "US" ?
+                          <i className="flag-icon flag-icon-us mr-2"></i>
+                          : <i className="flag-icon flag-icon-vi mr-2"></i>
+                      }
+                      {option.label}
+                    </Box>
+                  )}
+                  getOptionLabel={(option) => option.label}
+                  renderInput={(params) => <TextField {...params} label={<FormattedMessage id="general.select_language" />} />}
                 />
 
                 <button

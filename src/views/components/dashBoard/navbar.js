@@ -69,7 +69,6 @@ class NavBar extends Component {
     // this.props.i18n.on('languageChanged', (lng)=> {
     //     alert(lng)
     // })
-
   }
 
   handleChange(event, newValue) {
@@ -173,9 +172,8 @@ class NavBar extends Component {
     const { HistoryElementTabs, index_tab_active_array, notify_list, total_notify } = this.props
     const { langselected } = this.state
     var flag = ""
-    if (langselected == "en-US") flag = "flag-icon-us"
-    else if (langselected == "zh-CN") flag = "flag-icon-cn"
-    else if (langselected == "vi-VN") flag = "flag-icon-vi"
+    if (this.props.language == "EN") flag = "flag-icon-us"
+    else if (this.props.language == "VI") flag = "flag-icon-vi"
 
     // console.log('HistoryElementTabs', HistoryElementTabs)
 
@@ -209,8 +207,6 @@ class NavBar extends Component {
                         "&: hover": {
                           bgcolor: 'lightgrey'
                         },
-
-
                       }} />
                   </a>
                 </span>
@@ -307,21 +303,30 @@ class NavBar extends Component {
                 <i className="fas fa-expand-arrows-alt"></i>
               </a>
             </li>
+
             {/* <!-- Language Dropdown Menu --> */}
-            {/* <li className="nav-item dropdown">
+            <li className="nav-item dropdown">
               <a className="nav-link" data-toggle="dropdown" href="#">
                 <i className={`flag-icon ${flag}`}></i>
               </a>
               <div className="dropdown-menu dropdown-menu-right p-0">
-                <a href="#" className={`dropdown-item ${langselected=="en-US"?"active":""}`}  onClick={e=>this.handleLang(e,'en-US')} >
+                <a
+                  href="#"
+                  className={`dropdown-item ${this.props.language == "EN" ? "active" : ""}`}
+                  onClick={e => this.props.changeLanguage('EN')}
+                >
                   <i className="flag-icon flag-icon-us mr-2"></i> English
                 </a>
-                <a href="#" className={`dropdown-item ${langselected=="zh-CN"?"active":""}`} onClick={e=>this.handleLang(e,'zh-CN')}>
-                  <i className="flag-icon flag-icon-cn mr-2"></i> China
+                <a
+                  href="#"
+                  className={`dropdown-item ${this.props.language == "VI" ? "active" : ""}`}
+                  onClick={e => this.props.changeLanguage('VI')}
+                >
+                  <i className="flag-icon flag-icon-vi mr-2"></i> Tiếng Việt
                 </a>
 
               </div>
-            </li> */}
+            </li>
 
             <li className="nav-item">
               <a

@@ -6,11 +6,8 @@ import { FormattedMessage } from 'react-intl'
 
 export default function LanguageSelect({ onChange, language }) {
 
-  console.log('current language', language)
-
   return (
     <Autocomplete
-      id="country-select-demo"
       sx={{ mt: 1 }}
       options={countries}
       autoHighlight
@@ -21,7 +18,6 @@ export default function LanguageSelect({ onChange, language }) {
       renderOption={(props, option) => (
         <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
           <img
-
             width="20"
             src={`https://flagcdn.com/w20/${option.fcode.toLowerCase()}.png`}
             srcSet={`https://flagcdn.com/w40/${option.fcode.toLowerCase()}.png 2x`}
@@ -37,8 +33,7 @@ export default function LanguageSelect({ onChange, language }) {
           label={<FormattedMessage id="general.select_language" />}
           sx={{ backgroundColor: '#E8F0FE' }}
           inputProps={{
-            ...params.inputProps,
-            autoComplete: 'new-password', // disable autocomplete and autofill
+            ...params.inputProps
           }}
         />
       )}
@@ -50,11 +45,12 @@ export default function LanguageSelect({ onChange, language }) {
 const countries = [
   {
     code: 'en-US',
+    fcode: 'EN',
     label: 'English',
-    phone: '1',
-    fcode: 'US',
-    suggested: true,
   },
-  // { code: 'zh-CN', fcode: 'CN', label: 'China', phone: '86' },
-  { code: 'vi-VN', fcode: 'VN', label: 'Tiếng Việt', phone: '84' },
+  {
+    code: 'vi-VN'
+    , fcode: 'VN'
+    , label: 'Tiếng Việt'
+  },
 ];

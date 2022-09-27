@@ -12,9 +12,7 @@ User_Operations.toString = function () {
 const mapStateToProps = state => {
 
     const { User_Reducer: { language } } = CombineStateToProps(state.AppReducer, [
-        [
-            Store.User_Reducer
-        ]
+        [Store.User_Reducer]
     ]);
 
     return { language };
@@ -24,9 +22,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 
     const { User_Operations: { changeLanguage } } = CombineDispatchToProps(dispatch, bindActionCreators, [
-        [
-            User_Operations
-        ]
+        [User_Operations]
     ]);
 
     return { changeLanguage }

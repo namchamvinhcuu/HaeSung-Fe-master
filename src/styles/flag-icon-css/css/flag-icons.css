@@ -19,16 +19,24 @@
   width: 1em;
 }
 
-.flag-icon-cn {
-  background-image: url(../flags/4x3/cn.svg);
-}
-.flag-icon-cn.flag-icon-squared {
-  background-image: url(../flags/1x1/cn.svg);
-}
 .flag-icon-us {
   background-image: url(../flags/4x3/us.svg);
 }
 .flag-icon-us.flag-icon-squared {
   background-image: url(../flags/1x1/us.svg);
+}
+
+.flag-icon-vi {
+  background-image: url(../flags/4x3/vn.svg);
+}
+.flag-icon-vi.flag-icon-squared {
+  background-image: url(../flags/1x1/vn.svg);
+}
+
+.flag-icon-cn {
+  background-image: url(../flags/4x3/cn.svg);
+}
+.flag-icon-cn.flag-icon-squared {
+  background-image: url(../flags/1x1/cn.svg);
 }
 
