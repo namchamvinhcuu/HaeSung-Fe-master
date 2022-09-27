@@ -1,11 +1,11 @@
 
 import {
-    funcTest
+    changeLanguage
 } from './actions'
 
 
 export {
-    funcTest
+    changeLanguage
 };
 
 

@@ -1,4 +1,4 @@
-import { Login } from '@components';
+import { LanguageSelect } from '@components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
@@ -33,4 +33,4 @@ const mapDispatchToProps = dispatch => {
 
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(LanguageSelect);

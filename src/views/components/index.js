@@ -1,6 +1,7 @@
 import DashBoard from "./dashBoard";
 import NavBar from "./dashBoard/navbar";
 import Login from "./login";
+import LanguageSelect from "./login/LanguageSelect";
 import ContentBox from "./dashBoard/ContentBox";
 import SuperAdminDashboard from "./dashBoard/SuperAdminDashboard";
 
@@ -27,11 +28,14 @@ import UserList from "./account_manager/User/UserList";
 import RoleList from "./account_manager/Role/RoleList"
 
 import Menu2 from './standard_db/Menu/Menu2'
+
+
 export {
   TabListContent,
   DashBoard,
   NavBar,
   Login,
+  LanguageSelect,
   Location,
   ContentBox,
   Product,

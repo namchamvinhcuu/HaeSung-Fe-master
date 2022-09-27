@@ -10,9 +10,9 @@ import '@formatjs/intl-relativetimeformat/polyfill';
 import '@formatjs/intl-relativetimeformat/locale-data/en';
 import '@formatjs/intl-relativetimeformat/locale-data/vi';
 
-import { LanguageUtils } from '../utils'
+import { MultiLanguages } from '@utils'
 
-const messages = LanguageUtils.getFlattenedMessages();
+const messages = MultiLanguages.getFlattenedMessages();
 
 class IntlProviderWrapper extends Component {
 
@@ -22,17 +22,11 @@ class IntlProviderWrapper extends Component {
             <IntlProvider
                 locale={language}
                 messages={messages[language]}
-                defaultLocale="vi">
+                defaultLocale="VI">
                 {children}
             </IntlProvider>
         );
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        language: state.app.language
-    };
-};
-
-export default connect(mapStateToProps, null)(IntlProviderWrapper);
+export default IntlProviderWrapper;

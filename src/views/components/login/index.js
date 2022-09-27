@@ -11,7 +11,9 @@ import { HasValue, MapFormToModelData } from "@plugins/helperJS";
 import { firstLogin, login } from "@utils";
 import React, { Component } from "react";
 import { reduxForm } from "redux-form";
-import CountrySelect from "./contryselect";
+import LanguageSelect from "./LanguageSelect";
+import { LANGUAGES } from '@constants/TextConstants';
+import { FormattedMessage } from 'react-intl'
 
 import { api_download } from '@utils';
 const theme = createTheme();
@@ -33,6 +35,11 @@ class Login extends Component {
     api_download('EquipmentManagerApi/download-apk', "android_setup.apk")
   }
 
+  changeLanguage = async (language) => {
+    //fire redux actions
+    console.log(language)
+    this.props.changeLanguage(language);
+  }
 
   onLogin = (e) => {
     e.preventDefault();
@@ -174,7 +181,7 @@ class Login extends Component {
                   required
                   fullWidth
                   id="username"
-                  label="Username"
+                  label={<FormattedMessage id='user.userName' />}
                   name="username"
                   value={'root'}
                   autoComplete="username"
@@ -187,7 +194,7 @@ class Login extends Component {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label={<FormattedMessage id='user.userPassword' />}
                   value={'1234@'}
                   type="password"
                   id="password"
@@ -198,10 +205,25 @@ class Login extends Component {
                       label="Remember me"
                     /> */}
 
-                <CountrySelect
+                <LanguageSelect
                   onChange={(event, newValue) => {
                     this.setState({ langcode: newValue.code });
+                    // console.log('current language: ', this.props.language)
+                    console.log('newValue.code: ', newValue.code)
+
+                    let langData = 'VI';
+                    switch (newValue.code) {
+                      case "vi-VN":
+                        langData = "VI";
+                        break;
+                      default:
+                        langData = "EN"
+                        break;
+                    }
+
+                    this.changeLanguage(langData);
                   }}
+                  language={this.props.language}
                 />
 
                 <button
@@ -210,7 +232,7 @@ class Login extends Component {
                   type="submit"
                   className="btn btn-primary"
                 >
-                  Sign In
+                  {<FormattedMessage id='general.signin' />}
                   {this.state.isLoading && (
                     <span
                       className="spinner-border spinner-border-sm mx-3"

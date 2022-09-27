@@ -1,10 +1,10 @@
 import {
-    TEST
+    CHANGE_LANGUAGE
 } from './types';
 
 
 const initializeState = {
-    text: 'abc'
+    language: 'VI',
 };
 
 const reducer = (state = initializeState, action) => {
@@ -12,12 +12,10 @@ const reducer = (state = initializeState, action) => {
 
     switch (action.type) {
 
-        case TEST:
-            newState.text = action.data
-
+        case CHANGE_LANGUAGE:
+            console.log('CHANGE_LANGUAGE action')
+            newState.language = action.data
             break;
-
-
 
         default:
             break;

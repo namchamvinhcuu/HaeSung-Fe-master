@@ -1,7 +1,7 @@
 
 
-const TEST = 'User/TEST';
+const CHANGE_LANGUAGE = 'User/CHANGE_LANGUAGE';
 
 export {
-    TEST
+    CHANGE_LANGUAGE
 };

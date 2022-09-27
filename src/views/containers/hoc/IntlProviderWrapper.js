@@ -1,4 +1,4 @@
-import { Login } from '@components';
+import IntlProviderWrapper from '../../../hoc/IntlProviderWrapper'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
@@ -11,26 +11,26 @@ User_Operations.toString = function () {
 
 const mapStateToProps = state => {
 
-    const { User_Reducer: { language } } = CombineStateToProps(state.AppReducer, [
+    const { User_Reducer: { text, language } } = CombineStateToProps(state.AppReducer, [
         [
             Store.User_Reducer
         ]
     ]);
 
-    return { language };
+    return { text, language };
 
 };
 
 const mapDispatchToProps = dispatch => {
 
-    const { User_Operations: { changeLanguage } } = CombineDispatchToProps(dispatch, bindActionCreators, [
+    const { User_Operations: { funcTest } } = CombineDispatchToProps(dispatch, bindActionCreators, [
         [
             User_Operations
         ]
     ]);
 
-    return { changeLanguage }
+    return { funcTest }
 
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(IntlProviderWrapper);

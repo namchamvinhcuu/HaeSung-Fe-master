@@ -1,0 +1,58 @@
+{
+    "general": {
+        "signin": "Đăng nhập",
+        "select_language": "Chọn ngôn ngữ",
+        "create": "Tạo",
+        "add": "Thêm",
+        "modify": "Chỉnh sửa",
+        "update": "Cập nhật",
+        "edit": "Sửa",
+        "reset": "Cài lại",
+        "delete": "Xóa",
+        "close": "Đóng",
+        "save": "Lưu",
+        "refresh": "Làm mới",
+        "accept": "Chấp nhận",
+        "confirm": "Xác nhận",
+        "success": "Thành công",
+        "fail": "Thất bại",
+        "no_data": "Không có dữ liệu",
+        "system_error": "Lỗi hệ thống",
+        "object_invalid": "Mẫu không hợp lệ",
+        "change_password_not_allowed": "Không được phép thay đổi mật khẩu của tài khoản này",
+        "refresh_required": "Dữ liệu đã thay đổi, làm mới trang để cập nhật thông tin mới nhất"
+    },
+    "login": {
+        "account_password_invalid": "Tài khoản/Mật khẩu không hợp lệ",
+        "account_blocked": "Tài khoản đã bị khóa",
+        "userName_required": "Tài khoản không được để trống",
+        "userPassword_required": "Mật khẩu không đươc để trống"
+    },
+    "commonMaster": {
+        "not_found": "CommonMaster: không tồn tại",
+        "duplicated_name": "CommonMaster: tên đã được tạo"
+    },
+    "commonDetail": {
+        "not_found": "CommonDetail: không tồn tại",
+        "duplicated_name": "CommonDetail: tên đã được tạo"
+    },
+    "menu": {
+        "duplicated_component": "Menu: component đã được tạo",
+        "duplicated_navigateUrl": "Menu: navigate url đã được tạo",
+        "parent_not_found": "Menu: không tồn tại menu cha"
+    },
+    "permission": {
+        "existed": "Permission: đã được tạo"
+    },
+    "role": {
+        "not_found": "Role: không tồn tại",
+        "duplicated_name": "Role: tên đã được tạo"
+    },
+    "user": {
+        "userName": "Tài khoản",
+        "userPassword": "Mật khẩu",
+        "not_found": "User: không tồn tại",
+        "existed": "User: đã được tạo",
+        "password_invalid": "User: mật khẩu không hợp lệ"
+    }
+}

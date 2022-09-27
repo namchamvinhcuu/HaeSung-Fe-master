@@ -1,0 +1,58 @@
+{
+    "general": {
+        "signin": "Sign In",
+        "select_language": "Select language",
+        "create": "Create",
+        "add": "Add",
+        "modify": "Modify",
+        "update": "Update",
+        "edit": "Edit",
+        "reset": "Reset",
+        "delete": "Delete",
+        "close": "Close",
+        "save": "Save",
+        "refresh": "Refresh",
+        "accept": "Accept",
+        "confirm": "Confirm",
+        "success": "Success",
+        "fail": "Fail",
+        "no_data": "No data",
+        "system_error": "System error",
+        "object_invalid": "Invalid object",
+        "change_password_not_allowed": "Not allowed to change this user's password",
+        "refresh_required": "Data has modified, refresh page to get the latest"
+    },
+    "login": {
+        "account_password_invalid": "Account/Password is invalid",
+        "account_blocked": "Account is blocked",
+        "userName_required": "Username is required",
+        "userPassword_required": "Password is required"
+    },
+    "commonMaster": {
+        "not_found": "CommonMaster: not found/existed",
+        "duplicated_name": "CommonMaster: duplicated name "
+    },
+    "commonDetail": {
+        "not_found": "CommonDetail: not found/existed",
+        "duplicated_name": "CommonDetail: duplicated name"
+    },
+    "menu": {
+        "duplicated_component": "Menu: duplicated component",
+        "duplicated_navigateUrl": "Menu: duplicated navigate url",
+        "parent_not_found": "Menu: parent is not found/existed"
+    },
+    "permission": {
+        "existed": "Permission: existed"
+    },
+    "role": {
+        "not_found": "Role: not found/existed",
+        "duplicated_name": "Role: duplicated name"
+    },
+    "user": {
+        "userName": "Username",
+        "userPassword": "Password",
+        "not_found": "User: not found/existed",
+        "existed": "User: existed",
+        "password_invalid": "User: invalid password"
+    }
+}

@@ -20,8 +20,8 @@ const flattenMessages = ((nestedMessages, prefix = '') => {
 });
 
 const messages = {
-    'vi': flattenMessages(messages_vi),
-    'en': flattenMessages(messages_en),
+    'VI': flattenMessages(messages_vi),
+    'EN': flattenMessages(messages_en),
 };
 
 export default class MultiLanguages {

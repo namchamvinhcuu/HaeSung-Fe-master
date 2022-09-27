@@ -73,3 +73,8 @@ export const TEXT_LOGIN_AGAIN_MSG = "Bạn hết phiên đăng nhập. Mời đ�
 export const TEXT_FORBIDDEN = "Bạn bị chặn truy cập";
 export const TEXT_CANNOT_EDIT_MULTIPLE = "Bạn không thể sửa nhiều hơn 1 bản ghi.";
 export const TEXT_NOT_CHOOSE_ANY_RECORD = "Bạn phải chọn ít nhất một bản ghi.";
+
+export const LANGUAGES = {
+    VI: 'vi',
+    EN: 'en'
+};

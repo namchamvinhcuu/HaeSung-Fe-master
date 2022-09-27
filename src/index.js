@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { DashBoard, Login } from '@containers';
 
 import { I18nextProvider } from "react-i18next";
+import IntlProviderWrapper from "../src/views/containers/hoc/IntlProviderWrapper";
 
 import i18n from "./i18n";
 import 'font-awesome/css/font-awesome.min.css';
@@ -28,8 +29,10 @@ import 'bootstrap';
 import { historyApp, firstLogin } from '@utils';
 import CustomRouter from '@utils/CustomRoutes';
 
-import store from './states/store';
+import store, { persistor } from './states/store';
+
 import { AuthenticateRoute, NotAuthenticateRoute, LogoutRoute } from '@utils/Authenticate';
+import App from './views/App';
 
 function RouteWrapperLogin(props) {
     const ComponentWrapper = NotAuthenticateRoute(Login,
@@ -51,25 +54,27 @@ function RouteWrapperLogout(props) {
 
 ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-
         <Provider store={store}>
-            <CustomRouter history={historyApp}>
-                <Switch>
-                    <Route
-                        exact
-                        path='/login'
-                        component={RouteWrapperLogin} />
-                    <Route
-                        exact
-                        path='/logout'
-                        component={RouteWrapperLogout} />
+            <IntlProviderWrapper>
+                {/* <CustomRouter history={historyApp}>
+                    <Switch>
+                        <Route
+                            exact
+                            path='/login'
+                            component={RouteWrapperLogin} />
+                        <Route
+                            exact
+                            path='/logout'
+                            component={RouteWrapperLogout} />
 
-                    <Route
-                        path='/'
-                        render={() => <RouteWrapperRoot />} />
+                        <Route
+                            path='/'
+                            render={() => <RouteWrapperRoot />} />
 
-                </Switch>
-            </CustomRouter>
+                    </Switch>
+                </CustomRouter> */}
+                <App persistor={persistor} />
+            </IntlProviderWrapper>
         </Provider>
 
 

@@ -1,17 +1,16 @@
 import {
-    TEST,
+    CHANGE_LANGUAGE,
 
 } from './types';
 
 
 
-const funcTest = (text) => {
+const changeLanguage = (language) => {
     return dispatch => {
 
         dispatch({
-            type: TEST,
-            data: text
-
+            type: CHANGE_LANGUAGE,
+            data: language
         });
     };
 };
@@ -19,6 +18,5 @@ const funcTest = (text) => {
 
 
 export {
-    funcTest
-
+    changeLanguage
 };

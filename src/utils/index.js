@@ -16,6 +16,7 @@ import {
 } from './LocalStorageUtils'
 import UserManager from './currentUser'
 import * as axios from './AxiosInstance'
+import MultiLanguages from './MultiLanguages';
 
 export {
     firstLogin,
@@ -24,7 +25,7 @@ export {
     api_push_notify,
     AuthHeader,
     login,
-
+    MultiLanguages,
     axios,
 
     logout,

@@ -23,5 +23,5 @@ function reduxStore(state = {}) {
 
 const store = reduxStore();
 
-//export const persistor = persistStore(reduxStore);
+export const persistor = persistStore(store);
 export default store;

@@ -2,8 +2,12 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import { FormattedMessage } from 'react-intl'
 
-export default function CountrySelect({ onChange }) {
+export default function LanguageSelect({ onChange, language }) {
+
+  console.log('current language', language)
+
   return (
     <Autocomplete
       id="country-select-demo"
@@ -12,7 +16,7 @@ export default function CountrySelect({ onChange }) {
       autoHighlight
       onChange={onChange}
 
-      defaultValue={countries[0]}
+      defaultValue={language === "VI" ? countries[1] : countries[0]}
       getOptionLabel={(option) => option.label}
       renderOption={(props, option) => (
         <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
@@ -30,7 +34,7 @@ export default function CountrySelect({ onChange }) {
         <TextField
 
           {...params}
-          label="Select a language"
+          label={<FormattedMessage id="general.select_language" />}
           sx={{ backgroundColor: '#E8F0FE' }}
           inputProps={{
             ...params.inputProps,
@@ -51,6 +55,6 @@ const countries = [
     fcode: 'US',
     suggested: true,
   },
-  { code: 'zh-CN', fcode: 'CN', label: 'China', phone: '86' },
-  { code: 'vi-VN', fcode: 'VN', label: 'Vietnam', phone: '84' },
+  // { code: 'zh-CN', fcode: 'CN', label: 'China', phone: '86' },
+  { code: 'vi-VN', fcode: 'VN', label: 'Tiếng Việt', phone: '84' },
 ];
