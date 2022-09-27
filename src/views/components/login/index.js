@@ -1,18 +1,16 @@
-import React, { Component } from "react";
-import { Field, reduxForm } from "redux-form";
-import { login, api_get, api_post, firstLogin } from "@utils";
-import { MapFormToModelData, HasValue } from "@plugins/helperJS";
-import * as ConfigConstants from '@constants/ConfigConstants';
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { HasValue, MapFormToModelData } from "@plugins/helperJS";
+import { firstLogin, login } from "@utils";
+import React, { Component } from "react";
+import { reduxForm } from "redux-form";
 import CountrySelect from "./contryselect";
 
 import { api_download } from '@utils';
@@ -28,9 +26,6 @@ class Login extends Component {
     };
     this.username = React.createRef();
     this.password = React.createRef();
-    // console.log(this.props.history.urlreturn)
-    // this.username.current = 'root';
-    // this.password.current = '1234@';
   }
 
   download_apk(e) {
@@ -43,7 +38,6 @@ class Login extends Component {
     e.preventDefault();
 
     //    if (this.state.isLoading) return;
-
     this.setState((previousState) => ({
       ...previousState,
       errorMessages: [],
@@ -117,14 +111,14 @@ class Login extends Component {
     return (
       <ThemeProvider theme={theme}>
         <Grid container component="main" sx={{ height: "100vh" }}>
+
           <CssBaseline />
+
           <Grid
             item
             xs={false}
             sm={4}
             md={7}
-            // className="w-100 h-100 background-login"
-            // sx={{overflow:"hidden", position:"relative", userSelect:'none', pointerEvents:'none'}}
             sx={{
               backgroundImage: "url(https://images.unsplash.com/photo-1483058712412-4245e9b90334?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80)",
               backgroundRepeat: "no-repeat",
@@ -136,15 +130,11 @@ class Login extends Component {
               backgroundPosition: "center",
             }}
           >
-            {/* <img className="image-login" 
-              src={require("@static/dist/img/mainimg2.png")}
-              alt="Welcome"
-            /> */}
             <Box className="content-login">
               <Typography variant="h3">HANLIM</Typography>
             </Box>
-
           </Grid>
+
           <Grid
             item
             xs={12}
@@ -198,7 +188,7 @@ class Login extends Component {
                   fullWidth
                   name="password"
                   label="Password"
-                  // value={'1234@'}
+                  value={'1234@'}
                   type="password"
                   id="password"
                   autoComplete="current-password"
@@ -240,19 +230,6 @@ class Login extends Component {
                   ""
                 )}
 
-                {/* <Grid container>
-                      <Grid item xs>
-                        <Link href="#" variant="body2">
-                          Forgot password?
-                        </Link>
-                      </Grid>
-                      <Grid item>
-                        <Link href="#" variant="body2">
-                          {"Don't have an account? Sign Up"}
-                        </Link>
-                      </Grid>
-                    </Grid> */}
-                {/* <Copyright sx={{ mt: 5 }} /> */}
               </Box>
 
             </Box>

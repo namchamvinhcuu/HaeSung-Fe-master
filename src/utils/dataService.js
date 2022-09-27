@@ -27,7 +27,6 @@ function login(username, password, langcode, rememberMe) {
             // fetch(ConfigConstants.API_URL + 'auth/login', requestOptions)
             .then(handleResponse, handleError)
             .then(result => {
-                console.log('result', result)
                 if (result === 'general.success') {
 
                     // let data = jwt.decode(result.data);

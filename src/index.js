@@ -1,8 +1,8 @@
-import React,{Suspense} from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { DashBoard, Login }  from '@containers';
+import { DashBoard, Login } from '@containers';
 
 import { I18nextProvider } from "react-i18next";
 
@@ -16,24 +16,20 @@ import 'react-photo-view/dist/react-photo-view.css';
 
 //import "aos/dist/aos.css";
 import "@styles/css/adminlte.min.css";
- import '@styles/less/tool.less';
- import '@styles/less/app.less';
- import "./styles/css/App.css";
- import "@styles/flag-icon-css/css/flag-icons.css";
+import '@styles/less/tool.less';
+import '@styles/less/app.less';
+import "./styles/css/App.css";
+import "@styles/flag-icon-css/css/flag-icons.css";
 
 import 'jquery';
 import 'jquery-ui';
 import 'bootstrap';
 
-// import '@static/js/jquery.contextMenu.min.js'
-// import '@static/css/jquery.contextMenu.min.css'
-// import '@static/js/jquery.fancytree.contextMenu.js'
-
-import {historyApp,firstLogin} from '@utils';
+import { historyApp, firstLogin } from '@utils';
 import CustomRouter from '@utils/CustomRoutes';
 
 import store from './states/store';
-import { AuthenticateRoute, NotAuthenticateRoute,LogoutRoute } from '@utils/Authenticate';
+import { AuthenticateRoute, NotAuthenticateRoute, LogoutRoute } from '@utils/Authenticate';
 
 function RouteWrapperLogin(props) {
     const ComponentWrapper = NotAuthenticateRoute(Login,
@@ -53,33 +49,29 @@ function RouteWrapperLogout(props) {
     return <ComponentWrapper {...props} />;
 }
 
-ReactDOM.render( 
-  <I18nextProvider i18n={i18n}>
+ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
 
-             <Provider store={store}> 
-      <CustomRouter history={historyApp}>
-                 <Switch>
-                <Route
-                    exact
-                    path='/login'                     
-                    component={RouteWrapperLogin} />
-                <Route
-                exact
-                path='/logout'                     
-                component={RouteWrapperLogout} />
+        <Provider store={store}>
+            <CustomRouter history={historyApp}>
+                <Switch>
+                    <Route
+                        exact
+                        path='/login'
+                        component={RouteWrapperLogin} />
+                    <Route
+                        exact
+                        path='/logout'
+                        component={RouteWrapperLogout} />
 
-                 <Route
-                     path='/'
-                     render={()=> <RouteWrapperRoot  />} />
+                    <Route
+                        path='/'
+                        render={() => <RouteWrapperRoot />} />
 
-            </Switch>
-     </CustomRouter>
-     {/* <Layout/>  */}
-    
-    </Provider>
-   
-   
-    </I18nextProvider>
- 
+                </Switch>
+            </CustomRouter>
+        </Provider>
 
-,document.getElementById('root'));
+
+    </I18nextProvider>, document.getElementById('root')
+);

@@ -25,6 +25,8 @@ import RFDI_Dashboard_Layout from './KPI/RFDI_Dashboard_Layout'
 //account manager
 import UserList from "./account_manager/User/UserList";
 import RoleList from "./account_manager/Role/RoleList"
+
+import Menu2 from './standard_db/Menu/Menu2'
 export {
   TabListContent,
   DashBoard,
@@ -47,6 +49,7 @@ export {
   UserList,
   RoleList,
 
+  Menu2,
   Menu,
   Permission
 };

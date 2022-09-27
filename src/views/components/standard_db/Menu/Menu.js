@@ -1,7 +1,11 @@
 import React from 'react'
-
-export default function Menu() {
+import { Menu2 } from '@containers'
+export default function Menu({ text }) {
     return (
-        <div>Menu</div>
+        <>
+            <div>{text}</div>
+            <Menu2 />
+        </>
+
     )
 }

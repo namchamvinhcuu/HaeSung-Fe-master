@@ -1,5 +1,6 @@
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import thunk from 'redux-thunk';
+import { createStore, applyMiddleware, combineReducers } from 'redux'
+import thunk from 'redux-thunk'
+import { persistStore } from 'redux-persist'
 //import signalRMiddleware from '@state/signalr';
 
 import reducers from './reducers';
@@ -15,10 +16,12 @@ const bindMiddleware = middleware => {
 function reduxStore(state = {}) {
     const store = createStore(reducers(), state, bindMiddleware([
         thunk,
-       // signalRMiddleware,
+        // signalRMiddleware,
     ]));
     return store;
 };
 
-const store=reduxStore();
-export default  store;
+const store = reduxStore();
+
+//export const persistor = persistStore(reduxStore);
+export default store;

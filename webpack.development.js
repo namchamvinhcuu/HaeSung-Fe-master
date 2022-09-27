@@ -58,6 +58,7 @@ module.exports = {
             "@basesControls": path.resolve(__dirname, './src/bases/controls'),
             "@basesShared": path.resolve(__dirname, './src/bases/shared'),
             "@basesActions": path.resolve(__dirname, './src/bases/actions'),
+            "@services": path.resolve(__dirname, './src/services'),
         }
     },
     module: {

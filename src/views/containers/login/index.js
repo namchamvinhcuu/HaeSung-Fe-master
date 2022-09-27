@@ -1,4 +1,4 @@
-import {Login} from '@components';
+import { Login } from '@components';
 import { connect } from 'react-redux';
 
 function mapStateToProps(state) {
