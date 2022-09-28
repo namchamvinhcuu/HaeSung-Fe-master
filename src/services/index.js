@@ -1,7 +1,5 @@
-import {
-    handleLogin
-} from './Login/LoginService'
+import * as userService from './Login/LoginService'
 
 export {
-    handleLogin,
+    userService,
 }

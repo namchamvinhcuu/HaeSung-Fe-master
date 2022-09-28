@@ -13,7 +13,7 @@ const instance = axios.create({
     // baseURL: 'http://localhost:8080',
     baseURL: API_URL,
     timeout: 10 * 1000,
-    withCredentials: true
+    // withCredentials: true
 });
 
 const createError = (httpStatusCode, statusCode, errorMessage, problems, errorCode = '') => {
@@ -45,8 +45,9 @@ instance.interceptors.request.use(async (request) => {
     else {
 
         let token = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
+        console.log('token', token)
         if (token) {
-            const tokenDecode = jwt_decode(token.Token);
+            const tokenDecode = jwt_decode(token);
             const isExpired = dayjs.unix(tokenDecode.exp).diff(dayjs()) < 1;
             if (!isExpired) {
                 request.headers.Authorization = `Bearer ${token}`;
@@ -55,7 +56,6 @@ instance.interceptors.request.use(async (request) => {
 
             else {
 
-                console.log(refreshtokenRequest)
                 refreshtokenRequest = refreshtokenRequest
                     ? refreshtokenRequest
                     : instance.getNewAccessToken()
@@ -67,12 +67,13 @@ instance.interceptors.request.use(async (request) => {
                 refreshtokenRequest = null;
 
                 if (response && response !== '') {
-                    let newToken = {
-                        Token: response.Token ?? null,
-                        RefreshToken: response.RefreshToken ?? null
-                    };
+                    // let newToken = {
+                    //     Token: response.Token ?? null,
+                    //     RefreshToken: response.RefreshToken ?? null
+                    // };
 
-                    SetLocalStorage(ACCESS_TOKEN, newToken);
+                    SetLocalStorage(ConfigConstants.TOKEN_ACCESS, response.Token);
+                    SetLocalStorage(ConfigConstants.TOKEN_REFRESH, response.RefreshToken);
                     request.headers.Authorization = `Bearer ${response.Token}`;
                     return request;
                 }
@@ -134,17 +135,19 @@ instance.interceptors.response.use(
 );
 
 instance.getNewAccessToken = async () => {
-    let token = GetLocalStorage(ACCESS_TOKEN);
+    let accessToken = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
+    let refreshToken = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
     let postObj = {
-        ExpiredToken: token.Token,
-        RefreshToken: token.RefreshToken
+        expiredToken: accessToken,
+        refreshToken: refreshToken
     }
 
-    const response = await instance.post(process.env.REACT_APP_BACKEND_URL + 'refreshtoken', postObj);
+    const response = await instance.post(API_URL + '/api/refreshtoken', postObj);
 
     if (response.data.HttpResponseCode === 200) {
         let newTokenObj = response.data.Data;
-        SetLocalStorage(ACCESS_TOKEN, newTokenObj);
+        SetLocalStorage(ConfigConstants.TOKEN_ACCESS, newTokenObj.accessToken);
+        SetLocalStorage(ConfigConstants.TOKEN_REFRESH, newTokenObj.refreshToken);
         return true;
     }
     else
@@ -152,11 +155,12 @@ instance.getNewAccessToken = async () => {
 }
 
 instance.Logout = async () => {
-    RemoveLocalStorage(ACCESS_TOKEN);
-    RemoveLocalStorage(LOGGEDIN_USER);
-    history.push({
-        pathname: "login",
-    });
+    RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
+    RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
+    // RemoveLocalStorage(LOGGEDIN_USER);
+    // history.push({
+    //     pathname: "login",
+    // });
 }
 
-export default instance;
+export { instance };

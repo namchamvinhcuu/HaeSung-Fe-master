@@ -1,22 +1,26 @@
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Autocomplete from '@mui/material/Autocomplete';
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import TextField from '@mui/material/TextField';
 import Typography from "@mui/material/Typography";
 import { HasValue, MapFormToModelData } from "@plugins/helperJS";
 import { firstLogin, login } from "@utils";
 import React, { Component } from "react";
+import { FormattedMessage } from 'react-intl';
 import { reduxForm } from "redux-form";
-import LanguageSelect from "./LanguageSelect";
-import { LANGUAGES } from '@constants/TextConstants';
-import { FormattedMessage } from 'react-intl'
 
 import { api_download } from '@utils';
+
+import { userService } from '@services'
+import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils'
+import * as ConfigConstants from '@constants/ConfigConstants'
+import store from '@states/store'
+
 const theme = createTheme();
 
 class Login extends Component {
@@ -47,7 +51,7 @@ class Login extends Component {
 
   }
 
-  changeLangeValue = () => {
+  changeLanguageValue = () => {
     if (this.state.countries && this.state.countries.length > 0) {
       if (this.props.language === "VI") {
         return this.state.countries[1];
@@ -69,7 +73,7 @@ class Login extends Component {
     this.props.changeLanguage(language);
   }
 
-  onLogin = (e) => {
+  onLogin = async (e) => {
     e.preventDefault();
 
     //    if (this.state.isLoading) return;
@@ -101,42 +105,79 @@ class Login extends Component {
           isLoading: true,
         }));
 
-        login(
-          model.username,
-          model.password,
-          this.state.langcode,
-          model.rememberMe
-        )
-          .then((data) => {
+        // login(
+        //   model.username,
+        //   model.password,
+        //   this.state.langcode,
+        //   model.rememberMe
+        // )
+        //   .then((data) => {
+        //     this.setState((previousState) => ({
+        //       ...previousState,
+        //       isLoading: false,
+        //     }));
+
+        //     var routername = this.props.history.urlreturn;
+        //     firstLogin.isfirst = true;
+
+        //     this.props.history.push({
+        //       pathname: routername ?? "/",
+        //       closetab: false,
+        //     });
+        //   })
+        //   .catch((errors) => {
+        //     const errorMessages = [];
+
+        //     if (typeof errors === "string") {
+        //       errorMessages.push(errors.trim());
+        //     } else if (typeof errors === "object") {
+        //       for (let key in errors) {
+        //         errorMessages.push(errors[key]);
+        //       }
+        //     }
+        //     this.setState((previousState) => ({
+        //       ...previousState,
+        //       errorMessages,
+        //       isLoading: false,
+        //     }));
+        //   });
+
+        const res = await userService.handleLogin(model.username, model.password);
+        if (res && res.HttpResponseCode === 200) {
+          // const returnData = await userService.getUserInfo();
+          RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
+          RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
+
+          SetLocalStorage(ConfigConstants.TOKEN_ACCESS, res.Data.accessToken);
+          SetLocalStorage(ConfigConstants.TOKEN_REFRESH, res.Data.refreshToken);
+
+          const returnData = await userService.getUserInfo();
+          if (returnData) {
+            store.dispatch({
+              type: 'Dashboard/USER_LOGIN',
+            });
+
+            SetLocalStorage(ConfigConstants.CURRENT_USER, returnData)
+            // localStorage.setItem(ConfigConstants.CURRENT_USER, JSON.stringify(res));
+
             this.setState((previousState) => ({
               ...previousState,
               isLoading: false,
             }));
 
-            var routername = this.props.history.urlreturn;
+            let routername = this.props.history.urlreturn;
             firstLogin.isfirst = true;
 
             this.props.history.push({
               pathname: routername ?? "/",
               closetab: false,
             });
-          })
-          .catch((errors) => {
-            const errorMessages = [];
 
-            if (typeof errors === "string") {
-              errorMessages.push(errors.trim());
-            } else if (typeof errors === "object") {
-              for (let key in errors) {
-                errorMessages.push(errors[key]);
-              }
-            }
-            this.setState((previousState) => ({
-              ...previousState,
-              errorMessages,
-              isLoading: false,
-            }));
-          });
+          }
+        }
+        else {
+
+        }
       }
     }
   };
@@ -249,12 +290,13 @@ class Login extends Component {
                   }}
                   language={this.props.language ?? null}
                 /> */}
+
                 <Autocomplete
                   disablePortal
                   autoHighlight
                   options={this.state.countries}
                   sx={{ mt: 1, backgroundColor: '#E8F0FE' }}
-                  defaultValue={this.changeLangeValue}
+                  defaultValue={this.changeLanguageValue}
                   onChange={(event, newValue) => {
                     this.setState({ langcode: newValue.code });
                     this.changeLanguage(newValue.code === "vi-VN" ? "VI" : "EN");
@@ -279,7 +321,7 @@ class Login extends Component {
                   type="submit"
                   className="btn btn-primary"
                 >
-                  {<FormattedMessage id='general.signin' />}
+                  <FormattedMessage id='general.signin' />
                   {this.state.isLoading && (
                     <span
                       className="spinner-border spinner-border-sm mx-3"

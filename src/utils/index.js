@@ -15,7 +15,7 @@ import {
     RemoveLocalStorage
 } from './LocalStorageUtils'
 import UserManager from './currentUser'
-import * as axios from './AxiosInstance'
+import { instance as axios } from './AxiosInstance'
 import MultiLanguages from './MultiLanguages';
 
 export {
