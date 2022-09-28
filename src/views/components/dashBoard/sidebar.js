@@ -1,13 +1,13 @@
-import React, { Component, Fragment } from "react";
-import { GetMenus_LoginUser } from "@utils";
+import React, { Component } from "react";
 import { withRouter } from "react-router";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 class SideBar extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
+
+
 
   linkClickHandler = (e) => {
     const targetlink = e.target.closest("a");
@@ -25,7 +25,6 @@ class SideBar extends Component {
   };
 
   render() {
-
     return (
       <>
         <aside className="main-sidebar sidebar-dark-primary elevation-3">
@@ -40,7 +39,8 @@ class SideBar extends Component {
               className="brand-image img-circle elevation-1"
 
             />
-            <span className="brand-text font-weight mx-2">Hanlim</span>
+            <span className="brand-text font-weight mx-2">HANLIM</span>
+
           </a>
 
           {/* <!-- Sidebar --> */}
@@ -57,6 +57,7 @@ class SideBar extends Component {
                   <span>{this.props.FullNameLogin}</span>
                 </a>
               </div>
+
             </div>
             {/* <!-- Sidebar Menu --> */}
             <nav className="mt-2">

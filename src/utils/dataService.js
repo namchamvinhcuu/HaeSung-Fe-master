@@ -513,15 +513,11 @@ function handleError(error) {
 
 export {
     login,
-    // loginFacebook,
-    //  loginGoogle,
     logout,
     api_get,
     api_post,
     api_download,
     api_post_formdata,
     api_push_notify
-
-
 };
 

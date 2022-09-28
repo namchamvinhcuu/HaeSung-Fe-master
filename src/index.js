@@ -78,5 +78,6 @@ ReactDOM.render(
         </Provider>
 
 
-    </I18nextProvider>, document.getElementById('root')
+    </I18nextProvider>
+    , document.getElementById('root')
 );

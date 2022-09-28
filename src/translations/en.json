@@ -37,6 +37,12 @@
         "duplicated_name": "CommonDetail: duplicated name"
     },
     "menu": {
+        "mms": "MMS",
+        "wms": "WMS",
+        "standard": "Standard",
+        "standard_configuration": "Configuration",
+        "standard_configuration_menu": "Menu",
+        "standard_configuration_permission": "Permission",
         "duplicated_component": "Menu: duplicated component",
         "duplicated_navigateUrl": "Menu: duplicated navigate url",
         "parent_not_found": "Menu: parent is not found/existed"

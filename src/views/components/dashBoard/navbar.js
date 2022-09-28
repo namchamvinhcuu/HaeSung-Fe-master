@@ -18,6 +18,7 @@ import ReactDOM from "react-dom";
 import Button from "@mui/material/Button";
 import { withTranslation } from 'react-i18next';
 import NotifyUnread from './NotifyUnread'
+import { ChangeLanguage } from "@containers";
 
 const styles = (theme) => ({
   tabs: {
@@ -106,14 +107,14 @@ class NavBar extends Component {
 
   }
 
-  handleLang(e, code) {
-    e.preventDefault();
-    var arr = code.split('-')
+  // handleLang(e, code) {
+  //   e.preventDefault();
+  //   var arr = code.split('-')
 
-    this.props.i18n.changeLanguage(arr[0]);
-    this.setState({ langselected: code })
+  //   this.props.i18n.changeLanguage(arr[0]);
+  //   this.setState({ langselected: code })
 
-  }
+  // }
 
   handleGuide(e) {
 
@@ -171,9 +172,9 @@ class NavBar extends Component {
     const { classes } = this.props;
     const { HistoryElementTabs, index_tab_active_array, notify_list, total_notify } = this.props
     const { langselected } = this.state
-    var flag = ""
-    if (this.props.language == "EN") flag = "flag-icon-us"
-    else if (this.props.language == "VI") flag = "flag-icon-vi"
+    // var flag = ""
+    // if (this.props.language == "EN") flag = "flag-icon-us"
+    // else if (this.props.language == "VI") flag = "flag-icon-vi"
 
     // console.log('HistoryElementTabs', HistoryElementTabs)
 
@@ -305,7 +306,7 @@ class NavBar extends Component {
             </li>
 
             {/* <!-- Language Dropdown Menu --> */}
-            <li className="nav-item dropdown">
+            {/* <li className="nav-item dropdown">
               <a className="nav-link" data-toggle="dropdown" href="#">
                 <i className={`flag-icon ${flag}`}></i>
               </a>
@@ -326,7 +327,8 @@ class NavBar extends Component {
                 </a>
 
               </div>
-            </li>
+            </li> */}
+            <ChangeLanguage />
 
             <li className="nav-item">
               <a
@@ -421,4 +423,5 @@ const PDFModal = ({ isShowing, hide, pdfURL, title }) => {
     : null;
 };
 
+// export default (withStyles(styles)(NavBar));
 export default withTranslation()(withStyles(styles)(NavBar));

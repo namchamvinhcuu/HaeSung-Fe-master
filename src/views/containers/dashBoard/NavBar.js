@@ -22,12 +22,13 @@ const mapStateToProps = state => {
             , index_tab_active_array
             , notify_list
             , total_notify
-        }, User_Reducer: {
-            language
         }
+        // , User_Reducer: {
+        //     language
+        // }
     } = CombineStateToProps(state.AppReducer, [
         [Store.Dashboard_Reducer]
-        , [Store.User_Reducer]
+        // , [Store.User_Reducer]
     ]);
 
     return {
@@ -37,7 +38,7 @@ const mapStateToProps = state => {
         , notify_list
         , total_notify
 
-        , language
+        // , language
     };
 
 };
@@ -53,12 +54,12 @@ const mapDispatchToProps = dispatch => {
             , updateTimeAgo
             , updatenotify
         }
-        , User_Operations: {
-            changeLanguage
-        }
+        // , User_Operations: {
+        //     changeLanguage
+        // }
     } = CombineDispatchToProps(dispatch, bindActionCreators, [
         [Dashboard_Operations]
-        , [User_Operations]
+        // , [User_Operations]
     ]);
 
     return {
@@ -69,7 +70,7 @@ const mapDispatchToProps = dispatch => {
         , updateTimeAgo
         , updatenotify
 
-        , changeLanguage
+        // , changeLanguage
     }
 
 };

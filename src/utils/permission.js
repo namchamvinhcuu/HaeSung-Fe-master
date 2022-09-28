@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useLayoutEffect } from "react";
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
 import * as ConfigConstants from "@constants/ConfigConstants";
 import * as AllComponents from "@components";
@@ -6,53 +6,75 @@ import * as AllContainers from "@containers";
 import store from "@states/store";
 import { createTab } from '@plugins/Tabplugin'
 import { ContentBox } from "@components";
+import { FormattedMessage, useIntl } from 'react-intl'
 
-const listToTree = (list, tree, parentId) => {
-  list.forEach((item) => {
-    // Determine if it is the parent menu
-    if (item.pid == parentId) {
-      const child = {
-        ...item,
-        key: item.key || item.name,
-        children: [],
-      };
-      //Iterate the list to find all submenus that match the current menu
-      listToTree(list, child.children, item.id);
-      // Delete properties with no children value
-      if (child.children.length <= 0) {
-        delete child.children;
-      }
-      // join the tree
-      tree.push(child);
-    }
-  });
-};
+// const listToTree = (list, tree, parentId) => {
+//   list.forEach((item) => {
+//     // Determine if it is the parent menu
+//     if (item.pid == parentId) {
+//       const child = {
+//         ...item,
+//         key: item.key || item.name,
+//         children: [],
+//       };
+//       //Iterate the list to find all submenus that match the current menu
+//       listToTree(list, child.children, item.id);
+//       // Delete properties with no children value
+//       if (child.children.length <= 0) {
+//         delete child.children;
+//       }
+//       // join the tree
+//       tree.push(child);
+//     }
+//   });
+// };
 
-
+// const intl = useIntl()
 
 function ComponentWrapper(name, code, component, router, title, InputComponent, breadcrumb_array) {
 
-  return class extends React.Component {
+  // return class extends React.Component {
 
-    constructor(props) {
-      super(props);
-      this.state = { tabRender: null }
-    }
+  //   constructor(props) {
+  //     super(props);
+  //     this.state = { tabRender: null }
+  //   }
 
-    UNSAFE_componentWillMount() {
-      var res = createTab({ is_reload_component: this.props.location.is_reload_component, component: component, title: title, name: String(name).toUpperCase(), code: code, router, breadcrumb_array, ChildComponent: InputComponent });
-      this.setState({ tabRender: res })
+  //   UNSAFE_componentWillMount() {
+  //     var res = createTab({ is_reload_component: this.props.location.is_reload_component, component: component, title: title, name: String(name).toUpperCase(), code: code, router, breadcrumb_array, ChildComponent: InputComponent });
+  //     this.setState({ tabRender: res })
 
-    }
+  //   }
 
-    render() {
-      return (this.state.tabRender
+  //   render() {
+  //     return (this.state.tabRender
+  //       ? null
+  //       : <ContentBox title={title} code={code} breadcrumb={breadcrumb_array}>
+  //         {InputComponent && <InputComponent />}
+  //       </ContentBox>)
+  //   }
+  // };
+
+  return function (props) {
+
+    const [tabRender, setTabRender] = useState(null);
+
+    useLayoutEffect(() => {
+      // componentWillMount events
+      const res = createTab({ is_reload_component: props.location.is_reload_component, component: component, title: title, name: String(name).toUpperCase(), code: code, router, breadcrumb_array, ChildComponent: InputComponent });
+      setTabRender(res)
+    }, []);
+
+    return (
+
+      tabRender
         ? null
         : <ContentBox title={title} code={code} breadcrumb={breadcrumb_array}>
           {InputComponent && <InputComponent />}
-        </ContentBox>)
-    }
-  };
+        </ContentBox>
+
+    );
+  }
 }
 
 const buildTreeMenu = (
@@ -65,6 +87,9 @@ const buildTreeMenu = (
   routers,
   Component_Show_Default
 ) => {
+
+
+
   var html_child = "";
   list.forEach((item) => {
     if (item.parentId == parentId) {
@@ -84,10 +109,12 @@ const buildTreeMenu = (
 
         //   breadcrumb_array = [];
         // }
-        breadcrumb_array = [item.menuName];
+        // breadcrumb_array = [item.menuName];
+        breadcrumb_array = [<FormattedMessage id={item.languageKey} />]
       } else if (parentId) {
 
-        breadcrumb_array.push(item.menuName);
+        // breadcrumb_array.push(item.menuName);
+        breadcrumb_array.push(<FormattedMessage id={item.languageKey} />);
       }
 
       //Iterate the list to find all submenus that match the current menu
@@ -223,10 +250,10 @@ const GetMenus_LoginUser = () => {
     );
   }
 
-  // console.log('router', routers)
-
-  if (!Component_Show_Default.cmp)
+  if (!Component_Show_Default.cmp) {
     Component_Show_Default.cmp = ComponentWrapper("", "", null, "", null, null, []);
+  }
   return [menuNav, data.html, routers, user.userName, Component_Show_Default.cmp];
 };
+
 export { GetMenus_LoginUser };

@@ -56,7 +56,8 @@ const TabPanelMemo = React.memo(
 
       <TabPanel index={index} {...other}>
         <ContentBox
-          title={title}
+          // title={title}
+          // title="{title}"
           code={code}
           breadcrumb={breadcrumb_array}
         >

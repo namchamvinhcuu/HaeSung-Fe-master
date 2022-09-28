@@ -37,6 +37,12 @@
         "duplicated_name": "CommonDetail: tên đã được tạo"
     },
     "menu": {
+        "mms": "QUẢN LÝ SẢN XUẤT",
+        "wms": "QUẢN LÝ KHO",
+        "standard": "DANH MỤC",
+        "standard_configuration": "Cài đặt",
+        "standard_configuration_menu": "Menu",
+        "standard_configuration_permission": "Phân quyền",
         "duplicated_component": "Menu: component đã được tạo",
         "duplicated_navigateUrl": "Menu: navigate url đã được tạo",
         "parent_not_found": "Menu: không tồn tại menu cha"
