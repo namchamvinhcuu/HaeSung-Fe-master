@@ -211,9 +211,8 @@ const buildTreeMenu = (
               <a href="#" router=""  class="nav-link">
               <i class=" ${item.menuIcon} nav-icon"></i>
               <p>
-              ${item.menuName}
-              <i class="right fas fa-angle-left" style="margin-right:${level * 15
-          }px;"></i>
+                ${item.menuName}
+                <i class="right fas fa-angle-left" style="margin-right:${level * 15}px;"></i>
               </p>
               </a>${res_html}</li>
                `;

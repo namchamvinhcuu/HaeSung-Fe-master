@@ -269,15 +269,15 @@ class NavBar extends Component {
             </li> */}
 
             <li className="nav-item">
-              <a
+              <span
                 className="nav-link"
                 onClick={this.handleCloseAllTabs.bind(this)}
-                href="#"
+                // href="#"
                 role="button"
                 title="close all tabs except selected"
               >
                 <i className="fa fa-window-close-o"></i>
-              </a>
+              </span>
             </li>
 
             <li className="nav-item">
@@ -306,28 +306,6 @@ class NavBar extends Component {
             </li>
 
             {/* <!-- Language Dropdown Menu --> */}
-            {/* <li className="nav-item dropdown">
-              <a className="nav-link" data-toggle="dropdown" href="#">
-                <i className={`flag-icon ${flag}`}></i>
-              </a>
-              <div className="dropdown-menu dropdown-menu-right p-0">
-                <a
-                  href="#"
-                  className={`dropdown-item ${this.props.language == "EN" ? "active" : ""}`}
-                  onClick={e => this.props.changeLanguage('EN')}
-                >
-                  <i className="flag-icon flag-icon-us mr-2"></i> English
-                </a>
-                <a
-                  href="#"
-                  className={`dropdown-item ${this.props.language == "VI" ? "active" : ""}`}
-                  onClick={e => this.props.changeLanguage('VI')}
-                >
-                  <i className="flag-icon flag-icon-vi mr-2"></i> Tiếng Việt
-                </a>
-
-              </div>
-            </li> */}
             <ChangeLanguage />
 
             <li className="nav-item">
