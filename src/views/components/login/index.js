@@ -152,13 +152,13 @@ class Login extends Component {
           SetLocalStorage(ConfigConstants.TOKEN_REFRESH, res.Data.refreshToken);
 
           const returnData = await userService.getUserInfo();
-          if (returnData) {
+          if (returnData.HttpResponseCode === 200) {
             store.dispatch({
               type: 'Dashboard/USER_LOGIN',
             });
 
-            SetLocalStorage(ConfigConstants.CURRENT_USER, returnData)
-            // localStorage.setItem(ConfigConstants.CURRENT_USER, JSON.stringify(res));
+            RemoveLocalStorage(ConfigConstants.CURRENT_USER);
+            SetLocalStorage(ConfigConstants.CURRENT_USER, returnData.Data)
 
             this.setState((previousState) => ({
               ...previousState,
@@ -172,6 +172,9 @@ class Login extends Component {
               pathname: routername ?? "/",
               closetab: false,
             });
+
+          }
+          else {
 
           }
         }
