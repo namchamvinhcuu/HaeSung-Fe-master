@@ -227,7 +227,6 @@ function api_download(endpoint, filename) {
 
 }
 
-
 function api_push_notify(user_id_list, message) {
 
 
@@ -508,8 +507,6 @@ function handleError(error) {
         });
     return Promise.reject(error && error.message);
 }
-
-
 
 export {
     login,

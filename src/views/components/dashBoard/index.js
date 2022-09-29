@@ -34,17 +34,16 @@ class DashBoard extends Component {
     this.user = JSON.parse(localStorage.getItem(ConfigConstants.CURRENT_USER));
     this.access_token = localStorage.getItem(ConfigConstants.TOKEN_ACCESS);
 
-    var current_lang = localStorage.getItem(ConfigConstants.LANG_CODE);
+    let current_lang = this.props.language;
 
-    var arr = current_lang?.split('-')
     this.theme = ({});
 
-    if (arr) {
+    if (current_lang) {
       if (window.i18n) {
-        window.i18n.changeLanguage(arr[0]);
+        window.i18n.changeLanguage(current_lang.toString().toLowerCase());
       }
 
-      if (arr[0] == "zh")
+      if (current_lang === "VI")
         this.theme = createTheme({}, zhCN)
       else
         this.theme = createTheme({}, enUS)
@@ -127,46 +126,46 @@ class DashBoard extends Component {
   render() {
     return (
       <>
-        <ThemeProvider theme={this.theme}>
+        {/* <ThemeProvider theme={this.theme}> */}
 
-          <div className="container-fluid">
-            <CustomRouter history={historyDashboard}>
+        <div className="container-fluid">
+          <CustomRouter history={historyDashboard}>
 
-              <ToastContainer
-                theme="colored"
-                position="bottom-right"
-                autoClose={5000}
-                // hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                // draggable
-                pauseOnHover
-              />
-              <NavBar />
+            <ToastContainer
+              theme="colored"
+              position="bottom-right"
+              autoClose={5000}
+              // hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              // draggable
+              pauseOnHover
+            />
+            <NavBar />
 
-              <SiderBar Menus={this.html} FullNameLogin={this.Fullname} />
+            <SiderBar Menus={this.html} FullNameLogin={this.Fullname} />
 
-              <Switch>
+            <Switch>
 
-                {this.showRouters}
-                {/* <Route path="menu">
+              {this.showRouters}
+              {/* <Route path="menu">
                   <Menu />
                 </Route> */}
 
-                {<Route path="/"
-                  render={(props) => { var isFromLogin = firstLogin.isfirst; firstLogin.isfirst = null; return isFromLogin ? <this.Component_Default  {...props} /> : null }}
-                />
+              {<Route path="/"
+                render={(props) => { var isFromLogin = firstLogin.isfirst; firstLogin.isfirst = null; return isFromLogin ? <this.Component_Default  {...props} /> : null }}
+              />
 
-                }
-              </Switch>
-              <TabListContent />
+              }
+            </Switch>
+            <TabListContent />
 
-              <Footer_DashBoard />
-            </CustomRouter>
-          </div>
-        </ThemeProvider>
+            <Footer_DashBoard />
+          </CustomRouter>
+        </div>
+        {/* </ThemeProvider> */}
 
       </>
     );

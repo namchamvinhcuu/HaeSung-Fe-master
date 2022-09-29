@@ -29,7 +29,7 @@ class Login extends Component {
     this.state = {
       errorMessages: [],
       isLoading: false,
-      langcode: "en-US",
+      langcode: "",
       countries: [
         {
           code: 'en-US',

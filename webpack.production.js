@@ -9,7 +9,7 @@ var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 module.exports = {
     mode: 'production',
     entry: {
-        bundle:'./src/index.js',
+        bundle: './src/index.js',
     },
     output: {
         path: path.join(__dirname, '/public'),
@@ -36,6 +36,7 @@ module.exports = {
             "@basesControls": path.resolve(__dirname, './src/bases/controls'),
             "@basesShared": path.resolve(__dirname, './src/bases/shared'),
             "@basesActions": path.resolve(__dirname, './src/bases/actions'),
+            "@services": path.resolve(__dirname, './src/services'),
         }
     },
     module: {
@@ -44,7 +45,7 @@ module.exports = {
                 test: /\.mjs$/,
                 include: /node_modules/,
                 type: 'javascript/auto'
-              },
+            },
             {
                 test: /\.css$/,
                 use: [
@@ -60,12 +61,12 @@ module.exports = {
                 {
                     loader: 'css-loader',
                 },
-                    {
-                        loader: 'sass-loader',
-                        options: {
-                            includePaths: ['./app/styles'],
-                        },
-                    }
+                {
+                    loader: 'sass-loader',
+                    options: {
+                        includePaths: ['./app/styles'],
+                    },
+                }
                 ],
             },
             {
@@ -82,7 +83,7 @@ module.exports = {
                 loader: 'file-loader',
                 options: {
                     outputPath: 'fonts',
-                  },
+                },
             },
             {
                 test: /\.(jpe?g|png|svg|gif)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -110,7 +111,7 @@ module.exports = {
                 loaders: 'file-loader',
                 options: {
                     outputPath: 'medias',
-                  },
+                },
             },
             {
                 use: [
@@ -160,15 +161,15 @@ module.exports = {
             automaticNameMaxLength: 30,
             name: 'vendor',
             cacheGroups: {
-              vendors: {
-                test: /[\\/]node_modules[\\/]/,
-                priority: -10
-              },
-              default: {
-                minChunks: 2,
-                priority: -20,
-                reuseExistingChunk: true
-              }
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    priority: -10
+                },
+                default: {
+                    minChunks: 2,
+                    priority: -20,
+                    reuseExistingChunk: true
+                }
             }
         },
         minimizer: [
