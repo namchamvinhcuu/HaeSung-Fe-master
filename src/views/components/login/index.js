@@ -22,11 +22,11 @@ import * as ConfigConstants from '@constants/ConfigConstants'
 import store from '@states/store'
 
 const theme = createTheme();
-
 class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      // ...initModal,
       errorMessages: [],
       isLoading: false,
       langcode: "",
@@ -46,6 +46,13 @@ class Login extends Component {
     this.username = React.createRef();
     this.password = React.createRef();
   }
+
+  // initModal = {
+  //   userName: 'root',
+  //   passWord: '1234@',
+  //   isShowPassword: false,
+  //   resErrorMessage: '',
+  // }
 
   componentDidMount = () => {
 
@@ -75,8 +82,6 @@ class Login extends Component {
 
   onLogin = async (e) => {
     e.preventDefault();
-
-    //    if (this.state.isLoading) return;
     this.setState((previousState) => ({
       ...previousState,
       errorMessages: [],
@@ -144,7 +149,6 @@ class Login extends Component {
 
         const res = await userService.handleLogin(model.username, model.password);
         if (res && res.HttpResponseCode === 200) {
-          // const returnData = await userService.getUserInfo();
           RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
           RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
 
@@ -277,23 +281,6 @@ class Login extends Component {
                       label="Remember me"
                     /> */}
 
-                {/* <LanguageSelect
-                  onChange={(event, newValue) => {
-                    // this.setState({ langcode: newValue.code });
-                    let langData = 'VI';
-                    switch (newValue.code) {
-                      case "vi-VN":
-                        langData = "VI";
-                        break;
-                      default:
-                        langData = "EN"
-                        break;
-                    }
-                    this.changeLanguage(langData);
-                  }}
-                  language={this.props.language ?? null}
-                /> */}
-
                 <Autocomplete
                   disablePortal
                   autoHighlight
@@ -354,6 +341,8 @@ class Login extends Component {
   }
 }
 
-export default reduxForm({
-  form: "Login",
-})(Login);
+// export default reduxForm({
+//   form: "Login",
+// })(Login);
+
+export default Login;

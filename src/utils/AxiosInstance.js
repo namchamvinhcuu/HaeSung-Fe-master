@@ -45,7 +45,6 @@ instance.interceptors.request.use(async (request) => {
     else {
 
         let token = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
-        console.log('token', token)
         if (token) {
             const tokenDecode = jwt_decode(token);
             const isExpired = dayjs.unix(tokenDecode.exp).diff(dayjs()) < 1;

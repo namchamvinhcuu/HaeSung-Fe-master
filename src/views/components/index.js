@@ -1,7 +1,10 @@
 import DashBoard from "./dashBoard";
 import NavBar from "./dashBoard/navbar";
 import ChangeLanguage from './dashBoard/ChangeLanguage'
-import Login from "./login";
+// import Login from "./login";
+
+import Login from "./login/Login";
+
 import LanguageSelect from "./login/LanguageSelect";
 import ContentBox from "./dashBoard/ContentBox";
 import SuperAdminDashboard from "./dashBoard/SuperAdminDashboard";
