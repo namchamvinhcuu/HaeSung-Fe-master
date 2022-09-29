@@ -5,15 +5,15 @@ import ChangeLanguage from "./dashBoard/ChangeLanguage";
 import TabListContent from "./dashBoard/TabListContent";
 
 import Menu from './Menu/Menu'
-import Menu2 from './Menu/Menu2'
 
 export {
+  //SYSTEM
   TabListContent,
   DashBoard,
   NavBar,
   ChangeLanguage,
   Login,
 
+  //STANDARD
   Menu,
-  Menu2,
 };

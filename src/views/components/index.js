@@ -1,28 +1,20 @@
 import DashBoard from "./dashBoard";
 import NavBar from "./dashBoard/navbar";
 import ChangeLanguage from './dashBoard/ChangeLanguage'
-// import Login from "./login";
 
 import Login from "./login/Login";
-
 import LanguageSelect from "./login/LanguageSelect";
+
 import ContentBox from "./dashBoard/ContentBox";
 import SuperAdminDashboard from "./dashBoard/SuperAdminDashboard";
 
 import TabListContent from './dashBoard/TabListContent'
-import Location from "./standard_db/Location";
-//standard_ Lodb
-import DataReaderList from './standard_db/DataReaderList'
-import ReaderDeviceList from './standard_db/DataReaderDevice/ReaderDeviceList'
-import ReaderDetail from './standard_db/DataReaderDevice/ReaderDetail'
-import Product from './standard_db/Product'
-import TagBlackList from './standard_db/TagBlackList'
+
+//STANDARD
 import Menu from "./standard_db/Menu/Menu";
 import Permission from "./standard_db/Permission/Permission";
 
-import Staff from './standard_db/Staff'
-import TagList from './standard_db/TagList'
-
+//KPI
 import RFDI_Dashboard from './KPI/RFDI_Dashboard'
 import RFDI_Dashboard_Layout from './KPI/RFDI_Dashboard_Layout'
 
@@ -31,34 +23,25 @@ import RFDI_Dashboard_Layout from './KPI/RFDI_Dashboard_Layout'
 import UserList from "./account_manager/User/UserList";
 import RoleList from "./account_manager/Role/RoleList"
 
-import Menu2 from './standard_db/Menu/Menu2'
-
-
 export {
+  //SYSTEM
   TabListContent,
   DashBoard,
   NavBar,
   ChangeLanguage,
   Login,
   LanguageSelect,
-  Location,
   ContentBox,
-  Product,
   SuperAdminDashboard,
-  Staff,
-  DataReaderList,
-  ReaderDeviceList,
-  TagList,
-  TagBlackList,
-  ReaderDetail,
 
+  //STANDARD
+  Menu,
+  Permission,
+
+  //KPI
   RFDI_Dashboard,
   RFDI_Dashboard_Layout,
 
   UserList,
   RoleList,
-
-  Menu2,
-  Menu,
-  Permission
 };

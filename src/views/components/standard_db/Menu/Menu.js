@@ -3,8 +3,7 @@ import { Menu2 } from '@containers'
 export default function Menu({ text }) {
     return (
         <>
-            <div>{text}</div>
-            <Menu2 />
+            <h1>Menu</h1>
         </>
 
     )
