@@ -105,12 +105,11 @@ const MuiDataGrid = React.forwardRef((props, ref) => {
         rowsPerPageOptions,
         onPageChange,
         onPageSizeChange,
+        getRowId,
 
         onSelectionModelChange,
 
     } = props;
-
-    console.log('rowCount', rowCount)
 
     useImperativeHandle(ref, () => ({
         getDataGrid: () => getDataGrid(),
@@ -142,6 +141,7 @@ const MuiDataGrid = React.forwardRef((props, ref) => {
 
                         onPageChange={onPageChange}
                         onPageSizeChange={onPageSizeChange}
+                        getRowId={getRowId}
 
                         onSelectionModelChange={onSelectionModelChange}
                     />
@@ -162,6 +162,7 @@ const MuiDataGrid = React.forwardRef((props, ref) => {
 
                         onPageChange={onPageChange}
                         onPageSizeChange={onPageSizeChange}
+                        getRowId={getRowId}
 
                         onSelectionModelChange={onSelectionModelChange}
                     />

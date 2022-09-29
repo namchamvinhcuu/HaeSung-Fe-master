@@ -18,7 +18,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { zhCN, enUS } from '@mui/material/locale';
 import store from '@states/store';
 
-import Menu from "../standard_db/Menu/Menu";
+import Menu from "../standard_db/Configuration/Menu/Menu";
 
 class DashBoard extends Component {
   constructor(props) {

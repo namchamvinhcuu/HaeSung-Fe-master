@@ -4,7 +4,6 @@ import NavBar from "./dashBoard/NavBar";
 import ChangeLanguage from "./dashBoard/ChangeLanguage";
 import TabListContent from "./dashBoard/TabListContent";
 
-import Menu from './Menu/Menu'
 
 export {
   //SYSTEM
@@ -15,5 +14,4 @@ export {
   Login,
 
   //STANDARD
-  Menu,
 };

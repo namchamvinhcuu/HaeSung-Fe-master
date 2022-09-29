@@ -2,13 +2,12 @@
 // export const BASE_URL = "http://192.168.5.193:99/";
 
 export const API_URL = "https://localhost:44301/api/";
-// export const API_URL = "https://localhost:44333/api/";
+// export const BASE_URL = "https://localhost:44301/";
 
 
 const company = "_Hanlim";
 
 const accessTokenKey = `access-token${company}`;
-// const refreshAccessTokenKey = `x-${accessTokenKey}`;
 const refreshAccessTokenKey = `refresh-token${company}`;
 
 export const CURRENT_USER = "CURRENT_USER" + company;

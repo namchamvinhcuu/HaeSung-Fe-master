@@ -11,8 +11,8 @@ import SuperAdminDashboard from "./dashBoard/SuperAdminDashboard";
 import TabListContent from './dashBoard/TabListContent'
 
 //STANDARD
-import Menu from "./standard_db/Menu/Menu";
-import Permission from "./standard_db/Permission/Permission";
+import Menu from "./standard_db/Configuration/Menu/Menu";
+import Permission from "./standard_db/Configuration/Permission/Permission";
 
 //KPI
 import RFDI_Dashboard from './KPI/RFDI_Dashboard'
