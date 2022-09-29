@@ -21,7 +21,7 @@ import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { userService } from '@services'
+import { loginService } from '@services'
 import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils'
 import * as ConfigConstants from '@constants/ConfigConstants'
 import store from '@states/store'
@@ -86,7 +86,7 @@ const Login = (props) => {
         dataModalRef.current = { ...initModal, ...data };
         setIsSubmit(true);
 
-        const res = await userService.handleLogin(dataModalRef.current.userName, dataModalRef.current.userPassword);
+        const res = await loginService.handleLogin(dataModalRef.current.userName, dataModalRef.current.userPassword);
         if (res && res.HttpResponseCode === 200) {
             RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
             RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
@@ -94,7 +94,7 @@ const Login = (props) => {
             SetLocalStorage(ConfigConstants.TOKEN_ACCESS, res.Data.accessToken);
             SetLocalStorage(ConfigConstants.TOKEN_REFRESH, res.Data.refreshToken);
 
-            const returnData = await userService.getUserInfo();
+            const returnData = await loginService.getUserInfo();
             if (returnData.HttpResponseCode === 200) {
                 store.dispatch({
                     type: 'Dashboard/USER_LOGIN',

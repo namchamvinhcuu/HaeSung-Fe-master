@@ -1,6 +1,5 @@
 import React from 'react'
-import { Menu2 } from '@containers'
-export default function Menu({ text }) {
+const Menu = () => {
     return (
         <>
             <h1>Menu</h1>
@@ -8,3 +7,5 @@ export default function Menu({ text }) {
 
     )
 }
+
+export default Menu
