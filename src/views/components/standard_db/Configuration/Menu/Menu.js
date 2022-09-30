@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-
+import { FormattedMessage, useIntl } from 'react-intl'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import Grid from '@mui/material/Grid'
@@ -8,7 +8,10 @@ import IconButton from '@mui/material/IconButton'
 import { MuiDataGrid } from '@controls'
 import { menuService } from '@services'
 
+import CreateMenuDialog from './CreateMenuDialog'
+
 const Menu = () => {
+    const intl = useIntl();
     let isRendered = useRef(false);
     const initMenuModel = {
         menuId: 0
@@ -36,7 +39,7 @@ const Menu = () => {
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 5,
+        pageSize: 20,
         selectedRowData: { ...initMenuModel }
     })
 
@@ -47,23 +50,12 @@ const Menu = () => {
         // emitter.emit('EVENT_BINDING_EDIT_USER_MODAL', { ...user });
     }
 
-    const handlePageChange = (newPage) => {
-
-    };
-
-    const handlePageSizeChange = (newPageSize) => {
-
-    };
-
     const handleRowSelection = (arrIds) => {
 
         let currentGridData = menuGridRef.current.getDataGrid();
         let selectedRow = currentGridData.filter(function (item) {
             return item.menuId === arrIds[0]
         });
-
-        console.log('selectedRow', selectedRow)
-
         if (selectedRow && selectedRow.length > 0) {
             setMenuGridState({ ...menuGridState, selectedRowData: { ...selectedRow[0] } });
         }
@@ -74,8 +66,8 @@ const Menu = () => {
 
     async function fetchData() {
         const params = {
-            page: page,
-            pageSize: pageSize
+            page: menuGridState.page,
+            pageSize: menuGridState.pageSize
         }
         const res = await menuService.getMenuList(params);
         setMenuGridState({
@@ -86,26 +78,27 @@ const Menu = () => {
     }
 
     useEffect(() => {
-        isRendered = true;
-        const params = {
-            page: menuGridState.page,
-            pageSize: menuGridState.pageSize
-        }
-        menuService.getMenuList(params)
-            .then(res => {
-                if (isRendered) {
-                    setMenuGridState({
-                        ...menuGridState
-                        , data: [...res.Data]
-                        , totalRow: res.Data && res.Data.length > 0 ? res.Data[0].totalRow : 0
-                    });
-                }
-                return null;
-            })
-            .catch(err => console.log(err));;
-        return () => {
-            isRendered = false;
-        };
+        // isRendered = true;
+        // const params = {
+        //     page: menuGridState.page,
+        //     pageSize: menuGridState.pageSize
+        // }
+        // menuService.getMenuList(params)
+        //     .then(res => {
+        //         if (isRendered) {
+        //             setMenuGridState({
+        //                 ...menuGridState
+        //                 , data: [...res.Data]
+        //                 , totalRow: res.Data && res.Data.length > 0 ? res.Data[0].totalRow : 0
+        //             });
+        //         }
+        //         return null;
+        //     })
+        //     .catch(err => console.log(err));;
+        // return () => {
+        //     isRendered = false;
+        // };
+        fetchData();
     }, [menuGridState.page, menuGridState.pageSize]);
 
     // const handleDeleteUser = async (user) => {
@@ -123,10 +116,11 @@ const Menu = () => {
 
     const columns = [
         { field: 'id', headerName: 'ID', hide: true },
+        { field: 'parentId', headerName: 'ParentId', hide: true },
         {
             field: "action",
             headerName: "",
-            flex: 0.3,
+            flex: 0.4,
             // headerAlign: 'center',
             disableClickEventBubbling: true,
             sortable: false,
@@ -161,23 +155,23 @@ const Menu = () => {
                 );
             },
         },
-        { field: 'menuName', headerName: 'Menu Name', flex: 1, },
-        { field: 'parentId', headerName: 'Parent', flex: 1, },
-        { field: 'menuLevel', headerName: 'Level', flex: 0.2, },
+        { field: 'menuName', headerName: intl.formatMessage({ id: "general.name" }), flex: 0.7, },
+        { field: 'parentMenuName', headerName: intl.formatMessage({ id: "general.parent" }), flex: 0.7, },
+        { field: 'menuLevel', headerName: intl.formatMessage({ id: "general.level" }), flex: 0.3, },
         {
             field: 'sortOrder',
             headerName: 'Sort Order',
             description: 'This column has a value getter and is not sortable.',
             sortable: false,
-            flex: 0.2,
+            flex: 0.5,
             // valueGetter: (params) =>
             //   `${params.row.firstName || ''} ${params.row.lastName || ''}`,
         },
-        { field: 'menuIcon', headerName: 'Icon', flex: 1, },
-        { field: 'languageKey', headerName: 'Language Key', flex: 1, },
-        { field: 'menuComponent', headerName: 'Component', flex: 1, },
-        { field: 'navigateUrl', headerName: 'Url', flex: 1, },
-        { field: 'forRoot', headerName: 'For Root', flex: 0.2, },
+        { field: 'menuIcon', headerName: intl.formatMessage({ id: "general.icon" }), flex: 0.6, },
+        { field: 'languageKey', headerName: intl.formatMessage({ id: "general.language_key" }), flex: 1, },
+        { field: 'menuComponent', headerName: intl.formatMessage({ id: "general.component" }), flex: 0.7, },
+        { field: 'navigateUrl', headerName: intl.formatMessage({ id: "general.url" }), flex: 0.6, },
+        { field: 'forRoot', headerName: intl.formatMessage({ id: "general.root_only" }), flex: 0.5, },
     ];
 
     return (
@@ -193,7 +187,7 @@ const Menu = () => {
                 page={menuGridState.page - 1}
                 pageSize={menuGridState.pageSize}
                 rowCount={menuGridState.totalRow}
-                rowsPerPageOptions={[5, 10, 20]}
+                rowsPerPageOptions={[20, 30, 50]}
 
                 onPageChange={(newPage) => {
                     setMenuGridState({ ...menuGridState, page: newPage + 1 });
@@ -206,6 +200,10 @@ const Menu = () => {
                     handleRowSelection(newSelectedRowId)
                 }}
                 selectionModel={menuGridState.selectedRowData}
+            />
+
+            <CreateMenuDialog
+                initModal={initMenuModel}
             />
 
         </>

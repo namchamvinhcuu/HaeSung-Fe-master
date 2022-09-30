@@ -51,7 +51,6 @@ instance.interceptors.request.use((request) => {
         if (token) {
             const tokenDecode = jwt_decode(token);
             const isExpired = dayjs.unix(tokenDecode.exp).diff(dayjs()) < 1;
-            console.log('isExpired', isExpired)
             if (!isExpired) {
                 request.headers.Authorization = `Bearer ${token}`;
                 return request;

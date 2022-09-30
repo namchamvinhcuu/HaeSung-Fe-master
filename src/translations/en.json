@@ -20,7 +20,17 @@
         "system_error": "System error",
         "object_invalid": "Invalid object",
         "change_password_not_allowed": "Not allowed to change this user's password",
-        "refresh_required": "Data has modified, refresh page to get the latest"
+        "refresh_required": "Data has modified, refresh page to get the latest",
+        "id": "Id",
+        "code": "Code",
+        "name": "Name",
+        "icon": "Icon",
+        "component": "Component",
+        "url": "Url",
+        "level": "Level",
+        "parent": "Parent",
+        "language_key": "Multi Language",
+        "root_only": "Root only"
     },
     "login": {
         "account_password_invalid": "Account/Password is invalid",

@@ -20,7 +20,17 @@
         "system_error": "Lỗi hệ thống",
         "object_invalid": "Mẫu không hợp lệ",
         "change_password_not_allowed": "Không được phép thay đổi mật khẩu của tài khoản này",
-        "refresh_required": "Dữ liệu đã thay đổi, làm mới trang để cập nhật thông tin mới nhất"
+        "refresh_required": "Dữ liệu đã thay đổi, làm mới trang để cập nhật thông tin mới nhất",
+        "id": "Id",
+        "code": "Mã",
+        "name": "Tên",
+        "icon": "Biểu tượng",
+        "component": "Thành phần",
+        "url": "Đường dẫn",
+        "level": "Cấp",
+        "parent": "Parent",
+        "language_key": "Đa ngôn ngữ",
+        "root_only": "Root only"
     },
     "login": {
         "account_password_invalid": "Tài khoản/Mật khẩu không hợp lệ",

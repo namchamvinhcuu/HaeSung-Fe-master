@@ -29,7 +29,7 @@ import store from '@states/store'
 const theme = createTheme();
 
 const Login = (props) => {
-    const intl = useIntl();
+    // const intl = useIntl();
 
     const { language, changeLanguage, history } = props;
     const countries = [
