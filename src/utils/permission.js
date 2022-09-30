@@ -33,48 +33,48 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 function ComponentWrapper(name, code, component, router, title, InputComponent, breadcrumb_array) {
 
-  // return class extends React.Component {
+  return class extends React.Component {
 
-  //   constructor(props) {
-  //     super(props);
-  //     this.state = { tabRender: null }
-  //   }
+    constructor(props) {
+      super(props);
+      this.state = { tabRender: null }
+    }
 
-  //   UNSAFE_componentWillMount() {
-  //     var res = createTab({ is_reload_component: this.props.location.is_reload_component, component: component, title: title, name: String(name).toUpperCase(), code: code, router, breadcrumb_array, ChildComponent: InputComponent });
-  //     this.setState({ tabRender: res })
+    UNSAFE_componentWillMount() {
+      var res = createTab({ is_reload_component: this.props.location.is_reload_component, component: component, title: title, name: String(name).toUpperCase(), code: code, router, breadcrumb_array, ChildComponent: InputComponent });
+      this.setState({ tabRender: res })
 
-  //   }
+    }
 
-  //   render() {
-  //     return (this.state.tabRender
-  //       ? null
-  //       : <ContentBox title={title} code={code} breadcrumb={breadcrumb_array}>
-  //         {InputComponent && <InputComponent />}
-  //       </ContentBox>)
-  //   }
-  // };
-
-  return function (props) {
-
-    const [tabRender, setTabRender] = useState(null);
-
-    useLayoutEffect(() => {
-      // componentWillMount events
-      const res = createTab({ is_reload_component: props.location.is_reload_component, component: component, title: title, name: String(name).toUpperCase(), code: code, router, breadcrumb_array, ChildComponent: InputComponent });
-      setTabRender(res)
-    }, []);
-
-    return (
-
-      tabRender
+    render() {
+      return (this.state.tabRender
         ? null
         : <ContentBox title={title} code={code} breadcrumb={breadcrumb_array}>
           {InputComponent && <InputComponent />}
-        </ContentBox>
+        </ContentBox>)
+    }
+  };
 
-    );
-  }
+  // return function (props) {
+
+  //   const [tabRender, setTabRender] = useState(null);
+
+  //   useLayoutEffect(() => {
+  //     // componentWillMount events
+  //     const res = createTab({ is_reload_component: props.location.is_reload_component, component: component, title: title, name: String(name).toUpperCase(), code: code, router, breadcrumb_array, ChildComponent: InputComponent });
+  //     setTabRender(res)
+  //   }, []);
+
+  //   return (
+
+  //     tabRender
+  //       ? null
+  //       : <ContentBox title={title} code={code} breadcrumb={breadcrumb_array}>
+  //         {InputComponent && <InputComponent />}
+  //       </ContentBox>
+
+  //   );
+  // }
 }
 
 const buildTreeMenu = (
