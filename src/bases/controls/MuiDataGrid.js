@@ -88,6 +88,19 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
             outline: 'none'
         }
     },
+
+    '& .MuiDataGrid-row': {
+        '&:hover': {
+            backgroundColor: 'palegoldenrod',
+        }
+    },
+
+    '& .MuiDataGrid-row.Mui-selected': {
+        backgroundColor: 'palegoldenrod',
+        '&:hover': {
+            backgroundColor: 'palegoldenrod',
+        }
+    }
 }));
 
 const MuiDataGrid = React.forwardRef((props, ref) => {
