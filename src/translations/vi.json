@@ -26,7 +26,8 @@
         "account_password_invalid": "Tài khoản/Mật khẩu không hợp lệ",
         "account_blocked": "Tài khoản đã bị khóa",
         "userName_required": "Tài khoản không được để trống",
-        "userPassword_required": "Mật khẩu không đươc để trống"
+        "userPassword_required": "Mật khẩu không đươc để trống",
+        "lost_authorization": "Token hết hạn. Vui lòng đăng nhập lại"
     },
     "commonMaster": {
         "not_found": "CommonMaster: không tồn tại",

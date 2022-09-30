@@ -32,6 +32,7 @@ const Login = (props) => {
     const intl = useIntl();
 
     const { language, changeLanguage, history } = props;
+    console.log('history', history)
 
     const countries = [
         {

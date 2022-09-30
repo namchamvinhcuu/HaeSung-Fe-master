@@ -5,8 +5,11 @@ import jwt_decode from 'jwt-decode';
 import * as ConfigConstants from '@constants/ConfigConstants';
 import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils'
 import config from './config'
+import { FormattedMessage, useIntl } from 'react-intl'
 
-// console.log(process.env.REACT_APP_BACKEND_URL)
+import { ErrorAlert, SuccessAlert } from '@utils'
+import { historyApp } from '@utils';
+
 const API_URL = config.api.API_BASE_URL;
 
 const instance = axios.create({
@@ -34,7 +37,7 @@ export const isSuccessStatusCode = (s) => {
 
 let refreshtokenRequest = null;
 
-instance.interceptors.request.use(async (request) => {
+instance.interceptors.request.use((request) => {
     if (
         request.url.indexOf(`${API_URL}/api/login`) >= 0
         || request.url.indexOf(`${API_URL}/api/refreshtoken`) >= 0
@@ -48,37 +51,33 @@ instance.interceptors.request.use(async (request) => {
         if (token) {
             const tokenDecode = jwt_decode(token);
             const isExpired = dayjs.unix(tokenDecode.exp).diff(dayjs()) < 1;
+            console.log('isExpired', isExpired)
             if (!isExpired) {
                 request.headers.Authorization = `Bearer ${token}`;
                 return request;
             }
-
             else {
 
                 refreshtokenRequest = refreshtokenRequest
                     ? refreshtokenRequest
                     : instance.getNewAccessToken()
 
-                const response = await refreshtokenRequest;
+                const response = refreshtokenRequest;
 
                 // const response = await axiosInstance.getNewAccessToken()
 
                 refreshtokenRequest = null;
 
                 if (response && response !== '') {
-                    // let newToken = {
-                    //     Token: response.Token ?? null,
-                    //     RefreshToken: response.RefreshToken ?? null
-                    // };
-
                     SetLocalStorage(ConfigConstants.TOKEN_ACCESS, response.Token);
                     SetLocalStorage(ConfigConstants.TOKEN_REFRESH, response.RefreshToken);
                     request.headers.Authorization = `Bearer ${response.Token}`;
                     return request;
                 }
                 else {
-                    WarnAlert('You lost your authorization, please login again !');
-                    await instance.Logout();
+                    // ErrorAlert('You lost your authorization, please login again !');
+                    ErrorAlert(<FormattedMessage id="login.lost_authorization" />);
+                    instance.Logout();
                     return request;
                 }
             }
@@ -86,7 +85,7 @@ instance.interceptors.request.use(async (request) => {
         }
         else {
             // WarnAlert('You lost your authorization, please login again !');
-            await instance.Logout();
+            instance.Logout();
             return request;
         }
     }
@@ -135,16 +134,16 @@ instance.interceptors.response.use(
 
 instance.getNewAccessToken = async () => {
     let accessToken = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
-    let refreshToken = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
+    let refreshToken = GetLocalStorage(ConfigConstants.TOKEN_REFRESH);
     let postObj = {
         expiredToken: accessToken,
         refreshToken: refreshToken
     }
 
-    const response = await instance.post(API_URL + '/api/refreshtoken', postObj);
+    const res = await instance.post(API_URL + '/api/refreshtoken', postObj);
 
-    if (response.data.HttpResponseCode === 200) {
-        let newTokenObj = response.data.Data;
+    if (res.HttpResponseCode === 200) {
+        let newTokenObj = res.Data;
         SetLocalStorage(ConfigConstants.TOKEN_ACCESS, newTokenObj.accessToken);
         SetLocalStorage(ConfigConstants.TOKEN_REFRESH, newTokenObj.refreshToken);
         return true;
@@ -156,10 +155,8 @@ instance.getNewAccessToken = async () => {
 instance.Logout = async () => {
     RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
     RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
-    // RemoveLocalStorage(LOGGEDIN_USER);
-    // history.push({
-    //     pathname: "login",
-    // });
+    RemoveLocalStorage(ConfigConstants.CURRENT_USER);
+    historyApp.push("/logout");
 }
 
 export { instance };

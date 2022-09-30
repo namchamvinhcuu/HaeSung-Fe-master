@@ -1,15 +1,15 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
-import Grid from '@mui/material/Grid'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
+import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 
 import { MuiDataGrid } from '@controls'
 import { menuService } from '@services'
 
 const Menu = () => {
-
+    let isRendered = useRef(false);
     const initMenuModel = {
         menuId: 0
         , parentId: ''
@@ -30,13 +30,17 @@ const Menu = () => {
     }
 
     const menuGridRef = useRef();
-    const [menuArr, setMenuArr] = useState([]);
+
+    const [menuGridState, setMenuGridState] = useState({
+        isLoading: false,
+        data: [],
+        totalRow: 0,
+        page: 1,
+        pageSize: 5,
+        selectedRowData: { ...initMenuModel }
+    })
+
     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
-    const [page, setPage] = useState(0);
-    const [pageSize, setPageSize] = useState(5);
-    const [rowCount, setRowCount] = useState(0);
-    const [isLoading, setIsLoading] = useState(false);
-    const [selectedRowData, setSelectedRowData] = useState({ ...initMenuModel });
 
     const toggleModifyMenuDialog = async (user) => {
         setIsOpenModifyDialog(!isOpenModifyDialog);
@@ -44,12 +48,11 @@ const Menu = () => {
     }
 
     const handlePageChange = (newPage) => {
-        setPage(newPage);
+
     };
 
     const handlePageSizeChange = (newPageSize) => {
-        setPageSize(newPageSize);
-        setPage(1);
+
     };
 
     const handleRowSelection = (arrIds) => {
@@ -59,33 +62,51 @@ const Menu = () => {
             return item.menuId === arrIds[0]
         });
 
+        console.log('selectedRow', selectedRow)
+
         if (selectedRow && selectedRow.length > 0) {
-            setSelectedRowData({ ...selectedRow[0] });
+            setMenuGridState({ ...menuGridState, selectedRowData: { ...selectedRow[0] } });
         }
         else {
-            setSelectedRowData({});
+            setMenuGridState({ ...menuGridState, selectedRowData: { ...initMenuModel } });
         }
     }
 
-    const getMenus = async () => {
+    async function fetchData() {
         const params = {
-            page: 1,
-            pageSize: 5
+            page: page,
+            pageSize: pageSize
         }
-        let res = await menuService.getMenuList(params);
-
-        setMenuArr(res.Data ?? []);
-        setRowCount(res.Data[0].totalRow !== 0 ? res.Data[0].totalRow : 0)
+        const res = await menuService.getMenuList(params);
+        setMenuGridState({
+            ...menuGridState
+            , data: [...res.Data]
+            , totalRow: res.Data && res.Data.length > 0 ? res.Data[0].totalRow : 0
+        });
     }
 
     useEffect(() => {
-        getMenus();
-    }, []);
-
-    // useEffect(() => {
-    //     if (menuArr.length > 0)
-    //         setRowCount(menuArr[0].totalRow !== 0 ? menuArr[0].totalRow : 0)
-    // }, [menuArr, setRowCount]);
+        isRendered = true;
+        const params = {
+            page: menuGridState.page,
+            pageSize: menuGridState.pageSize
+        }
+        menuService.getMenuList(params)
+            .then(res => {
+                if (isRendered) {
+                    setMenuGridState({
+                        ...menuGridState
+                        , data: [...res.Data]
+                        , totalRow: res.Data && res.Data.length > 0 ? res.Data[0].totalRow : 0
+                    });
+                }
+                return null;
+            })
+            .catch(err => console.log(err));;
+        return () => {
+            isRendered = false;
+        };
+    }, [menuGridState.page, menuGridState.pageSize]);
 
     // const handleDeleteUser = async (user) => {
     //     if (window.confirm("Delete the item?")) {
@@ -163,28 +184,30 @@ const Menu = () => {
         <>
             <MuiDataGrid
                 ref={menuGridRef}
-                showLoading={isLoading}
+                showLoading={menuGridState.isLoading}
                 isPagingServer={true}
-
                 headerHeight={45}
                 // rowHeight={30}
-
                 columns={columns}
-                rows={menuArr}
-
-                page={page}
-                pageSize={pageSize}
-                rowCount={rowCount}
+                rows={menuGridState.data}
+                page={menuGridState.page - 1}
+                pageSize={menuGridState.pageSize}
+                rowCount={menuGridState.totalRow}
                 rowsPerPageOptions={[5, 10, 20]}
 
-                onPageChange={(newPage) => handlePageChange(newPage)}
-                onPageSizeChange={(newPageSize) => handlePageSizeChange(newPageSize)}
+                onPageChange={(newPage) => {
+                    setMenuGridState({ ...menuGridState, page: newPage + 1 });
+                }}
+                onPageSizeChange={(newPageSize) => {
+                    setMenuGridState({ ...menuGridState, pageSize: newPageSize, page: 1 });
+                }}
                 getRowId={(rows) => rows.menuId}
                 onSelectionModelChange={(newSelectedRowId) => {
                     handleRowSelection(newSelectedRowId)
                 }}
-                selectionModel={selectedRowData}
+                selectionModel={menuGridState.selectedRowData}
             />
+
         </>
 
     )
