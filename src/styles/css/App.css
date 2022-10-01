@@ -402,3 +402,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ebf1f6', end
     text-overflow: ellipsis !important;
     font-size: 0.8rem !important;
 }
+
+.MuiPaper-root.MuiDialog-paper.react-draggable {
+    overflow-y: unset;
+  }
+  form{
+    padding-top: 10px;
+  }

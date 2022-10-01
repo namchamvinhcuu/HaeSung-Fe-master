@@ -1,127 +1,167 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {
     Grid
     , TextField
-    , FormControl
-    , FormLabel
     , RadioGroup
     , FormControlLabel
     , Radio
 } from '@mui/material'
-import { FormattedMessage } from 'react-intl'
-import { MuiDropDownList } from '@controls'
-import { useFormCustom } from '@hooks'
-import { useForm } from 'react-hook-form'
+import Typography from '@mui/material/Typography'
+import { FormattedMessage, useIntl } from 'react-intl'
+import { MuiDropDownList, MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls'
+import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
 const CreateMenuDialog = (props) => {
+    const intl = useIntl();
 
-    const { initModal } = props;
+    const { initModal, isOpen, onClose } = props;
 
-    const {
-        values,
-        setValues,
-        handleInputChange
-    } = useFormCustom(initModal);
+    const dataModalRef = useRef(initModal);
+    const [dialogState, setDialogState] = useState({
+        isSubmit: false,
+        menuLevel: 3,
+    })
 
     const schema = yup.object().shape({
-        userName: yup.string().required(<FormattedMessage id="login.userName_required" />),
-        userPassword: yup.string().required(<FormattedMessage id="login.userPassword_required" />),
+        // menuName: yup.string().required(<FormattedMessage id="login.userName_required" />),
+        // menuIcon: yup.string().required(<FormattedMessage id="login.userPassword_required" />),
     });
-    const { register, formState: { errors }, handleSubmit, clearErrors } = useForm({
+    const { control, register, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
         mode: 'onChange',
-        resolver: yupResolver(schema)
+        resolver: yupResolver(schema),
+        defaultValues: {
+            ...initModal,
+            menuLevel: 3,
+        },
     });
+
+    const handleCreateMenu = async (params) => {
+
+    }
+
+    const handleReset = () => {
+        reset();
+        clearErrors();
+    }
+
+    const handleCloseDialog = () => {
+        reset();
+        clearErrors();
+        onClose();
+    }
+
+    const onSubmit = async (data) => {
+        dataModalRef.current = { ...initModal, ...data };
+        setDialogState({ ...dialogState, isSubmit: true });
+        console.log(dataModalRef.current)
+
+        // await handleCreateMenu(dataModalRef.current);
+        setDialogState({ ...dialogState, isSubmit: false });
+        handleReset();
+
+        // handleCloseDialog();
+    };
 
     return (
-        <Grid container spacing={2}>
-            <Grid item xs={6}>
-                <Grid container spacing={2}>
+        <MuiDialog
+            maxWidth='sm'
+            title={intl.formatMessage({ id: 'general.create' })}
+            isOpen={isOpen}
+            disabledCloseBtn={dialogState.isSubmit}
+            disable_animate={300}
+            onClose={handleCloseDialog}
+        >
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
 
-                    <Grid item xs={12}>
-                        <TextField
-                            autoFocus
-                            fullWidth
-                            label={<FormattedMessage id='general.name' />}
-                            name="menuName"
-                            value={values.menuName}
-                            {...register('menuName', {
-                                onChange: (e) => handleInputChange(e)
-                            })}
-                            error={!!errors?.menuName}
-                            helperText={errors?.menuName ? errors.menuName.message : null}
-                        />
+                    <Grid item xs={6}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    autoFocus
+                                    fullWidth
+                                    size='small'
+                                    label={<FormattedMessage id='general.name' />}
+                                    {...register('menuName', {
+                                        // onChange: (e) => handleInputChange(e)
+                                    })}
+                                    error={!!errors?.menuName}
+                                    helperText={errors?.menuName ? errors.menuName.message : null}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    size='small'
+                                    label={<FormattedMessage id='general.icon' />}
+                                    {...register('menuIcon', {
+                                    })}
+                                    error={!!errors?.menuIcon}
+                                    helperText={errors?.menuIcon ? errors.menuIcon.message : null}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    size='small'
+                                    label={<FormattedMessage id='general.component' />}
+                                    name="menuComponent"
+                                    {...register('menuComponent', {
+                                    })}
+                                    error={!!errors?.menuComponent}
+                                    helperText={errors?.menuComponent ? errors.menuComponent.message : null}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    size='small'
+                                    label={<FormattedMessage id='general.url' />}
+                                    name="navigateUrl"
+                                    {...register('navigateUrl', {
+                                    })}
+                                    error={!!errors?.navigateUrl}
+                                    helperText={errors?.navigateUrl ? errors.navigateUrl.message : null}
+                                />
+                            </Grid>
+                        </Grid>
                     </Grid>
 
-                    <Grid item xs={12}>
-                        <TextField
-                            autoFocus
-                            fullWidth
-                            label={<FormattedMessage id='general.icon' />}
-                            name="menuIcon"
-                            value={values.menuIcon}
-                            {...register('menuIcon', {
-                                onChange: (e) => handleInputChange(e)
-                            })}
-                            error={!!errors?.menuIcon}
-                            helperText={errors?.menuIcon ? errors.menuIcon.message : null}
-                        />
-                    </Grid>
+                    <Grid item xs={6}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
 
-                    <Grid item xs={12}>
-                        <TextField
-                            autoFocus
-                            fullWidth
-                            label={<FormattedMessage id='general.component' />}
-                            name="menuComponent"
-                            value={values.menuComponent}
-                            {...register('menuComponent', {
-                                onChange: (e) => handleInputChange(e)
-                            })}
-                            error={!!errors?.menuComponent}
-                            helperText={errors?.menuComponent ? errors.menuComponent.message : null}
-                        />
-                    </Grid>
+                                <span style={{ marginTop: '5px', marginRight: '16px', fontWeight: '700' }}>
+                                    <FormattedMessage id='general.level' />
+                                </span>
+                                <Controller
+                                    rules={{ required: true }}
+                                    control={control}
+                                    name="menuLevel"
+                                    render={({ field: { onChange, value } }) => {
+                                        return (
+                                            <RadioGroup
+                                                row
+                                                value={value}
+                                                onChange={(e) => {
+                                                    onChange(e.target.value)
+                                                }}
+                                            >
+                                                <FormControlLabel value="1" control={<Radio size="small" />} label="1" />
+                                                <FormControlLabel value="2" control={<Radio size="small" />} label="2" />
+                                                <FormControlLabel value="3" control={<Radio size="small" />} label="3" />
+                                            </RadioGroup>
+                                        );
+                                    }}
+                                />
+                            </Grid>
 
-                    <Grid item xs={12}>
-                        <TextField
-                            autoFocus
-                            fullWidth
-                            label={<FormattedMessage id='general.url' />}
-                            name="navigateUrl"
-                            value={values.navigateUrl}
-                            {...register('navigateUrl', {
-                                onChange: (e) => handleInputChange(e)
-                            })}
-                            error={!!errors?.navigateUrl}
-                            helperText={errors?.navigateUrl ? errors.navigateUrl.message : null}
-                        />
-                    </Grid>
-                </Grid>
-            </Grid>
-
-            <Grid item xs={6}>
-                <Grid container spacing={2}>
-
-                    <Grid item xs={12}>
-                        <FormControl>
-                            <FormLabel>
-                                <FormattedMessage id='general.level' />
-                            </FormLabel>
-                            <RadioGroup
-                                row
-                                name="menuLevel"
-                            >
-                                <FormControlLabel value="1" control={<Radio />} label="1" />
-                                <FormControlLabel value="2" control={<Radio />} label="2" />
-                                <FormControlLabel value="3" control={<Radio />} label="3" />
-
-                            </RadioGroup>
-                        </FormControl>
-                    </Grid>
-
-                    {/* <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                         <FormControl margin="dense" fullWidth>
                             <MuiDropDownList
                                 required
@@ -136,39 +176,28 @@ const CreateMenuDialog = (props) => {
                         </FormControl>
                     </Grid> */}
 
-                    {/* <Grid item xs={12}>
-                        <FastField
-                            name="ForRoot"
-                            label="For Root Only ?"
-                            options={trueFalseItems}
-                            row={+true}
-
-                            component={FormikControl.RadioGroup}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <FastField
-                            name="SortOrder"
-                            label="Sort Order"
-
-                            component={FormikControl.Input}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <Grid container spacing={1}>
-                            <Grid item xs={6}>
-                                <FormikControl.ButtonReset />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <FormikControl.ButtonSubmit />
-                            </Grid>
                         </Grid>
-                    </Grid> */}
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <Grid
+                            container
+                            direction="row-reverse"
+                        >
+                            <MuiSubmitButton
+                                text="save"
+                                loading={dialogState.isSubmit}
+                            />
+                            <MuiResetButton
+                                onClick={handleReset}
+                                disabled={dialogState.isSubmit}
+                            />
+                        </Grid>
+                    </Grid>
+
                 </Grid>
-            </Grid>
-        </Grid>
+            </form>
+        </MuiDialog>
     )
 }
 
