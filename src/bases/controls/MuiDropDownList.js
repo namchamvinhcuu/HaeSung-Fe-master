@@ -3,10 +3,13 @@ import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from "@mui/material/Box"
+import { FormattedMessage, useIntl } from 'react-intl'
 import { axios } from '@utils'
 
 const MuiDropDownList = ({ url, placeholder, onChange, defaultValue, sx, variantInput, disabled,
     required, error, helperText, value, groupBy, renderGroup, renderOption }) => {
+
+    const intl = useIntl();
 
     const [open, setOpen] = React.useState(false);
     const [complete_getdata, setComplete_getdata] = React.useState(false);
@@ -31,7 +34,7 @@ const MuiDropDownList = ({ url, placeholder, onChange, defaultValue, sx, variant
             let dataOptions = await axios.get(url);
             setComplete_getdata(true)
             if (active) {
-                setOptions(dataOptions);
+                setOptions(dataOptions.Data);
             }
         })();
 
@@ -88,7 +91,8 @@ const MuiDropDownList = ({ url, placeholder, onChange, defaultValue, sx, variant
                 <TextField
                     {...params}
                     required={required}
-                    label={placeholder}
+                    // label={<FormattedMessage id={placeholder} />}
+                    label={intl.formatMessage({ id: placeholder })}
                     variant={variantInput}
                     error={error}
                     helperText={helperText}

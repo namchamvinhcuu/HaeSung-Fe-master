@@ -3,8 +3,10 @@ import {
     Grid
     , TextField
     , RadioGroup
+    , FormControl
     , FormControlLabel
     , Radio
+    , Autocomplete
 } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { FormattedMessage, useIntl } from 'react-intl'
@@ -13,10 +15,14 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
+import { API_URL } from '@constants/ConfigConstants'
+
 const CreateMenuDialog = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose } = props;
+
+    const [parentMenuArr, setParentMenuArr] = useState([]);
 
     const dataModalRef = useRef(initModal);
     const [dialogState, setDialogState] = useState({
@@ -149,7 +155,8 @@ const CreateMenuDialog = (props) => {
                                                 row
                                                 value={value}
                                                 onChange={(e) => {
-                                                    onChange(e.target.value)
+                                                    onChange(e.target.value);
+
                                                 }}
                                             >
                                                 <FormControlLabel value="1" control={<Radio size="small" />} label="1" />
@@ -161,20 +168,26 @@ const CreateMenuDialog = (props) => {
                                 />
                             </Grid>
 
-                            {/* <Grid item xs={12}>
-                        <FormControl margin="dense" fullWidth>
-                            <MuiDropDownList
-                                required
-                                fullWidth
-                                placeholder="Product Model"
-                                url={`${ApiName}/get-product-model`}
-                                onChange={e => {
-                                    setInfo({ ...info, model_id: e.value });
-                                }}
-                                defaultValue={{ title: data.model_name, value: data.model_id }}
-                            />
-                        </FormControl>
-                    </Grid> */}
+                            <Grid item xs={12}>
+                                {/* <FormControl margin="dense" fullWidth>
+                                    <MuiDropDownList
+                                        fullWidth
+                                        placeholder="general.parent"
+                                        url={`${API_URL}menu/get-by-level?menuLevel=${dialogState.menuLevel}`}
+                                        onChange={e => {
+                                            setInfo({ ...info, menuName: e.value });
+                                        }}
+                                        defaultValue={{ title: info.menuName, value: info.menuId }}
+                                    />
+                                </FormControl> */}
+
+                                <Autocomplete
+                                    disablePortal
+                                    fullWidth
+                                    options={parentMenuArr}
+                                    renderInput={(params) => <TextField size='small' {...params} label={intl.formatMessage({ id: 'general.parent' })} />}
+                                />
+                            </Grid>
 
                         </Grid>
                     </Grid>
