@@ -102,7 +102,6 @@ const ModifyMenuDialog = (props) => {
                                     {intl.formatMessage({ id: 'general.level' })}
                                 </span>
                                 <Controller
-                                    rules={{ required: true }}
                                     control={control}
                                     name="menuLevel"
                                     render={({ field: { onChange, value } }) => {
