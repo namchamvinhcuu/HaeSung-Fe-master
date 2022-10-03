@@ -21,6 +21,9 @@
         "object_invalid": "Invalid object",
         "change_password_not_allowed": "Not allowed to change this user's password",
         "refresh_required": "Data has modified, refresh page to get the latest",
+        "confirm_create": "Confirm to create",
+        "confirm_modify": "Confirm to modify",
+        "confirm_delete": "Confirm to delete",
         "id": "Id",
         "code": "Code",
         "name": "Name",
@@ -56,7 +59,12 @@
         "standard_configuration_permission": "Permission",
         "duplicated_component": "Menu: duplicated component",
         "duplicated_navigateUrl": "Menu: duplicated navigate url",
-        "parent_not_found": "Menu: parent is not found/existed"
+        "parent_not_found": "Menu: parent is not found/existed",
+        "menuName_required": "Menu name is required",
+        "menuIcon_required": "Icon is required",
+        "menuComponent_required": "Component is required",
+        "navigateUrl_required": "Url is required",
+        "parentId_required": "Parent Menu is required"
     },
     "permission": {
         "existed": "Permission: existed"

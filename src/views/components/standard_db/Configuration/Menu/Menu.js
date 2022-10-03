@@ -11,6 +11,7 @@ import { MuiDataGrid, MuiButton } from '@controls'
 import { menuService } from '@services'
 
 import CreateMenuDialog from './CreateMenuDialog'
+import ModifyMenuDialog from './ModifyMenuDialog'
 
 const Menu = () => {
     const intl = useIntl();
@@ -42,16 +43,21 @@ const Menu = () => {
         totalRow: 0,
         page: 1,
         pageSize: 20,
-        selectedRowData: { ...initMenuModel },
-        isOpenCreateDialog: false,
         isOpenModifyDialog: false,
+        isOpenCreateDialog: false,
     });
 
-    const toggleCreateMenuDialog = async () => {
+    const [selectedRow, setSelectedRow] = useState({
+        ...initMenuModel
+    })
+
+    const [open, setopen] = useState(false)
+
+    const toggleCreateMenuDialog = () => {
         setMenuState({ ...menuState, isOpenCreateDialog: !menuState.isOpenCreateDialog });
     }
 
-    const toggleModifyMenuDialog = async (user) => {
+    const toggleModifyMenuDialog = () => {
         setMenuState({ ...menuState, isOpenModifyDialog: !menuState.isOpenModifyDialog });
     }
 
@@ -62,10 +68,10 @@ const Menu = () => {
             return item.menuId === arrIds[0]
         });
         if (selectedRow && selectedRow.length > 0) {
-            setMenuState({ ...menuState, selectedRowData: { ...selectedRow[0] } });
+            setSelectedRow({ ...selectedRow[0] });
         }
         else {
-            setMenuState({ ...menuState, selectedRowData: { ...initMenuModel } });
+            setSelectedRow({ ...initMenuModel });
         }
     }
 
@@ -110,18 +116,19 @@ const Menu = () => {
         fetchData();
     }, [menuState.page, menuState.pageSize]);
 
-    // const handleDeleteUser = async (user) => {
-    //     if (window.confirm("Delete the item?")) {
-    //         try {
-    //             let res = await userService.deleteUser(user.id);
-    //             if (res && res.errCode === 0) {
-    //                 await props.getUser();
-    //             }
-    //         } catch (error) {
-    //             console.log(error)
-    //         }
-    //     }
-    // }
+    const handleDeleteMenu = async (menu) => {
+        if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
+            try {
+                console.log('row', menu)
+                let res = await menuService.deleteMenu(menu);
+                if (res && res.HttpResponseCode === 200) {
+                    await fetchData();
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    }
 
     const columns = [
         { field: 'id', headerName: 'ID', hide: true },
@@ -143,7 +150,7 @@ const Menu = () => {
                                 color="warning"
                                 size="small"
                                 sx={[{ '&:hover': { border: '1px solid orange', }, }]}
-                            // onClick={() => toggleEditUserModal(params.row)}
+                                onClick={toggleModifyMenuDialog}
                             >
                                 <EditIcon fontSize="inherit" />
                             </IconButton>
@@ -155,7 +162,7 @@ const Menu = () => {
                                 color="error"
                                 size="small"
                                 sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                            // onClick={() => handleDeleteUser(params.row)}
+                                onClick={() => handleDeleteMenu(params.row)}
                             >
                                 <DeleteIcon fontSize="inherit" />
                             </IconButton>
@@ -220,6 +227,12 @@ const Menu = () => {
                 initModal={initMenuModel}
                 isOpen={menuState.isOpenCreateDialog}
                 onClose={toggleCreateMenuDialog}
+            />
+
+            <ModifyMenuDialog
+                initModal={selectedRow}
+                isOpen={menuState.isOpenModifyDialog}
+                onClose={toggleModifyMenuDialog}
             />
 
         </React.Fragment>

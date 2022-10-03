@@ -21,6 +21,9 @@
         "object_invalid": "Mẫu không hợp lệ",
         "change_password_not_allowed": "Không được phép thay đổi mật khẩu của tài khoản này",
         "refresh_required": "Dữ liệu đã thay đổi, làm mới trang để cập nhật thông tin mới nhất",
+        "confirm_create": "Xác nhận tạo mới",
+        "confirm_modify": "Xác nhận chỉnh sửa",
+        "confirm_delete": "Xác nhận xóa dữ liệu",
         "id": "Id",
         "code": "Mã",
         "name": "Tên",
@@ -56,7 +59,12 @@
         "standard_configuration_permission": "Phân quyền",
         "duplicated_component": "Menu: component đã được tạo",
         "duplicated_navigateUrl": "Menu: navigate url đã được tạo",
-        "parent_not_found": "Menu: không tồn tại menu cha"
+        "parent_not_found": "Menu: không tồn tại menu cha",
+        "menuName_required": "Tên menu không được để trống",
+        "menuIcon_required": "Biểu tượng menu không được để trống",
+        "menuComponent_required": "Thành phần không được để trống",
+        "navigateUrl_required": "Đường dẫn không được để trống",
+        "parentId_required": "Menu cha không được để trống"
     },
     "permission": {
         "existed": "Permission: đã được tạo"

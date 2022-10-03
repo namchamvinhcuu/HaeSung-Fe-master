@@ -11,18 +11,15 @@ import * as yup from 'yup'
 
 import { menuService } from '@services'
 
-const CreateMenuDialog = (props) => {
+const ModifyMenuDialog = (props) => {
+
     const intl = useIntl();
 
     const { initModal, isOpen, onClose } = props;
 
-    const [parentMenuArr, setParentMenuArr] = useState([]);
-
     const dataModalRef = useRef({ ...initModal });
-    const clearParent = useRef(null);
     const [dialogState, setDialogState] = useState({
         isSubmit: false,
-        menuLevel: 3,
     })
 
     const schema = yup.object().shape({
@@ -57,24 +54,13 @@ const CreateMenuDialog = (props) => {
         },
     });
 
-    const getParentMenus = async (menuLevel) => {
-        const res = await menuService.getParentMenus(menuLevel);
-        if (res.HttpResponseCode === 200 && res.Data) {
-            setParentMenuArr([...res.Data])
-        }
-        else {
-            setParentMenuArr([])
-        }
-    }
-
-    const handleCreateMenu = async (params) => {
-        const res = await menuService.createMenu(params);
-        // if (res.HttpResponseCode === 200 && res.Data) {
-        //     setParentMenuArr([...res.Data])
-        // }
-        // else {
-        //     setParentMenuArr([])
-        // }
+    const handleCloseDialog = () => {
+        reset();
+        clearErrors();
+        setDialogState({
+            ...dialogState,
+        })
+        onClose();
     }
 
     const handleReset = () => {
@@ -82,18 +68,7 @@ const CreateMenuDialog = (props) => {
         clearErrors();
         setDialogState({
             ...dialogState,
-            menuLevel: 3
         })
-    }
-
-    const handleCloseDialog = () => {
-        reset();
-        clearErrors();
-        setDialogState({
-            ...dialogState,
-            menuLevel: 3
-        })
-        onClose();
     }
 
     const onSubmit = async (data) => {
@@ -108,15 +83,10 @@ const CreateMenuDialog = (props) => {
         handleCloseDialog();
     };
 
-    useEffect(() => {
-        if (isOpen)
-            getParentMenus(dialogState.menuLevel);
-    }, [isOpen, dialogState.menuLevel, setDialogState])
-
     return (
         <MuiDialog
             maxWidth='sm'
-            title={intl.formatMessage({ id: 'general.create' })}
+            title={intl.formatMessage({ id: 'general.modify' })}
             isOpen={isOpen}
             disabledCloseBtn={dialogState.isSubmit}
             disable_animate={300}
@@ -327,4 +297,4 @@ const CreateMenuDialog = (props) => {
     )
 }
 
-export default CreateMenuDialog
+export default ModifyMenuDialog

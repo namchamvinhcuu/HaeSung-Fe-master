@@ -53,6 +53,8 @@ instance.interceptors.request.use((request) => {
             const isExpired = dayjs.unix(tokenDecode.exp).diff(dayjs()) < 1;
             if (!isExpired) {
                 request.headers.Authorization = `Bearer ${token}`;
+                request.headers['Accept'] = 'application/json';
+                request.headers['Content-Type'] = 'application/json';
                 return request;
             }
             else {
