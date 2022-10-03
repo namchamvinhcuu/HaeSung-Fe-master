@@ -1,13 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { FormattedMessage, useIntl } from 'react-intl'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
-import Button from '@mui/material/Button'
-import AddIcon from '@mui/icons-material/Add'
+import React, { useEffect, useRef, useState } from 'react'
+import { useIntl } from 'react-intl'
 
-import { MuiDataGrid, MuiButton } from '@controls'
+import { MuiButton, MuiDataGrid } from '@controls'
 import { menuService } from '@services'
 
 import CreateMenuDialog from './CreateMenuDialog'
@@ -223,17 +221,17 @@ const Menu = () => {
             // selectionModel={menuState.selectedRowData}
             />
 
-            <CreateMenuDialog
+            {menuState.isOpenCreateDialog && <CreateMenuDialog
                 initModal={initMenuModel}
                 isOpen={menuState.isOpenCreateDialog}
                 onClose={toggleCreateMenuDialog}
-            />
+            />}
 
-            <ModifyMenuDialog
+            {menuState.isOpenModifyDialog && <ModifyMenuDialog
                 initModal={selectedRow}
                 isOpen={menuState.isOpenModifyDialog}
                 onClose={toggleModifyMenuDialog}
-            />
+            />}
 
         </React.Fragment>
 

@@ -12,8 +12,6 @@ import {
 import { api_get, api_post, AlertSuccess, ErrorAlert, historyDashboard, firstLogin } from "@utils";
 
 const appendTab = (data) => {
-
-    console.log('data')
     return (dispatch, getState) => {
 
         dispatch({

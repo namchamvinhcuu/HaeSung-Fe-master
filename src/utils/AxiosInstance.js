@@ -38,6 +38,7 @@ export const isSuccessStatusCode = (s) => {
 let refreshtokenRequest = null;
 
 instance.interceptors.request.use((request) => {
+
     if (
         request.url.indexOf(`${API_URL}/api/login`) >= 0
         || request.url.indexOf(`${API_URL}/api/refreshtoken`) >= 0
@@ -46,9 +47,10 @@ instance.interceptors.request.use((request) => {
         return request;
     }
     else {
-
         let token = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
+
         if (token) {
+
             const tokenDecode = jwt_decode(token);
             const isExpired = dayjs.unix(tokenDecode.exp).diff(dayjs()) < 1;
             if (!isExpired) {
@@ -77,7 +79,7 @@ instance.interceptors.request.use((request) => {
                 }
                 else {
                     // ErrorAlert('You lost your authorization, please login again !');
-                    ErrorAlert(<FormattedMessage id="login.lost_authorization" />);
+                    // ErrorAlert(<FormattedMessage id="login.lost_authorization" />);
                     instance.Logout();
                     return request;
                 }
@@ -85,7 +87,8 @@ instance.interceptors.request.use((request) => {
 
         }
         else {
-            // WarnAlert('You lost your authorization, please login again !');
+            ErrorAlert('You lost your authorization, please login again !');
+            // ErrorAlert(<FormattedMessage id="login.lost_authorization" />);
             instance.Logout();
             return request;
         }

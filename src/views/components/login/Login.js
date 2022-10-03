@@ -29,7 +29,7 @@ import store from '@states/store'
 const theme = createTheme();
 
 const Login = (props) => {
-    // const intl = useIntl();
+    const intl = useIntl();
 
     const { language, changeLanguage, history } = props;
     const countries = [
@@ -45,7 +45,7 @@ const Login = (props) => {
 
     // const [languageSelected, setLanguageSelected] = useState(null)
 
-    const [errorMessages, setErrorMessages] = useState(null);
+    const [errorMessages, setErrorMessages] = useState('');
 
     const initModal = {
         // userName: 'root',
@@ -86,6 +86,7 @@ const Login = (props) => {
         setIsSubmit(true);
 
         const res = await loginService.handleLogin(dataModalRef.current.userName, dataModalRef.current.userPassword);
+        console.log('res', res)
         if (res && res.HttpResponseCode === 200) {
             RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
             RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
@@ -121,6 +122,7 @@ const Login = (props) => {
             }
         }
         else {
+            console.log('aaaaaa', res.ResponseMessage)
             setErrorMessages(res.ResponseMessage);
             setIsSubmit(false);
         }
@@ -286,12 +288,11 @@ const Login = (props) => {
                             </button>
 
                             {
-                                errorMessages ?
-                                    <p style={{ color: 'red', textAlign: 'center' }}>
-                                        <FormattedMessage id={errorMessages} />
-                                    </p>
-                                    :
-                                    <p></p>
+                                errorMessages &&
+                                <p style={{ color: 'red', textAlign: 'center' }}>
+                                    <FormattedMessage id={errorMessages} />
+                                    {/* errorMessages */}
+                                </p>
                             }
 
                         </Box>

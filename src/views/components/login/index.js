@@ -16,7 +16,7 @@ import { reduxForm } from "redux-form";
 
 import { api_download } from '@utils';
 
-import { userService } from '@services'
+import { loginService } from '@services'
 import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils'
 import * as ConfigConstants from '@constants/ConfigConstants'
 import store from '@states/store'
@@ -147,7 +147,8 @@ class Login extends Component {
         //     }));
         //   });
 
-        const res = await userService.handleLogin(model.username, model.password);
+        console.log(model.username, model.password)
+        const res = await loginService.handleLogin(model.username, model.password);
         if (res && res.HttpResponseCode === 200) {
           RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
           RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
@@ -183,7 +184,7 @@ class Login extends Component {
           }
         }
         else {
-
+          errorMessages.push(res.ResponseMessage)
         }
       }
     }
@@ -259,7 +260,6 @@ class Login extends Component {
                   id="username"
                   label={<FormattedMessage id='user.userName' />}
                   name="username"
-                  value={'root'}
                   autoComplete="username"
                   autoFocus
                 />
@@ -271,7 +271,7 @@ class Login extends Component {
                   fullWidth
                   name="password"
                   label={<FormattedMessage id='user.userPassword' />}
-                  value={'1234@'}
+
                   type="password"
                   id="password"
                   autoComplete="current-password"
@@ -321,7 +321,7 @@ class Login extends Component {
                   )}
                 </button>
 
-                {errorMessages.length ? (
+                {/* {errorMessages.length ? (
                   <>
                     {errorMessages.map((errorMessage, index) => {
                       return <p key={"login_error_" + index} style={{ color: "red" }}>{errorMessage}</p>;
@@ -329,7 +329,15 @@ class Login extends Component {
                   </>
                 ) : (
                   ""
-                )}
+                )} */}
+
+                {
+                  errorMessages &&
+                  <p style={{ color: 'red', textAlign: 'center' }}>
+                    <FormattedMessage id={errorMessages[0]} />
+                    {/* errorMessages */}
+                  </p>
+                }
 
               </Box>
 

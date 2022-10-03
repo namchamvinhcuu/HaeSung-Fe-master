@@ -1,6 +1,11 @@
 const GetLocalStorage = (name) => {
-    return JSON.parse(localStorage.getItem(name)) ?? null;
-    // return localStorage.getItem(name) ?? null;
+
+    if (localStorage.getItem(name) !== 'undefined') {
+
+        return JSON.parse(localStorage.getItem(name));
+    }
+
+    return null;
 };
 
 const SetLocalStorage = (name, value) => {

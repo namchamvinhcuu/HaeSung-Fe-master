@@ -48,6 +48,7 @@
     "dotenv": "^16.0.2",
     "font-awesome": "^4.7.0",
     "globalize": "^1.4.2",
+    "history": "4.10.1",
     "html2canvas": "^1.4.1",
     "i18next": "^21.8.16",
     "i18next-chained-backend": "^3.0.2",

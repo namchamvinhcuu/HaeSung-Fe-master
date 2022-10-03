@@ -9,7 +9,9 @@ const isAuthenticate = () => {
 
     // return true;
     let isAuthen = false;
-    const currentUser = JSON.parse(localStorage.getItem(ConfigConstants.CURRENT_USER));
+    let currentUser = null;
+    if (localStorage.getItem(ConfigConstants.CURRENT_USER))
+        currentUser = JSON.parse(localStorage.getItem(ConfigConstants.CURRENT_USER));
 
     if (currentUser) {
 

@@ -2,7 +2,8 @@ import DashBoard from "./dashBoard";
 import NavBar from "./dashBoard/navbar";
 import ChangeLanguage from './dashBoard/ChangeLanguage'
 
-import Login from "./login/Login";
+// import Login from "./login/Login";
+import Login from "./login";
 import LanguageSelect from "./login/LanguageSelect";
 
 import ContentBox from "./dashBoard/ContentBox";

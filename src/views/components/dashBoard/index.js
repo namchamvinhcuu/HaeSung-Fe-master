@@ -69,52 +69,52 @@ class DashBoard extends Component {
       });
       Treeview_slideMenu.init();
 
-      this.newConnection = new SignalR.HubConnectionBuilder()
-        .withUrl(
-          ConfigConstants.BASE_URL + `hubs/userhub`, {
-          accessTokenFactory: () => this.access_token,
-          skipNegotiation: true,
-          transport: SignalR.HttpTransportType.WebSockets
-        }
-        )
-        .configureLogging(SignalR.LogLevel.None)
-        .withAutomaticReconnect({
-          nextRetryDelayInMilliseconds: retryContext => {
-            //lien tuc reconnect  moi lan trong khoang 5-20s
-            return 5000 + (Math.random() * 15000);
-          }
-        })
-        .build();
+      // this.newConnection = new SignalR.HubConnectionBuilder()
+      //   .withUrl(
+      //     ConfigConstants.BASE_URL + `hubs/userhub`, {
+      //     accessTokenFactory: () => this.access_token,
+      //     skipNegotiation: true,
+      //     transport: SignalR.HttpTransportType.WebSockets
+      //   }
+      //   )
+      //   .configureLogging(SignalR.LogLevel.None)
+      //   .withAutomaticReconnect({
+      //     nextRetryDelayInMilliseconds: retryContext => {
+      //       //lien tuc reconnect  moi lan trong khoang 5-20s
+      //       return 5000 + (Math.random() * 15000);
+      //     }
+      //   })
+      //   .build();
 
-      await this.newConnection.start();
-      console.log("websocket is connected to server")
+      // await this.newConnection.start();
+      // console.log("websocket is connected to server")
 
-      this.newConnection.onreconnected(() => {
-        //lay thong tin tu server
-        console.log('reconnected to server');
-        api_get(`sysNotice/get_notify_user`, {}).then(res => {
-          const { updatenotify } = this.props;
-          updatenotify(res.notifies, res.total_Notification);
-          console.log('messages user updated.');
-        });
-      });
+      // this.newConnection.onreconnected(() => {
+      //   //lay thong tin tu server
+      //   console.log('reconnected to server');
+      //   api_get(`sysNotice/get_notify_user`, {}).then(res => {
+      //     const { updatenotify } = this.props;
+      //     updatenotify(res.notifies, res.total_Notification);
+      //     console.log('messages user updated.');
+      //   });
+      // });
 
-      this.newConnection.onclose(() => {
-        console.log('websocket closed');
-      });
+      // this.newConnection.onclose(() => {
+      //   console.log('websocket closed');
+      // });
 
-      this.newConnection.on('AppendNotice', (res) => {
-        // console.log(res)
-        // const {data, ...others}= res;
-        store.dispatch({
-          type: 'Dashboard/APPEND_NOTIFY',
-          data: [res]
-        });
+      // this.newConnection.on('AppendNotice', (res) => {
+      //   // console.log(res)
+      //   // const {data, ...others}= res;
+      //   store.dispatch({
+      //     type: 'Dashboard/APPEND_NOTIFY',
+      //     data: [res]
+      //   });
 
-        // if (messObj.typestring=="notifyupload") {
-        //   eventBus.dispatch("new_file_uploaded", messObj.data);
-        // }  
-      });
+      //   // if (messObj.typestring=="notifyupload") {
+      //   //   eventBus.dispatch("new_file_uploaded", messObj.data);
+      //   // }  
+      // });
 
     })();
   }

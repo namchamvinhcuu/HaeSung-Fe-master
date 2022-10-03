@@ -1,11 +1,11 @@
 import { axios } from '@utils'
 
 const handleLogin = async (userName, userPassword) => {
-    return axios.post('/api/login', { userName, userPassword });
+    return await axios.post('/api/login', { userName, userPassword });
 }
 
 const getUserInfo = async () => {
-    return axios.get('/api/login/getUserInfo');
+    return await axios.get('/api/login/getUserInfo');
 }
 
 export {
