@@ -17,6 +17,8 @@ const ModifyMenuDialog = (props) => {
 
     const { initModal, isOpen, onClose } = props;
 
+    console.log(initModal)
+
     const dataModalRef = useRef({ ...initModal });
     const [dialogState, setDialogState] = useState({
         isSubmit: false,

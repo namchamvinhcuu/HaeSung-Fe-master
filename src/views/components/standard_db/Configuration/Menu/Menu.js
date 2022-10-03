@@ -220,7 +220,7 @@ const Menu = () => {
                 onSelectionModelChange={(newSelectedRowId) => {
                     handleRowSelection(newSelectedRowId)
                 }}
-                selectionModel={menuState.selectedRowData}
+            // selectionModel={menuState.selectedRowData}
             />
 
             <CreateMenuDialog
