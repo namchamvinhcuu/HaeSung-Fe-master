@@ -99,19 +99,17 @@ const CreateMenuDialog = (props) => {
     const onSubmit = async (data) => {
         dataModalRef.current = { ...initModal, ...data, sortOrder: 0 };
         setDialogState({ ...dialogState, isSubmit: true });
-        console.log(dataModalRef.current)
 
         await handleCreateMenu(dataModalRef.current);
         setDialogState({ ...dialogState, isSubmit: false });
         handleReset();
-
         handleCloseDialog();
     };
 
     useEffect(() => {
         if (isOpen)
             getParentMenus(dialogState.menuLevel);
-    }, [isOpen, dialogState.menuLevel, setDialogState])
+    }, [isOpen, dialogState.menuLevel])
 
     return (
         <MuiDialog
