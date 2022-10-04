@@ -11,6 +11,7 @@ import { menuService } from '@services'
 import CreateMenuDialog from './CreateMenuDialog'
 import ModifyMenuDialog from './ModifyMenuDialog'
 
+
 const Menu = () => {
     const intl = useIntl();
     let isRendered = useRef(false);
@@ -40,7 +41,7 @@ const Menu = () => {
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 20,
+        pageSize: 5,
         isOpenModifyDialog: false,
         isOpenCreateDialog: false,
     });
@@ -48,6 +49,8 @@ const Menu = () => {
     const [selectedRow, setSelectedRow] = useState({
         ...initMenuModel
     })
+
+    const [newData, setNewData] = useState({ ...initMenuModel })
 
     const [open, setopen] = useState(false)
 
@@ -114,10 +117,23 @@ const Menu = () => {
         fetchData();
     }, [menuState.page, menuState.pageSize]);
 
+    useEffect(() => {
+
+        const data = [newData, ...menuState.data]
+
+        console.log('data', data)
+        console.log('newData', newData)
+
+        setMenuState({
+            ...menuState
+            , data: [...data]
+            , totalRow: menuState.totalRow + 1
+        });
+    }, [newData]);
+
     const handleDeleteMenu = async (menu) => {
         if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
             try {
-                console.log('row', menu)
                 let res = await menuService.deleteMenu(menu);
                 if (res && res.HttpResponseCode === 200) {
                     await fetchData();
@@ -206,7 +222,7 @@ const Menu = () => {
                 page={menuState.page - 1}
                 pageSize={menuState.pageSize}
                 rowCount={menuState.totalRow}
-                rowsPerPageOptions={[20, 30, 50]}
+                rowsPerPageOptions={[5, 10, 20]}
 
                 onPageChange={(newPage) => {
                     setMenuState({ ...menuState, page: newPage + 1 });
@@ -223,6 +239,7 @@ const Menu = () => {
 
             {menuState.isOpenCreateDialog && <CreateMenuDialog
                 initModal={initMenuModel}
+                setNewData={setNewData}
                 isOpen={menuState.isOpenCreateDialog}
                 onClose={toggleCreateMenuDialog}
             />}

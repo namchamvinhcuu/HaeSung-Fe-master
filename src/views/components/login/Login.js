@@ -102,8 +102,6 @@ const Login = (props) => {
 
             const returnData = await loginService.getUserInfo();
 
-            console.log('returnData', returnData)
-
             if (returnData.HttpResponseCode === 200) {
                 store.dispatch({
                     type: 'Dashboard/USER_LOGIN',
@@ -150,12 +148,6 @@ const Login = (props) => {
     // useLayoutEffect(() => {
     //     setLanguageSelected(language);
     // }, []);
-
-    useEffect(() => {
-        console.log(errorMessages, 'kk')
-        /// setLanguageSelected(language);
-    }, []);
-
 
     return (
         <ThemeProvider theme={theme}>

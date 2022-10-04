@@ -156,18 +156,18 @@ const buildTreeMenu = (
 
           // console.log('routers', routers)
 
-          // if (item.isShowDefault === true && !Component_Show_Default.cmp) {
-          //   Component_Show_Default.cmp = ComponentWrapper(
-          //     item.menuName,
-          //     item.menuName,
-          //     item.menuId,
-          //     item.menuComponent,
-          //     item.navigateUrl,
-          //     item.menuName,
-          //     AllContainers[item.menuComponent] || AllComponents[item.menuComponent],
-          //     [...breadcrumb_array]
-          //   );
-          // }
+          if (item.isShowDefault === true && !Component_Show_Default.cmp) {
+            Component_Show_Default.cmp = ComponentWrapper(
+              item.menuName,
+              item.menuName,
+              item.menuId,
+              item.menuComponent,
+              item.navigateUrl,
+              item.menuName,
+              AllContainers[item.menuComponent] || AllComponents[item.menuComponent],
+              [...breadcrumb_array]
+            );
+          }
 
           breadcrumb_array.pop();
 

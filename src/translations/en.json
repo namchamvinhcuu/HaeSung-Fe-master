@@ -64,7 +64,8 @@
         "menuIcon_required": "Icon is required",
         "menuComponent_required": "Component is required",
         "navigateUrl_required": "Url is required",
-        "parentId_required": "Parent Menu is required"
+        "parentId_required": "Parent Menu is required",
+        "not_found": "Menu: not found"
     },
     "permission": {
         "existed": "Permission: existed"

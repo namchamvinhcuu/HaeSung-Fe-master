@@ -64,7 +64,8 @@
         "menuIcon_required": "Biểu tượng menu không được để trống",
         "menuComponent_required": "Thành phần không được để trống",
         "navigateUrl_required": "Đường dẫn không được để trống",
-        "parentId_required": "Menu cha không được để trống"
+        "parentId_required": "Menu cha không được để trống",
+        "not_found": "Menu: không tồn tại"
     },
     "permission": {
         "existed": "Permission: đã được tạo"

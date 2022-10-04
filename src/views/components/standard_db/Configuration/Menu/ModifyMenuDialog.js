@@ -17,12 +17,15 @@ const ModifyMenuDialog = (props) => {
 
     const { initModal, isOpen, onClose } = props;
 
-    console.log(initModal)
+    const clearParent = useRef(null);
 
     const dataModalRef = useRef({ ...initModal });
     const [dialogState, setDialogState] = useState({
+        ...initModal,
         isSubmit: false,
     })
+
+    const [parentMenuArr, setParentMenuArr] = useState([]);
 
     const schema = yup.object().shape({
         menuName: yup.string().required(intl.formatMessage({ id: 'menu.menuName_required' })),
@@ -36,25 +39,25 @@ const ModifyMenuDialog = (props) => {
                         .required(intl.formatMessage({ id: 'menu.navigateUrl_required' }))
                 }
             }),
-        parentId: yup.string().nullable()
-            .when("menuLevel", (menuLevel) => {
-                if (parseInt(menuLevel) > 1) {
-                    return yup.number()
-                        .required()
-                        .typeError(intl.formatMessage({ id: 'menu.parentId_required' }))
-                }
-            }),
     });
     const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
         mode: 'onChange',
         resolver: yupResolver(schema),
         defaultValues: {
             ...initModal,
-            menuLevel: 3,
-            parentId: initModal.menuId
 
         },
     });
+
+    const getParentMenus = async (menuLevel) => {
+        const res = await menuService.getParentMenus(menuLevel);
+        if (res.HttpResponseCode === 200 && res.Data) {
+            setParentMenuArr([...res.Data])
+        }
+        else {
+            setParentMenuArr([])
+        }
+    }
 
     const handleCloseDialog = () => {
         reset();
@@ -73,17 +76,31 @@ const ModifyMenuDialog = (props) => {
         })
     }
 
+    const handleModifyMenu = async (params) => {
+        const res = await menuService.modifyMenu(params);
+        // if (res.HttpResponseCode === 200 && res.Data) {
+        //     setParentMenuArr([...res.Data])
+        // }
+        // else {
+        //     setParentMenuArr([])
+        // }
+    }
+
     const onSubmit = async (data) => {
-        dataModalRef.current = { ...initModal, ...data, sortOrder: 0 };
+        dataModalRef.current = { ...initModal, ...data };
         setDialogState({ ...dialogState, isSubmit: true });
-        console.log(dataModalRef.current)
 
-        await handleCreateMenu(dataModalRef.current);
+        await handleModifyMenu(dataModalRef.current);
         setDialogState({ ...dialogState, isSubmit: false });
-        handleReset();
+        // handleReset();
 
-        handleCloseDialog();
+        // handleCloseDialog();
     };
+
+    useEffect(() => {
+        if (isOpen)
+            getParentMenus(dialogState.menuLevel);
+    }, [isOpen, dialogState.menuLevel])
 
     return (
         <MuiDialog
@@ -119,68 +136,16 @@ const ModifyMenuDialog = (props) => {
                                                     const ele = clearParent.current.getElementsByClassName('MuiAutocomplete-clearIndicator')[0];
                                                     if (ele) ele.click();
                                                 }}
+
                                             >
-                                                <FormControlLabel value={1} control={<Radio size="small" />} label="1" />
-                                                <FormControlLabel value={2} control={<Radio size="small" />} label="2" />
-                                                <FormControlLabel value={3} control={<Radio size="small" />} label="3" />
+                                                <FormControlLabel disabled value={1} control={<Radio size="small" />} label="1" />
+                                                <FormControlLabel disabled value={2} control={<Radio size="small" />} label="2" />
+                                                <FormControlLabel disabled value={3} control={<Radio size="small" />} label="3" />
                                             </RadioGroup>
                                         );
                                     }}
                                 />
                             </Grid>
-                            <Grid item xs={6}>
-                                {dialogState.menuLevel > 1
-                                    && <Controller
-                                        control={control}
-                                        name="parentId"
-                                        render={({ field: { onChange, value } }) => {
-                                            return (
-                                                <Autocomplete
-                                                    // multiple
-                                                    // disablePortal
-                                                    ref={clearParent}
-                                                    fullWidth
-                                                    size='small'
-                                                    options={parentMenuArr}
-                                                    autoHighlight
-                                                    openOnFocus
-                                                    getOptionLabel={option => option.menuName}
-                                                    // value={value => {
-                                                    //     parentMenuArr.forEach(element => {
-                                                    //         if (element.menuId === value) {
-                                                    //             return element.menuName
-                                                    //         }
-                                                    //     })
-                                                    // }}
-                                                    // getOptionSelected={(option, value) =>
-                                                    //     value === undefined || value === "" || option.menuId === value.menuId
-                                                    // }
-                                                    defaultValue={initModal}
-                                                    onChange={(e, item) => {
-
-                                                        if (item) {
-                                                            onChange(item.menuId ?? '');
-                                                        }
-                                                        else {
-                                                            onChange('')
-                                                        }
-                                                    }}
-                                                    renderInput={(params) => {
-                                                        return <TextField
-                                                            {...params}
-                                                            label={intl.formatMessage({ id: 'general.parent' })}
-                                                            variant="outlined"
-                                                            error={!!errors.parentId}
-                                                            helperText={errors?.parentId ? errors.parentId.message : null}
-                                                        />
-                                                    }}
-                                                />
-                                            );
-                                        }}
-                                    />
-                                }
-                            </Grid>
-
                         </Grid>
                     </Grid>
 

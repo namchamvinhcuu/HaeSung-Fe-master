@@ -10,11 +10,12 @@ import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 
 import { menuService } from '@services'
+import { ErrorAlert, SuccessAlert } from '@utils'
 
 const CreateMenuDialog = (props) => {
     const intl = useIntl();
 
-    const { initModal, isOpen, onClose } = props;
+    const { initModal, isOpen, onClose, setNewData } = props;
 
     const [parentMenuArr, setParentMenuArr] = useState([]);
 
@@ -68,13 +69,8 @@ const CreateMenuDialog = (props) => {
     }
 
     const handleCreateMenu = async (params) => {
-        const res = await menuService.createMenu(params);
-        // if (res.HttpResponseCode === 200 && res.Data) {
-        //     setParentMenuArr([...res.Data])
-        // }
-        // else {
-        //     setParentMenuArr([])
-        // }
+        return await menuService.createMenu(params);
+
     }
 
     const handleReset = () => {
@@ -100,10 +96,20 @@ const CreateMenuDialog = (props) => {
         dataModalRef.current = { ...initModal, ...data, sortOrder: 0 };
         setDialogState({ ...dialogState, isSubmit: true });
 
-        await handleCreateMenu(dataModalRef.current);
-        setDialogState({ ...dialogState, isSubmit: false });
-        handleReset();
-        handleCloseDialog();
+        const res = await handleCreateMenu(dataModalRef.current);
+
+        console.log(res)
+        if (res.HttpResponseCode === 200 && res.Data) {
+            setNewData({ ...res.Data });
+            setDialogState({ ...dialogState, isSubmit: false });
+            handleReset();
+            // handleCloseDialog();
+            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        }
+        else {
+            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        }
+
     };
 
     useEffect(() => {
