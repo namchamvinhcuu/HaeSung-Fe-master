@@ -56,7 +56,7 @@ ReactDOM.render(
     <I18nextProvider i18n={i18n}>
         <Provider store={store}>
             <IntlProviderWrapper>
-                {/* <CustomRouter history={historyApp}>
+                {/* <CustomRouter history={historyApp} persistor={persistor}>
                     <Switch>
                         <Route
                             exact

@@ -1,11 +1,21 @@
 import { axios } from '@utils'
 
 const handleLogin = async (userName, userPassword) => {
-    return await axios.post('/api/login', { userName, userPassword });
+    try {
+        return await axios.post('/api/login/checklogin', { userName, userPassword });
+
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
 }
 
 const getUserInfo = async () => {
-    return await axios.get('/api/login/getUserInfo');
+    try {
+        return await axios.get('/api/login/getUserInfo');
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+
 }
 
 export {

@@ -81,6 +81,8 @@ class NavBar extends Component {
 
   signOut = (e) => {
     e.preventDefault();
+    const { deleteAll } = this.props
+    deleteAll();
     historyApp.push("/logout")
     // window.location.reload(true);
   }

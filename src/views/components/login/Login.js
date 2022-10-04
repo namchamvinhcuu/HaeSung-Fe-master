@@ -21,6 +21,7 @@ import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import { FormattedMessage, useIntl } from 'react-intl'
 
+import { ErrorAlert, SuccessAlert } from '@utils'
 import { loginService } from '@services'
 import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils'
 import * as ConfigConstants from '@constants/ConfigConstants'
@@ -30,6 +31,7 @@ const theme = createTheme();
 
 const Login = (props) => {
     const intl = useIntl();
+    let isRendered = useRef(false);
 
     const { language, changeLanguage, history } = props;
     const countries = [
@@ -45,13 +47,14 @@ const Login = (props) => {
 
     // const [languageSelected, setLanguageSelected] = useState(null)
 
-    const [errorMessages, setErrorMessages] = useState('');
+    const [errorMessages, setErrorMessages] = useState(null);
+
 
     const initModal = {
-        // userName: 'root',
-        // userPassword: '1234@',
-        userName: '',
-        userPassword: '',
+        userName: 'root',
+        userPassword: '1234@',
+        // userName: '',
+        // userPassword: '',
     }
     const {
         values,
@@ -75,36 +78,41 @@ const Login = (props) => {
     const schema = yup.object().shape({
         userName: yup.string().required(<FormattedMessage id="login.userName_required" />),
         userPassword: yup.string().required(<FormattedMessage id="login.userPassword_required" />),
+
+        // userName: yup.string().required(intl.formatMessage({ id: 'login.userName_required' })),
+        // userPassword: yup.string().required(intl.formatMessage({ id: 'login.userPassword_required' })),
     });
     const { register, formState: { errors }, handleSubmit, clearErrors } = useForm({
         mode: 'onChange',
-        resolver: yupResolver(schema)
+        resolver: yupResolver(schema),
+        defaultValues: { ...initModal }
     });
 
-    const onSubmit = async (data) => {
-        dataModalRef.current = { ...initModal, ...data };
-        setIsSubmit(true);
+    const submitFormLogin = async (data) => {
 
-        const res = await loginService.handleLogin(dataModalRef.current.userName, dataModalRef.current.userPassword);
-        console.log('res', res)
+        RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
+        RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
+        RemoveLocalStorage(ConfigConstants.CURRENT_USER);
+
+        const res = await loginService.handleLogin(data.userName, data.userPassword);
         if (res && res.HttpResponseCode === 200) {
-            RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
-            RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
 
             SetLocalStorage(ConfigConstants.TOKEN_ACCESS, res.Data.accessToken);
             SetLocalStorage(ConfigConstants.TOKEN_REFRESH, res.Data.refreshToken);
 
             const returnData = await loginService.getUserInfo();
+
+            console.log('returnData', returnData)
+
             if (returnData.HttpResponseCode === 200) {
                 store.dispatch({
                     type: 'Dashboard/USER_LOGIN',
                 });
 
-                RemoveLocalStorage(ConfigConstants.CURRENT_USER);
                 SetLocalStorage(ConfigConstants.CURRENT_USER, returnData.Data)
 
                 setIsSubmit(false);
-                setValues(initModal);
+                // setValues(initModal);
                 clearErrors();
 
                 let routername = history.urlreturn;
@@ -117,15 +125,17 @@ const Login = (props) => {
 
             }
             else {
-                setErrorMessages(res.ResponseMessage);
+                // setErrorMessages(res.ResponseMessage);
+                // errorMessages.push(res.ResponseMessage)
+                ErrorAlert('You lost your authorization, please login again !');
                 setIsSubmit(false);
             }
         }
         else {
-            console.log('aaaaaa', res.ResponseMessage)
             setErrorMessages(res.ResponseMessage);
             setIsSubmit(false);
         }
+
     };
 
     const setDefaultLanguage = () => {
@@ -141,15 +151,17 @@ const Login = (props) => {
     //     setLanguageSelected(language);
     // }, []);
 
-    // useEffect(() => {
-    //     setLanguageSelected(language);
-    // }, [language]);
+    useEffect(() => {
+        console.log(errorMessages, 'kk')
+        /// setLanguageSelected(language);
+    }, []);
+
 
     return (
         <ThemeProvider theme={theme}>
             <Grid container component="main" sx={{ height: "100vh" }}>
 
-                <CssBaseline />
+                {/* <CssBaseline /> */}
 
                 <Grid
                     item
@@ -199,103 +211,109 @@ const Login = (props) => {
                             <FormattedMessage id='general.signin' />
                         </Typography>
 
-                        <Box
-                            component="form"
-                            onSubmit={handleSubmit(onSubmit)}
-                            sx={{ mt: 1 }}
-                        >
-                            <TextField
-                                sx={{ backgroundColor: '#E8F0FE' }}
-                                autoFocus
-                                // required
-                                fullWidth
-                                label={<FormattedMessage id='user.userName' />}
-                                name="userName"
-                                value={values.userName}
-                                {...register('userName', {
-                                    onChange: (e) => handleInputChange(e)
-                                })}
-                                error={!!errors?.userName}
-                                helperText={errors?.userName ? errors.userName.message : null}
-                            />
-                            <TextField
-                                sx={{ backgroundColor: '#E8F0FE' }}
-                                margin="normal"
-                                // required
-                                fullWidth
-                                name="userPassword"
-                                type={showPassword ? 'text' : 'password'}
-                                label={<FormattedMessage id='user.userPassword' />}
-                                value={values.userPassword}
-                                {...register('userPassword', {
-                                    onChange: (e) => handleInputChange(e)
-                                })}
-                                error={!!errors?.userPassword}
-                                helperText={errors?.userPassword ? errors.userPassword.message : null}
-                                InputProps={{ // <-- This is where the toggle button is added.
-                                    endAdornment: (
-                                        <InputAdornment position='end'>
-                                            <IconButton
-                                                aria-label='toggle password visibility'
-                                                onClick={handleClickShowPassword}
-                                                onMouseDown={handleMouseDownPassword}
-                                            >
-                                                {showPassword ? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    )
-                                }}
-                            />
+                        <form onSubmit={handleSubmit(submitFormLogin)}>
+                            {/* <form onSubmit={(ev) => {
+                            // ev.preventDefault()
+                            handleSubmit(async (data, ev) => await submitFormLogin(data, ev))
+                        }}> */}
+                            <Box
 
-                            <Autocomplete
-                                disablePortal
-                                freeSolo
-                                autoHighlight
-                                options={countries}
-                                sx={{ mt: 1, backgroundColor: '#E8F0FE' }}
-                                defaultValue={setDefaultLanguage}
-                                onChange={(event, newValue) => {
-                                    changeLanguage(newValue.code === "VI" ? "VI" : "EN");
-                                }}
-                                renderOption={(props, option) => (
-                                    <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                                        {
-                                            option.code === "EN" ?
-                                                <i className="flag-icon flag-icon-us mr-2"></i>
-                                                : <i className="flag-icon flag-icon-vi mr-2"></i>
-                                        }
-                                        {option.title}
-                                    </Box>
-                                )}
-                                getOptionLabel={(option) => option.title}
-                                renderInput={(params) => <TextField {...params} label={<FormattedMessage id="general.select_language" />} />}
-                            />
-
-                            <button
-                                disabled={isSubmit}
-                                style={{ width: "100%", marginTop: "25px" }}
-                                type="submit"
-                                className="btn btn-primary"
+                                sx={{ mt: 1 }}
                             >
-                                <FormattedMessage id='general.signin' />
-                                {isSubmit && (
-                                    <span
-                                        className="spinner-border spinner-border-sm mx-3"
-                                        role="status"
-                                        aria-hidden="true"
-                                    ></span>
-                                )}
-                            </button>
+                                <TextField
+                                    sx={{ backgroundColor: '#E8F0FE' }}
+                                    autoFocus
+                                    // required
+                                    fullWidth
+                                    label={<FormattedMessage id='user.userName' />}
+                                    name="userName"
+                                    {...register('userName', {
+                                        // onChange: (e) => handleInputChange(e)
+                                    })}
+                                    error={!!errors?.userName}
+                                    helperText={errors?.userName ? errors.userName.message : null}
+                                />
+                                <TextField
+                                    sx={{ backgroundColor: '#E8F0FE' }}
+                                    margin="normal"
+                                    // required
+                                    fullWidth
+                                    name="userPassword"
+                                    type={showPassword ? 'text' : 'password'}
+                                    label={<FormattedMessage id='user.userPassword' />}
+                                    {...register('userPassword', {
+                                        // onChange: (e) => handleInputChange(e)
+                                    })}
+                                    error={!!errors?.userPassword}
+                                    helperText={errors?.userPassword ? errors.userPassword.message : null}
+                                    InputProps={{ // <-- This is where the toggle button is added.
+                                        endAdornment: (
+                                            <InputAdornment position='end'>
+                                                <IconButton
+                                                    aria-label='toggle password visibility'
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                >
+                                                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }}
+                                />
 
-                            {
-                                errorMessages &&
+                                <Autocomplete
+                                    disablePortal
+                                    freeSolo
+                                    autoHighlight
+                                    options={countries}
+                                    sx={{ mt: 1, backgroundColor: '#E8F0FE' }}
+                                    defaultValue={setDefaultLanguage}
+                                    onChange={(event, newValue) => {
+                                        changeLanguage(newValue.code === "VI" ? "VI" : "EN");
+                                    }}
+                                    renderOption={(props, option) => (
+                                        <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                                            {
+                                                option.code === "EN" ?
+                                                    <i className="flag-icon flag-icon-us mr-2"></i>
+                                                    : <i className="flag-icon flag-icon-vi mr-2"></i>
+                                            }
+                                            {option.title}
+                                        </Box>
+                                    )}
+                                    getOptionLabel={(option) => option.title}
+                                    renderInput={(params) => <TextField {...params} label={<FormattedMessage id="general.select_language" />} />}
+                                />
+
+                                <button
+                                    disabled={isSubmit}
+                                    style={{ width: "100%", marginTop: "25px" }}
+                                    type="submit"
+                                    className="btn btn-primary"
+                                >
+                                    {<FormattedMessage id='general.signin' />}
+                                    {isSubmit && (
+                                        <span
+                                            className="spinner-border spinner-border-sm mx-3"
+                                            role="status"
+                                            aria-hidden="true"
+                                        ></span>
+                                    )}
+                                </button>
+
+
+
+                            </Box>
+                        </form>
+
+                        {errorMessages
+                            &&
+                            (
                                 <p style={{ color: 'red', textAlign: 'center' }}>
-                                    <FormattedMessage id={errorMessages} />
-                                    {/* errorMessages */}
+                                    {<FormattedMessage id={errorMessages} />}
                                 </p>
-                            }
-
-                        </Box>
+                            )
+                        }
                     </Box>
                 </Grid>
             </Grid>

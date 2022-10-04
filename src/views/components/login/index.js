@@ -89,8 +89,8 @@ class Login extends Component {
 
     const model = MapFormToModelData(e.target);
     if (model) {
-      const errorMessages = [];
 
+      const errorMessages = [];
       if (model.username === "" || !HasValue(model.username)) {
         errorMessages.push("Bạn chưa nhập tên đăng nhập");
         this.username.current.focus();
@@ -147,7 +147,6 @@ class Login extends Component {
         //     }));
         //   });
 
-        console.log(model.username, model.password)
         const res = await loginService.handleLogin(model.username, model.password);
         if (res && res.HttpResponseCode === 200) {
           RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
@@ -156,7 +155,7 @@ class Login extends Component {
           SetLocalStorage(ConfigConstants.TOKEN_ACCESS, res.Data.accessToken);
           SetLocalStorage(ConfigConstants.TOKEN_REFRESH, res.Data.refreshToken);
 
-          const returnData = await userService.getUserInfo();
+          const returnData = await loginService.getUserInfo();
           if (returnData.HttpResponseCode === 200) {
             store.dispatch({
               type: 'Dashboard/USER_LOGIN',
@@ -184,7 +183,13 @@ class Login extends Component {
           }
         }
         else {
+
           errorMessages.push(res.ResponseMessage)
+          this.setState((previousState) => ({
+            ...previousState,
+            errorMessages: errorMessages,
+            isLoading: false,
+          }));
         }
       }
     }
@@ -332,11 +337,14 @@ class Login extends Component {
                 )} */}
 
                 {
-                  errorMessages &&
-                  <p style={{ color: 'red', textAlign: 'center' }}>
-                    <FormattedMessage id={errorMessages[0]} />
-                    {/* errorMessages */}
-                  </p>
+                  errorMessages.length
+                    ?
+
+                    (<p style={{ color: 'red', textAlign: 'center' }}>
+                      {<FormattedMessage id='login.account_password_invalid' />}
+                    </p>)
+                    :
+                    (<p></p>)
                 }
 
               </Box>

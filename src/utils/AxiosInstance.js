@@ -16,6 +16,9 @@ const instance = axios.create({
     // baseURL: 'http://localhost:8080',
     baseURL: API_URL,
     timeout: 10 * 1000,
+    headers: {
+        'Content-Type': 'application/json',
+    },
     // withCredentials: true
 });
 
@@ -40,23 +43,21 @@ let refreshtokenRequest = null;
 instance.interceptors.request.use((request) => {
 
     if (
-        request.url.indexOf(`${API_URL}/api/login`) >= 0
-        || request.url.indexOf(`${API_URL}/api/refreshtoken`) >= 0
-        || request.url.indexOf(`${API_URL}/api/logout`) >= 0
+        request.url.indexOf(`/api/login/checklogin`) >= 0
+        || request.url.indexOf(`/api/refreshtoken`) >= 0
+        || request.url.indexOf(`/api/logout`) >= 0
     ) {
         return request;
     }
     else {
         let token = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
-
+        console.log('hihi')
         if (token) {
 
             const tokenDecode = jwt_decode(token);
             const isExpired = dayjs.unix(tokenDecode.exp).diff(dayjs()) < 1;
             if (!isExpired) {
                 request.headers.Authorization = `Bearer ${token}`;
-                request.headers['Accept'] = 'application/json';
-                request.headers['Content-Type'] = 'application/json';
                 return request;
             }
             else {
