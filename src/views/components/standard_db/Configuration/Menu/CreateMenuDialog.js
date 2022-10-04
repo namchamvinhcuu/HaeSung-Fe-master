@@ -68,10 +68,10 @@ const CreateMenuDialog = (props) => {
         }
     }
 
-    const handleCreateMenu = async (params) => {
-        return await menuService.createMenu(params);
+    // const handleCreateMenu = async (params) => {
+    //     return await menuService.createMenu(params);
 
-    }
+    // }
 
     const handleReset = () => {
         reset();
@@ -96,15 +96,14 @@ const CreateMenuDialog = (props) => {
         dataModalRef.current = { ...initModal, ...data, sortOrder: 0 };
         setDialogState({ ...dialogState, isSubmit: true });
 
-        const res = await handleCreateMenu(dataModalRef.current);
+        const res = await menuService.createMenu(dataModalRef.current);
 
-        console.log(res)
         if (res.HttpResponseCode === 200 && res.Data) {
+            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
             setNewData({ ...res.Data });
             setDialogState({ ...dialogState, isSubmit: false });
             handleReset();
-            // handleCloseDialog();
-            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+            handleCloseDialog();
         }
         else {
             ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -202,7 +201,6 @@ const CreateMenuDialog = (props) => {
                                                         return <TextField
                                                             {...params}
                                                             label={intl.formatMessage({ id: 'general.parent' })}
-                                                            variant="outlined"
                                                             error={!!errors.parentId}
                                                             helperText={errors?.parentId ? errors.parentId.message : null}
                                                         />

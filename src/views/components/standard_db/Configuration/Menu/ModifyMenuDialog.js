@@ -15,7 +15,7 @@ const ModifyMenuDialog = (props) => {
 
     const intl = useIntl();
 
-    const { initModal, isOpen, onClose } = props;
+    const { initModal, isOpen, onClose, setModifyData } = props;
 
     const clearParent = useRef(null);
 
@@ -25,7 +25,7 @@ const ModifyMenuDialog = (props) => {
         isSubmit: false,
     })
 
-    const [parentMenuArr, setParentMenuArr] = useState([]);
+    // const [parentMenuArr, setParentMenuArr] = useState([]);
 
     const schema = yup.object().shape({
         menuName: yup.string().required(intl.formatMessage({ id: 'menu.menuName_required' })),
@@ -49,15 +49,15 @@ const ModifyMenuDialog = (props) => {
         },
     });
 
-    const getParentMenus = async (menuLevel) => {
-        const res = await menuService.getParentMenus(menuLevel);
-        if (res.HttpResponseCode === 200 && res.Data) {
-            setParentMenuArr([...res.Data])
-        }
-        else {
-            setParentMenuArr([])
-        }
-    }
+    // const getParentMenus = async (menuLevel) => {
+    //     const res = await menuService.getParentMenus(menuLevel);
+    //     if (res.HttpResponseCode === 200 && res.Data) {
+    //         setParentMenuArr([...res.Data])
+    //     }
+    //     else {
+    //         setParentMenuArr([])
+    //     }
+    // }
 
     const handleCloseDialog = () => {
         reset();
@@ -76,31 +76,26 @@ const ModifyMenuDialog = (props) => {
         })
     }
 
-    const handleModifyMenu = async (params) => {
-        const res = await menuService.modifyMenu(params);
-        // if (res.HttpResponseCode === 200 && res.Data) {
-        //     setParentMenuArr([...res.Data])
-        // }
-        // else {
-        //     setParentMenuArr([])
-        // }
-    }
-
     const onSubmit = async (data) => {
         dataModalRef.current = { ...initModal, ...data };
         setDialogState({ ...dialogState, isSubmit: true });
 
-        await handleModifyMenu(dataModalRef.current);
-        setDialogState({ ...dialogState, isSubmit: false });
-        // handleReset();
-
-        // handleCloseDialog();
+        const res = await menuService.modifyMenu(dataModalRef.current);
+        if (res.HttpResponseCode === 200 && res.Data) {
+            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+            setModifyData({ ...res.Data });
+            setDialogState({ ...dialogState, isSubmit: false });
+            handleCloseDialog();
+        }
+        else {
+            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        }
     };
 
-    useEffect(() => {
-        if (isOpen)
-            getParentMenus(dialogState.menuLevel);
-    }, [isOpen, dialogState.menuLevel])
+    // useEffect(() => {
+    //     if (isOpen)
+    //         getParentMenus(dialogState.menuLevel);
+    // }, [isOpen, dialogState.menuLevel])
 
     return (
         <MuiDialog

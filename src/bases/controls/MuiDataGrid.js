@@ -103,13 +103,15 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
     }
 }));
 
-const MuiDataGrid = React.forwardRef((props, ref) => {
+// const MuiDataGrid = React.forwardRef((props, ref) => {
+const MuiDataGrid = (props) => {
 
     const {
         isPagingServer,
         headerHeight,
         rowHeight,
 
+        showLoading,
         rows,
         columns,
         rowCount,
@@ -124,13 +126,13 @@ const MuiDataGrid = React.forwardRef((props, ref) => {
 
     } = props;
 
-    useImperativeHandle(ref, () => ({
-        getDataGrid: () => getDataGrid(),
-    }));
+    // useImperativeHandle(ref, () => ({
+    //     getDataGrid: () => getDataGrid(),
+    // }));
 
-    const getDataGrid = () => {
-        return [...rows]
-    }
+    // const getDataGrid = () => {
+    //     return [...rows]
+    // }
 
     return (
         <React.Fragment>
@@ -144,6 +146,7 @@ const MuiDataGrid = React.forwardRef((props, ref) => {
                         // getRowHeight={() => 'auto'}
                         columns={columns}
                         rows={rows}
+                        loading={showLoading}
 
                         pagination
                         paginationMode="server"
@@ -157,6 +160,7 @@ const MuiDataGrid = React.forwardRef((props, ref) => {
                         getRowId={getRowId}
 
                         onSelectionModelChange={onSelectionModelChange}
+                        {...props}
                     />
                     :
                     <StyledDataGrid
@@ -178,11 +182,13 @@ const MuiDataGrid = React.forwardRef((props, ref) => {
                         getRowId={getRowId}
 
                         onSelectionModelChange={onSelectionModelChange}
+                        {...props}
                     />
 
             }
         </React.Fragment>
     )
-});
+}
+// });
 
 export default MuiDataGrid;

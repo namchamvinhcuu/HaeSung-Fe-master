@@ -2,6 +2,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
+import { createTheme, ThemeProvider } from "@mui/material"
 import React, { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 
@@ -10,7 +11,26 @@ import { menuService } from '@services'
 
 import CreateMenuDialog from './CreateMenuDialog'
 import ModifyMenuDialog from './ModifyMenuDialog'
+import _ from 'lodash'
 
+
+const myTheme = createTheme({
+    components: {
+        //@ts-ignore - this isn't in the TS because DataGird is not exported from `@mui/material`
+        MuiDataGrid: {
+            styleOverrides: {
+                row: {
+                    "&.Mui-created": {
+                        backgroundColor: "#A0DB8E",
+                        //   "&:hover": {
+                        //     backgroundColor: "#98958F"
+                        //   }
+                    }
+                }
+            }
+        }
+    }
+});
 
 const Menu = () => {
     const intl = useIntl();
@@ -42,9 +62,10 @@ const Menu = () => {
         totalRow: 0,
         page: 1,
         pageSize: 5,
-        isOpenModifyDialog: false,
-        isOpenCreateDialog: false,
     });
+
+    const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
+    const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false)
 
     const [selectedRow, setSelectedRow] = useState({
         ...initMenuModel
@@ -52,35 +73,40 @@ const Menu = () => {
 
     const [newData, setNewData] = useState({ ...initMenuModel })
 
-    const [open, setopen] = useState(false)
-
     const toggleCreateMenuDialog = () => {
-        setMenuState({ ...menuState, isOpenCreateDialog: !menuState.isOpenCreateDialog });
+        // setMenuState({ ...menuState, isOpenCreateDialog: !menuState.isOpenCreateDialog });
+        setIsOpenCreateDialog(!isOpenCreateDialog);
     }
 
     const toggleModifyMenuDialog = () => {
-        setMenuState({ ...menuState, isOpenModifyDialog: !menuState.isOpenModifyDialog });
+        // setMenuState({ ...menuState, isOpenModifyDialog: !menuState.isOpenModifyDialog });
+        setIsOpenModifyDialog(!isOpenModifyDialog);
     }
 
     const handleRowSelection = (arrIds) => {
 
-        let currentGridData = menuGridRef.current.getDataGrid();
-        let selectedRow = currentGridData.filter(function (item) {
+        // let currentGridData = menuGridRef.current.getDataGrid();
+        // let selectedRow = menuState.data.filter(function (item) {
+        //     return item.menuId === arrIds[0]
+        // });
+
+        const rowSelected = menuState.data.filter(function (item) {
             return item.menuId === arrIds[0]
         });
-        if (selectedRow && selectedRow.length > 0) {
-            setSelectedRow({ ...selectedRow[0] });
+        if (rowSelected && rowSelected.length > 0) {
+            setSelectedRow({ ...rowSelected[0] });
         }
         else {
             setSelectedRow({ ...initMenuModel });
         }
     }
 
-    const refreshGrid = async () => {
-        return await fetchData();
-    }
-
     async function fetchData() {
+        setMenuState({
+            ...menuState
+            , isLoading: true
+
+        });
         const params = {
             page: menuState.page,
             pageSize: menuState.pageSize
@@ -89,7 +115,8 @@ const Menu = () => {
         setMenuState({
             ...menuState
             , data: [...res.Data]
-            , totalRow: res.Data && res.Data.length > 0 ? res.Data[0].totalRow : 0
+            , totalRow: res.TotalRow
+            , isLoading: false
         });
     }
 
@@ -120,16 +147,31 @@ const Menu = () => {
     useEffect(() => {
 
         const data = [newData, ...menuState.data]
-
-        console.log('data', data)
-        console.log('newData', newData)
-
+        data.pop();
         setMenuState({
             ...menuState
             , data: [...data]
             , totalRow: menuState.totalRow + 1
         });
     }, [newData]);
+
+    // useEffect(() => {
+
+    //     if (!_.isEqual(selectedRow, initMenuModel)) {
+    //         const index = _.findIndex(menuState.data, function (o) { return o.menuId == selectedRow.menuId; });
+    //         if (index !== -1) {
+    //             menuState.data[index] = selectedRow
+    //         }
+    //     }
+
+    //     // const data = [newData, ...menuState.data]
+    //     // data.pop();
+    //     // setMenuState({
+    //     //     ...menuState
+    //     //     , data: [...data]
+    //     //     , totalRow: menuState.totalRow + 1
+    //     // });
+    // }, [selectedRow]);
 
     const handleDeleteMenu = async (menu) => {
         if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
@@ -206,50 +248,58 @@ const Menu = () => {
 
     return (
         <React.Fragment>
-            <MuiButton
-                text="create"
-                color='success'
-                onClick={toggleCreateMenuDialog}
-            />
-            <MuiDataGrid
-                ref={menuGridRef}
-                showLoading={menuState.isLoading}
-                isPagingServer={true}
-                headerHeight={45}
-                // rowHeight={30}
-                columns={columns}
-                rows={menuState.data}
-                page={menuState.page - 1}
-                pageSize={menuState.pageSize}
-                rowCount={menuState.totalRow}
-                rowsPerPageOptions={[5, 10, 20]}
+            <ThemeProvider theme={myTheme}>
+                <MuiButton
+                    text="create"
+                    color='success'
+                    onClick={toggleCreateMenuDialog}
+                />
+                <MuiDataGrid
+                    // ref={menuGridRef}
+                    showLoading={menuState.isLoading}
+                    isPagingServer={true}
+                    headerHeight={45}
+                    // rowHeight={30}
+                    columns={columns}
+                    rows={menuState.data}
+                    page={menuState.page - 1}
+                    pageSize={menuState.pageSize}
+                    rowCount={menuState.totalRow}
+                    rowsPerPageOptions={[5, 10, 20]}
 
-                onPageChange={(newPage) => {
-                    setMenuState({ ...menuState, page: newPage + 1 });
-                }}
-                onPageSizeChange={(newPageSize) => {
-                    setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
-                }}
-                getRowId={(rows) => rows.menuId}
-                onSelectionModelChange={(newSelectedRowId) => {
-                    handleRowSelection(newSelectedRowId)
-                }}
-            // selectionModel={menuState.selectedRowData}
-            />
+                    onPageChange={(newPage) => {
+                        setMenuState({ ...menuState, page: newPage + 1 });
+                    }}
+                    onPageSizeChange={(newPageSize) => {
+                        setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
+                    }}
+                    getRowId={(rows) => rows.menuId}
+                    onSelectionModelChange={(newSelectedRowId) => {
+                        handleRowSelection(newSelectedRowId)
+                    }}
+                    // selectionModel={selectedRow.menuId}
+                    getRowClassName={(params) => {
+                        if (_.isEqual(params.row, newData)) {
+                            return `Mui-created`
+                        }
+                    }}
+                // 
+                />
 
-            {menuState.isOpenCreateDialog && <CreateMenuDialog
-                initModal={initMenuModel}
-                setNewData={setNewData}
-                isOpen={menuState.isOpenCreateDialog}
-                onClose={toggleCreateMenuDialog}
-            />}
+                {isOpenCreateDialog && <CreateMenuDialog
+                    initModal={initMenuModel}
+                    setNewData={setNewData}
+                    isOpen={isOpenCreateDialog}
+                    onClose={toggleCreateMenuDialog}
+                />}
 
-            {menuState.isOpenModifyDialog && <ModifyMenuDialog
-                initModal={selectedRow}
-                isOpen={menuState.isOpenModifyDialog}
-                onClose={toggleModifyMenuDialog}
-            />}
-
+                {isOpenModifyDialog && <ModifyMenuDialog
+                    initModal={selectedRow}
+                    setModifyData={setSelectedRow}
+                    isOpen={isOpenModifyDialog}
+                    onClose={toggleModifyMenuDialog}
+                />}
+            </ThemeProvider>
         </React.Fragment>
 
     )
