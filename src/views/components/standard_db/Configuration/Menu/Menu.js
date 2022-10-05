@@ -145,30 +145,32 @@ const Menu = () => {
     }, [menuState.page, menuState.pageSize]);
 
     useEffect(() => {
-
-        const data = [newData, ...menuState.data]
-        data.pop();
-        setMenuState({
-            ...menuState
-            , data: [...data]
-            , totalRow: menuState.totalRow + 1
-        });
+        if (!_.isEmpty(newData) && !_.isEqual(newData, initMenuModel)) {
+            const data = [newData, ...menuState.data]
+            if (data.length > menuState.pageSize) {
+                data.pop();
+            }
+            setMenuState({
+                ...menuState
+                , data: [...data]
+                , totalRow: menuState.totalRow + 1
+            });
+        }
     }, [newData]);
 
     useEffect(() => {
-        let newArr = [];
-        if (!_.isEqual(selectedRow, initMenuModel)) {
-            newArr = [...menuState.data]
+        if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, initMenuModel)) {
+            let newArr = [...menuState.data]
             const index = _.findIndex(newArr, function (o) { return o.menuId == selectedRow.menuId; });
             if (index !== -1) {
                 newArr[index] = selectedRow
             }
-        }
 
-        setMenuState({
-            ...menuState
-            , data: [...newArr]
-        });
+            setMenuState({
+                ...menuState
+                , data: [...newArr]
+            });
+        }
     }, [selectedRow]);
 
     const handleDeleteMenu = async (menu) => {

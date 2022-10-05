@@ -33,7 +33,8 @@
         "level": "Level",
         "parent": "Parent",
         "language_key": "Multi Language",
-        "root_only": "Root only"
+        "root_only": "Root only",
+        "unauthorized": "Unauthorized"
     },
     "login": {
         "account_password_invalid": "Account/Password is invalid",

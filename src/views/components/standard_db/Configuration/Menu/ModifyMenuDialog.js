@@ -85,12 +85,14 @@ const ModifyMenuDialog = (props) => {
         if (res.HttpResponseCode === 200 && res.Data) {
             SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
             setModifyData({ ...res.Data });
-            setDialogState({ ...dialogState, isSubmit: false });
+
             handleCloseDialog();
         }
         else {
             ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
         }
+
+        setDialogState({ ...dialogState, isSubmit: false });
     };
 
     // useEffect(() => {
