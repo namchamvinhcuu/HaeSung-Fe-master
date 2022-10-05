@@ -155,23 +155,21 @@ const Menu = () => {
         });
     }, [newData]);
 
-    // useEffect(() => {
+    useEffect(() => {
+        let newArr = [];
+        if (!_.isEqual(selectedRow, initMenuModel)) {
+            newArr = [...menuState.data]
+            const index = _.findIndex(newArr, function (o) { return o.menuId == selectedRow.menuId; });
+            if (index !== -1) {
+                newArr[index] = selectedRow
+            }
+        }
 
-    //     if (!_.isEqual(selectedRow, initMenuModel)) {
-    //         const index = _.findIndex(menuState.data, function (o) { return o.menuId == selectedRow.menuId; });
-    //         if (index !== -1) {
-    //             menuState.data[index] = selectedRow
-    //         }
-    //     }
-
-    //     // const data = [newData, ...menuState.data]
-    //     // data.pop();
-    //     // setMenuState({
-    //     //     ...menuState
-    //     //     , data: [...data]
-    //     //     , totalRow: menuState.totalRow + 1
-    //     // });
-    // }, [selectedRow]);
+        setMenuState({
+            ...menuState
+            , data: [...newArr]
+        });
+    }, [selectedRow]);
 
     const handleDeleteMenu = async (menu) => {
         if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
