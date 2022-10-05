@@ -79,6 +79,9 @@
         "userPassword": "Mật khẩu",
         "not_found": "User: không tồn tại",
         "existed": "User: đã được tạo",
-        "password_invalid": "User: mật khẩu không hợp lệ"
+        "password_invalid": "User: mật khẩu không hợp lệ",
+        "userName_required": "Tên user không được để trống",
+        "userPassword_required": "Mật khẩu không được để trống",
+        "roleName": "Role"
     }
 }
