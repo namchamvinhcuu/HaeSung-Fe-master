@@ -1,6 +1,7 @@
 import {
     APPEND_TAB, RESET_TAB, SWITCH_TAB, DELETE_TAB, DELETE_ALL, APPEND_NOTIFY, USER_LOGIN, UPDATE_TIME_AGO,
-    SET_DATA_NOTIFY_USER
+    SET_DATA_NOTIFY_USER,
+    DELETE_OTHER
 } from './types';
 import { calDateAgo, toCamel, UserManager } from '@utils'
 
@@ -133,8 +134,7 @@ const reducer = (state = initializeState, action) => {
 
 
             break;
-
-        case DELETE_ALL:
+        case DELETE_OTHER:
             var item = newState.HistoryElementTabs = newState.HistoryElementTabs[newState.index_tab_active_array];
             if (item) {
                 newState.HistoryElementTabs = [item];
@@ -145,6 +145,14 @@ const reducer = (state = initializeState, action) => {
                 newState.HistoryElementTabs = [];
                 newState.index_tab_active_array = -1;
             }
+
+            break;
+
+        case DELETE_ALL:
+
+            newState.HistoryElementTabs = [];
+            newState.index_tab_active = -1;
+            newState.index_tab_active_array = -1;
             break;
 
         case USER_LOGIN:

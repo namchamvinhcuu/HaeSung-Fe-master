@@ -16,7 +16,6 @@ const CreateMenuDialog = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setNewData } = props;
-    console.log('initModal', initModal)
 
     const [parentMenuArr, setParentMenuArr] = useState([]);
 
@@ -69,11 +68,6 @@ const CreateMenuDialog = (props) => {
         }
     }
 
-    // const handleCreateMenu = async (params) => {
-    //     return await menuService.createMenu(params);
-
-    // }
-
     const handleReset = () => {
         reset();
         clearErrors();
@@ -94,7 +88,7 @@ const CreateMenuDialog = (props) => {
     }
 
     const onSubmit = async (data) => {
-        dataModalRef.current = { ...initModal, ...data, sortOrder: 0 };
+        dataModalRef.current = { ...initModal, ...data, sortOrder: 0, parentId: data.parentId === '' ? 0 : data.parentId };
         setDialogState({ ...dialogState, isSubmit: true });
 
         const res = await menuService.createMenu(dataModalRef.current);

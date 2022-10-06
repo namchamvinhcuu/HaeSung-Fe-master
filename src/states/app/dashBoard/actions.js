@@ -3,6 +3,7 @@ import {
     RESET_TAB,
     SWITCH_TAB,
     DELETE_TAB,
+    DELETE_OTHER,
     DELETE_ALL,
 
     APPEND_NOTIFY,
@@ -62,6 +63,16 @@ const deleteTab = (index) => {
     };
 };
 
+const deleteOtherTab = (index) => {
+    return dispatch => {
+
+
+        dispatch({
+            type: DELETE_OTHER
+        });
+    };
+};
+
 const deleteAll = () => {
     return dispatch => {
 
@@ -111,6 +122,7 @@ export {
     switchTab,
     resetTab,
     deleteTab,
+    deleteOtherTab,
     deleteAll,
 
 

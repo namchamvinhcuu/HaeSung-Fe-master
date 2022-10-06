@@ -61,7 +61,7 @@ const Menu = () => {
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 5,
+        pageSize: 20,
     });
 
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
@@ -266,7 +266,7 @@ const Menu = () => {
                     page={menuState.page - 1}
                     pageSize={menuState.pageSize}
                     rowCount={menuState.totalRow}
-                    rowsPerPageOptions={[5, 10, 20]}
+                    rowsPerPageOptions={[20, 50, 100]}
 
                     onPageChange={(newPage) => {
                         setMenuState({ ...menuState, page: newPage + 1 });

@@ -10,7 +10,8 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { historyApp } from '@utils';
 
-const API_URL = config.api.API_BASE_URL;
+// const API_URL = config.api.API_BASE_URL;
+const API_URL = ConfigConstants.BASE_URL;
 
 // const intl = useIntl();
 

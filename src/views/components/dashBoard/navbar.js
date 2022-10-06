@@ -96,8 +96,8 @@ class NavBar extends Component {
 
   handleCloseAllTabs(e) {
     e.preventDefault();
-    const { deleteAll } = this.props
-    deleteAll();
+    const { deleteOtherTab } = this.props
+    deleteOtherTab();
   }
 
   handleRefreshTab(e) {

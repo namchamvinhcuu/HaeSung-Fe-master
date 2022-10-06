@@ -50,6 +50,7 @@ const mapDispatchToProps = dispatch => {
             appendTab
             , switchTab
             , deleteTab
+            , deleteOtherTab
             , deleteAll
             , updateTimeAgo
             , updatenotify
@@ -66,6 +67,7 @@ const mapDispatchToProps = dispatch => {
         appendTab
         , switchTab
         , deleteTab
+        , deleteOtherTab
         , deleteAll
         , updateTimeAgo
         , updatenotify

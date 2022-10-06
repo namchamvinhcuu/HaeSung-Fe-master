@@ -4,6 +4,7 @@ import {
     switchTab,
     resetTab,
     deleteTab,
+    deleteOtherTab,
     deleteAll,
 
     appendNotify,
@@ -17,6 +18,7 @@ export {
     switchTab,
     resetTab,
     deleteTab,
+    deleteOtherTab,
     deleteAll,
     appendNotify,
     updateTimeAgo,
