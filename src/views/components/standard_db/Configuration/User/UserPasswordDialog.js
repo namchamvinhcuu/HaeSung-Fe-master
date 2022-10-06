@@ -8,22 +8,22 @@ import * as yup from 'yup'
 import { userService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
 
-const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
+const UserPasswordDialog = ({ initModal, isOpen, onClose, setNewData, rowData, dialogMode }) => {
   const intl = useIntl();
-  const [roleList, setRoleList] = useState([]);
   const [dialogState, setDialogState] = useState({ isSubmit: false })
 
   const schema = yup.object().shape({
-    userName: yup.string().required(intl.formatMessage({ id: 'user.userName_required' })),
     userPassword: yup.string().required(intl.formatMessage({ id: 'user.userPassword_required' })),
+    newPassword: yup.string().required(intl.formatMessage({ id: 'user.newPassword_required' })),
   });
 
   const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
     mode: 'onChange',
     resolver: yupResolver(schema),
     defaultValues: {
-      userName: '',
+      newPassword: '',
       userPassword: '',
+      userName: rowData.userName
     }
   });
 
@@ -40,21 +40,13 @@ const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
     onClose();
   }
 
-  const getRoles = async () => {
-    const res = await userService.getAllRole();
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setRoleList([...res.Data])
-    }
-  }
-
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
+    var data = { ...data, userName: rowData.userName }
+    const res = await userService.changePassword(data);
 
-    const res = await userService.createUser(data);
-
-    if (res.HttpResponseCode === 200 && res.Data) {
+    if (res.HttpResponseCode === 200) {
       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-      setNewData({ ...res.Data });
       setDialogState({ ...dialogState, isSubmit: false });
       handleReset();
       handleCloseDialog();
@@ -65,14 +57,10 @@ const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
     }
   };
 
-  useEffect(() => {
-    getRoles();
-  }, [])
-
   return (
     <MuiDialog
       maxWidth='sm'
-      title={intl.formatMessage({ id: 'general.create' })}
+      title={intl.formatMessage({ id: 'general.changepassword' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
       disable_animate={300}
@@ -85,17 +73,6 @@ const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
               autoFocus
               fullWidth
               size='small'
-              label={intl.formatMessage({ id: 'user.userName' })}
-              {...register('userName')}
-              error={!!errors?.userName}
-              helperText={errors?.userName ? errors.userName.message : null}
-              defaultValue={rowData.userName}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              size='small'
               label={intl.formatMessage({ id: 'user.userPassword' })}
               {...register('userPassword')}
               error={!!errors?.userPassword}
@@ -104,44 +81,16 @@ const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
             />
           </Grid>
           <Grid item xs={12}>
-            <Controller
-              control={control}
-              name="Roles"
-              render={({ field: { onChange, value } }) => {
-                return (
-                  <Autocomplete
-                    multiple
-                    fullWidth
-                    size='small'
-                    options={roleList}
-                    autoHighlight
-                    openOnFocus
-                    getOptionLabel={option => option.roleName}
-                    defaultValue={initModal}
-                    onChange={(e, item) => {
-                      console.log(item.roleId, value)
-                      console.log(item, 'item')
-                      if (item) {
-                        setValue("Roles", item ?? []);
-                      }
-                      else {
-                        setValue("Roles", []);
-                      }
-                    }}
-                    renderInput={(params) => {
-                      return <TextField
-                        {...params}
-                        label={intl.formatMessage({ id: 'user.roleName' })}
-                      // error={!!errors.parentId}
-                      // helperText={errors?.parentId ? errors.parentId.message : null}
-                      />
-                    }}
-                  />
-                );
-              }}
+            <TextField
+              fullWidth
+              size='small'
+              label={intl.formatMessage({ id: 'user.newPassword' })}
+              {...register('newPassword')}
+              error={!!errors?.newPassword}
+              helperText={errors?.newPassword ? errors.newPassword.message : null}
+              defaultValue={rowData.newPassword}
             />
           </Grid>
-
           <Grid item xs={12}>
             <Grid container direction="row-reverse">
               <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
@@ -154,4 +103,4 @@ const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
   )
 }
 
-export default UserDialog
+export default UserPasswordDialog

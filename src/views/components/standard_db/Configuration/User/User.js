@@ -1,16 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
-import Grid from '@mui/material/Grid'
-import IconButton from '@mui/material/IconButton'
+import { Grid, IconButton } from '@mui/material'
+import LockIcon from '@mui/icons-material/Lock';
 import { createTheme, ThemeProvider } from "@mui/material"
 import { useIntl } from 'react-intl'
 import { MuiButton, MuiDataGrid } from '@controls'
 import { userService } from '@services'
 import UserDialog from './UserDialog'
-import { useModal } from "@basesShared";
-import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants'
+import { useModal, useModal2, useModal3 } from "@basesShared";
 import { ErrorAlert, SuccessAlert } from '@utils'
+import UserPasswordDialog from './UserPasswordDialog'
+import UserRoleDialog from './UserRoleDialog'
 
 const myTheme = createTheme({
   components: {
@@ -19,9 +20,6 @@ const myTheme = createTheme({
         row: {
           "&.Mui-created": {
             backgroundColor: "#A0DB8E",
-            //   "&:hover": {
-            //     backgroundColor: "#98958F"
-            //   }
           }
         }
       }
@@ -32,17 +30,17 @@ const myTheme = createTheme({
 export default function User() {
   const intl = useIntl();
   const { isShowing, toggle } = useModal();
+  const { isShowing2, toggle2 } = useModal2();
+  const { isShowing3, toggle3 } = useModal3();
   const [userState, setMenuState] = useState({
     isLoading: false,
     data: [],
     totalRow: 0,
     page: 1,
-    pageSize: 10,
+    pageSize: 20,
   });
   const [newData, setNewData] = useState({})
-  const [dialogMode, setDialogMode] = useState(CREATE_ACTION);
   const [rowData, setRowData] = useState({});
-
 
   const columns = [
     { field: 'userId', hide: true },
@@ -50,26 +48,13 @@ export default function User() {
       field: "action",
       headerName: "",
       flex: 0.4,
-      // headerAlign: 'center',
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
           <Grid container spacing={1} alignItems="center" justifyContent="center">
-            <Grid item xs={6} style={{ textAlign: "center" }}>
-              <IconButton
-                aria-label="edit"
-                color="warning"
-                size="small"
-                sx={[{ '&:hover': { border: '1px solid orange', }, }]}
-                onClick={() => handleUpdate(params.row)}
-              >
-                <EditIcon fontSize="inherit" />
-              </IconButton>
-            </Grid>
-
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+            <Grid item xs={4} style={{ textAlign: "center" }}>
               <IconButton
                 aria-label="delete"
                 color="error"
@@ -80,19 +65,39 @@ export default function User() {
                 <DeleteIcon fontSize="inherit" />
               </IconButton>
             </Grid>
+            <Grid item xs={4} style={{ textAlign: "center" }}>
+              <IconButton
+                aria-label="edit"
+                color="warning"
+                size="small"
+                sx={[{ '&:hover': { border: '1px solid orange', }, }]}
+                onClick={() => handleChangePass(params.row)}
+              >
+                <EditIcon fontSize="inherit" />
+              </IconButton>
+            </Grid>
+            <Grid item xs={4} style={{ textAlign: "center" }}>
+              <IconButton
+                aria-label="edit"
+                color="success"
+                size="small"
+                sx={[{ '&:hover': { border: '1px solid green', }, }]}
+                onClick={() => handleUpdate(params.row)}
+              >
+                <LockIcon fontSize="inherit" />
+              </IconButton>
+            </Grid>
           </Grid>
         );
       },
     },
     { field: 'userName', headerName: intl.formatMessage({ id: "general.name" }), flex: 0.7, },
-    { field: 'roles', headerName: intl.formatMessage({ id: "user.roleName" }), flex: 0.7, },
+    { field: 'RoleNameList', headerName: intl.formatMessage({ id: "user.roleName" }), flex: 0.7, },
   ];
 
   useEffect(() => {
     fetchData();
   }, [userState.page, userState.pageSize]);
-
-
 
   const handleDelete = async (user) => {
     if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
@@ -109,9 +114,13 @@ export default function User() {
   }
 
   const handleUpdate = (row) => {
-    setDialogMode(UPDATE_ACTION);
     setRowData({ ...row });
-    toggle();
+    toggle3();
+  };
+
+  const handleChangePass = (row) => {
+    setRowData({ ...row });
+    toggle2();
   };
 
   async function fetchData() {
@@ -145,30 +154,23 @@ export default function User() {
         , totalRow: userState.totalRow + 1
       });
     }
-
   }, [newData]);
 
   return (
     <React.Fragment>
       <ThemeProvider theme={myTheme}>
-        <MuiButton text="create" color='success'
-          // onClick={toggleCreateMenuDialog}
-          onClick={toggle}
-        />
-
+        <MuiButton text="create" color='success' onClick={toggle} />
         <MuiDataGrid
           getData={userService.getUserList}
           showLoading={userState.isLoading}
           isPagingServer={true}
           headerHeight={45}
-          // rowHeight={30}
           columns={columns}
           rows={userState.data}
           page={userState.page - 1}
           pageSize={userState.pageSize}
           rowCount={userState.totalRow}
           rowsPerPageOptions={[5, 10, 20]}
-
           onPageChange={(newPage) => {
             setMenuState({ ...userState, page: newPage + 1 });
           }}
@@ -176,26 +178,33 @@ export default function User() {
             setMenuState({ ...userState, pageSize: newPageSize, page: 1 });
           }}
           getRowId={(rows) => rows.userId}
-          // onSelectionModelChange={(newSelectedRowId) => {
-          //   handleRowSelection(newSelectedRowId)
-          // }}
-          // selectionModel={selectedRow.menuId}
           getRowClassName={(params) => {
             if (_.isEqual(params.row, newData)) {
               return `Mui-created`
             }
           }}
-        // 
         />
 
         {isShowing && <UserDialog
-          // initModal={selectedRow}
-          // setModifyData={setSelectedRow}
           setNewData={setNewData}
-          dialogMode={dialogMode}
           rowData={rowData}
           isOpen={isShowing}
           onClose={toggle}
+        />}
+
+        {isShowing2 && <UserRoleDialog
+          setNewData={setNewData}
+          rowData={rowData}
+          isOpen={isShowing2}
+          onClose={toggle2}
+          loadData={fetchData}
+        />}
+
+        {isShowing3 && <UserPasswordDialog
+          setNewData={setNewData}
+          rowData={rowData}
+          isOpen={isShowing3}
+          onClose={toggle3}
         />}
 
       </ThemeProvider>
