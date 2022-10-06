@@ -7,10 +7,12 @@
         "modify": "Chỉnh sửa",
         "update": "Cập nhật",
         "edit": "Sửa",
+        "search": "Tìm kiếm",
         "reset": "Cài lại",
         "delete": "Xóa",
         "close": "Đóng",
         "save": "Lưu",
+        "changepassword": "Đổi mật khẩu",
         "refresh": "Làm mới",
         "accept": "Chấp nhận",
         "confirm": "Xác nhận",
@@ -78,11 +80,13 @@
     "user": {
         "userName": "Tài khoản",
         "userPassword": "Mật khẩu",
+        "newPassword": "Mật khẩu mới",
         "not_found": "User: không tồn tại",
         "existed": "User: đã được tạo",
         "password_invalid": "User: mật khẩu không hợp lệ",
         "userName_required": "Tên user không được để trống",
         "userPassword_required": "Mật khẩu không được để trống",
+        "newPassword_required": "Mật khẩu mới không được để trống",
         "roleName": "Role"
     }
 }

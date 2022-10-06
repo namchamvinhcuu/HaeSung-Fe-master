@@ -8,23 +8,20 @@ import * as yup from 'yup'
 import { userService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
 
-const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
+const UserRoleDialog = ({ isOpen, onClose, setNewData, rowData, loadData }) => {
   const intl = useIntl();
   const [roleList, setRoleList] = useState([]);
+  const [roleUser, setRoleUser] = useState([]);
   const [dialogState, setDialogState] = useState({ isSubmit: false })
 
   const schema = yup.object().shape({
-    userName: yup.string().required(intl.formatMessage({ id: 'user.userName_required' })),
-    userPassword: yup.string().required(intl.formatMessage({ id: 'user.userPassword_required' })),
+    //Roles: yup.object().nullable(intl.formatMessage({ id: 'menu.menuName_required' })),
   });
 
   const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
     mode: 'onChange',
     resolver: yupResolver(schema),
-    defaultValues: {
-      userName: '',
-      userPassword: '',
-    }
+    defaultValues: {}
   });
 
   const handleReset = () => {
@@ -47,17 +44,26 @@ const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
     }
   }
 
+  const getRolesByUser = async (userId) => {
+    const res = await userService.getRoleByUser(userId);
+    if (res) {
+      setValue("Roles", res);
+      setRoleUser(res);
+    }
+  }
+
   const onSubmit = async (data) => {
+    data = { ...data, userId: rowData.userId };
     setDialogState({ ...dialogState, isSubmit: true });
 
-    const res = await userService.createUser(data);
+    const res = await userService.changeRoles(data);
 
-    if (res.HttpResponseCode === 200 && res.Data) {
+    if (res.HttpResponseCode === 200) {
       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-      setNewData({ ...res.Data });
       setDialogState({ ...dialogState, isSubmit: false });
       handleReset();
       handleCloseDialog();
+      loadData();
     }
     else {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -67,12 +73,13 @@ const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
 
   useEffect(() => {
     getRoles();
-  }, [])
+    getRolesByUser(rowData.userId);
+  }, [rowData])
 
   return (
     <MuiDialog
       maxWidth='sm'
-      title={intl.formatMessage({ id: 'general.create' })}
+      title={intl.formatMessage({ id: 'user.roleName' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
       disable_animate={300}
@@ -80,29 +87,6 @@ const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={12}>
-            <TextField
-              autoFocus
-              fullWidth
-              size='small'
-              label={intl.formatMessage({ id: 'user.userName' })}
-              {...register('userName')}
-              error={!!errors?.userName}
-              helperText={errors?.userName ? errors.userName.message : null}
-              defaultValue={rowData.userName}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              size='small'
-              label={intl.formatMessage({ id: 'user.userPassword' })}
-              {...register('userPassword')}
-              error={!!errors?.userPassword}
-              helperText={errors?.userPassword ? errors.userPassword.message : null}
-              defaultValue={rowData.userPassword}
-            />
-          </Grid>
           <Grid item xs={12}>
             <Controller
               control={control}
@@ -116,24 +100,21 @@ const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
                     options={roleList}
                     autoHighlight
                     openOnFocus
+                    value={roleUser}
                     getOptionLabel={option => option.roleName}
-                    defaultValue={initModal}
+                    isOptionEqualToValue={(option, value) =>
+                      option.roleId === value.roleId
+                    }
                     onChange={(e, item) => {
-                      console.log(item.roleId, value)
-                      console.log(item, 'item')
-                      if (item) {
-                        setValue("Roles", item ?? []);
-                      }
-                      else {
-                        setValue("Roles", []);
-                      }
+                      setValue("Roles", item ?? []);
+                      setRoleUser(item ?? []);
                     }}
                     renderInput={(params) => {
                       return <TextField
                         {...params}
                         label={intl.formatMessage({ id: 'user.roleName' })}
-                      // error={!!errors.parentId}
-                      // helperText={errors?.parentId ? errors.parentId.message : null}
+                        error={!!errors.Roles}
+                        helperText={errors?.Roles ? errors.Roles.message : null}
                       />
                     }}
                   />
@@ -154,4 +135,4 @@ const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
   )
 }
 
-export default UserDialog
+export default UserRoleDialog

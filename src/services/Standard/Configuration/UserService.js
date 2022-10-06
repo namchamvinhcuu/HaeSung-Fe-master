@@ -13,7 +13,16 @@ const getUserList = async (params) => {
 
 const getAllRole = async () => {
   try {
-    return await axios.get(`${apiName}/get-role`);
+    return await axios.get(`${apiName}/get-all-role`);
+  }
+  catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+}
+
+const getRoleByUser = async (userId) => {
+  try {
+    return await axios.get(`${apiName}/get-role/${userId}`);
   }
   catch (error) {
     console.log(`ERROR: ${error}`);
@@ -29,16 +38,23 @@ const createUser = async (params) => {
   }
 }
 
-// const modifyMenu = async (params) => {
+const changePassword = async (params) => {
+  try {
+    return await axios.put(`${apiName}/change-userpassword`, { ...params });
+  }
+  catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+}
 
-//     try {
-//         return await axios.put('/api/menu/modify-menu', {
-//             ...params
-//         });
-//     } catch (error) {
-//         console.log(`ERROR: ${error}`);
-//     }
-// }
+const changeRoles = async (params) => {
+  try {
+    return await axios.put(`${apiName}/set-role-for-user`, { ...params });
+  }
+  catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+}
 
 const deleteUser = async (userId) => {
 
@@ -52,7 +68,9 @@ const deleteUser = async (userId) => {
 export {
   getUserList,
   getAllRole,
+  getRoleByUser,
   createUser,
-  // modifyMenu,
+  changeRoles,
+  changePassword,
   deleteUser,
 }

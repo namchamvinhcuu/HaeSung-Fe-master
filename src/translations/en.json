@@ -7,10 +7,12 @@
         "modify": "Modify",
         "update": "Update",
         "edit": "Edit",
+        "search": "Search",
         "reset": "Reset",
         "delete": "Delete",
         "close": "Close",
         "save": "Save",
+        "changepassword": "Change password",
         "refresh": "Refresh",
         "accept": "Accept",
         "confirm": "Confirm",
@@ -78,11 +80,13 @@
     "user": {
         "userName": "Username",
         "userPassword": "Password",
+        "newPassword": "New Password",
         "not_found": "User: not found/existed",
         "existed": "User: existed",
         "password_invalid": "User: invalid password",
         "userName_required": "User name is required",
         "userPassword_required": "Password is required",
+        "newPassword_required": "New Password is required",
         "roleName": "Role"
     }
 }
