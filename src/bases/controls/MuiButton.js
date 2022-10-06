@@ -3,6 +3,7 @@ import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import SearchIcon from '@mui/icons-material/Search';
 import { styled } from "@mui/material/styles"
 import { FormattedMessage } from 'react-intl'
 
@@ -25,6 +26,8 @@ const MuiButton = React.forwardRef((props, ref) => {
             case 'update':
             case 'edit':
                 return <EditIcon />
+            case 'search':
+                return <SearchIcon />
             default:
                 return <DeleteIcon />;
         }

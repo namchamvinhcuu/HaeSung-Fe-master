@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
-import { Grid, IconButton } from '@mui/material'
+import { Grid, IconButton, TextField } from '@mui/material'
 import LockIcon from '@mui/icons-material/Lock';
 import { createTheme, ThemeProvider } from "@mui/material"
 import { useIntl } from 'react-intl'
@@ -41,6 +41,7 @@ export default function User() {
   });
   const [newData, setNewData] = useState({})
   const [rowData, setRowData] = useState({});
+  const [search, setSearch] = useState("");
 
   const columns = [
     { field: 'userId', hide: true },
@@ -131,7 +132,8 @@ export default function User() {
     });
     const params = {
       page: userState.page,
-      pageSize: userState.pageSize
+      pageSize: userState.pageSize,
+      keyword: search
     }
     const res = await userService.getUserList(params);
     setMenuState({
@@ -159,7 +161,24 @@ export default function User() {
   return (
     <React.Fragment>
       <ThemeProvider theme={myTheme}>
-        <MuiButton text="create" color='success' onClick={toggle} />
+        <Grid container >
+          <Grid item xs={8}>
+            <MuiButton text="create" color='success' onClick={toggle} />
+          </Grid>
+          <Grid item xs={4} container>
+            <Grid item xs={9}>
+              <TextField
+                fullWidth
+                size='small'
+                label={intl.formatMessage({ id: 'user.userName' })}
+                onChange={e => setSearch(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0, ml: 2 }} />
+            </Grid>
+          </Grid>
+        </Grid>
         <MuiDataGrid
           getData={userService.getUserList}
           showLoading={userState.isLoading}

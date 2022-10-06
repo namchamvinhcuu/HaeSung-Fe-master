@@ -8,7 +8,7 @@ import * as yup from 'yup'
 import { userService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
 
-const UserPasswordDialog = ({ initModal, isOpen, onClose, setNewData, rowData, dialogMode }) => {
+const UserPasswordDialog = ({ isOpen, onClose, setNewData, rowData }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false })
 
