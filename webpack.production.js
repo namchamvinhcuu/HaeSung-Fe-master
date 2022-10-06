@@ -175,7 +175,7 @@ module.exports = {
             }
         },
         minimizer: [
-            new OptimizeCssAssetsPlugin({}),
+            // new OptimizeCssAssetsPlugin({}),
             // new UglifyJsPlugin({
             //     cache: true,
             //     parallel: true,
