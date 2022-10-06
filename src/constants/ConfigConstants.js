@@ -1,4 +1,4 @@
-// export const API_URL = "http://192.168.5.193:99/api/";
+// export const API_URL = "http://baseapi.autonsi.com/api/";
 // export const BASE_URL = "http://192.168.5.193:99/";
 
 export const API_URL = "https://localhost:44301/api/";

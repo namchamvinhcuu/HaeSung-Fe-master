@@ -37,7 +37,7 @@ const Menu = () => {
     let isRendered = useRef(false);
     const initMenuModel = {
         menuId: 0
-        , parentId: ''
+        , parentId: 0
         , menuName: ''
         , menuLevel: ''
         , sortOrder: ''
@@ -112,9 +112,10 @@ const Menu = () => {
             pageSize: menuState.pageSize
         }
         const res = await menuService.getMenuList(params);
+
         setMenuState({
             ...menuState
-            , data: [...res.Data]
+            , data: !res.Data ? [] : [...res.Data]
             , totalRow: res.TotalRow
             , isLoading: false
         });

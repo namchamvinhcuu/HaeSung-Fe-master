@@ -12,6 +12,8 @@ import { historyApp } from '@utils';
 
 const API_URL = config.api.API_BASE_URL;
 
+// const intl = useIntl();
+
 const instance = axios.create({
     // baseURL: 'http://localhost:8080',
     baseURL: API_URL,
@@ -86,7 +88,7 @@ instance.interceptors.request.use((request) => {
 
         }
         else {
-            ErrorAlert('You lost your authorization, please login again !');
+            //     ErrorAlert(intl.formatMessage({ id: 'login.lost_authorization' }));
             // ErrorAlert(<FormattedMessage id="login.lost_authorization" />);
             instance.Logout();
             return request;
@@ -100,40 +102,73 @@ instance.interceptors.request.use((request) => {
 instance.interceptors.response.use(
     (response) => {
         // Thrown error for request with OK status code
-        const { data } = response;
-        if (data.hasOwnProperty('s') && !isSuccessStatusCode(data['s']) && data.hasOwnProperty('errmsg')) {
-            return Promise.reject(createError(response.status, data['s'], data['errmsg'], null, data['errcode'] ? data['errcode'] : ""));
+        const { data } = response
+        if (data.ResponseMessage === 'login.lost_authorization') {
+            // ErrorAlert(<FormattedMessage id="login.lost_authorization" />);
+            instance.Logout();
+            return response.data;
         }
 
-        // Return direct data to callback
-        if (data.hasOwnProperty('s') && data.hasOwnProperty('d')) {
-            return data['d'];
-        }
-        // Handle special case
-        if (data.hasOwnProperty('s') && _.keys(data).length === 1) {
-            return null;
-        }
         return response.data;
     },
-    (error) => {
-        const { response } = error;
-        if (response == null) {
-            return Promise.reject(error);
-        }
+    // (error) => {
+    //     const { response } = error;
+    //     if (response == null) {
+    //         return Promise.reject(error);
+    //     }
 
-        const { data } = response;
+    //     const { data } = response;
 
-        if (data.hasOwnProperty('s') && data.hasOwnProperty('errmsg')) {
-            return Promise.reject(createError(response.status, data['s'], data['errmsg']));
-        }
+    //     if (data.hasOwnProperty('s') && data.hasOwnProperty('errmsg')) {
+    //         return Promise.reject(createError(response.status, data['s'], data['errmsg']));
+    //     }
 
-        if (data.hasOwnProperty('code') && data.hasOwnProperty('message')) {
-            return Promise.reject(createError(response.status, data['code'], data['message'], data['problems']));
-        }
+    //     if (data.hasOwnProperty('code') && data.hasOwnProperty('message')) {
+    //         return Promise.reject(createError(response.status, data['code'], data['message'], data['problems']));
+    //     }
 
-        return Promise.reject(createError(response.status));
-    }
+    //     return Promise.reject(createError(response.status));
+    // }
 );
+
+// instance.interceptors.response.use(
+//     (response) => {
+//         // Thrown error for request with OK status code
+//         console.log('res', response)
+//         const { data } = response;
+//         if (data.hasOwnProperty('s') && !isSuccessStatusCode(data['s']) && data.hasOwnProperty('errmsg')) {
+//             return Promise.reject(createError(response.status, data['s'], data['errmsg'], null, data['errcode'] ? data['errcode'] : ""));
+//         }
+
+//         // Return direct data to callback
+//         if (data.hasOwnProperty('s') && data.hasOwnProperty('d')) {
+//             return data['d'];
+//         }
+//         // Handle special case
+//         if (data.hasOwnProperty('s') && _.keys(data).length === 1) {
+//             return null;
+//         }
+//         return response.data;
+//     },
+//     (error) => {
+//         const { response } = error;
+//         if (response == null) {
+//             return Promise.reject(error);
+//         }
+
+//         const { data } = response;
+
+//         if (data.hasOwnProperty('s') && data.hasOwnProperty('errmsg')) {
+//             return Promise.reject(createError(response.status, data['s'], data['errmsg']));
+//         }
+
+//         if (data.hasOwnProperty('code') && data.hasOwnProperty('message')) {
+//             return Promise.reject(createError(response.status, data['code'], data['message'], data['problems']));
+//         }
+
+//         return Promise.reject(createError(response.status));
+//     }
+// );
 
 instance.getNewAccessToken = async () => {
     let accessToken = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);

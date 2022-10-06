@@ -16,6 +16,7 @@ const CreateMenuDialog = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setNewData } = props;
+    console.log('initModal', initModal)
 
     const [parentMenuArr, setParentMenuArr] = useState([]);
 
