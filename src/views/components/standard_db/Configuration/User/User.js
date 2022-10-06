@@ -161,7 +161,7 @@ export default function User() {
   return (
     <React.Fragment>
       <ThemeProvider theme={myTheme}>
-        <Grid container >
+        <Grid container sx={{ mb: 1 }}>
           <Grid item xs={8}>
             <MuiButton text="create" color='success' onClick={toggle} />
           </Grid>
