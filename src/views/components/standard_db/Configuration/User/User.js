@@ -32,7 +32,7 @@ export default function User() {
   const { isShowing, toggle } = useModal();
   const { isShowing2, toggle2 } = useModal2();
   const { isShowing3, toggle3 } = useModal3();
-  const [userState, setMenuState] = useState({
+  const [userState, setUserState] = useState({
     isLoading: false,
     data: [],
     totalRow: 0,
@@ -125,7 +125,7 @@ export default function User() {
   };
 
   async function fetchData() {
-    setMenuState({
+    setUserState({
       ...userState
       , isLoading: true
 
@@ -136,7 +136,7 @@ export default function User() {
       keyword: search
     }
     const res = await userService.getUserList(params);
-    setMenuState({
+    setUserState({
       ...userState
       , data: [...res.Data]
       , totalRow: res.TotalRow
@@ -150,7 +150,7 @@ export default function User() {
       if (data.length > userState.pageSize) {
         data.pop();
       }
-      setMenuState({
+      setUserState({
         ...userState
         , data: [...data]
         , totalRow: userState.totalRow + 1
@@ -191,10 +191,10 @@ export default function User() {
           rowCount={userState.totalRow}
           rowsPerPageOptions={[5, 10, 20]}
           onPageChange={(newPage) => {
-            setMenuState({ ...userState, page: newPage + 1 });
+            setUserState({ ...userState, page: newPage + 1 });
           }}
           onPageSizeChange={(newPageSize) => {
-            setMenuState({ ...userState, pageSize: newPageSize, page: 1 });
+            setUserState({ ...userState, pageSize: newPageSize, page: 1 });
           }}
           getRowId={(rows) => rows.userId}
           getRowClassName={(params) => {

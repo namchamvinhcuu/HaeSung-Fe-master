@@ -15,6 +15,7 @@ import TabListContent from './dashBoard/TabListContent'
 import Menu from "./standard_db/Configuration/Menu/Menu";
 import Permission from "./standard_db/Configuration/Permission/Permission";
 import User from "./standard_db/Configuration/User/User";
+import Role from "./standard_db/Configuration/Role/Role";
 
 //KPI
 import RFDI_Dashboard from './KPI/RFDI_Dashboard'
@@ -40,6 +41,7 @@ export {
   Menu,
   Permission,
   User,
+  Role,
 
   //KPI
   RFDI_Dashboard,
