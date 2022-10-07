@@ -1,10 +1,9 @@
 import { MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
-    Autocomplete,
     Checkbox, FormControlLabel, Grid, Radio, RadioGroup, TextField
 } from '@mui/material'
-import React, { useEffect, useRef, useState, useMemo } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
@@ -18,8 +17,6 @@ const ModifyMenuDialog = (props) => {
 
     const { initModal, isOpen, onClose, setModifyData } = props;
 
-    console.log(initModal, 'update')
-
     const clearParent = useRef(null);
 
     const dataModalRef = useRef({ ...initModal });
@@ -28,12 +25,8 @@ const ModifyMenuDialog = (props) => {
         isSubmit: false,
     })
 
-    // const [parentMenuArr, setParentMenuArr] = useState([]);
-
     const schema = yup.object().shape({
         menuName: yup.string().required(intl.formatMessage({ id: 'menu.menuName_required' })),
-
-        // menuIcon: yup.string().required(intl.formatMessage({ id: 'menu.menuName_required' })),
 
         menuLevel: yup.number().required(),
 
@@ -45,7 +38,6 @@ const ModifyMenuDialog = (props) => {
                 }
             }),
 
-        // menuComponent: yup.string().required(intl.formatMessage({ id: 'menu.menuComponent_required' })),
         menuComponent: yup.string()
             .when("menuLevel", (menuLevel) => {
                 if (parseInt(menuLevel) === 3) {
@@ -65,24 +57,7 @@ const ModifyMenuDialog = (props) => {
     const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
         mode: 'onChange',
         resolver: yupResolver(schema),
-        // defaultValues: {
-        //     ...dataModalRef,
-        //     // menuName: initModal.menuName
-        // },
-        // defaultValues: useMemo(() => {
-        //     return initModal;
-        // }, [initModal])
     });
-
-    // const getParentMenus = async (menuLevel) => {
-    //     const res = await menuService.getParentMenus(menuLevel);
-    //     if (res.HttpResponseCode === 200 && res.Data) {
-    //         setParentMenuArr([...res.Data])
-    //     }
-    //     else {
-    //         setParentMenuArr([])
-    //     }
-    // }
 
     const handleCloseDialog = () => {
         reset();
