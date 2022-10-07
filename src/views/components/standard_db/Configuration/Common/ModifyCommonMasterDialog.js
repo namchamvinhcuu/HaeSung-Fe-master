@@ -9,15 +9,15 @@ import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 
-import { permissionService } from '@services'
+import { commonService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
 
-const ModifyPermissionDialog = (props) => {
+const ModifyCommonMasterDialog = (props) => {
 
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setModifyData } = props;
-    console.log(initModal,'permission' );
+    console.log(initModal,'master');
 
     const clearParent = useRef(null);
 
@@ -31,8 +31,7 @@ const ModifyPermissionDialog = (props) => {
 
     const schema = yup.object().shape({
       
-        forRoot: yup.bool().required(),
-        permissionName: yup.string().required(),
+        commonMasterName: yup.string().required(),
 
 
     });
@@ -63,7 +62,7 @@ const ModifyPermissionDialog = (props) => {
         dataModalRef.current = { ...initModal, ...data };
         setDialogState({ ...dialogState, isSubmit: true });
 
-        const res = await permissionService.modify(dataModalRef.current);
+        const res = await commonService.modifyCommonMaster(dataModalRef.current);
         if (res.HttpResponseCode === 200 && res.Data) {
             SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
             setModifyData({ ...res.Data });
@@ -97,55 +96,20 @@ const ModifyPermissionDialog = (props) => {
                                 <TextField
                                     autoFocus
                                     fullWidth
-                                    disabled
+                                  
                                     size='small'
                                     label={intl.formatMessage({ id: 'general.name' })}
-                                    {...register('commonDetailName', {
+                                    {...register('commonMasterName', {
                                         // onChange: (e) => handleInputChange(e)
                                     })}
-                                    error={!!errors?.commonDetailName}
-                                    helperText={errors?.commonDetailName ? errors.commonDetailName.message : null}
+                                    error={!!errors?.commonMasterName}
+                                    helperText={errors?.commonMasterName ? errors.commonMasterName.message : null}
                                 />
                             </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoFocus
-                                    fullWidth
-                                    disabled
-                                    size='small'
-                                    label={intl.formatMessage({ id: 'general.name' })}
-                                    {...register('permissionName', {
-                                        // onChange: (e) => handleInputChange(e)
-                                    })}
-                                    error={!!errors?.permissionName}
-                                    helperText={errors?.permissionName ? errors.permissionName.message : null}
-                                />
-                            </Grid>
+                           
                         </Grid>
                     </Grid>
-                    <Grid item xs={12}>
-                        <Grid container spacing={2}>
-                          
-                            <Grid item xs={6}>
-                                <FormControlLabel
-                                    control={
-                                        <Controller
-                                            name='forRoot'
-                                            control={control}
-                                            render={({ field: props }) => (
-                                                <Checkbox
-                                                    {...props}
-                                                    checked={props.value}
-                                                    onChange={(e) => props.onChange(e.target.checked)}
-                                                />
-                                            )}
-                                        />
-                                    }
-                                    label='For Root'
-                                />
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                   
 
                     <Grid item xs={12}>
                         <Grid
@@ -165,4 +129,4 @@ const ModifyPermissionDialog = (props) => {
     )
 }
 
-export default ModifyPermissionDialog
+export default ModifyCommonMasterDialog
