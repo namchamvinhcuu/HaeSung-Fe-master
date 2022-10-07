@@ -266,7 +266,7 @@ const Menu = () => {
                     page={menuState.page - 1}
                     pageSize={menuState.pageSize}
                     rowCount={menuState.totalRow}
-                    rowsPerPageOptions={[20, 50, 100]}
+                    rowsPerPageOptions={[20]}
 
                     onPageChange={(newPage) => {
                         setMenuState({ ...menuState, page: newPage + 1 });

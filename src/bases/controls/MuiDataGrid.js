@@ -136,56 +136,58 @@ const MuiDataGrid = (props) => {
 
     return (
         <React.Fragment>
-            {
-                isPagingServer
-                    ?
-                    <StyledDataGrid
-                        autoHeight
-                        headerHeight={headerHeight}
-                        rowHeight={rowHeight ?? 32}
-                        // getRowHeight={() => 'auto'}
-                        columns={columns}
-                        rows={rows}
-                        loading={showLoading}
+            <div style={{ height: 108 + (pageSize * rowHeight) + 'px', maxHeight: '750px', overflow: "auto" }}>
+                {
+                    isPagingServer
+                        ?
+                        <StyledDataGrid
+                            autoHeight
+                            headerHeight={headerHeight}
+                            rowHeight={rowHeight ?? 32}
+                            // getRowHeight={() => 'auto'}
+                            columns={columns}
+                            rows={rows}
+                            loading={showLoading}
 
-                        pagination
-                        paginationMode="server"
-                        page={page ?? 1}
-                        pageSize={pageSize ?? 0}
-                        rowCount={rowCount ?? 0}
-                        rowsPerPageOptions={rowsPerPageOptions}
+                            pagination
+                            paginationMode="server"
+                            page={page ?? 1}
+                            pageSize={pageSize ?? 0}
+                            rowCount={rowCount ?? 0}
+                            rowsPerPageOptions={rowsPerPageOptions}
 
-                        onPageChange={onPageChange}
-                        onPageSizeChange={onPageSizeChange}
-                        getRowId={getRowId}
+                            onPageChange={onPageChange}
+                            onPageSizeChange={onPageSizeChange}
+                            getRowId={getRowId}
 
-                        onSelectionModelChange={onSelectionModelChange}
-                        {...props}
-                    />
-                    :
-                    <StyledDataGrid
-                        autoHeight
-                        headerHeight={headerHeight}
-                        rowHeight={rowHeight ?? 32}
-                        // getRowHeight={() => 'auto'}
-                        columns={columns}
-                        rows={rows}
+                            onSelectionModelChange={onSelectionModelChange}
+                            {...props}
+                        />
+                        :
+                        <StyledDataGrid
+                            autoHeight
+                            headerHeight={headerHeight}
+                            rowHeight={rowHeight ?? 32}
+                            // getRowHeight={() => 'auto'}
+                            columns={columns}
+                            rows={rows}
 
-                        pagination
-                        page={page ?? 1}
-                        pageSize={pageSize ?? 0}
-                        rowCount={rowCount ?? 0}
-                        rowsPerPageOptions={rowsPerPageOptions}
+                            pagination
+                            page={page ?? 1}
+                            pageSize={pageSize ?? 0}
+                            rowCount={rowCount ?? 0}
+                            rowsPerPageOptions={rowsPerPageOptions}
 
-                        onPageChange={onPageChange}
-                        onPageSizeChange={onPageSizeChange}
-                        getRowId={getRowId}
+                            onPageChange={onPageChange}
+                            onPageSizeChange={onPageSizeChange}
+                            getRowId={getRowId}
 
-                        onSelectionModelChange={onSelectionModelChange}
-                        {...props}
-                    />
+                            onSelectionModelChange={onSelectionModelChange}
+                            {...props}
+                        />
 
-            }
+                }
+            </div>
         </React.Fragment>
     )
 }

@@ -28,9 +28,9 @@ const CreateMenuDialog = (props) => {
 
     const schema = yup.object().shape({
         menuName: yup.string().required(intl.formatMessage({ id: 'menu.menuName_required' })),
-        menuIcon: yup.string().required(intl.formatMessage({ id: 'menu.menuName_required' })),
-        menuComponent: yup.string().required(intl.formatMessage({ id: 'menu.menuComponent_required' })),
-        menuLevel: yup.number().required(),
+
+        // menuIcon: yup.string().required(intl.formatMessage({ id: 'menu.menuName_required' })),
+
         navigateUrl: yup.string()
             .when("menuLevel", (menuLevel) => {
                 if (parseInt(menuLevel) === 3) {
@@ -38,6 +38,25 @@ const CreateMenuDialog = (props) => {
                         .required(intl.formatMessage({ id: 'menu.navigateUrl_required' }))
                 }
             }),
+
+        menuComponent: yup.string()
+            .when("menuLevel", (menuLevel) => {
+                if (parseInt(menuLevel) === 3) {
+                    return yup.string()
+                        .required(intl.formatMessage({ id: 'menu.menuComponent_required' }))
+                }
+            })
+            .when("navigateUrl", (navigateUrl) => {
+                if (navigateUrl && navigateUrl.length > 0) {
+                    return yup.string()
+                        .required(intl.formatMessage({ id: 'menu.navigateUrl_required' }))
+                }
+
+            }),
+
+        menuLevel: yup.number().required(),
+
+
         parentId: yup.string().nullable()
             .when("menuLevel", (menuLevel) => {
                 if (parseInt(menuLevel) > 1) {

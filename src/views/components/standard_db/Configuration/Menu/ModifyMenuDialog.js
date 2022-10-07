@@ -30,15 +30,33 @@ const ModifyMenuDialog = (props) => {
 
     const schema = yup.object().shape({
         menuName: yup.string().required(intl.formatMessage({ id: 'menu.menuName_required' })),
-        menuIcon: yup.string().required(intl.formatMessage({ id: 'menu.menuName_required' })),
-        menuComponent: yup.string().required(intl.formatMessage({ id: 'menu.menuComponent_required' })),
+
+        // menuIcon: yup.string().required(intl.formatMessage({ id: 'menu.menuName_required' })),
+
         menuLevel: yup.number().required(),
+
         navigateUrl: yup.string()
             .when("menuLevel", (menuLevel) => {
                 if (parseInt(menuLevel) === 3) {
                     return yup.string()
                         .required(intl.formatMessage({ id: 'menu.navigateUrl_required' }))
                 }
+            }),
+
+        // menuComponent: yup.string().required(intl.formatMessage({ id: 'menu.menuComponent_required' })),
+        menuComponent: yup.string()
+            .when("menuLevel", (menuLevel) => {
+                if (parseInt(menuLevel) === 3) {
+                    return yup.string()
+                        .required(intl.formatMessage({ id: 'menu.menuComponent_required' }))
+                }
+            })
+            .when("navigateUrl", (navigateUrl) => {
+                if (navigateUrl && navigateUrl.length > 0) {
+                    return yup.string()
+                        .required(intl.formatMessage({ id: 'menu.navigateUrl_required' }))
+                }
+
             }),
     });
     const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
