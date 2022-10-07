@@ -56,12 +56,13 @@ export const MuiDialog = ({ isOpen, onClose, title, disable_animate, maxWidth, d
 
         <Dialog
             TransitionComponent={animate === "fade" ? Transition_Fade : animate === "grow" ? Transition_Grow : animate === "slide_down" ? Transition_Slide_Down : Transition_Zoom}
-            transitionDuration={disable_animate || (data[dialogId]?.disable_animate === true) ? disable_animate : 250}
+            transitionDuration={(disable_animate || (data[dialogId]?.disable_animate === true)) ? disable_animate : 250}
             PaperComponent={PaperComponent}
             aria-labelledby={`draggable-dialog-${dialogId}`}
             fullWidth
             maxWidth={maxWidth ?? 'md'}
             open={isOpen}
+            onClose={onClose}
             {...others}
         >
             <DialogTitle
@@ -91,7 +92,8 @@ export const MuiDialog = ({ isOpen, onClose, title, disable_animate, maxWidth, d
                             backgroundColor: 'aliceblue',
                         },
                     }}
-                    onClick={handleClose} color="primary" >
+                    onClick={handleClose}
+                    color="primary" >
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>

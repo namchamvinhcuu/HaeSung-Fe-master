@@ -116,7 +116,6 @@ class TabListContent extends Component {
 
   render() {
     const { HistoryElementTabs, index_tab_active } = this.props;
-    console.log(HistoryElementTabs)
 
     return (
       HistoryElementTabs.length ?

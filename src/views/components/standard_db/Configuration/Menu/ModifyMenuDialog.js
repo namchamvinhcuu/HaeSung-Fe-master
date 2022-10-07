@@ -4,7 +4,7 @@ import {
     Autocomplete,
     Checkbox, FormControlLabel, Grid, Radio, RadioGroup, TextField
 } from '@mui/material'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
@@ -17,6 +17,8 @@ const ModifyMenuDialog = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setModifyData } = props;
+
+    console.log(initModal, 'update')
 
     const clearParent = useRef(null);
 
@@ -59,13 +61,17 @@ const ModifyMenuDialog = (props) => {
 
             }),
     });
+
     const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
         mode: 'onChange',
         resolver: yupResolver(schema),
-        defaultValues: {
-            ...initModal,
-
-        },
+        // defaultValues: {
+        //     ...dataModalRef,
+        //     // menuName: initModal.menuName
+        // },
+        // defaultValues: useMemo(() => {
+        //     return initModal;
+        // }, [initModal])
     });
 
     // const getParentMenus = async (menuLevel) => {
@@ -113,10 +119,11 @@ const ModifyMenuDialog = (props) => {
         setDialogState({ ...dialogState, isSubmit: false });
     };
 
-    // useEffect(() => {
-    //     if (isOpen)
-    //         getParentMenus(dialogState.menuLevel);
-    // }, [isOpen, dialogState.menuLevel])
+    useEffect(() => {
+        let defaultValues = {};
+        defaultValues = { ...initModal }
+        reset({ ...defaultValues });
+    }, [initModal]);
 
     return (
         <MuiDialog

@@ -17,7 +17,7 @@ const CreateMenuDialog = (props) => {
 
     const { initModal, isOpen, onClose, setNewData } = props;
 
-    const [parentMenuArr, setParentMenuArr] = useState([]);
+    const [parentMenuArr, setParentMenuArr] = useState([initModal]);
 
     const dataModalRef = useRef({ ...initModal });
     const clearParent = useRef(null);
@@ -184,6 +184,7 @@ const CreateMenuDialog = (props) => {
                                                 <Autocomplete
                                                     // multiple
                                                     // disablePortal
+                                                    freeSolo
                                                     ref={clearParent}
                                                     fullWidth
                                                     size='small'
@@ -191,6 +192,7 @@ const CreateMenuDialog = (props) => {
                                                     autoHighlight
                                                     openOnFocus
                                                     getOptionLabel={option => option.menuName}
+                                                    isOptionEqualToValue={(option, value) => option.menuId === value.menuId}
                                                     // value={value => {
                                                     //     parentMenuArr.forEach(element => {
                                                     //         if (element.menuId === value) {
