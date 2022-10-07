@@ -1,16 +1,15 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS'
+import { User_Operations } from '@appstate/user'
+import { Store } from '@appstate'
+import { useIntl } from 'react-intl';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { createTheme, ThemeProvider } from "@mui/material";
-import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
-import Input from '@mui/material/Input';
-import InputAdornment from '@mui/material/InputAdornment';
-import InputLabel from '@mui/material/InputLabel';
-import React, { useEffect, useRef, useState } from 'react';
-import { useIntl } from 'react-intl';
 
 import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
 import { menuService } from '@services';
@@ -38,9 +37,10 @@ const myTheme = createTheme({
     }
 });
 
-const Menu = () => {
+const Menu = (props) => {
     const intl = useIntl();
     let isRendered = useRef(false);
+
     const initMenuModel = {
         menuId: 0
         , parentId: 0
@@ -359,4 +359,28 @@ const Menu = () => {
     )
 }
 
-export default Menu
+User_Operations.toString = function () {
+    return 'User_Operations';
+}
+
+const mapStateToProps = state => {
+
+    const { User_Reducer: { language } } = CombineStateToProps(state.AppReducer, [
+        [Store.User_Reducer]
+    ]);
+
+    return { language };
+
+};
+
+const mapDispatchToProps = dispatch => {
+
+    const { User_Operations: { changeLanguage } } = CombineDispatchToProps(dispatch, bindActionCreators, [
+        [User_Operations]
+    ]);
+
+    return { changeLanguage }
+
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Menu)

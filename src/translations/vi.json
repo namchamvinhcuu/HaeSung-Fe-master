@@ -55,9 +55,14 @@
         "duplicated_name": "CommonDetail: tên đã được tạo"
     },
     "menu": {
-        "mms": "QUẢN LÝ SẢN XUẤT",
-        "wms": "QUẢN LÝ KHO",
-        "standard": "DANH MỤC",
+        "kpi": "KPI",
+        "mms": "MMS",
+        "wms": "WMS",
+        "wip": "WIP/NG",
+        "po": "PO",
+        "information": "Thông tin",
+        "material": "Vật tư",
+        "standard": "Danh mục",
         "standard_configuration": "Cài đặt",
         "standard_configuration_menu": "Menu",
         "standard_configuration_permission": "Phân quyền",

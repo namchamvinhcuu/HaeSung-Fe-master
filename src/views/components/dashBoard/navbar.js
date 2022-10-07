@@ -150,10 +150,10 @@ class NavBar extends Component {
   }
 
   componentDidMount() {
-    $('#notify_dropdown').on('show.bs.dropdown', () => {
-      const { updateTimeAgo } = this.props
-      updateTimeAgo();
-    });
+    // $('#notify_dropdown').on('show.bs.dropdown', () => {
+    //   const { updateTimeAgo } = this.props
+    //   updateTimeAgo();
+    // });
   }
 
 
@@ -223,7 +223,7 @@ class NavBar extends Component {
 
           <ul className="navbar-nav ml-auto" >
 
-            {total_notify > 0 && <li className="nav-item dropdown" id="notify_dropdown">
+            {/* {total_notify > 0 && <li className="nav-item dropdown" id="notify_dropdown">
 
               <a onClick={(e) => e.preventDefault()} className="nav-link" data-toggle="dropdown" role="button" title="your message box" href="#" >
                 <i className="far fa-bell"></i>
@@ -256,7 +256,7 @@ class NavBar extends Component {
                 <a href="#" onClick={e => this.handleClick_See_All_Notifies(e, this)} className="dropdown-item dropdown-footer">See All Notifications</a>
               </div>
             </li>
-            }
+            } */}
 
             {/* <li className="nav-item">
               <a

@@ -55,8 +55,13 @@
         "duplicated_name": "CommonDetail: duplicated name"
     },
     "menu": {
+        "kpi": "KPI",
         "mms": "MMS",
         "wms": "WMS",
+        "wip": "WIP/NG",
+        "po": "PO",
+        "information": "Information",
+        "material": "Material",
         "standard": "Standard",
         "standard_configuration": "Configuration",
         "standard_configuration_menu": "Menu",
