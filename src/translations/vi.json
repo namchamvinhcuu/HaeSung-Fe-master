@@ -36,6 +36,7 @@
         "parent": "Parent",
         "language_key": "Đa ngôn ngữ",
         "root_only": "Root only",
+        "sort_order": "Thứ tự",
         "unauthorized": "Bạn không có quyền truy cập"
     },
     "login": {

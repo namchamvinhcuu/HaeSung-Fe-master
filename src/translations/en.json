@@ -36,6 +36,7 @@
         "parent": "Parent",
         "language_key": "Multi Language",
         "root_only": "Root only",
+        "sort_order": "Sort Order",
         "unauthorized": "Unauthorized"
     },
     "login": {

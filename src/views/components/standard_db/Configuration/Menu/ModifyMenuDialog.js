@@ -208,13 +208,14 @@ const ModifyMenuDialog = (props) => {
                             <Grid item xs={6}>
                                 <TextField
                                     fullWidth
+                                    type='number'
                                     size='small'
-                                    label={intl.formatMessage({ id: 'general.language_key' })}
-                                    name="languageKey"
-                                    {...register('languageKey', {
+                                    label={intl.formatMessage({ id: 'general.sort_order' })}
+                                    name="sortOrder"
+                                    {...register('sortOrder', {
                                     })}
-                                    error={!!errors?.languageKey}
-                                    helperText={errors?.languageKey ? errors.languageKey.message : null}
+                                    error={!!errors?.sortOrder}
+                                    helperText={errors?.sortOrder ? errors.sortOrder.message : null}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -233,6 +234,23 @@ const ModifyMenuDialog = (props) => {
                                         />
                                     }
                                     label='For Root'
+                                />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    size='small'
+                                    label={intl.formatMessage({ id: 'general.language_key' })}
+                                    name="languageKey"
+                                    {...register('languageKey', {
+                                    })}
+                                    error={!!errors?.languageKey}
+                                    helperText={errors?.languageKey ? errors.languageKey.message : null}
                                 />
                             </Grid>
                         </Grid>
