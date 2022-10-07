@@ -1,17 +1,23 @@
-import DeleteIcon from '@mui/icons-material/Delete'
-import EditIcon from '@mui/icons-material/Edit'
-import Grid from '@mui/material/Grid'
-import IconButton from '@mui/material/IconButton'
-import { createTheme, ThemeProvider } from "@mui/material"
-import React, { useEffect, useRef, useState } from 'react'
-import { useIntl } from 'react-intl'
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { createTheme, ThemeProvider } from "@mui/material";
+import FormControl from '@mui/material/FormControl';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
+import InputLabel from '@mui/material/InputLabel';
+import React, { useEffect, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
 
-import { MuiButton, MuiDataGrid } from '@controls'
-import { menuService } from '@services'
+import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import { menuService } from '@services';
 
-import CreateMenuDialog from './CreateMenuDialog'
-import ModifyMenuDialog from './ModifyMenuDialog'
-import _ from 'lodash'
+import _ from 'lodash';
+import CreateMenuDialog from './CreateMenuDialog';
+import ModifyMenuDialog from './ModifyMenuDialog';
 
 
 const myTheme = createTheme({
@@ -62,6 +68,9 @@ const Menu = () => {
         totalRow: 0,
         page: 1,
         pageSize: 20,
+        searchData: {
+            keyWord: ''
+        }
     });
 
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
@@ -101,7 +110,15 @@ const Menu = () => {
         }
     }
 
-    async function fetchData() {
+    const changeSearchData = (e, inputName) => {
+
+        let newSearchData = { ...menuState.searchData };
+        newSearchData[inputName] = e.target.value;
+
+        setMenuState({ ...menuState, searchData: { ...newSearchData } })
+    }
+
+    const fetchData = async () => {
         setMenuState({
             ...menuState
             , isLoading: true
@@ -109,7 +126,8 @@ const Menu = () => {
         });
         const params = {
             page: menuState.page,
-            pageSize: menuState.pageSize
+            pageSize: menuState.pageSize,
+            keyWord: menuState.searchData.keyWord
         }
         const res = await menuService.getMenuList(params);
 
@@ -250,11 +268,30 @@ const Menu = () => {
     return (
         <React.Fragment>
             <ThemeProvider theme={myTheme}>
-                <MuiButton
-                    text="create"
-                    color='success'
-                    onClick={toggleCreateMenuDialog}
-                />
+                <Grid
+                    container
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="flex-end"
+                >
+                    <Grid item xs={6}>
+                        <MuiButton
+                            text="create"
+                            color='success'
+                            onClick={toggleCreateMenuDialog}
+                        />
+                    </Grid>
+                    <Grid item xs>
+                        <MuiSearchField
+                            label='general.name'
+                            name='keyWord'
+                            onClick={fetchData}
+                            onChange={(e) => changeSearchData(e, 'keyWord')}
+                        />
+                    </Grid>
+
+                </Grid>
+
                 <MuiDataGrid
                     // ref={menuGridRef}
                     showLoading={menuState.isLoading}
