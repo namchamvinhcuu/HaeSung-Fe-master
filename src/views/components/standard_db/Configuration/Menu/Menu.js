@@ -102,6 +102,7 @@ const Menu = () => {
         const rowSelected = menuState.data.filter(function (item) {
             return item.menuId === arrIds[0]
         });
+
         if (rowSelected && rowSelected.length > 0) {
             setSelectedRow({ ...rowSelected[0] });
         }
@@ -324,19 +325,34 @@ const Menu = () => {
                 // 
                 />
 
-                {isOpenCreateDialog && <CreateMenuDialog
+                {/* {isOpenCreateDialog && <CreateMenuDialog
                     initModal={initMenuModel}
                     setNewData={setNewData}
                     isOpen={isOpenCreateDialog}
                     onClose={toggleCreateMenuDialog}
-                />}
+                />} */}
+                <CreateMenuDialog
+                    initModal={initMenuModel}
+                    setNewData={setNewData}
+                    isOpen={isOpenCreateDialog}
+                    onClose={toggleCreateMenuDialog}
+                />
+                {/* {isOpenModifyDialog &&
+                    <ModifyMenuDialog
+                        initModal={selectedRow}
+                        setModifyData={setSelectedRow}
+                        isOpen={isOpenModifyDialog}
+                        onClose={toggleModifyMenuDialog}
+                    />
+                } */}
 
-                {isOpenModifyDialog && <ModifyMenuDialog
+                <ModifyMenuDialog
                     initModal={selectedRow}
                     setModifyData={setSelectedRow}
                     isOpen={isOpenModifyDialog}
                     onClose={toggleModifyMenuDialog}
-                />}
+                />
+
             </ThemeProvider>
         </React.Fragment>
 

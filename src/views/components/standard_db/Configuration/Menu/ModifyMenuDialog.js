@@ -1,7 +1,6 @@
 import { MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
-    Autocomplete,
     Checkbox, FormControlLabel, Grid, Radio, RadioGroup, TextField
 } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
@@ -26,12 +25,8 @@ const ModifyMenuDialog = (props) => {
         isSubmit: false,
     })
 
-    // const [parentMenuArr, setParentMenuArr] = useState([]);
-
     const schema = yup.object().shape({
         menuName: yup.string().required(intl.formatMessage({ id: 'menu.menuName_required' })),
-
-        // menuIcon: yup.string().required(intl.formatMessage({ id: 'menu.menuName_required' })),
 
         menuLevel: yup.number().required(),
 
@@ -43,7 +38,6 @@ const ModifyMenuDialog = (props) => {
                 }
             }),
 
-        // menuComponent: yup.string().required(intl.formatMessage({ id: 'menu.menuComponent_required' })),
         menuComponent: yup.string()
             .when("menuLevel", (menuLevel) => {
                 if (parseInt(menuLevel) === 3) {
@@ -59,24 +53,11 @@ const ModifyMenuDialog = (props) => {
 
             }),
     });
+
     const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
         mode: 'onChange',
         resolver: yupResolver(schema),
-        defaultValues: {
-            ...initModal,
-
-        },
     });
-
-    // const getParentMenus = async (menuLevel) => {
-    //     const res = await menuService.getParentMenus(menuLevel);
-    //     if (res.HttpResponseCode === 200 && res.Data) {
-    //         setParentMenuArr([...res.Data])
-    //     }
-    //     else {
-    //         setParentMenuArr([])
-    //     }
-    // }
 
     const handleCloseDialog = () => {
         reset();
@@ -113,10 +94,9 @@ const ModifyMenuDialog = (props) => {
         setDialogState({ ...dialogState, isSubmit: false });
     };
 
-    // useEffect(() => {
-    //     if (isOpen)
-    //         getParentMenus(dialogState.menuLevel);
-    // }, [isOpen, dialogState.menuLevel])
+    useEffect(() => {
+        reset({ ...initModal });
+    }, [initModal]);
 
     return (
         <MuiDialog
