@@ -120,9 +120,7 @@ const ModifyMenuDialog = (props) => {
     };
 
     useEffect(() => {
-        let defaultValues = {};
-        defaultValues = { ...initModal }
-        reset({ ...defaultValues });
+        reset({ ...initModal });
     }, [initModal]);
 
     return (
