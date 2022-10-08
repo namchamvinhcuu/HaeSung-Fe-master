@@ -16,16 +16,19 @@ import TabListContent from './dashBoard/TabListContent'
 import Menu from "./standard_db/Configuration/Menu/Menu";
 import Permission from "./standard_db/Configuration/Permission/Permission";
 import User from "./standard_db/Configuration/User/User";
+import Role from "./standard_db/Configuration/Role/Role";
 
 import Common from "./standard_db/Configuration/Common/CommonMaster";
 
-//STANDARD - Configuration
+//STANDARD - Information
 import BOM from "./standard_db/Information/BOM/BOM";
 import Location from "./standard_db/Information/Location/Location";
 import Material from "./standard_db/Information/Material/Material";
 import Mold from "./standard_db/Information/Mold/Mold";
 import Product from "./standard_db/Information/Product/Product";
-
+import Staff from "./standard_db/Information/Staff/Staff";
+import Supplier from "./standard_db/Information/Supplier/Supplier";
+import Tray from "./standard_db/Information/Tray/Tray";
 
 //KPI
 import Analytics from "./KPI/Analytics/Analytics";
@@ -78,12 +81,16 @@ export {
   Permission,
   User,
   Common,
+  Role,
   //STANDARD - Information
   BOM,
   Location,
   Material,
   Mold,
   Product,
+  Staff,
+  Supplier,
+  Tray,
 
   //KPI
   Analytics,

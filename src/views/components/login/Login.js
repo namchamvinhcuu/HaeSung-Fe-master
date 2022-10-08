@@ -51,7 +51,7 @@ const Login = (props) => {
 
 
     const initModal = {
-        userName: 'root',
+        userName: '',
         userPassword: '1234@',
         // userName: '',
         // userPassword: '',
