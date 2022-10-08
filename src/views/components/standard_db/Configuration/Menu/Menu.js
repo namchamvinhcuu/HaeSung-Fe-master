@@ -207,8 +207,13 @@ const Menu = (props) => {
     }
 
     const columns = [
-        { field: 'id', headerName: 'ID', hide: true },
+        { field: 'menuId', headerName: '', hide: true },
         { field: 'parentId', headerName: 'ParentId', hide: true },
+        {
+            field: 'id', headerName: '', flex: 0.01,
+            filterable: false,
+            renderCell: (index) => index.api.getRowIndex(index.row.menuId) + 1,
+        },
         {
             field: "action",
             headerName: "",
