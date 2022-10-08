@@ -9,7 +9,7 @@ const withTab = (item) => WrappedComponent => {
   return class extends React.Component {
     constructor(props) {
       super(props);
-      this.state = { tab: { created: 1 }, idrefresh: null }
+      this.state = { tab: { created: 0 }, idrefresh: null }
       this.componentTabChange = this.componentTabChange.bind(this)
       this.componentRefreshChange = this.componentRefreshChange.bind(this)
     }
