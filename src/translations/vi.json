@@ -77,14 +77,20 @@
         "menuComponent_required": "Thành phần không được để trống",
         "navigateUrl_required": "Đường dẫn không được để trống",
         "parentId_required": "Menu cha không được để trống",
-        "not_found": "Menu: không tồn tại"
+        "not_found": "Menu: không tồn tại",
+        "menuName": "Tên Menu"
     },
     "permission": {
+        "permissionName": "Tên Permission",
         "existed": "Permission: đã được tạo"
     },
     "role": {
+        "addMenu": "Thêm Menu",
+        "addPermission": "Thêm Permission",
+        "roleName": "Tên Role",
         "not_found": "Role: không tồn tại",
-        "duplicated_name": "Role: tên đã được tạo"
+        "duplicated_name": "Role: tên đã được tạo",
+        "roleName_required": "Tên role không được để trống"
     },
     "user": {
         "userName": "Tài khoản",

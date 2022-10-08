@@ -8,10 +8,12 @@ import { useIntl } from 'react-intl'
 import { MuiButton, MuiDataGrid } from '@controls'
 import { userService, roleService } from '@services'
 
-import { useModal, useModal2, useModal3 } from "@basesShared";
+import { useModal, useModal2, useModal3 } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
 import RoleAddMenuDialog from './RoleAddMenuDialog'
 import RoleAddPermissionDialog from './RoleAddPermissionDialog'
+import RoleDialog from './RoleDialog'
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 
 const myTheme = createTheme({
   components: {
@@ -29,6 +31,7 @@ const myTheme = createTheme({
 
 export default function Role() {
   const intl = useIntl();
+  const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
   const { isShowing2, toggle2 } = useModal2();
   const { isShowing3, toggle3 } = useModal3();
@@ -65,6 +68,7 @@ export default function Role() {
 
   const columns = [
     { field: 'roleId', hide: true },
+    { field: 'row_version', hide: true },
     {
       field: "action",
       headerName: "",
@@ -92,20 +96,9 @@ export default function Role() {
                 color="warning"
                 size="small"
                 sx={[{ '&:hover': { border: '1px solid orange', }, }]}
-                onClick={() => handleChangePass(params.row)}
-              >
-                <EditIcon fontSize="inherit" />
-              </IconButton>
-            </Grid>
-            <Grid item xs={4} style={{ textAlign: "center" }}>
-              <IconButton
-                aria-label="edit"
-                color="success"
-                size="small"
-                sx={[{ '&:hover': { border: '1px solid green', }, }]}
                 onClick={() => handleUpdate(params.row)}
               >
-                <LockIcon fontSize="inherit" />
+                <EditIcon fontSize="inherit" />
               </IconButton>
             </Grid>
           </Grid>
@@ -118,12 +111,12 @@ export default function Role() {
 
   const permissionColumns = [
     { field: 'permissionId', hide: true },
-    { field: 'permissionName', headerName: intl.formatMessage({ id: "role.permissionName" }), flex: 0.7, },
+    { field: 'permissionName', headerName: intl.formatMessage({ id: "permission.permissionName" }), flex: 0.7, },
   ];
 
   const menuColumns = [
     { field: 'menuId', hide: true },
-    { field: 'menuName', headerName: intl.formatMessage({ id: "role.menuName" }), flex: 0.7, },
+    { field: 'menuName', headerName: intl.formatMessage({ id: "menu.menuName" }), flex: 0.7, },
   ];
 
   useEffect(() => {
@@ -138,10 +131,10 @@ export default function Role() {
     fetchDataMenu(roleId);
   }, [menuState.page, menuState.pageSize, roleId]);
 
-  const handleDelete = async (user) => {
+  const handleDelete = async (role) => {
     if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
       try {
-        let res = await userService.deleteUser(user.userId);
+        let res = await roleService.deleteRole(role.roleId);
         if (res && res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }))
           await fetchData();
@@ -159,13 +152,9 @@ export default function Role() {
   }
 
   const handleUpdate = (row) => {
+    setMode(UPDATE_ACTION);
     setRowData({ ...row });
     toggle3();
-  };
-
-  const handleChangePass = (row) => {
-    setRowData({ ...row });
-    toggle2();
   };
 
   const handleDeleteMenu = async () => {
@@ -174,7 +163,7 @@ export default function Role() {
         let res = await roleService.deleteMenu({ menuIds: selectMenu, roleId: roleId });
         if (res && res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }))
-          await fetchDataMenu();
+          await fetchDataMenu(roleId);
         }
       } catch (error) {
         console.log(error)
@@ -188,7 +177,7 @@ export default function Role() {
         let res = await roleService.deletePermission({ permissionIds: selectPermission, roleId: roleId });
         if (res && res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }))
-          await fetchDataPermission();
+          await fetchDataPermission(roleId);
         }
       } catch (error) {
         console.log(error)
@@ -248,15 +237,20 @@ export default function Role() {
     }
   }, [newData]);
 
+  const handleCellClick = (param, event) => {
+    //disable click cell 
+    event.defaultMuiPrevented = (param.field === "action");
+  };
+
   return (
     <React.Fragment>
       <ThemeProvider theme={myTheme}>
         <Grid container sx={{ mb: 1 }}>
           <Grid item xs={8}>
-            <MuiButton text="create" color='success' onClick={toggle} />
+            <MuiButton text="create" color='success' onClick={toggle3} />
           </Grid>
           <Grid item xs={4} container>
-            <Grid item xs={9}>
+            {/* <Grid item xs={9}>
               <TextField
                 fullWidth
                 size='small'
@@ -266,7 +260,7 @@ export default function Role() {
             </Grid>
             <Grid item xs={3}>
               <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0, ml: 2 }} />
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
         <MuiDataGrid
@@ -286,6 +280,7 @@ export default function Role() {
           onPageSizeChange={(newPageSize) => {
             setUserState({ ...userState, pageSize: newPageSize, page: 1 });
           }}
+          onCellClick={handleCellClick}
           onRowClick={(rowData) => handleRoleClick(rowData.row.roleId)}
           getRowId={(rows) => rows.roleId}
           getRowClassName={(params) => {
@@ -297,9 +292,9 @@ export default function Role() {
         <Grid container sx={{ mt: 1 }} spacing={3}>
           <Grid item xs={6}>
             <Grid container >
-              <MuiButton text="Create" color='success' onClick={toggle} />
+              <MuiButton text="Create" color='success' onClick={toggle} disabled={roleId != 0 ? false : true} />
               <Badge badgeContent={selectPermission.length} color="warning">
-                <MuiButton text="Delete" color='error' onClick={handleDeletePermission} />
+                <MuiButton text="Delete" color='error' onClick={handleDeletePermission} disabled={selectPermission.length > 0 ? false : true} />
               </Badge>
             </Grid>
             <MuiDataGrid
@@ -333,9 +328,9 @@ export default function Role() {
           </Grid>
           <Grid item xs={6}>
             <Grid container>
-              <MuiButton text="Create" color='success' onClick={toggle2} />
+              <MuiButton text="Create" color='success' onClick={toggle2} disabled={roleId != 0 ? false : true} />
               <Badge badgeContent={selectMenu.length} color="warning">
-                <MuiButton text="Delete" color='error' onClick={handleDeleteMenu} />
+                <MuiButton text="Delete" color='error' onClick={handleDeleteMenu} disabled={selectMenu.length > 0 ? false : true} />
               </Badge>
             </Grid>
             <MuiDataGrid
@@ -368,27 +363,33 @@ export default function Role() {
             />
           </Grid>
         </Grid>
-        {isShowing && <RoleAddMenuDialog
+
+        {isShowing && <RoleAddPermissionDialog
           setNewData={setNewData}
           rowData={rowData}
           isOpen={isShowing}
           onClose={toggle}
+          roleId={roleId}
+          loadData={fetchDataPermission}
         />}
 
-        {isShowing2 && <RoleAddPermissionDialog
+        {isShowing2 && <RoleAddMenuDialog
           setNewData={setNewData}
           rowData={rowData}
           isOpen={isShowing2}
           onClose={toggle2}
-          loadData={fetchData}
+          roleId={roleId}
+          loadData={fetchDataMenu}
         />}
 
-        {/* {isShowing3 && <UserPasswordDialog
+        {isShowing3 && <RoleDialog
           setNewData={setNewData}
           rowData={rowData}
           isOpen={isShowing3}
           onClose={toggle3}
-        />} */}
+          loadData={fetchData}
+          mode={mode}
+        />}
 
       </ThemeProvider>
     </React.Fragment>

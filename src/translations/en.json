@@ -79,14 +79,20 @@
         "menuComponent_required": "Component is required",
         "navigateUrl_required": "Url is required",
         "parentId_required": "Parent Menu is required",
-        "not_found": "Menu: not found"
+        "not_found": "Menu: not found",
+        "menuName": "Menu Name"
     },
     "permission": {
+        "permissionName": "Permission Name",
         "existed": "Permission: existed"
     },
     "role": {
+        "addMenu": "Add Menu",
+        "addPermission": "Add Permission",
+        "roleName": "Role Name",
         "not_found": "Role: not found/existed",
-        "duplicated_name": "Role: duplicated name"
+        "duplicated_name": "Role: duplicated name",
+        "roleName_required": "Role name is required"
     },
     "user": {
         "userName": "Username",

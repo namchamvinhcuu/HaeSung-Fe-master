@@ -41,7 +41,15 @@ function ComponentWrapper(name, code, component, router, title, InputComponent, 
     }
 
     UNSAFE_componentWillMount() {
-      var res = createTab({ is_reload_component: this.props.location.is_reload_component, component: component, title: title, name: String(name).toUpperCase(), code: code, router, breadcrumb_array, ChildComponent: InputComponent });
+      var res = createTab({
+        is_reload_component: this.props.location.is_reload_component
+        , component: component
+        , title: title
+        , name: String(name).toUpperCase()
+        , code: code
+        , router, breadcrumb_array
+        , ChildComponent: InputComponent
+      });
       this.setState({ tabRender: res })
 
     }
@@ -88,11 +96,9 @@ const buildTreeMenu = (
   Component_Show_Default
 ) => {
 
-
-
-  var html_child = "";
+  let html_child = "";
   list.forEach((item) => {
-    if (item.parentId == parentId) {
+    if (item.parentId === parentId) {
       const child = {
         ...item,
         key: item.menuId,
@@ -100,25 +106,28 @@ const buildTreeMenu = (
         children: [],
       };
 
-      if (!parentId) {
-        // console.log(item.name,item.visiable)
-        // if (item.visiable === true) {
-        //   breadcrumb_array = [item.menuName];
+      // if (!parentId) {
+      //   // console.log(item.name,item.visiable)
+      //   // if (item.visiable === true) {
+      //   //   breadcrumb_array = [item.menuName];
 
-        // } else {
+      //   // } else {
 
-        //   breadcrumb_array = [];
-        // }
-        // breadcrumb_array = [item.menuName];
-        breadcrumb_array = [<FormattedMessage id={item.languageKey} />]
-      } else if (parentId) {
+      //   //   breadcrumb_array = [];
+      //   // }
+      //   // breadcrumb_array = [item.menuName];
+      //   breadcrumb_array = [<FormattedMessage id={item.languageKey} />]
+      // }
+      // else if (parentId) {
 
-        // breadcrumb_array.push(item.menuName);
-        breadcrumb_array.push(<FormattedMessage id={item.languageKey} />);
-      }
+      //   // breadcrumb_array.push(item.menuName);
+      //   breadcrumb_array.push(<FormattedMessage id={item.languageKey} />);
+      // }
+
+      breadcrumb_array.push(<FormattedMessage id={item.languageKey} />);
 
       //Iterate the list to find all submenus that match the current menu
-      var res_html = buildTreeMenu(
+      let res_html = buildTreeMenu(
         level + 1,
         list,
         child.children,
@@ -142,11 +151,11 @@ const buildTreeMenu = (
 
               component={
                 ComponentWrapper(
-                  item.menuName,//name
-                  item.menuName,//code
+                  item.menuComponent,//name
+                  item.menuComponent,//code
                   item.menuComponent,//component
                   item.navigateUrl,//router
-                  item.menuName,//title
+                  item.menuComponent,//title
                   AllContainers[item.menuComponent] || AllComponents[item.menuComponent],//InputComponent
                   [...breadcrumb_array]
                 )
@@ -158,12 +167,12 @@ const buildTreeMenu = (
 
           if (item.isShowDefault === true && !Component_Show_Default.cmp) {
             Component_Show_Default.cmp = ComponentWrapper(
-              item.menuName,
-              item.menuName,
+              item.menuComponent,
+              item.menuComponent,
               item.menuId,
               item.menuComponent,
               item.navigateUrl,
-              item.menuName,
+              item.menuComponent,
               AllContainers[item.menuComponent] || AllComponents[item.menuComponent],
               [...breadcrumb_array]
             );
