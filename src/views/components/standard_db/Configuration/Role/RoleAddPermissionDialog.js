@@ -8,13 +8,13 @@ import * as yup from 'yup'
 import { userService, roleService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
 
-const RoleAddPermissionDialog = ({ roleId, initModal, isOpen, onClose, setNewData, rowData }) => {
+const RoleAddPermissionDialog = ({ roleId, initModal, isOpen, onClose, setNewData, rowData, loadData }) => {
   const intl = useIntl();
   const [permissionList, setPermissionList] = useState([]);
   const [dialogState, setDialogState] = useState({ isSubmit: false })
 
   const schema = yup.object().shape({
-
+    Permissions: yup.array().min(1, intl.formatMessage({ id: 'menu.menuName_required' })).required(intl.formatMessage({ id: 'menu.menuName_required' }))
   });
 
   const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
@@ -45,15 +45,15 @@ const RoleAddPermissionDialog = ({ roleId, initModal, isOpen, onClose, setNewDat
 
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
+    const res = await roleService.addPermission({ ...data, roleId: roleId });
 
-    const res = await userService.createUser({ ...data, roleId: roleId });
-
-    if (res.HttpResponseCode === 200 && res.Data) {
+    if (res.HttpResponseCode === 200) {
       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
       setNewData({ ...res.Data });
       setDialogState({ ...dialogState, isSubmit: false });
       handleReset();
       handleCloseDialog();
+      loadData(roleId);
     }
     else {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -68,7 +68,7 @@ const RoleAddPermissionDialog = ({ roleId, initModal, isOpen, onClose, setNewDat
   return (
     <MuiDialog
       maxWidth='sm'
-      title={intl.formatMessage({ id: 'general.create' })}
+      title={intl.formatMessage({ id: 'role.addPermission' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
       disable_animate={300}
@@ -79,7 +79,7 @@ const RoleAddPermissionDialog = ({ roleId, initModal, isOpen, onClose, setNewDat
           <Grid item xs={12}>
             <Controller
               control={control}
-              name="Roles"
+              name="Permissions"
               render={({ field: { onChange, value } }) => {
                 return (
                   <Autocomplete
@@ -94,10 +94,10 @@ const RoleAddPermissionDialog = ({ roleId, initModal, isOpen, onClose, setNewDat
                     groupBy={(option) => option.permissionGroup}
                     onChange={(e, item) => {
                       if (item) {
-                        setValue("Roles", item ?? []);
+                        setValue("Permissions", item ?? []);
                       }
                       else {
-                        setValue("Roles", []);
+                        setValue("Permissions", []);
                       }
                     }}
                     disableCloseOnSelect={true}
@@ -126,9 +126,9 @@ const RoleAddPermissionDialog = ({ roleId, initModal, isOpen, onClose, setNewDat
                     renderInput={(params) => {
                       return <TextField
                         {...params}
-                        label={intl.formatMessage({ id: 'user.menuName' })}
-                      // error={!!errors.parentId}
-                      // helperText={errors?.parentId ? errors.parentId.message : null}
+                        label={intl.formatMessage({ id: 'permission.permissionName' })}
+                        error={!!errors.Permissions}
+                        helperText={errors?.Permissions ? errors.Permissions.message : null}
                       />
                     }}
                   />

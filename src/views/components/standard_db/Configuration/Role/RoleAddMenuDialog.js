@@ -8,13 +8,13 @@ import * as yup from 'yup'
 import { userService, roleService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
 
-const RoleAddMenuDialog = ({ roleId, initModal, isOpen, onClose, setNewData, rowData }) => {
+const RoleAddMenuDialog = ({ roleId, initModal, isOpen, onClose, setNewData, rowData, loadData }) => {
   const intl = useIntl();
   const [menuList, setMenuList] = useState([]);
   const [dialogState, setDialogState] = useState({ isSubmit: false })
 
   const schema = yup.object().shape({
-
+    Menus: yup.array().min(1, intl.formatMessage({ id: 'menu.menuName_required' })).required(intl.formatMessage({ id: 'menu.menuName_required' }))
   });
 
   const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
@@ -37,7 +37,6 @@ const RoleAddMenuDialog = ({ roleId, initModal, isOpen, onClose, setNewData, row
 
   const getMenus = async () => {
     const res = await roleService.getAllMenu();
-    console.log(res)
     if (res.HttpResponseCode === 200 && res.Data) {
       setMenuList([...res.Data])
     }
@@ -46,14 +45,15 @@ const RoleAddMenuDialog = ({ roleId, initModal, isOpen, onClose, setNewData, row
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
 
-    const res = await userService.createUser({ ...data, roleId: roleId });
+    const res = await roleService.addMenu({ ...data, roleId: roleId });
 
-    if (res.HttpResponseCode === 200 && res.Data) {
+    if (res.HttpResponseCode === 200) {
       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
       setNewData({ ...res.Data });
       setDialogState({ ...dialogState, isSubmit: false });
       handleReset();
       handleCloseDialog();
+      loadData(roleId);
     }
     else {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -68,7 +68,7 @@ const RoleAddMenuDialog = ({ roleId, initModal, isOpen, onClose, setNewData, row
   return (
     <MuiDialog
       maxWidth='sm'
-      title={intl.formatMessage({ id: 'general.create' })}
+      title={intl.formatMessage({ id: 'role.addMenu' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
       disable_animate={300}
@@ -79,7 +79,7 @@ const RoleAddMenuDialog = ({ roleId, initModal, isOpen, onClose, setNewData, row
           <Grid item xs={12}>
             <Controller
               control={control}
-              name="Roles"
+              name="Menus"
               render={({ field: { onChange, value } }) => {
                 return (
                   <Autocomplete
@@ -94,10 +94,10 @@ const RoleAddMenuDialog = ({ roleId, initModal, isOpen, onClose, setNewData, row
                     groupBy={(option) => option.ParentMenuName}
                     onChange={(e, item) => {
                       if (item) {
-                        setValue("Roles", item ?? []);
+                        setValue("Menus", item ?? []);
                       }
                       else {
-                        setValue("Roles", []);
+                        setValue("Menus", []);
                       }
                     }}
                     disableCloseOnSelect={true}
@@ -126,9 +126,9 @@ const RoleAddMenuDialog = ({ roleId, initModal, isOpen, onClose, setNewData, row
                     renderInput={(params) => {
                       return <TextField
                         {...params}
-                        label={intl.formatMessage({ id: 'user.menuName' })}
-                      // error={!!errors.parentId}
-                      // helperText={errors?.parentId ? errors.parentId.message : null}
+                        label={intl.formatMessage({ id: 'menu.menuName' })}
+                        error={!!errors.Menus}
+                        helperText={errors?.Menus ? errors.Menus.message : null}
                       />
                     }}
                   />
