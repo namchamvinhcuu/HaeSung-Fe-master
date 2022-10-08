@@ -26,7 +26,9 @@ import Location from "./standard_db/Information/Location/Location";
 import Material from "./standard_db/Information/Material/Material";
 import Mold from "./standard_db/Information/Mold/Mold";
 import Product from "./standard_db/Information/Product/Product";
-import Staff from "./standard_db/Information/Staff/Staff"
+import Staff from "./standard_db/Information/Staff/Staff";
+import Supplier from "./standard_db/Information/Supplier/Supplier";
+import Tray from "./standard_db/Information/Tray/Tray";
 
 //KPI
 import Analytics from "./KPI/Analytics/Analytics";
@@ -87,6 +89,8 @@ export {
   Mold,
   Product,
   Staff,
+  Supplier,
+  Tray,
 
   //KPI
   Analytics,
