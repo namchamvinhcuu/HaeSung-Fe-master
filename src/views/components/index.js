@@ -16,6 +16,7 @@ import TabListContent from './dashBoard/TabListContent'
 import Menu from "./standard_db/Configuration/Menu/Menu";
 import Permission from "./standard_db/Configuration/Permission/Permission";
 import User from "./standard_db/Configuration/User/User";
+import Role from "./standard_db/Configuration/Role/Role";
 
 import Common from "./standard_db/Configuration/Common/CommonMaster";
 
@@ -78,6 +79,7 @@ export {
   Permission,
   User,
   Common,
+  Role,
   //STANDARD - Information
   BOM,
   Location,
