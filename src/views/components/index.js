@@ -21,6 +21,7 @@ import Role from "./standard_db/Configuration/Role/Role";
 import Common from "./standard_db/Configuration/Common/CommonMaster";
 
 //STANDARD - Configuration
+//STANDARD - Information
 import BOM from "./standard_db/Information/BOM/BOM";
 import Location from "./standard_db/Information/Location/Location";
 import Material from "./standard_db/Information/Material/Material";
