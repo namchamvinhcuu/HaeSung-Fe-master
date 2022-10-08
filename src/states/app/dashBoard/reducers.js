@@ -84,22 +84,22 @@ const reducer = (state = initializeState, action) => {
                 newState.index_tab_active_array = lst.length - 1;
 
             }
-
             newState.HistoryElementTabs = lst;
-
             break;
+
         case RESET_TAB:
             newState.HistoryElementTabs = [];
             newState.index_tab_active = -1;
             newState.index_tab_active_array = -1;
             break;
+
         case SWITCH_TAB:
             const index_switch = action.data;
             newState.index_tab_active = newState.HistoryElementTabs[index_switch].index
             newState.index_tab_active_array = index_switch;
             break;
-        case DELETE_TAB:
 
+        case DELETE_TAB:
             var HistoryElementTabs = newState.HistoryElementTabs;
             if (newState.index_tab_active === action.index) {
 
@@ -131,9 +131,8 @@ const reducer = (state = initializeState, action) => {
                 newState.index_tab_active_array = index;
 
             }
-
-
             break;
+
         case DELETE_OTHER:
             var item = newState.HistoryElementTabs = newState.HistoryElementTabs[newState.index_tab_active_array];
             if (item) {
@@ -145,14 +144,14 @@ const reducer = (state = initializeState, action) => {
                 newState.HistoryElementTabs = [];
                 newState.index_tab_active_array = -1;
             }
-
             break;
 
         case DELETE_ALL:
+            // newState.HistoryElementTabs = [];
+            // newState.index_tab_active = -1;
+            // newState.index_tab_active_array = 0;
 
-            newState.HistoryElementTabs = [];
-            newState.index_tab_active = -1;
-            newState.index_tab_active_array = -1;
+            newState = { ...state };
             break;
 
         case USER_LOGIN:

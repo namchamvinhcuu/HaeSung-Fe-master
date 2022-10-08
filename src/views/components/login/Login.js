@@ -114,11 +114,12 @@ const Login = (props) => {
                 clearErrors();
 
                 let routername = history.urlreturn;
+                console.log('routername', routername)
                 firstLogin.isfirst = true;
 
                 history.push({
                     pathname: routername ?? "/",
-                    closetab: false,
+                    closetab: true,
                 });
 
             }
@@ -153,7 +154,7 @@ const Login = (props) => {
         <ThemeProvider theme={theme}>
             <Grid container component="main" sx={{ height: "100vh" }}>
 
-                {/* <CssBaseline /> */}
+                <CssBaseline />
 
                 <Grid
                     item

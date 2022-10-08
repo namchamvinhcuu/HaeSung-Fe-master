@@ -19,8 +19,6 @@ const appendTab = (data) => {
             type: APPEND_TAB,
             data: data
         });
-
-
     };
 };
 
@@ -65,8 +63,6 @@ const deleteTab = (index) => {
 
 const deleteOtherTab = (index) => {
     return dispatch => {
-
-
         dispatch({
             type: DELETE_OTHER
         });
@@ -75,8 +71,6 @@ const deleteOtherTab = (index) => {
 
 const deleteAll = () => {
     return dispatch => {
-
-
         dispatch({
             type: DELETE_ALL
         });
