@@ -7,14 +7,14 @@ import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 import { userService, roleService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 
-const RoleAddMenuDialog = ({ roleId, initModal, isOpen, onClose, setNewData, rowData }) => {
+const RoleDialog = ({ roleId, initModal, isOpen, onClose, setNewData, rowData, mode, loadData }) => {
   const intl = useIntl();
-  const [menuList, setMenuList] = useState([]);
   const [dialogState, setDialogState] = useState({ isSubmit: false })
 
   const schema = yup.object().shape({
-
+    roleName: yup.string().required(intl.formatMessage({ id: 'role.roleName_required' }))
   });
 
   const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
@@ -35,35 +35,43 @@ const RoleAddMenuDialog = ({ roleId, initModal, isOpen, onClose, setNewData, row
     onClose();
   }
 
-  const getMenus = async () => {
-    const res = await roleService.getAllMenu();
-    console.log(res)
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setMenuList([...res.Data])
-    }
-  }
-
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
 
-    const res = await userService.createUser({ ...data, roleId: roleId });
-
-    if (res.HttpResponseCode === 200 && res.Data) {
-      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-      setNewData({ ...res.Data });
-      setDialogState({ ...dialogState, isSubmit: false });
-      handleReset();
-      handleCloseDialog();
+    if (mode == CREATE_ACTION) {
+      const res = await roleService.createRole({ ...data });
+      if (res.HttpResponseCode === 200 && res.Data) {
+        SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        setNewData({ ...res.Data });
+        setDialogState({ ...dialogState, isSubmit: false });
+        handleReset();
+        handleCloseDialog();
+      }
+      else {
+        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        setDialogState({ ...dialogState, isSubmit: false });
+      }
     }
     else {
-      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-      setDialogState({ ...dialogState, isSubmit: false });
+      const res = await roleService.updateRole({ ...data, roleId: rowData.roleId, row_version: rowData.row_version });
+      if (res.HttpResponseCode === 200) {
+        SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        setDialogState({ ...dialogState, isSubmit: false });
+        handleReset();
+        handleCloseDialog();
+        loadData();
+      }
+      else {
+        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        setDialogState({ ...dialogState, isSubmit: false });
+      }
     }
+
   };
 
-  useEffect(() => {
-    getMenus();
-  }, [])
+  // useEffect(() => {
+  //   getMenus();
+  // }, [])
 
   return (
     <MuiDialog
@@ -77,63 +85,15 @@ const RoleAddMenuDialog = ({ roleId, initModal, isOpen, onClose, setNewData, row
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12}>
-            <Controller
-              control={control}
-              name="Roles"
-              render={({ field: { onChange, value } }) => {
-                return (
-                  <Autocomplete
-                    multiple
-                    fullWidth
-                    size='small'
-                    options={menuList}
-                    autoHighlight
-                    openOnFocus
-                    getOptionLabel={option => option.menuName}
-                    defaultValue={initModal}
-                    groupBy={(option) => option.ParentMenuName}
-                    onChange={(e, item) => {
-                      if (item) {
-                        setValue("Roles", item ?? []);
-                      }
-                      else {
-                        setValue("Roles", []);
-                      }
-                    }}
-                    disableCloseOnSelect={true}
-                    renderGroup={(params) => {
-                      return (
-                        <div key={"group" + params.key}>
-                          <div style={{ textIndent: '10px', marginBottom: 10 }}>
-                            <span style={{ fontSize: 14 }} className="badge badge-primary">{params.group}</span>
-                          </div>
-                          <div style={{ textIndent: '30px', marginBottom: 10 }}>
-                            {params.children}
-                          </div>
-                        </div>
-                      )
-                    }}
-                    // renderOption={(props, option) => (
-                    //   <Box  component="li" {...props} key={option.value}>
-                    //     <Checkbox
-                    //       checked={options_checked[option.value] ?? false}
-                    //       sx={{ m: 0, p: 0 }}
-                    //       onChange={(e) => setOptions_Checked({ ...options_checked, [option.value]: e.target.checked })}
-                    //     />
-                    //     <span style={{ marginLeft: "-20px" }}>{option.title}</span>
-                    //   </Box>
-                    // )}
-                    renderInput={(params) => {
-                      return <TextField
-                        {...params}
-                        label={intl.formatMessage({ id: 'user.menuName' })}
-                      // error={!!errors.parentId}
-                      // helperText={errors?.parentId ? errors.parentId.message : null}
-                      />
-                    }}
-                  />
-                );
-              }}
+            <TextField
+              autoFocus
+              fullWidth
+              size='small'
+              label={intl.formatMessage({ id: 'role.roleName' })}
+              {...register('roleName')}
+              error={!!errors?.roleName}
+              helperText={errors?.roleName ? errors.roleName.message : null}
+              defaultValue={rowData.roleName}
             />
           </Grid>
           <Grid item xs={12}>
@@ -148,4 +108,4 @@ const RoleAddMenuDialog = ({ roleId, initModal, isOpen, onClose, setNewData, row
   )
 }
 
-export default RoleAddMenuDialog
+export default RoleDialog
