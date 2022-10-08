@@ -20,7 +20,7 @@ const myTheme = createTheme({
                 row: {
                     "&.Mui-created": {
                         backgroundColor: "#A0DB8E",
-                      
+
                     }
                 }
             }
@@ -28,13 +28,13 @@ const myTheme = createTheme({
     }
 });
 //export default function CommonDetail({ t, rowmaster }) {
-const CommonDetail = ({  rowmaster }) => {
+const CommonDetail = ({ rowmaster }) => {
 
     const intl = useIntl();
     const initCommonDetailModel = {
         CommonDetailId: 0,
-        commonMasterId : rowmaster.commonMasterId  ,
-        commonDetailName : ''
+        commonMasterId: rowmaster.commonMasterId,
+        commonDetailName: ''
     };
 
 
@@ -43,7 +43,7 @@ const CommonDetail = ({  rowmaster }) => {
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 8,
+        pageSize: 10,
     });
 
     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
@@ -51,12 +51,12 @@ const CommonDetail = ({  rowmaster }) => {
 
     const [selectedRow, setSelectedRow] = useState({
         ...initCommonDetailModel
-        
+
     });
 
     const [newData, setNewData] = useState({
         ...initCommonDetailModel
-        
+
     });
 
     const toggleCreateCommonDetailDialog = () => {
@@ -107,9 +107,9 @@ const CommonDetail = ({  rowmaster }) => {
         fetchData();
     }, [menuState.commonMasterId, menuState.page, menuState.pageSize, rowmaster]);
 
-   
 
-      useEffect(() => {
+
+    useEffect(() => {
         if (!_.isEmpty(newData) && !_.isEqual(newData, initCommonDetailModel)) {
             const data = [newData, ...menuState.data]
             if (data.length > menuState.pageSize) {
@@ -121,9 +121,9 @@ const CommonDetail = ({  rowmaster }) => {
                 , totalRow: menuState.totalRow + 1
             });
         }
-        
+
     }, [newData]);
-   
+
     useEffect(() => {
         let newArr = [];
         if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, initCommonDetailModel)) {
@@ -137,7 +137,7 @@ const CommonDetail = ({  rowmaster }) => {
                 , data: [...newArr]
             });
         }
-       
+
     }, [selectedRow]
     );
 
@@ -149,17 +149,18 @@ const CommonDetail = ({  rowmaster }) => {
                     await fetchData();
                 }
             } catch (error) {
-               
+
             }
         }
     };
 
 
     const columns = [
-        { field: 'commonDetailId', headerName: '', flex: 0.03, hide:true},
-        { field: 'id', headerName: '', flex: 0.01,
+        { field: 'commonDetailId', headerName: '', flex: 0.03, hide: true },
+        {
+            field: 'id', headerName: '', flex: 0.01,
             filterable: false,
-        renderCell: (index) => index.api.getRowIndex(index.row.commonDetailId) + 1,
+            renderCell: (index) => index.api.getRowIndex(index.row.commonDetailId) + 1,
         },
         {
             field: "action",
@@ -182,7 +183,7 @@ const CommonDetail = ({  rowmaster }) => {
                             >
                                 <EditIcon fontSize="inherit" />
                             </IconButton>
-                            
+
                         </Grid>
                         <Grid item xs={6}>
                             <IconButton
@@ -199,71 +200,76 @@ const CommonDetail = ({  rowmaster }) => {
                 );
             },
         },
-      
-        
-        { field: 'commonDetailName', headerName: 'Common Detail Name', flex: 0.3, },
-        { field: 'isActived', headerName: 'isActived', flex: 0.3, hide:true},
 
-        { field: 'createdDate', headerName: 'Created Date', flex: 0.3, valueFormatter: params => {
-            if (params.value !== null) {
-                return  moment(params?.value).format("YYYY-MM-DD HH:mm:ss")
-            }
-          }, },
-        { field: 'createdBy', headerName: 'createdBy', flex: 0.3,hide:true },
-        { field: 'modifiedDate', headerName: 'Modified Date', flex: 0.3, valueFormatter: params => {
-            if (params.value !== null) {
-                return  moment(params?.value).format("YYYY-MM-DD HH:mm:ss")
-            }
-          }, },
-        { field: 'modifiedBy', headerName: 'modifiedBy', flex: 0.3,hide:true },
+
+        { field: 'commonDetailName', headerName: 'Common Detail Name', flex: 0.3, },
+        { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
+
+        {
+            field: 'createdDate', headerName: 'Created Date', flex: 0.3, valueFormatter: params => {
+                if (params.value !== null) {
+                    return moment(params?.value).format("YYYY-MM-DD HH:mm:ss")
+                }
+            },
+        },
+        { field: 'createdBy', headerName: 'createdBy', flex: 0.3, hide: true },
+        {
+            field: 'modifiedDate', headerName: 'Modified Date', flex: 0.3, valueFormatter: params => {
+                if (params.value !== null) {
+                    return moment(params?.value).format("YYYY-MM-DD HH:mm:ss")
+                }
+            },
+        },
+        { field: 'modifiedBy', headerName: 'modifiedBy', flex: 0.3, hide: true },
     ];
 
 
     return (
         <React.Fragment>
-        <ThemeProvider theme={myTheme}>
-            <MuiButton
-                text="create"
-                color='success'
-                onClick={toggleCreateCommonDetailDialog}
-            />
+            <ThemeProvider theme={myTheme}>
+                <MuiButton
+                    text="create"
+                    color='success'
+                    onClick={toggleCreateCommonDetailDialog}
+                />
                 {menuState?.data &&
                     <MuiDataGrid
-                    showLoading={menuState.isLoading}
-                    isPagingServer={true}
-                    headerHeight={45}
-                    // rowHeight={30}
-                    columns={columns}
-                    rows={menuState.data}
-                    page={menuState.page - 1}
-                    pageSize={menuState.pageSize}
-                    rowCount={menuState.totalRow}
-                 
-                
-                    rowsPerPageOptions={[8,20, 100, 200, 1000]}
+                        showLoading={menuState.isLoading}
+                        isPagingServer={true}
+                        headerHeight={45}
+                        // rowHeight={30}
+                        gridHeight={345}
+                        columns={columns}
+                        rows={menuState.data}
+                        page={menuState.page - 1}
+                        pageSize={menuState.pageSize}
+                        rowCount={menuState.totalRow}
 
-                    onPageChange={(newPage) => {
-                        setMenuState({ ...menuState, page: newPage + 1 });
-                    }}
-                    onPageSizeChange={(newPageSize) => {
-                        setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
-                    }}
-                    getRowId={(rows) => rows.commonDetailId}
-                    onSelectionModelChange={(newSelectedRowId) => {
-                        handleRowSelection(newSelectedRowId)
-                    }}
-                  
-                    getRowClassName={(params) => {
-                        if (_.isEqual(params.row, newData)) {
-                            return `Mui-created`
-                        }
-                    }}
-             
-                />
+
+                        rowsPerPageOptions={[5, 10, 20, 30]}
+
+                        onPageChange={(newPage) => {
+                            setMenuState({ ...menuState, page: newPage + 1 });
+                        }}
+                        onPageSizeChange={(newPageSize) => {
+                            setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
+                        }}
+                        getRowId={(rows) => rows.commonDetailId}
+                        onSelectionModelChange={(newSelectedRowId) => {
+                            handleRowSelection(newSelectedRowId)
+                        }}
+
+                        getRowClassName={(params) => {
+                            if (_.isEqual(params.row, newData)) {
+                                return `Mui-created`
+                            }
+                        }}
+
+                    />
                 }
 
 
-            {isOpenCreateDialog && <CreateCommonDetailDialog
+                {isOpenCreateDialog && <CreateCommonDetailDialog
                     initModal={initCommonDetailModel}
                     setNewData={setNewData}
                     isOpen={isOpenCreateDialog}
@@ -276,8 +282,8 @@ const CommonDetail = ({  rowmaster }) => {
                     isOpen={isOpenModifyDialog}
                     onClose={toggleModifyCommonDetailDialog}
 
-                />} 
-         </ThemeProvider>
+                />}
+            </ThemeProvider>
         </React.Fragment>
     )
 }

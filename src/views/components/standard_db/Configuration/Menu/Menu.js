@@ -299,12 +299,13 @@ const Menu = (props) => {
                     isPagingServer={true}
                     headerHeight={45}
                     // rowHeight={30}
+                    gridHeight={736}
                     columns={columns}
                     rows={menuState.data}
                     page={menuState.page - 1}
                     pageSize={menuState.pageSize}
                     rowCount={menuState.totalRow}
-                    rowsPerPageOptions={[20]}
+                    rowsPerPageOptions={[5, 10, 20, 30]}
 
                     onPageChange={(newPage) => {
                         setMenuState({ ...menuState, page: newPage + 1 });
@@ -337,14 +338,6 @@ const Menu = (props) => {
                     isOpen={isOpenCreateDialog}
                     onClose={toggleCreateMenuDialog}
                 />
-                {/* {isOpenModifyDialog &&
-                    <ModifyMenuDialog
-                        initModal={selectedRow}
-                        setModifyData={setSelectedRow}
-                        isOpen={isOpenModifyDialog}
-                        onClose={toggleModifyMenuDialog}
-                    />
-                } */}
 
                 <ModifyMenuDialog
                     initModal={selectedRow}

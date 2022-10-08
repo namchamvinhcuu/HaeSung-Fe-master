@@ -49,7 +49,7 @@ const CommonMaster = () => {
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 8,
+        pageSize: 10,
         searchData: {
             keyWord: ''
         }
@@ -213,7 +213,7 @@ const CommonMaster = () => {
                 if (res && res.HttpResponseCode === 200) {
                     await fetchDataDeleted();
                 }
-               
+
             } catch (error) {
                 console.log(error)
             }
@@ -364,7 +364,7 @@ const CommonMaster = () => {
                     showLoading={commomMasterState.isLoading}
                     isPagingServer={true}
                     headerHeight={45}
-
+                    gridHeight={345}
                     columns={columns}
                     rows={commomMasterState.data}
                     page={commomMasterState.page - 1}
@@ -373,7 +373,7 @@ const CommonMaster = () => {
                     onRowClick={(params, event) => {
                         master_row_click && master_row_click(params.row);
                     }}
-                    rowsPerPageOptions={[8,20, 100, 200, 1000]}
+                    rowsPerPageOptions={[5, 10, 20, 30]}
                     onPageChange={(newPage) => {
                         setcommomMasterState({ ...commomMasterState, page: newPage + 1 });
                     }}
@@ -392,18 +392,19 @@ const CommonMaster = () => {
                 />
             }
 
-            {isOpenCreateDialog && <CreateCommonMasterDialog
+            <CreateCommonMasterDialog
                 initModal={initCommonMasterModel}
                 setNewData={setNewData}
                 isOpen={isOpenCreateDialog}
                 onClose={toggleCreateCommonMSDialog}
-            />}
-            {isOpenModifyDialog && <ModifyCommonMasterDialog
+            />
+
+            <ModifyCommonMasterDialog
                 initModal={selectedRow}
                 setModifyData={setSelectedRow}
                 isOpen={isOpenModifyDialog}
                 onClose={toggleModifyCommonMSDialog}
-            />}
+            />
 
             <Grid item sm={6} sx={{ margin: 1, background: "#fff" }}>
                 {rowmaster && <CommonDetail rowmaster={rowmaster} />}

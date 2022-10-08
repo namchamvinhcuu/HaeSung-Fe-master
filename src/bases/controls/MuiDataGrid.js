@@ -3,6 +3,9 @@ import { DataGrid } from "@mui/x-data-grid";
 import React, { useImperativeHandle } from 'react';
 
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
+    // minHeight: '400px',
+    // maxHeight: '700px',
+    // overflow: 'auto',
     boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;',
     color:
         theme.palette.mode === 'light' ? 'rgba(0,0,0,.85)' : 'rgba(255,255,255,0.85)',
@@ -110,6 +113,7 @@ const MuiDataGrid = (props) => {
         isPagingServer,
         headerHeight,
         rowHeight,
+        gridHeight,
 
         showLoading,
         rows,
@@ -134,60 +138,62 @@ const MuiDataGrid = (props) => {
     //     return [...rows]
     // }
 
+    const dynamicHeight = Math.min(pageSize * (rowHeight ?? 32) + 96, (gridHeight ?? 740)) + 'px'
+
     return (
         <React.Fragment>
-            <div style={{ height: 108 + (pageSize * rowHeight) + 'px', maxHeight: '750px', overflow: "auto" }}>
-                {
-                    isPagingServer
-                        ?
-                        <StyledDataGrid
-                            autoHeight
-                            headerHeight={headerHeight}
-                            rowHeight={rowHeight ?? 32}
-                            // getRowHeight={() => 'auto'}
-                            columns={columns}
-                            rows={rows}
-                            loading={showLoading}
+            {/* <div style={{ height: 108 + (pageSize * rowHeight) + 'px', maxHeight: '740px', overflow: "auto" }}> */}
+            {
+                isPagingServer
+                    ?
+                    <StyledDataGrid style={{ height: dynamicHeight }}
+                        // autoHeight
+                        headerHeight={headerHeight}
+                        rowHeight={rowHeight ?? 32}
+                        // getRowHeight={() => 'auto'}
+                        columns={columns}
+                        rows={rows}
+                        loading={showLoading}
 
-                            pagination
-                            paginationMode="server"
-                            page={page ?? 1}
-                            pageSize={pageSize ?? 0}
-                            rowCount={rowCount ?? 0}
-                            rowsPerPageOptions={rowsPerPageOptions}
+                        pagination
+                        paginationMode="server"
+                        page={page ?? 1}
+                        pageSize={pageSize ?? 0}
+                        rowCount={rowCount ?? 0}
+                        rowsPerPageOptions={rowsPerPageOptions}
 
-                            onPageChange={onPageChange}
-                            onPageSizeChange={onPageSizeChange}
-                            getRowId={getRowId}
+                        onPageChange={onPageChange}
+                        onPageSizeChange={onPageSizeChange}
+                        getRowId={getRowId}
 
-                            onSelectionModelChange={onSelectionModelChange}
-                            {...props}
-                        />
-                        :
-                        <StyledDataGrid
-                            autoHeight
-                            headerHeight={headerHeight}
-                            rowHeight={rowHeight ?? 32}
-                            // getRowHeight={() => 'auto'}
-                            columns={columns}
-                            rows={rows}
+                        onSelectionModelChange={onSelectionModelChange}
+                        {...props}
+                    />
+                    :
+                    <StyledDataGrid
+                        // autoHeight
+                        headerHeight={headerHeight}
+                        rowHeight={rowHeight ?? 32}
+                        // getRowHeight={() => 'auto'}
+                        columns={columns}
+                        rows={rows}
 
-                            pagination
-                            page={page ?? 1}
-                            pageSize={pageSize ?? 0}
-                            rowCount={rowCount ?? 0}
-                            rowsPerPageOptions={rowsPerPageOptions}
+                        pagination
+                        page={page ?? 1}
+                        pageSize={pageSize ?? 0}
+                        rowCount={rowCount ?? 0}
+                        rowsPerPageOptions={rowsPerPageOptions}
 
-                            onPageChange={onPageChange}
-                            onPageSizeChange={onPageSizeChange}
-                            getRowId={getRowId}
+                        onPageChange={onPageChange}
+                        onPageSizeChange={onPageSizeChange}
+                        getRowId={getRowId}
 
-                            onSelectionModelChange={onSelectionModelChange}
-                            {...props}
-                        />
+                        onSelectionModelChange={onSelectionModelChange}
+                        {...props}
+                    />
 
-                }
-            </div>
+            }
+            {/* </div> */}
         </React.Fragment>
     )
 }

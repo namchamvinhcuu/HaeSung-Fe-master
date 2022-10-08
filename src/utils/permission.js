@@ -106,25 +106,25 @@ const buildTreeMenu = (
         children: [],
       };
 
-      // if (!parentId) {
-      //   // console.log(item.name,item.visiable)
-      //   // if (item.visiable === true) {
-      //   //   breadcrumb_array = [item.menuName];
+      if (!parentId) {
+        // console.log(item.name,item.visiable)
+        // if (item.visiable === true) {
+        //   breadcrumb_array = [item.menuName];
 
-      //   // } else {
+        // } else {
 
-      //   //   breadcrumb_array = [];
-      //   // }
-      //   // breadcrumb_array = [item.menuName];
-      //   breadcrumb_array = [<FormattedMessage id={item.languageKey} />]
-      // }
-      // else if (parentId) {
+        //   breadcrumb_array = [];
+        // }
+        // breadcrumb_array = [item.menuName];
+        breadcrumb_array = [<FormattedMessage id={item.languageKey} />]
+      }
+      else {
 
-      //   // breadcrumb_array.push(item.menuName);
-      //   breadcrumb_array.push(<FormattedMessage id={item.languageKey} />);
-      // }
+        // breadcrumb_array.push(item.menuName);
+        breadcrumb_array.push(<FormattedMessage id={item.languageKey} />);
+      }
 
-      breadcrumb_array.push(<FormattedMessage id={item.languageKey} />);
+      // breadcrumb_array.push(<FormattedMessage id={item.languageKey} />);
 
       //Iterate the list to find all submenus that match the current menu
       let res_html = buildTreeMenu(
