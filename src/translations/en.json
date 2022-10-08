@@ -48,11 +48,15 @@
     },
     "commonMaster": {
         "not_found": "CommonMaster: not found/existed",
-        "duplicated_name": "CommonMaster: duplicated name "
+        "duplicated_name": "CommonMaster: duplicated name ",
+        "commonMaster_name": "Common Master Name"
+       
+
     },
     "commonDetail": {
         "not_found": "CommonDetail: not found/existed",
-        "duplicated_name": "CommonDetail: duplicated name"
+        "duplicated_name": "CommonDetail: duplicated name",
+        "commonDetail_existed": "Common Detail is existed. Please Delete Detail First"
     },
     "menu": {
         "kpi": "KPI",

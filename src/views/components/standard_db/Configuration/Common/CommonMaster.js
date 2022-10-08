@@ -2,15 +2,15 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
-import { createTheme, ThemeProvider } from "@mui/material"
+import { createTheme, ThemeProvider, TextField } from "@mui/material"
 import React, { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
-import { MuiButton, MuiDataGrid } from '@controls'
+import { MuiButton, MuiDataGrid,MuiSearchField } from '@controls'
 import { commonService } from '@services'
 import _ from 'lodash'
-
+import moment from "moment";
 import CommonDetail from "./CommonDetail.js";
-
+import { ErrorAlert, SuccessAlert } from '@utils'
 import CreateCommonMasterDialog from './CreateCommonMasterDialog'
 import ModifyCommonMasterDialog from './ModifyCommonMasterDialog'
 
@@ -46,11 +46,21 @@ const CommonMaster = (t) => {
         totalRow: 0,
         page: 1,
         pageSize: 20,
+        searchData: {
+            keyWord: ''
+        }
     });
 
     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false)
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
 
+    const changeSearchData = (e, inputName) => {
+
+        let newSearchData = { ...commomMasterState.searchData };
+        newSearchData[inputName] = e.target.value;
+
+        setcommomMasterState({ ...commomMasterState, searchData: { ...newSearchData } })
+    }
     const [selectedRow, setSelectedRow] = useState({
         ...initCommonMasterModel
     })
@@ -91,7 +101,8 @@ const CommonMaster = (t) => {
         });
         const params = {
             page: commomMasterState.page,
-            pageSize: commomMasterState.pageSize
+            pageSize: commomMasterState.pageSize,
+            keyword: commomMasterState.searchData.keyWord
         }
         const res = await commonService.getCommonMasterList(params);
 
@@ -102,29 +113,29 @@ const CommonMaster = (t) => {
             , isLoading: false
         });
     }
-    
-  useEffect(() => {
-    fetchData();
-  }, [commomMasterState.page, commomMasterState.pageSize]);
+
+    useEffect(() => {
+        fetchData();
+    }, [commomMasterState.page, commomMasterState.pageSize]);
 
     useEffect(() => {
         if (!_.isEmpty(newData)) {
-          const data = [newData, ...commomMasterState.data];
-          if (data.length > commomMasterState.pageSize) {
-            data.pop();
-          }
-          setcommomMasterState({
-            ...commomMasterState
-            , data: [...data]
-            , totalRow: commomMasterState.totalRow + 1
-          });
+            const data = [newData, ...commomMasterState.data];
+            if (data.length > commomMasterState.pageSize) {
+                data.pop();
+            }
+            setcommomMasterState({
+                ...commomMasterState
+                , data: [...data]
+                , totalRow: commomMasterState.totalRow + 1
+            });
         }
-      }, [newData]);
+    }, [newData]);
 
-      
-    useEffect(()=>{
+
+    useEffect(() => {
         console.log(commomMasterState.data)
-    },[commomMasterState.data]);
+    }, [commomMasterState.data]);
 
     useEffect(() => {
         if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, initCommonMasterModel)) {
@@ -148,6 +159,11 @@ const CommonMaster = (t) => {
                 if (res && res.HttpResponseCode === 200) {
                     await fetchData();
 
+                }
+                if (res && res.HttpResponseCode === 300) {
+                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+                 
+                    return;
                 }
             } catch (error) {
                 console.log(error)
@@ -204,22 +220,75 @@ const CommonMaster = (t) => {
 
 
         { field: 'commonMasterName', headerName: 'Common Master Name', flex: 0.3 },
-        { field: 'isActived', headerName: 'isActived', flex: 0.3, },
+        { field: 'isActived', headerName: 'isActived', flex: 0.3,hide: true },
 
-        { field: 'createdDate', headerName: 'createdDate', flex: 0.3, },
-        { field: 'createdBy', headerName: 'createdBy', flex: 0.3, },
-        { field: 'modifiedDate', headerName: 'modifiedDate', flex: 0.3, },
-        { field: 'modifiedBy', headerName: 'modifiedBy', flex: 0.3, },
+       
+         { field: 'createdDate', headerName: 'created Date', flex: 0.3,  
+         valueFormatter: params => {
+             if (params.value !== null) {
+                 return  moment(params?.value).format("YYYY-MM-DD HH:mm:ss")
+             }
+           },
+         },
+        { field: 'createdBy', headerName: 'createdBy', flex: 0.3, hide:true },
+        { field: 'modifiedDate', headerName: 'Modified Date', flex: 0.3,  
+        valueFormatter: params => {
+            if (params.value !== null) {
+                return  moment(params?.value).format("YYYY-MM-DD HH:mm:ss")
+            }
+          },
+        },
+       
+        { field: 'modifiedBy', headerName: 'modifiedBy', flex: 0.3, hide:true},
     ];
 
     return (
         <React.Fragment>
             <ThemeProvider theme={myTheme}>
-                <MuiButton
-                    text="create"
-                    color='success'
-                    onClick={toggleCreateCommonMSDialog}
-                />
+                {/* <Grid container sx={{ mb: 1 }}>
+                    <Grid item xs={8}>
+                        <MuiButton
+                            text="create"
+                            color='success'
+                            onClick={toggleCreateCommonMSDialog}
+                        /> </Grid>
+                    <Grid item xs={4} container>
+                        <Grid item xs={9}>
+                            <TextField
+                                fullWidth
+                                size='small'
+                                label={intl.formatMessage({ id: 'commonMaster.commonMaster_name' })}
+                                onChange={e => setSearch(e.target.value)}
+                            />
+                        </Grid>
+                        <Grid item xs={3}>
+                            <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0, ml: 2 }} />
+                        </Grid>
+                    </Grid>
+                </Grid> */}
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="flex-end"
+                >
+                    <Grid item xs={6}>
+                        <MuiButton
+                            text="create"
+                            color='success'
+                            onClick={toggleCreateCommonMSDialog}
+                        />
+                    </Grid>
+                    <Grid item xs>
+                        <MuiSearchField
+                            label='general.name'
+                            name='keyWord'
+                            onClick={fetchData}
+                            onChange={(e) => changeSearchData(e, 'keyWord')}
+                        />
+                    </Grid>
+
+                </Grid>
                 {commomMasterState.data &&
                     <MuiDataGrid
                         getData={commonService.getCommonMasterList}

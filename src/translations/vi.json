@@ -48,11 +48,13 @@
     },
     "commonMaster": {
         "not_found": "CommonMaster: không tồn tại",
-        "duplicated_name": "CommonMaster: tên đã được tạo"
+        "duplicated_name": "CommonMaster: tên đã được tạo",
+        "commonMaster_name": "Common Master Name"
     },
     "commonDetail": {
         "not_found": "CommonDetail: không tồn tại",
-        "duplicated_name": "CommonDetail: tên đã được tạo"
+        "duplicated_name": "CommonDetail: tên đã được tạo",
+        "commonDetail_existed": "Common Detail có dữ liệu. Vui lòng xóa bảng chi tiết"
     },
     "menu": {
         "kpi": "KPI",

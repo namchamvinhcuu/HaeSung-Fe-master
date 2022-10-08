@@ -8,7 +8,7 @@ import { useIntl } from 'react-intl'
 import { MuiButton, MuiDataGrid } from '@controls'
 import { commonService } from '@services'
 import _ from 'lodash'
-
+import moment from "moment";
 import CreateCommonDetailDialog from './CreateCommonDetailDialog'
 import ModifyCommonDetailDialog from './ModifyCommonDetailDialog'
 
@@ -121,6 +121,7 @@ const CommonDetail = ({ t, rowmaster }) => {
                 , totalRow: menuState.totalRow + 1
             });
         }
+        
     }, [newData]);
    
     useEffect(() => {
@@ -131,12 +132,12 @@ const CommonDetail = ({ t, rowmaster }) => {
             if (index !== -1) {
                 newArr[index] = selectedRow
             }
+            setMenuState({
+                ...menuState
+                , data: [...newArr]
+            });
         }
-
-        setMenuState({
-            ...menuState
-            , data: [...newArr]
-        });
+       
     }, [selectedRow]
     );
 
@@ -201,12 +202,20 @@ const CommonDetail = ({ t, rowmaster }) => {
       
         
         { field: 'commonDetailName', headerName: 'Common Detail Name', flex: 0.3, },
-        { field: 'isActived', headerName: 'isActived', flex: 0.3, },
+        { field: 'isActived', headerName: 'isActived', flex: 0.3, hide:true},
 
-        { field: 'createdDate', headerName: 'createdDate', flex: 0.3, },
-        { field: 'createdBy', headerName: 'createdBy', flex: 0.3, },
-        { field: 'modifiedDate', headerName: 'modifiedDate', flex: 0.3, },
-        { field: 'modifiedBy', headerName: 'modifiedBy', flex: 0.3, },
+        { field: 'createdDate', headerName: 'Created Date', flex: 0.3, valueFormatter: params => {
+            if (params.value !== null) {
+                return  moment(params?.value).format("YYYY-MM-DD HH:mm:ss")
+            }
+          }, },
+        { field: 'createdBy', headerName: 'createdBy', flex: 0.3,hide:true },
+        { field: 'modifiedDate', headerName: 'Modified Date', flex: 0.3, valueFormatter: params => {
+            if (params.value !== null) {
+                return  moment(params?.value).format("YYYY-MM-DD HH:mm:ss")
+            }
+          }, },
+        { field: 'modifiedBy', headerName: 'modifiedBy', flex: 0.3,hide:true },
     ];
 
 
