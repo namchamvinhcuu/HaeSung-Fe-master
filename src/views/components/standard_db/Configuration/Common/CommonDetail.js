@@ -28,7 +28,7 @@ const myTheme = createTheme({
     }
 });
 //export default function CommonDetail({ t, rowmaster }) {
-const CommonDetail = ({ t, rowmaster }) => {
+const CommonDetail = ({  rowmaster }) => {
 
     const intl = useIntl();
     const initCommonDetailModel = {
@@ -43,7 +43,7 @@ const CommonDetail = ({ t, rowmaster }) => {
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 20,
+        pageSize: 8,
     });
 
     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
@@ -240,7 +240,7 @@ const CommonDetail = ({ t, rowmaster }) => {
                     rowCount={menuState.totalRow}
                  
                 
-                    rowsPerPageOptions={[20, 50, 100,200,500,1000]}
+                    rowsPerPageOptions={[8,20, 100, 200, 1000]}
 
                     onPageChange={(newPage) => {
                         setMenuState({ ...menuState, page: newPage + 1 });

@@ -37,7 +37,8 @@
         "language_key": "Đa ngôn ngữ",
         "root_only": "Root only",
         "sort_order": "Thứ tự",
-        "unauthorized": "Bạn không có quyền truy cập"
+        "unauthorized": "Bạn không có quyền truy cập",
+        "confirm_redo_deleted": "Xác nhận để quay lại dữ liệu đã xóa"
     },
     "login": {
         "account_password_invalid": "Tài khoản/Mật khẩu không hợp lệ",

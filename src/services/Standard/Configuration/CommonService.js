@@ -40,6 +40,27 @@ const deleteCommonMater = async (params) => {
         console.log(`ERROR: ${error}`);
     }
 }
+const getCommonMasterListDeleted = async (params) => {
+    try {
+        return await axios.get('/api/CommonMaster/get-all-data-deleted', {
+            params: {
+                ...params 
+            }
+        });
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
+const deleteCommonMaterRedoDeleted = async (params) => {
+
+    try {
+        return await axios.delete('/api/CommonMaster/redo-commonmaster/' + params.commonMasterId, {
+         
+        });
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
 //commom detail
 const getCommonDetailList = async (params) => {
     try {
@@ -83,6 +104,7 @@ const deleteCommonDetail = async (params) => {
         console.log(`ERROR: ${error}`);
     }
 }
+
 export {
     getCommonMasterList,
     createCommonMaster,
@@ -91,5 +113,7 @@ export {
     getCommonDetailList,
     createCommonDetail,
     modifyCommonDetail,
-    deleteCommonDetail
+    deleteCommonDetail,
+    getCommonMasterListDeleted,
+    deleteCommonMaterRedoDeleted
 }

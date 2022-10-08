@@ -37,7 +37,8 @@
         "language_key": "Multi Language",
         "root_only": "Root only",
         "sort_order": "Sort Order",
-        "unauthorized": "Unauthorized"
+        "unauthorized": "Unauthorized",
+        "confirm_redo_deleted": "Confirm to redo deleted"
     },
     "login": {
         "account_password_invalid": "Account/Password is invalid",
