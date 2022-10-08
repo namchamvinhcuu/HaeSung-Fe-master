@@ -126,7 +126,20 @@ const CommonMaster = (t) => {
         console.log(commomMasterState.data)
     },[commomMasterState.data]);
 
-    
+    useEffect(() => {
+        if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, initCommonMasterModel)) {
+            let newArr = [...commomMasterState.data]
+            const index = _.findIndex(newArr, function (o) { return o.commonMasterId == selectedRow.commonMasterId; });
+            if (index !== -1) {
+                newArr[index] = selectedRow
+            }
+
+            setcommomMasterState({
+                ...commomMasterState
+                , data: [...newArr]
+            });
+        }
+    }, [selectedRow]);
 
     const handleDeleteCommonMS = async (menu) => {
         if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {

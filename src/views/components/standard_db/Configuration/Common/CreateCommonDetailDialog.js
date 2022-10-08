@@ -18,12 +18,12 @@ const CreateCommonDetailDialog = (props) => {
 
     const intl = useIntl();
 
-    const { initModal, isOpen, onClose, setNewData } = props;
+    const { initModal, isOpen, onClose, setNewData  } = props;
 
-    const [parentMenuArr, setParentMenuArr] = useState([]);
+
 
     const dataModalRef = useRef({ ...initModal });
-    const clearParent = useRef(null);
+
     const [dialogState, setDialogState] = useState({
         isSubmit: false
     })
@@ -68,7 +68,7 @@ const CreateCommonDetailDialog = (props) => {
         setDialogState({ ...dialogState, isSubmit: true });
 
          const res = await commonService.createCommonDetail(dataModalRef.current);
-         console.log(dataModalRef.current, 'submit');
+        // console.log(dataModalRef.current, 'submit');
 
         if (res.HttpResponseCode === 200 && res.Data) {
             SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))

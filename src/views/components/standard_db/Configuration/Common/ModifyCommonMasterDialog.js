@@ -67,7 +67,7 @@ const ModifyCommonMasterDialog = (props) => {
             SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
             setModifyData({ ...res.Data });
 
-            handleCloseDialog();
+            handleCloseDialog(); 
         }
         else {
             ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))

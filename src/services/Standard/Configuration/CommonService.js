@@ -43,7 +43,7 @@ const deleteCommonMater = async (params) => {
 //commom detail
 const getCommonDetailList = async (params) => {
     try {
-        console.log("kkk");
+       
         return await axios.get('/api/CommonDetail/getall-by-masterId', {
             params: {
                 ...params 

@@ -51,9 +51,13 @@ const CommonDetail = ({ t, rowmaster }) => {
 
     const [selectedRow, setSelectedRow] = useState({
         ...initCommonDetailModel
+        
     });
 
-    const [newData, setNewData] = useState({ ...initCommonDetailModel });
+    const [newData, setNewData] = useState({
+        ...initCommonDetailModel
+        
+    });
 
     const toggleCreateCommonDetailDialog = () => {
         setIsOpenCreateDialog(!isOpenCreateDialog);
@@ -104,23 +108,24 @@ const CommonDetail = ({ t, rowmaster }) => {
     }, [menuState.commonMasterId, menuState.page, menuState.pageSize, rowmaster]);
 
    
-    useEffect(() => {
-        if (!_.isEmpty(newData)) {
-          const data = [newData, ...menuState.data];
-          if (data.length > menuState.pageSize) {
-            data.pop();
-          }
-          setMenuState({
-            ...menuState
-            , data: [...data]
-            , totalRow: menuState.totalRow + 1
-          });
-        } 
-      }, [newData]);
 
+      useEffect(() => {
+        if (!_.isEmpty(newData) && !_.isEqual(newData, initCommonDetailModel)) {
+            const data = [newData, ...menuState.data]
+            if (data.length > menuState.pageSize) {
+                data.pop();
+            }
+            setMenuState({
+                ...menuState
+                , data: [...data]
+                , totalRow: menuState.totalRow + 1
+            });
+        }
+    }, [newData]);
+   
     useEffect(() => {
         let newArr = [];
-        if (!_.isEqual(selectedRow, initCommonDetailModel)) {
+        if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, initCommonDetailModel)) {
             newArr = [...menuState.data]
             const index = _.findIndex(newArr, function (o) { return o.commonDetailId == selectedRow.commonDetailId; });
             if (index !== -1) {
@@ -132,7 +137,8 @@ const CommonDetail = ({ t, rowmaster }) => {
             ...menuState
             , data: [...newArr]
         });
-    }, [selectedRow]);
+    }, [selectedRow]
+    );
 
     const handleDeleteCommonMS = async (menu) => {
         if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
