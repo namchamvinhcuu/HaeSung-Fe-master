@@ -9,10 +9,9 @@ import { userService, roleService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 
-const RoleDialog = ({ roleId, initModal, isOpen, onClose, setNewData, rowData, mode, loadData }) => {
+const RoleDialog = ({ roleId, initModal, isOpen, onClose, setNewData, mode, loadData }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false })
-
   const schema = yup.object().shape({
     roleName: yup.string().required(intl.formatMessage({ id: 'role.roleName_required' }))
   });
@@ -20,7 +19,15 @@ const RoleDialog = ({ roleId, initModal, isOpen, onClose, setNewData, rowData, m
   const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
     mode: 'onChange',
     resolver: yupResolver(schema),
+    defaultValues: initModal
   });
+
+  useEffect(() => {
+    if (mode == CREATE_ACTION)
+      reset({});
+    else
+      reset(initModal);
+  }, [initModal, mode])
 
   const handleReset = () => {
     reset();
@@ -53,7 +60,7 @@ const RoleDialog = ({ roleId, initModal, isOpen, onClose, setNewData, rowData, m
       }
     }
     else {
-      const res = await roleService.updateRole({ ...data, roleId: rowData.roleId, row_version: rowData.row_version });
+      const res = await roleService.updateRole({ ...data, roleId: initModal.roleId, row_version: initModal.row_version });
       if (res.HttpResponseCode === 200) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
         setDialogState({ ...dialogState, isSubmit: false });
@@ -69,14 +76,10 @@ const RoleDialog = ({ roleId, initModal, isOpen, onClose, setNewData, rowData, m
 
   };
 
-  // useEffect(() => {
-  //   getMenus();
-  // }, [])
-
   return (
     <MuiDialog
       maxWidth='sm'
-      title={intl.formatMessage({ id: 'general.create' })}
+      title={intl.formatMessage({ id: mode == CREATE_ACTION ? 'general.create' : 'general.modify' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
       disable_animate={300}
@@ -93,7 +96,7 @@ const RoleDialog = ({ roleId, initModal, isOpen, onClose, setNewData, rowData, m
               {...register('roleName')}
               error={!!errors?.roleName}
               helperText={errors?.roleName ? errors.roleName.message : null}
-              defaultValue={rowData.roleName}
+            //defaultValue={initModal.roleName}
             />
           </Grid>
           <Grid item xs={12}>

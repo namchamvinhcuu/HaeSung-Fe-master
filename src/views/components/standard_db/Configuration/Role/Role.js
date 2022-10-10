@@ -2,18 +2,17 @@ import React, { useEffect, useRef, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import { Badge, Grid, IconButton, TextField } from '@mui/material'
-import LockIcon from '@mui/icons-material/Lock';
 import { createTheme, ThemeProvider } from "@mui/material"
 import { useIntl } from 'react-intl'
 import { MuiButton, MuiDataGrid } from '@controls'
 import { userService, roleService } from '@services'
-
 import { useModal, useModal2, useModal3 } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+
 import RoleAddMenuDialog from './RoleAddMenuDialog'
 import RoleAddPermissionDialog from './RoleAddPermissionDialog'
 import RoleDialog from './RoleDialog'
-import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 
 const myTheme = createTheme({
   components: {
@@ -35,12 +34,12 @@ export default function Role() {
   const { isShowing, toggle } = useModal();
   const { isShowing2, toggle2 } = useModal2();
   const { isShowing3, toggle3 } = useModal3();
-  const [userState, setUserState] = useState({
+  const [roleState, setRoleState] = useState({
     isLoading: false,
     data: [],
     totalRow: 0,
     page: 1,
-    pageSize: 10,
+    pageSize: 5,
   });
 
   const [permissionState, setPermissionState] = useState({
@@ -121,7 +120,7 @@ export default function Role() {
 
   useEffect(() => {
     fetchData();
-  }, [userState.page, userState.pageSize]);
+  }, [roleState.page, roleState.pageSize]);
 
   useEffect(() => {
     fetchDataPermission(roleId);
@@ -150,6 +149,12 @@ export default function Role() {
     fetchDataPermission(Id);
     fetchDataMenu(Id);
   }
+
+  const handleAdd = () => {
+    setMode(CREATE_ACTION);
+    setRowData();
+    toggle3();
+  };
 
   const handleUpdate = (row) => {
     setMode(UPDATE_ACTION);
@@ -186,19 +191,19 @@ export default function Role() {
   };
 
   async function fetchData() {
-    setUserState({
-      ...userState
+    setRoleState({
+      ...roleState
       , isLoading: true
 
     });
     const params = {
-      page: userState.page,
-      pageSize: userState.pageSize,
+      page: roleState.page,
+      pageSize: roleState.pageSize,
       keyword: search
     }
     const res = await roleService.getRoleList(params);
-    setUserState({
-      ...userState
+    setRoleState({
+      ...roleState
       , data: [...res.Data]
       , totalRow: res.TotalRow
       , isLoading: false
@@ -225,14 +230,14 @@ export default function Role() {
 
   useEffect(() => {
     if (!_.isEmpty(newData)) {
-      const data = [newData, ...userState.data];
-      if (data.length > userState.pageSize) {
+      const data = [newData, ...roleState.data];
+      if (data.length > roleState.pageSize) {
         data.pop();
       }
-      setUserState({
-        ...userState
+      setRoleState({
+        ...roleState
         , data: [...data]
-        , totalRow: userState.totalRow + 1
+        , totalRow: roleState.totalRow + 1
       });
     }
   }, [newData]);
@@ -247,7 +252,7 @@ export default function Role() {
       <ThemeProvider theme={myTheme}>
         <Grid container sx={{ mb: 1 }}>
           <Grid item xs={8}>
-            <MuiButton text="create" color='success' onClick={toggle3} />
+            <MuiButton text="create" color='success' onClick={handleAdd} />
           </Grid>
           <Grid item xs={4} container>
             {/* <Grid item xs={9}>
@@ -264,21 +269,22 @@ export default function Role() {
           </Grid>
         </Grid>
         <MuiDataGrid
+          gridHeight={256}
           getData={userService.getUserList}
-          showLoading={userState.isLoading}
+          showLoading={roleState.isLoading}
           isPagingServer={true}
           headerHeight={45}
           columns={columns}
-          rows={userState.data}
-          page={userState.page - 1}
-          pageSize={userState.pageSize}
-          rowCount={userState.totalRow}
+          rows={roleState.data}
+          page={roleState.page - 1}
+          pageSize={roleState.pageSize}
+          rowCount={roleState.totalRow}
           rowsPerPageOptions={[5, 10, 20]}
           onPageChange={(newPage) => {
-            setUserState({ ...userState, page: newPage + 1 });
+            setRoleState({ ...roleState, page: newPage + 1 });
           }}
           onPageSizeChange={(newPageSize) => {
-            setUserState({ ...userState, pageSize: newPageSize, page: 1 });
+            setRoleState({ ...roleState, pageSize: newPageSize, page: 1 });
           }}
           onCellClick={handleCellClick}
           onRowClick={(rowData) => handleRoleClick(rowData.row.roleId)}
@@ -290,8 +296,8 @@ export default function Role() {
           }}
         />
         <Grid container sx={{ mt: 1 }} spacing={3}>
-          <Grid item xs={6}>
-            <Grid container >
+          <Grid item xs={6} >
+            <Grid container sx={{ mb: 1 }}>
               <MuiButton text="Create" color='success' onClick={toggle} disabled={roleId != 0 ? false : true} />
               <Badge badgeContent={selectPermission.length} color="warning">
                 <MuiButton text="Delete" color='error' onClick={handleDeletePermission} disabled={selectPermission.length > 0 ? false : true} />
@@ -326,8 +332,8 @@ export default function Role() {
               }}
             />
           </Grid>
-          <Grid item xs={6}>
-            <Grid container>
+          <Grid item xs={6} >
+            <Grid container sx={{ mb: 1 }}>
               <MuiButton text="Create" color='success' onClick={toggle2} disabled={roleId != 0 ? false : true} />
               <Badge badgeContent={selectMenu.length} color="warning">
                 <MuiButton text="Delete" color='error' onClick={handleDeleteMenu} disabled={selectMenu.length > 0 ? false : true} />
@@ -364,32 +370,30 @@ export default function Role() {
           </Grid>
         </Grid>
 
-        {isShowing && <RoleAddPermissionDialog
+        <RoleAddPermissionDialog
           setNewData={setNewData}
-          rowData={rowData}
           isOpen={isShowing}
           onClose={toggle}
           roleId={roleId}
           loadData={fetchDataPermission}
-        />}
+        />
 
-        {isShowing2 && <RoleAddMenuDialog
+        <RoleAddMenuDialog
           setNewData={setNewData}
-          rowData={rowData}
           isOpen={isShowing2}
           onClose={toggle2}
           roleId={roleId}
           loadData={fetchDataMenu}
-        />}
+        />
 
-        {isShowing3 && <RoleDialog
+        <RoleDialog
           setNewData={setNewData}
-          rowData={rowData}
+          initModal={rowData}
           isOpen={isShowing3}
           onClose={toggle3}
           loadData={fetchData}
           mode={mode}
-        />}
+        />
 
       </ThemeProvider>
     </React.Fragment>

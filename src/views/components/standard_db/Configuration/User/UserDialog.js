@@ -119,8 +119,6 @@ const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
                     getOptionLabel={option => option.roleName}
                     defaultValue={initModal}
                     onChange={(e, item) => {
-                      console.log(item.roleId, value)
-                      console.log(item, 'item')
                       if (item) {
                         setValue("Roles", item ?? []);
                       }
