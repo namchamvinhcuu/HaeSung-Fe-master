@@ -38,6 +38,8 @@
         "root_only": "Root only",
         "sort_order": "Thứ tự",
         "unauthorized": "Bạn không có quyền truy cập",
+        "field_required": "Không được để trống",
+        "one_data_at_least": "Vui lòng chọn một",
         "confirm_redo_deleted": "Xác nhận để quay lại dữ liệu đã xóa"
     },
     "login": {
