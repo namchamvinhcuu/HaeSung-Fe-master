@@ -13,6 +13,7 @@ import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
 
+import { SupplierDto } from '@models'
 import { supplierService } from '@services'
 
 import CreateSupplierDialog from './CreateSupplierDialog'
@@ -39,19 +40,6 @@ const myTheme = createTheme({
 const Supplier = (props) => {
     const intl = useIntl();
 
-    const initSupplierModel = {
-        SupplierId: null
-        , SupplierCode: null
-        , SupplierName: null
-        , SupplierContact: null
-        , isActived: true
-        , createdDate: null
-        , createdBy: 0
-        , modifiedDate: null
-        , modifiedBy: null
-        , row_version: null
-    }
-
     const [supplierState, setSupplierState] = useState({
         isLoading: false,
         data: [],
@@ -68,10 +56,10 @@ const Supplier = (props) => {
     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
 
     const [selectedRow, setSelectedRow] = useState({
-        ...initSupplierModel
+        ...SupplierDto
     });
 
-    const [newData, setNewData] = useState({ ...initSupplierModel });
+    const [newData, setNewData] = useState({ ...SupplierDto });
 
     const toggleCreateSupplierDialog = () => {
         setIsOpenCreateDialog(!isOpenCreateDialog);
@@ -90,7 +78,7 @@ const Supplier = (props) => {
             setSelectedRow({ ...rowSelected[0] });
         }
         else {
-            setSelectedRow({ ...initSupplierModel });
+            setSelectedRow({ ...SupplierDto });
         }
     }
 

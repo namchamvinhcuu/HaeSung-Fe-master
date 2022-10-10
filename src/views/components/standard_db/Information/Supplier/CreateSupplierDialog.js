@@ -4,7 +4,6 @@ import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { ErrorAlert, SuccessAlert } from '@utils'
 
-import { SupplierDto } from '@models'
 import { supplierService } from '@services'
 
 const CreateSupplierDialog = (props) => {
