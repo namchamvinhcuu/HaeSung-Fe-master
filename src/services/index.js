@@ -6,7 +6,7 @@ import * as userService from './Standard/Configuration/UserService'
 import * as commonService from './Standard/Configuration/CommonService'
 
 import * as roleService from './Standard/Configuration/RoleService'
-
+import * as productService from './Standard/Information/ProductService'
 
 export {
     loginService,
@@ -15,6 +15,7 @@ export {
     userService,
     commonService,
 
-    roleService
+    roleService,
+    productService
 
 }
