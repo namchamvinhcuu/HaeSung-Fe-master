@@ -49,12 +49,8 @@ const CreatePermissionDialog = (props) => {
 
     useEffect(() => {
         if (isOpen)
-            getPermissionTypeArr(dialogState.menuLevel);
+            getPermissionTypeArr();
     }, [isOpen, dialogState]);
-
-    const createPermission = async (params) => {
-
-    }
 
     const formik = useFormik({
         validationSchema: schema,

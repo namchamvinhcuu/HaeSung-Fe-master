@@ -61,6 +61,7 @@ module.exports = {
             "@services": path.resolve(__dirname, './src/services'),
             "@hooks": path.resolve(__dirname, './src/hooks'),
             "@controls": path.resolve(__dirname, './src/bases/controls'),
+            "@models": path.resolve(__dirname, './src/models'),
         }
     },
     module: {

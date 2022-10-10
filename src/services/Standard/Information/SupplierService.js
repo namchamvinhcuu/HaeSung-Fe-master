@@ -12,6 +12,16 @@ const getSuppliers = async (params) => {
     }
 }
 
+const create = async (params) => {
+    try {
+        return await axios.post('/api/permission/create-permission', {
+            ...params
+        });
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
+
 export {
     getSuppliers
 }
