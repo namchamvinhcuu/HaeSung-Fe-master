@@ -5,6 +5,11 @@ import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS'
 import { User_Operations } from '@appstate/user'
 import { Store } from '@appstate'
 
+import { supplierService } from '@services'
+
+import CreateSupplierDialog from './CreateSupplierDialog'
+import ModifySupplierDialog from './ModifySupplierDialog'
+
 const Supplier = (props) => {
     return (
         <h1>Supplier</h1>
