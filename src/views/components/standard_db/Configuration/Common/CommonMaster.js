@@ -102,7 +102,9 @@ const CommonMaster = () => {
     const [rowmaster, setRowmaster] = useState(null);
     const master_row_click = (row) => {
 
+       // console.log(row, 'row');
         setRowmaster(row);
+
     }
     async function fetchData() {
         setcommomMasterState({
@@ -233,7 +235,7 @@ const CommonMaster = () => {
     };
 
     const columns = [
-        { field: 'commonMasterId', headerName: '', flex: 0.01, hide: true },
+        { field: 'commonMasterId', headerName: '', flex: 0.3 },
         {
             field: 'id', headerName: '', flex: 0.01,
             filterable: false,

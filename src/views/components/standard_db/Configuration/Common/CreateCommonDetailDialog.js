@@ -42,7 +42,9 @@ const CreateCommonDetailDialog = (props) => {
         },
     });
 
-  
+    useEffect(() => {
+        reset({ ...initModal });
+    }, [initModal]);
 
     const handleReset = () => {
         reset();

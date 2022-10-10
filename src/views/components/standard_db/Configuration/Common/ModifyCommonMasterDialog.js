@@ -17,7 +17,7 @@ const ModifyCommonMasterDialog = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setModifyData } = props;
-    console.log(initModal,'master111111');
+    //console.log(initModal,'master111111');
 
     const clearParent = useRef(null);
 

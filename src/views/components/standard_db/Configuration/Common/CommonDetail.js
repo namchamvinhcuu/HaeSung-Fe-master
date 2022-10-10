@@ -105,7 +105,7 @@ const CommonDetail = ({ rowmaster }) => {
 
     useEffect(() => {
         fetchData();
-    }, [menuState.commonMasterId, menuState.page, menuState.pageSize, rowmaster]);
+    }, [rowmaster.commonMasterId, menuState.page, menuState.pageSize, rowmaster]);
 
 
 
@@ -156,7 +156,7 @@ const CommonDetail = ({ rowmaster }) => {
 
 
     const columns = [
-        { field: 'commonDetailId', headerName: '', flex: 0.03, hide: true },
+        { field: 'commonDetailId', headerName: '', flex: 0.03,},
         {
             field: 'id', headerName: '', flex: 0.01,
             filterable: false,
