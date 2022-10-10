@@ -92,9 +92,11 @@ const CommonMaster = () => {
         });
         if (rowSelected && rowSelected.length > 0) {
             setSelectedRow({ ...rowSelected[0] });
+           
         }
         else {
             setSelectedRow({ ...initCommonMasterModel });
+           
         }
     }
     const [rowmaster, setRowmaster] = useState(null);
@@ -249,15 +251,21 @@ const CommonMaster = () => {
                 return (
                     <Grid container spacing={1} alignItems="center" justifyContent="center">
                         <Grid item xs={6}>
-                            <IconButton
-                                aria-label="edit"
-                                color="warning"
-                                size="small"
-                                sx={[{ '&:hover': { border: '1px solid orange', }, }]}
-                                onClick={toggleModifyCommonMSDialog}
-                            >
-                                <EditIcon fontSize="inherit" />
-                            </IconButton>
+                            {
+                                showdataHidden ?
+                                    ""
+                                    :
+                                    <IconButton
+                                        aria-label="edit"
+                                        color="warning"
+                                        size="small"
+                                        sx={[{ '&:hover': { border: '1px solid orange', }, }]}
+                                        onClick={toggleModifyCommonMSDialog}
+                                    >
+                                        <EditIcon fontSize="inherit" />
+                                    </IconButton>
+                            }
+
 
                         </Grid>
                         <Grid item xs={6}>

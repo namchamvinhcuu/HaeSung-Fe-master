@@ -17,7 +17,7 @@ const ModifyCommonMasterDialog = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setModifyData } = props;
-    console.log(initModal,'master');
+    console.log(initModal,'master111111');
 
     const clearParent = useRef(null);
 
@@ -44,7 +44,9 @@ const ModifyCommonMasterDialog = (props) => {
         },
     });
 
-
+    useEffect(() => {
+        reset({ ...initModal });
+    }, [initModal]);
 
     const handleCloseDialog = () => {
         reset();
@@ -92,6 +94,20 @@ const ModifyCommonMasterDialog = (props) => {
                    
                     <Grid item xs={12}>
                         <Grid container spacing={2}>
+                            {/* <Grid item xs={6}>
+                                <TextField
+                                    autoFocus
+                                    fullWidth
+                                  
+                                    size='small'
+                                    label={intl.formatMessage({ id: 'general.name' })}
+                                    {...register('commonMasterName', {
+                                        // onChange: (e) => handleInputChange(e)
+                                    })}
+                                   // error={!!errors?.commonMasterName}
+                                    //helperText={errors?.commonMasterName ? errors.commonMasterName.message : null}
+                                />
+                            </Grid> */}
                             <Grid item xs={6}>
                                 <TextField
                                     autoFocus
@@ -102,11 +118,11 @@ const ModifyCommonMasterDialog = (props) => {
                                     {...register('commonMasterName', {
                                         // onChange: (e) => handleInputChange(e)
                                     })}
+                                    //defaultValue={initModal.commonMasterName}
                                     error={!!errors?.commonMasterName}
                                     helperText={errors?.commonMasterName ? errors.commonMasterName.message : null}
                                 />
                             </Grid>
-                           
                         </Grid>
                     </Grid>
                    

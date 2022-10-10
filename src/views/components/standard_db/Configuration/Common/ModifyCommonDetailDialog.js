@@ -27,7 +27,9 @@ const ModifyCommonMasterDialog = (props) => {
         ...initModal,
         isSubmit: false,
     })
-
+    useEffect(() => {
+        reset({ ...initModal });
+    }, [initModal]);
   
 
     const schema = yup.object().shape({

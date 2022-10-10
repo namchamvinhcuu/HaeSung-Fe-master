@@ -269,20 +269,20 @@ const CommonDetail = ({ rowmaster }) => {
                 }
 
 
-                {isOpenCreateDialog && <CreateCommonDetailDialog
+                <CreateCommonDetailDialog
                     initModal={initCommonDetailModel}
                     setNewData={setNewData}
                     isOpen={isOpenCreateDialog}
                     onClose={toggleCreateCommonDetailDialog}
-                />}
+                />
 
-                {isOpenModifyDialog && <ModifyCommonDetailDialog
+               <ModifyCommonDetailDialog
                     initModal={selectedRow}
                     setModifyData={setSelectedRow}
                     isOpen={isOpenModifyDialog}
                     onClose={toggleModifyCommonDetailDialog}
 
-                />}
+                />
             </ThemeProvider>
         </React.Fragment>
     )
