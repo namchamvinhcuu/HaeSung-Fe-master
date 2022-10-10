@@ -156,7 +156,7 @@ const CommonDetail = ({ rowmaster }) => {
 
 
     const columns = [
-        { field: 'commonDetailId', headerName: '', flex: 0.03,},
+        { field: 'commonDetailId', headerName: '', flex: 0.03, },
         {
             field: 'id', headerName: '', flex: 0.01,
             filterable: false,
@@ -200,15 +200,13 @@ const CommonDetail = ({ rowmaster }) => {
                 );
             },
         },
-
-
         { field: 'commonDetailName', headerName: 'Common Detail Name', flex: 0.3, },
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
 
         {
             field: 'createdDate', headerName: 'Created Date', flex: 0.3, valueFormatter: params => {
                 if (params.value !== null) {
-                    return moment(params?.value).format("YYYY-MM-DD HH:mm:ss")
+                    return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
                 }
             },
         },
@@ -216,7 +214,7 @@ const CommonDetail = ({ rowmaster }) => {
         {
             field: 'modifiedDate', headerName: 'Modified Date', flex: 0.3, valueFormatter: params => {
                 if (params.value !== null) {
-                    return moment(params?.value).format("YYYY-MM-DD HH:mm:ss")
+                    return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
                 }
             },
         },
@@ -276,7 +274,7 @@ const CommonDetail = ({ rowmaster }) => {
                     onClose={toggleCreateCommonDetailDialog}
                 />
 
-               <ModifyCommonDetailDialog
+                <ModifyCommonDetailDialog
                     initModal={selectedRow}
                     setModifyData={setSelectedRow}
                     isOpen={isOpenModifyDialog}

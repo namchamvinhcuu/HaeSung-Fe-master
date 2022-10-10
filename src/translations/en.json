@@ -29,6 +29,8 @@
         "id": "Id",
         "code": "Code",
         "name": "Name",
+        "modified_date": "Modified Date",
+        "created_date": "Created Date",
         "icon": "Icon",
         "component": "Component",
         "url": "Url",
@@ -43,7 +45,6 @@
         "confirm_redo_deleted": "Confirm to redo deleted",
         "description": "Description",
         "model": "model"
-       
     },
     "login": {
         "account_password_invalid": "Account/Password is invalid",
@@ -109,7 +110,10 @@
         "newPassword_required": "New Password is required",
         "roleName": "Role"
     },
-    "product":{
+    "product": {
         "product_type": "product_type"
+    },
+    "supplier": {
+        "contact": "Contact"
     }
 }

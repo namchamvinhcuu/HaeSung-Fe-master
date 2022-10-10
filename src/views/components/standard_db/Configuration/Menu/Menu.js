@@ -353,7 +353,6 @@ const Menu = (props) => {
 
             </ThemeProvider>
         </React.Fragment>
-
     )
 }
 

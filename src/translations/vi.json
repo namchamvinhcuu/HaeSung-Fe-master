@@ -29,6 +29,8 @@
         "id": "Id",
         "code": "Mã",
         "name": "Tên",
+        "modified_date": "Ngày sửa",
+        "created_date": "Ngày tạo",
         "icon": "Biểu tượng",
         "component": "Thành phần",
         "url": "Đường dẫn",
@@ -108,7 +110,10 @@
         "newPassword_required": "Mật khẩu mới không được để trống",
         "roleName": "Role"
     },
-    "product":{
+    "product": {
         "product_type": "Loại sản phẩm"
+    },
+    "supplier": {
+        "contact": "Liên hệ"
     }
 }
