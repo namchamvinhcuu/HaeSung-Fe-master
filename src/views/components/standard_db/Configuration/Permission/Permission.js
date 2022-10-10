@@ -5,9 +5,11 @@ import IconButton from '@mui/material/IconButton'
 import { createTheme, ThemeProvider } from "@mui/material"
 import React, { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
-import { MuiButton, MuiDataGrid } from '@controls'
+import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
 import { permissionService } from '@services'
 import _ from 'lodash'
+
+import CreatePermissionDialog from './CreatePermissionDialog'
 import ModifyPermissionDialog from './ModifyPermissionDialog'
 
 const myTheme = createTheme({
@@ -31,12 +33,12 @@ const myTheme = createTheme({
 const Permission = () => {
     const intl = useIntl();
     let isRendered = useRef(false);
-    const initMenuModel = {
+    const initPermissionModel = {
         permissionId: 0
         , permissionName: ''
         , commonDetailId: ''
         , commonDetailName: ''
-        , forRoot: ''
+        , forRoot: false
     }
 
     const menuGridRef = useRef();
@@ -49,17 +51,20 @@ const Permission = () => {
         pageSize: 50,
     });
 
+    const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false)
 
     const [selectedRow, setSelectedRow] = useState({
-        ...initMenuModel
+        ...initPermissionModel
     })
 
-    const [newData, setNewData] = useState({ ...initMenuModel })
+    const [newData, setNewData] = useState({ ...initPermissionModel })
 
- 
+    const toggleCreatePermissionDialog = () => {
+        setIsOpenCreateDialog(!isOpenCreateDialog);
+    }
 
-    const toggleModifyMenuDialog = () => {
+    const toggleModifyPermissionDialog = () => {
         setIsOpenModifyDialog(!isOpenModifyDialog);
     }
 
@@ -72,7 +77,7 @@ const Permission = () => {
             setSelectedRow({ ...rowSelected[0] });
         }
         else {
-            setSelectedRow({ ...initMenuModel });
+            setSelectedRow({ ...initPermissionModel });
         }
     }
 
@@ -86,8 +91,8 @@ const Permission = () => {
             page: menuState.page,
             pageSize: menuState.pageSize
         }
-       const res = await permissionService.getPermissionList(params);
-      
+        const res = await permissionService.getPermissionList(params);
+
         setMenuState({
             ...menuState
             , data: [...res.Data]
@@ -97,7 +102,7 @@ const Permission = () => {
     }
 
     useEffect(() => {
-       
+
         fetchData();
     }, [menuState.page, menuState.pageSize]);
 
@@ -114,7 +119,7 @@ const Permission = () => {
 
     useEffect(() => {
         let newArr = [];
-        if (!_.isEqual(selectedRow, initMenuModel)) {
+        if (!_.isEqual(selectedRow, initPermissionModel)) {
             newArr = [...menuState.data]
             const index = _.findIndex(newArr, function (o) { return o.permissionId == selectedRow.permissionId; });
             if (index !== -1) {
@@ -131,10 +136,11 @@ const Permission = () => {
 
 
     const columns = [
-        { field: 'permissionId', headerName: '', flex: 0.01, hide: true},
-        { field: 'id', headerName: '', flex: 0.01,
+        { field: 'permissionId', headerName: '', flex: 0.01, hide: true },
+        {
+            field: 'id', headerName: '', flex: 0.01,
             filterable: false,
-        renderCell: (index) => index.api.getRowIndex(index.row.permissionId) + 1,
+            renderCell: (index) => index.api.getRowIndex(index.row.permissionId) + 1,
         },
         {
             field: "action",
@@ -153,7 +159,7 @@ const Permission = () => {
                                 color="warning"
                                 size="small"
                                 sx={[{ '&:hover': { border: '1px solid orange', }, }]}
-                                onClick={toggleModifyMenuDialog}
+                                onClick={toggleModifyPermissionDialog}
                             >
                                 <EditIcon fontSize="inherit" />
                             </IconButton>
@@ -162,8 +168,8 @@ const Permission = () => {
                 );
             },
         },
-      
-        
+
+
         { field: 'commonDetailName', headerName: 'Common Detail Name', flex: 0.3, },
         { field: 'permissionName', headerName: 'Permission Name', flex: 0.3, },
 
@@ -174,8 +180,31 @@ const Permission = () => {
     return (
         <React.Fragment>
             <ThemeProvider theme={myTheme}>
+                <Grid
+                    container
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="flex-end"
+                >
+                    <Grid item xs={6}>
+                        <MuiButton
+                            text="create"
+                            color='success'
+                            onClick={toggleCreatePermissionDialog}
+                        />
+                    </Grid>
+                    <Grid item xs>
+                        <MuiSearchField
+                            label='general.name'
+                            name='keyWord'
+                            onClick={fetchData}
+                            onChange={(e) => changeSearchData(e, 'keyWord')}
+                        />
+                    </Grid>
+
+                </Grid>
                 <MuiDataGrid
-          
+
                     showLoading={menuState.isLoading}
                     isPagingServer={true}
                     headerHeight={45}
@@ -185,8 +214,8 @@ const Permission = () => {
                     page={menuState.page - 1}
                     pageSize={menuState.pageSize}
                     rowCount={menuState.totalRow}
-                   
-                
+
+
                     rowsPerPageOptions={[50, 100, 200]}
 
                     onPageChange={(newPage) => {
@@ -199,7 +228,7 @@ const Permission = () => {
                     onSelectionModelChange={(newSelectedRowId) => {
                         handleRowSelection(newSelectedRowId)
                     }}
-                  
+
                     getRowClassName={(params) => {
                         if (_.isEqual(params.row, newData)) {
                             return `Mui-created`
@@ -207,12 +236,19 @@ const Permission = () => {
                     }}
                 // 
                 />
-          
+
+                <CreatePermissionDialog
+                    initModal={initPermissionModel}
+                    refreshGrid={fetchData}
+                    isOpen={isOpenCreateDialog}
+                    onClose={toggleCreatePermissionDialog}
+                />
+
                 {isOpenModifyDialog && <ModifyPermissionDialog
                     initModal={selectedRow}
                     setModifyData={setSelectedRow}
                     isOpen={isOpenModifyDialog}
-                    onClose={toggleModifyMenuDialog}
+                    onClose={toggleModifyPermissionDialog}
                 />}
             </ThemeProvider>
         </React.Fragment>

@@ -38,6 +38,8 @@
         "root_only": "Root only",
         "sort_order": "Sort Order",
         "unauthorized": "Unauthorized",
+        "field_required": "This field cannot be blank",
+        "one_data_at_least": "Please choose one option",
         "confirm_redo_deleted": "Confirm to redo deleted"
     },
     "login": {
@@ -51,8 +53,6 @@
         "not_found": "CommonMaster: not found/existed",
         "duplicated_name": "CommonMaster: duplicated name ",
         "commonMaster_name": "Common Master Name"
-       
-
     },
     "commonDetail": {
         "not_found": "CommonDetail: not found/existed",
