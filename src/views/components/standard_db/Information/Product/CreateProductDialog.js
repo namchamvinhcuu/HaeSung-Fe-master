@@ -124,10 +124,10 @@ const CreateDialog = (props) => {
                             </Grid>
                             <Grid item xs={6}>
                                 <TextField
-                                    autoFocus
+                                  
                                     fullWidth
                                     size='small'
-                                    label={intl.formatMessage({ id: 'general.Description' })}
+                                    label={intl.formatMessage({ id: 'general.description' })}
 
                                     name="Description"
                                     {...register('Description', {
@@ -153,14 +153,14 @@ const CreateDialog = (props) => {
                                                     options={modelArr}
                                                     autoHighlight
                                                     openOnFocus
-                                                    getOptionLabel={option => option.commonDetailName}
-                                                    isOptionEqualToValue={(option, value) => option.commonMasterId === value.commonMasterId}
+                                                    getOptionLabel={option => option.ProductCode}
+                                                    isOptionEqualToValue={(option, value) => option.ProductCode === value.ProductCode}
                                                    
                                                     defaultValue={initModal}
                                                     onChange={(e, item) => {
 
                                                         if (item) {
-                                                            onChange(item.commonMasterId ?? '');
+                                                            onChange(item.ProductCode ?? '');
                                                         }
                                                         else {
                                                             onChange('')
@@ -169,7 +169,7 @@ const CreateDialog = (props) => {
                                                     renderInput={(params) => {
                                                         return <TextField
                                                             {...params}
-                                                            label={intl.formatMessage({ id: 'general.Model' })}
+                                                            label={intl.formatMessage({ id: 'general.model' })}
                                                             error={!!errors.Model}
                                                             helperText={errors?.Model ? errors.Model.message : null}
                                                         />
@@ -181,10 +181,10 @@ const CreateDialog = (props) => {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <TextField
-                                        autoFocus
+                                        
                                         fullWidth
                                         size='small'
-                                        label={intl.formatMessage({ id: 'general.ProductType' })}
+                                        label={intl.formatMessage({ id: 'product.product_type' })}
 
                                         name="ProductType"
                                         {...register('ProductType', {

@@ -40,7 +40,9 @@
         "unauthorized": "Bạn không có quyền truy cập",
         "field_required": "Không được để trống",
         "one_data_at_least": "Vui lòng chọn một",
-        "confirm_redo_deleted": "Xác nhận để quay lại dữ liệu đã xóa"
+        "confirm_redo_deleted": "Xác nhận để quay lại dữ liệu đã xóa",
+        "description": "Mô tả",
+        "model": "Model"
     },
     "login": {
         "account_password_invalid": "Tài khoản/Mật khẩu không hợp lệ",
@@ -105,5 +107,8 @@
         "userPassword_required": "Mật khẩu không được để trống",
         "newPassword_required": "Mật khẩu mới không được để trống",
         "roleName": "Role"
+    },
+    "product":{
+        "product_type": "Loại sản phẩm"
     }
 }

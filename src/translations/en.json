@@ -40,7 +40,10 @@
         "unauthorized": "Unauthorized",
         "field_required": "This field cannot be blank",
         "one_data_at_least": "Please choose one option",
-        "confirm_redo_deleted": "Confirm to redo deleted"
+        "confirm_redo_deleted": "Confirm to redo deleted",
+        "description": "Description",
+        "model": "model"
+       
     },
     "login": {
         "account_password_invalid": "Account/Password is invalid",
@@ -105,5 +108,8 @@
         "userPassword_required": "Password is required",
         "newPassword_required": "New Password is required",
         "roleName": "Role"
+    },
+    "product":{
+        "product_type": "product_type"
     }
 }

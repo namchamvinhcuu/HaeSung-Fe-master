@@ -1,8 +1,8 @@
 import { axios } from '@utils'
-const apiName = '/api/user';
+const apiProduct = '/api/product';
 const getProductList = async (params) => {
     try {
-        return await axios.get(`${apiName}/get-all`, {
+        return await axios.get(`${apiProduct}/get-all`, {
             params: {
                 ...params 
             }
@@ -11,15 +11,16 @@ const getProductList = async (params) => {
         console.log(`ERROR: ${error}`);
     }
 }
-const getModels = async (menuLevel) => {
+const getModels = async (params) => {
 
     try {
-        return await axios.get(`${apiName}/get-by-model`, {
+        return await axios.get(`${apiProduct}/get-by-model`, {
             params: {
                 ...params 
             }
         });
-    } catch (error) {
+    } 
+    catch (error) {
         console.log(`ERROR: ${error}`);
     }
 }
@@ -27,4 +28,5 @@ const getModels = async (menuLevel) => {
 export {
     getProductList,
     getModels
+   
 }
