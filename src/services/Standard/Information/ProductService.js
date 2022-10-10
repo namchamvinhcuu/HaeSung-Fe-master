@@ -14,7 +14,7 @@ const getProductList = async (params) => {
 const getModels = async (menuLevel) => {
 
     try {
-        return await axios.get(`${apiName}/get-all-model`, {
+        return await axios.get(`${apiName}/get-by-model`, {
             params: {
                 ...params 
             }
