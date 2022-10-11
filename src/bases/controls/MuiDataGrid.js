@@ -1,6 +1,7 @@
 import { styled } from '@mui/material/styles';
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useImperativeHandle } from 'react';
+import { createTheme, ThemeProvider } from '@mui/material'
 
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
     // minHeight: '400px',
@@ -94,17 +95,41 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
 
     '& .MuiDataGrid-row': {
         '&:hover': {
-            backgroundColor: 'palegoldenrod',
+            backgroundColor: '#EEE8AA',
         }
     },
 
     '& .MuiDataGrid-row.Mui-selected': {
-        backgroundColor: 'palegoldenrod',
+        backgroundColor: '#EEE8AA',
         '&:hover': {
-            backgroundColor: 'palegoldenrod',
+            backgroundColor: '#EEE8AA',
         }
     }
 }));
+
+const myTheme = createTheme({
+    components: {
+        //@ts-ignore - this isn't in the TS because DataGird is not exported from `@mui/material`
+        MuiDataGrid: {
+            styleOverrides: {
+                row: {
+                    "&.Mui-created": {
+                        backgroundColor: "#A0DB8E",
+                        //   "&:hover": {
+                        //     backgroundColor: "#98958F"
+                        //   }
+                    },
+                    "&.Mui-deleted": {
+                        backgroundColor: "#AEC6CF",
+                        //   "&:hover": {
+                        //     backgroundColor: "#98958F"
+                        //   }
+                    },
+                }
+            }
+        }
+    }
+});
 
 // const MuiDataGrid = React.forwardRef((props, ref) => {
 const MuiDataGrid = (props) => {
@@ -143,56 +168,58 @@ const MuiDataGrid = (props) => {
     return (
         <React.Fragment>
             {/* <div style={{ height: 108 + (pageSize * rowHeight) + 'px', maxHeight: '740px', overflow: "auto" }}> */}
-            {
-                isPagingServer
-                    ?
-                    <StyledDataGrid style={{ height: dynamicHeight }}
-                        // autoHeight
-                        headerHeight={headerHeight}
-                        rowHeight={rowHeight ?? 32}
-                        // getRowHeight={() => 'auto'}
-                        columns={columns}
-                        rows={rows}
-                        loading={showLoading}
+            <ThemeProvider theme={myTheme}>
+                {
+                    isPagingServer
+                        ?
+                        <StyledDataGrid style={{ height: dynamicHeight }}
+                            // autoHeight
+                            headerHeight={headerHeight}
+                            rowHeight={rowHeight ?? 32}
+                            // getRowHeight={() => 'auto'}
+                            columns={columns}
+                            rows={rows}
+                            loading={showLoading}
 
-                        pagination
-                        paginationMode="server"
-                        page={page ?? 1}
-                        pageSize={pageSize ?? 0}
-                        rowCount={rowCount ?? 0}
-                        rowsPerPageOptions={rowsPerPageOptions}
+                            pagination
+                            paginationMode="server"
+                            page={page ?? 1}
+                            pageSize={pageSize ?? 0}
+                            rowCount={rowCount ?? 0}
+                            rowsPerPageOptions={rowsPerPageOptions}
 
-                        onPageChange={onPageChange}
-                        onPageSizeChange={onPageSizeChange}
-                        getRowId={getRowId}
+                            onPageChange={onPageChange}
+                            onPageSizeChange={onPageSizeChange}
+                            getRowId={getRowId}
 
-                        onSelectionModelChange={onSelectionModelChange}
-                        {...props}
-                    />
-                    :
-                    <StyledDataGrid
-                        // autoHeight
-                        headerHeight={headerHeight}
-                        rowHeight={rowHeight ?? 32}
-                        // getRowHeight={() => 'auto'}
-                        columns={columns}
-                        rows={rows}
+                            onSelectionModelChange={onSelectionModelChange}
+                            {...props}
+                        />
+                        :
+                        <StyledDataGrid
+                            // autoHeight
+                            headerHeight={headerHeight}
+                            rowHeight={rowHeight ?? 32}
+                            // getRowHeight={() => 'auto'}
+                            columns={columns}
+                            rows={rows}
 
-                        pagination
-                        page={page ?? 1}
-                        pageSize={pageSize ?? 0}
-                        rowCount={rowCount ?? 0}
-                        rowsPerPageOptions={rowsPerPageOptions}
+                            pagination
+                            page={page ?? 1}
+                            pageSize={pageSize ?? 0}
+                            rowCount={rowCount ?? 0}
+                            rowsPerPageOptions={rowsPerPageOptions}
 
-                        onPageChange={onPageChange}
-                        onPageSizeChange={onPageSizeChange}
-                        getRowId={getRowId}
+                            onPageChange={onPageChange}
+                            onPageSizeChange={onPageSizeChange}
+                            getRowId={getRowId}
 
-                        onSelectionModelChange={onSelectionModelChange}
-                        {...props}
-                    />
+                            onSelectionModelChange={onSelectionModelChange}
+                            {...props}
+                        />
 
-            }
+                }
+            </ThemeProvider>
             {/* </div> */}
         </React.Fragment>
     )

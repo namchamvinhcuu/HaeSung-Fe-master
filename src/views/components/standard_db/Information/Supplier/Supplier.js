@@ -1,43 +1,25 @@
-import React, { useState, useEffect } from 'react'
+import { Store } from '@appstate'
+import { User_Operations } from '@appstate/user'
+import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import UndoIcon from '@mui/icons-material/Undo'
+import { FormControlLabel, Switch } from "@mui/material"
+import Grid from '@mui/material/Grid'
+import IconButton from '@mui/material/IconButton'
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS'
+import _ from 'lodash'
+import moment from "moment"
+import React, { useEffect, useState } from 'react'
+import { useIntl } from 'react-intl'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS'
-import { User_Operations } from '@appstate/user'
-import { Store } from '@appstate'
-import _ from 'lodash';
-import moment from "moment";
-import { useIntl } from 'react-intl';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import UndoIcon from '@mui/icons-material/Undo';
-import { createTheme, ThemeProvider, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
-import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
-import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
 
 import { SupplierDto } from '@models'
 import { supplierService } from '@services'
 
 import CreateSupplierDialog from './CreateSupplierDialog'
 import ModifySupplierDialog from './ModifySupplierDialog'
-
-const myTheme = createTheme({
-    components: {
-        //@ts-ignore - this isn't in the TS because DataGird is not exported from `@mui/material`
-        MuiDataGrid: {
-            styleOverrides: {
-                row: {
-                    "&.Mui-created": {
-                        backgroundColor: "#A0DB8E",
-                        //   "&:hover": {
-                        //     backgroundColor: "#98958F"
-                        //   }
-                    }
-                }
-            }
-        }
-    }
-});
 
 const Supplier = (props) => {
     const intl = useIntl();
@@ -47,7 +29,7 @@ const Supplier = (props) => {
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 1,
+        pageSize: 20,
         searchData: {
             SupplierCode: null,
             SupplierName: null
@@ -56,7 +38,7 @@ const Supplier = (props) => {
 
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false);
     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
-    const [showDeleteData, setShowDeleteData] = useState(false);
+    const [showActivedData, setShowActivedData] = useState(true);
 
     const [selectedRow, setSelectedRow] = useState({
         ...SupplierDto
@@ -103,6 +85,7 @@ const Supplier = (props) => {
             pageSize: supplierState.pageSize,
             SupplierCode: supplierState.searchData.SupplierCode,
             SupplierName: supplierState.searchData.SupplierName,
+            isActived: showActivedData,
         }
         const res = await supplierService.getSuppliers(params);
 
@@ -114,30 +97,8 @@ const Supplier = (props) => {
         });
     }
 
-    const fetchDataDeleted = async () => {
-        setSupplierState({
-            ...supplierState
-            , isLoading: true
-
-        });
-        const params = {
-            page: supplierState.page,
-            pageSize: supplierState.pageSize,
-            SupplierCode: supplierState.searchData.SupplierCode,
-            SupplierName: supplierState.searchData.SupplierName,
-        }
-        const res = await supplierService.getDeletedSuppliers(params);
-
-        setSupplierState({
-            ...supplierState
-            , data: !res.Data ? [] : [...res.Data]
-            , totalRow: res.TotalRow
-            , isLoading: false
-        });
-    }
-
     const handleDeleteSupplier = async (supplier) => {
-        if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
+        if (window.confirm(intl.formatMessage({ id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
             try {
                 let res = await supplierService.handleDelete(supplier);
                 if (res && res.HttpResponseCode === 200) {
@@ -149,22 +110,9 @@ const Supplier = (props) => {
         }
     }
 
-    const handleReuseSupplier = async (supplier) => {
-        if (window.confirm(intl.formatMessage({ id: 'general.confirm_redo_deleted' }))) {
-            try {
-                let res = await supplierService.handleReuse(supplier);
-                if (res && res.HttpResponseCode === 200) {
-                    await fetchDataDeleted();
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        }
-    }
-
-    const handleShowDeleteData = async (event) => {
-        setShowDeleteData(event.target.checked);
-        if (event.target.checked) {
+    const handleshowActivedData = async (event) => {
+        setShowActivedData(event.target.checked);
+        if (!event.target.checked) {
             setSupplierState({
                 ...supplierState
                 , page: 1
@@ -173,14 +121,8 @@ const Supplier = (props) => {
     };
 
     useEffect(() => {
-
-        if (showDeleteData) {
-            fetchDataDeleted();
-        }
-        else {
-            fetchData();
-        }
-    }, [supplierState.page, supplierState.pageSize, showDeleteData]);
+        fetchData();
+    }, [supplierState.page, supplierState.pageSize, showActivedData]);
 
     useEffect(() => {
         if (!_.isEmpty(newData) && !_.isEqual(newData, SupplierDto)) {
@@ -237,27 +179,15 @@ const Supplier = (props) => {
                         </Grid>
 
                         <Grid item xs={6}>
-                            {showDeleteData ?
-                                <IconButton
-                                    aria-label="reuse"
-                                    color="error"
-                                    size="small"
-                                    sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                                    onClick={() => handleReuseSupplier(params.row)}
-                                >
-                                    <UndoIcon fontSize="inherit" />
-                                </IconButton>
-                                :
-                                <IconButton
-                                    aria-label="delete"
-                                    color="error"
-                                    size="small"
-                                    sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                                    onClick={() => handleDeleteSupplier(params.row)}
-                                >
-                                    <DeleteIcon fontSize="inherit" />
-                                </IconButton>
-                            }
+                            <IconButton
+                                aria-label="delete"
+                                color="error"
+                                size="small"
+                                sx={[{ '&:hover': { border: '1px solid red', }, }]}
+                                onClick={() => handleDeleteSupplier(params.row)}
+                            >
+                                {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
+                            </IconButton>
                         </Grid>
                     </Grid>
                 );
@@ -284,99 +214,99 @@ const Supplier = (props) => {
 
     return (
         <React.Fragment>
-            <ThemeProvider theme={myTheme}>
-                <Grid
-                    container
-                    spacing={2}
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="flex-end"
-                >
-                    <Grid item xs={6}>
-                        <MuiButton
-                            text="create"
-                            color='success'
-                            onClick={toggleCreateDialog}
-                        />
-                    </Grid>
-
-                    <Grid item xs>
-                        <FormControlLabel
-                            style={{ marginBottom: '0px' }}
-                            control={<Checkbox />}
-                            label="Show data deleted"
-                            onChange={handleShowDeleteData}
-                        />
-                    </Grid>
-
-                    <Grid item xs>
-                        <MuiSearchField
-                            label='general.code'
-                            name='SupplierCode'
-                            onClick={fetchData}
-                            onChange={(e) => changeSearchData(e, 'SupplierCode')}
-                        />
-                    </Grid>
-
-                    <Grid item xs>
-                        <MuiSearchField
-                            label='general.name'
-                            name='SupplierName'
-                            onClick={fetchData}
-                            onChange={(e) => changeSearchData(e, 'SupplierName')}
-                        />
-                    </Grid>
-
+            <Grid
+                container
+                spacing={2}
+                direction="row"
+                justifyContent="space-between"
+                alignItems="flex-end"
+            >
+                <Grid item xs={5}>
+                    <MuiButton
+                        text="create"
+                        color='success'
+                        onClick={toggleCreateDialog}
+                    />
+                </Grid>
+                <Grid item xs>
+                    <MuiSearchField
+                        label='general.code'
+                        name='SupplierCode'
+                        onClick={fetchData}
+                        onChange={(e) => changeSearchData(e, 'SupplierCode')}
+                    />
                 </Grid>
 
-                <MuiDataGrid
-                    // ref={menuGridRef}
-                    showLoading={supplierState.isLoading}
-                    isPagingServer={true}
-                    headerHeight={45}
-                    // rowHeight={30}
-                    gridHeight={736}
-                    columns={columns}
-                    rows={supplierState.data}
-                    page={supplierState.page - 1}
-                    pageSize={supplierState.pageSize}
-                    rowCount={supplierState.totalRow}
-                    rowsPerPageOptions={[1, 10, 20, 30]}
+                <Grid item xs>
+                    <MuiSearchField
+                        label='general.name'
+                        name='SupplierName'
+                        onClick={fetchData}
+                        onChange={(e) => changeSearchData(e, 'SupplierName')}
+                    />
+                </Grid>
 
-                    onPageChange={(newPage) => {
-                        setSupplierState({ ...supplierState, page: newPage + 1 });
-                    }}
-                    onPageSizeChange={(newPageSize) => {
-                        setSupplierState({ ...supplierState, pageSize: newPageSize, page: 1 });
-                    }}
-                    getRowId={(rows) => rows.SupplierId}
-                    onSelectionModelChange={(newSelectedRowId) => {
-                        handleRowSelection(newSelectedRowId)
-                    }}
-                    // selectionModel={selectedRow.menuId}
-                    getRowClassName={(params) => {
-                        if (_.isEqual(params.row, newData)) {
-                            return `Mui-created`
-                        }
-                    }}
-                />
+                <Grid item xs sx={{ display: 'flex', justifyContent: 'right' }}>
+                    <MuiButton
+                        text="search"
+                        color='info'
+                        onClick={fetchData}
+                    />
+                    <FormControlLabel
+                        sx={{ mb: 0, ml: '1px' }}
+                        control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleshowActivedData(e)} />}
+                        label={showActivedData ? "Actived" : "Deleted"} />
+                </Grid>
 
-                <CreateSupplierDialog
-                    initModal={SupplierDto}
-                    setNewData={setNewData}
-                    isOpen={isOpenCreateDialog}
-                    onClose={toggleCreateDialog}
-                />
+            </Grid>
 
-                <ModifySupplierDialog
-                    initModal={selectedRow}
-                    setModifyData={setSelectedRow}
-                    isOpen={isOpenModifyDialog}
-                    onClose={toggleModifyDialog}
-                />
+            <MuiDataGrid
+                // ref={menuGridRef}
+                showLoading={supplierState.isLoading}
+                isPagingServer={true}
+                headerHeight={45}
+                // rowHeight={30}
+                gridHeight={736}
+                columns={columns}
+                rows={supplierState.data}
+                page={supplierState.page - 1}
+                pageSize={supplierState.pageSize}
+                rowCount={supplierState.totalRow}
+                rowsPerPageOptions={[5, 10, 20, 30]}
 
-            </ThemeProvider>
-        </React.Fragment >
+                onPageChange={(newPage) => {
+                    setSupplierState({ ...supplierState, page: newPage + 1 });
+                }}
+                onPageSizeChange={(newPageSize) => {
+                    setSupplierState({ ...supplierState, pageSize: newPageSize, page: 1 });
+                }}
+                getRowId={(rows) => rows.SupplierId}
+                onSelectionModelChange={(newSelectedRowId) => {
+                    handleRowSelection(newSelectedRowId)
+                }}
+                // selectionModel={selectedRow.menuId}
+                getRowClassName={(params) => {
+                    if (_.isEqual(params.row, newData)) {
+                        return `Mui-created`
+                    }
+                }}
+            />
+
+            <CreateSupplierDialog
+                initModal={SupplierDto}
+                setNewData={setNewData}
+                isOpen={isOpenCreateDialog}
+                onClose={toggleCreateDialog}
+            />
+
+            <ModifySupplierDialog
+                initModal={selectedRow}
+                setModifyData={setSelectedRow}
+                isOpen={isOpenModifyDialog}
+                onClose={toggleModifyDialog}
+            />
+
+        </React.Fragment>
     )
 }
 

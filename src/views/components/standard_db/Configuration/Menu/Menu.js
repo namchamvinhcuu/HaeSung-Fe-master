@@ -18,25 +18,6 @@ import _ from 'lodash';
 import CreateMenuDialog from './CreateMenuDialog';
 import ModifyMenuDialog from './ModifyMenuDialog';
 
-
-const myTheme = createTheme({
-    components: {
-        //@ts-ignore - this isn't in the TS because DataGird is not exported from `@mui/material`
-        MuiDataGrid: {
-            styleOverrides: {
-                row: {
-                    "&.Mui-created": {
-                        backgroundColor: "#A0DB8E",
-                        //   "&:hover": {
-                        //     backgroundColor: "#98958F"
-                        //   }
-                    }
-                }
-            }
-        }
-    }
-});
-
 const Menu = (props) => {
     const intl = useIntl();
     let isRendered = useRef(false);
@@ -273,85 +254,82 @@ const Menu = (props) => {
 
     return (
         <React.Fragment>
-            <ThemeProvider theme={myTheme}>
-                <Grid
-                    container
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="flex-end"
-                >
-                    <Grid item xs={6}>
-                        <MuiButton
-                            text="create"
-                            color='success'
-                            onClick={toggleCreateMenuDialog}
-                        />
-                    </Grid>
-                    <Grid item xs>
-                        <MuiSearchField
-                            label='general.name'
-                            name='keyWord'
-                            onClick={fetchData}
-                            onChange={(e) => changeSearchData(e, 'keyWord')}
-                        />
-                    </Grid>
-
+            <Grid
+                container
+                direction="row"
+                justifyContent="space-between"
+                alignItems="flex-end"
+            >
+                <Grid item xs={6}>
+                    <MuiButton
+                        text="create"
+                        color='success'
+                        onClick={toggleCreateMenuDialog}
+                    />
+                </Grid>
+                <Grid item xs>
+                    <MuiSearchField
+                        label='general.name'
+                        name='keyWord'
+                        onClick={fetchData}
+                        onChange={(e) => changeSearchData(e, 'keyWord')}
+                    />
                 </Grid>
 
-                <MuiDataGrid
-                    // ref={menuGridRef}
-                    showLoading={menuState.isLoading}
-                    isPagingServer={true}
-                    headerHeight={45}
-                    // rowHeight={30}
-                    gridHeight={736}
-                    columns={columns}
-                    rows={menuState.data}
-                    page={menuState.page - 1}
-                    pageSize={menuState.pageSize}
-                    rowCount={menuState.totalRow}
-                    rowsPerPageOptions={[5, 10, 20, 30]}
+            </Grid>
 
-                    onPageChange={(newPage) => {
-                        setMenuState({ ...menuState, page: newPage + 1 });
-                    }}
-                    onPageSizeChange={(newPageSize) => {
-                        setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
-                    }}
-                    getRowId={(rows) => rows.menuId}
-                    onSelectionModelChange={(newSelectedRowId) => {
-                        handleRowSelection(newSelectedRowId)
-                    }}
-                    // selectionModel={selectedRow.menuId}
-                    getRowClassName={(params) => {
-                        if (_.isEqual(params.row, newData)) {
-                            return `Mui-created`
-                        }
-                    }}
-                // 
-                />
+            <MuiDataGrid
+                // ref={menuGridRef}
+                showLoading={menuState.isLoading}
+                isPagingServer={true}
+                headerHeight={45}
+                // rowHeight={30}
+                gridHeight={736}
+                columns={columns}
+                rows={menuState.data}
+                page={menuState.page - 1}
+                pageSize={menuState.pageSize}
+                rowCount={menuState.totalRow}
+                rowsPerPageOptions={[5, 10, 20, 30]}
 
-                {/* {isOpenCreateDialog && <CreateMenuDialog
+                onPageChange={(newPage) => {
+                    setMenuState({ ...menuState, page: newPage + 1 });
+                }}
+                onPageSizeChange={(newPageSize) => {
+                    setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
+                }}
+                getRowId={(rows) => rows.menuId}
+                onSelectionModelChange={(newSelectedRowId) => {
+                    handleRowSelection(newSelectedRowId)
+                }}
+                // selectionModel={selectedRow.menuId}
+                getRowClassName={(params) => {
+                    if (_.isEqual(params.row, newData)) {
+                        return `Mui-created`
+                    }
+                }}
+            // 
+            />
+
+            {/* {isOpenCreateDialog && <CreateMenuDialog
                     initModal={initMenuModel}
                     setNewData={setNewData}
                     isOpen={isOpenCreateDialog}
                     onClose={toggleCreateMenuDialog}
                 />} */}
-                <CreateMenuDialog
-                    initModal={initMenuModel}
-                    setNewData={setNewData}
-                    isOpen={isOpenCreateDialog}
-                    onClose={toggleCreateMenuDialog}
-                />
+            <CreateMenuDialog
+                initModal={initMenuModel}
+                setNewData={setNewData}
+                isOpen={isOpenCreateDialog}
+                onClose={toggleCreateMenuDialog}
+            />
 
-                <ModifyMenuDialog
-                    initModal={selectedRow}
-                    setModifyData={setSelectedRow}
-                    isOpen={isOpenModifyDialog}
-                    onClose={toggleModifyMenuDialog}
-                />
-
-            </ThemeProvider>
+            <ModifyMenuDialog
+                initModal={selectedRow}
+                setModifyData={setSelectedRow}
+                isOpen={isOpenModifyDialog}
+                onClose={toggleModifyMenuDialog}
+            />
         </React.Fragment>
     )
 }

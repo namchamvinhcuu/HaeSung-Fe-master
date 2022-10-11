@@ -30,17 +30,17 @@ const MuiSearchField = (props) => {
                 name={name}
                 onKeyDown={keyPress}
                 onChange={onChange}
-                endAdornment={
-                    <InputAdornment position="end">
-                        <IconButton
-                            aria-label={intl.formatMessage({ id: 'general.search' })}
-                            onMouseDown={handleMouseDown}
-                            onClick={onClick}
-                        >
-                            <SearchIcon />
-                        </IconButton>
-                    </InputAdornment>
-                }
+            // endAdornment={
+            //     <InputAdornment position="end">
+            //         <IconButton
+            //             aria-label={intl.formatMessage({ id: 'general.search' })}
+            //             onMouseDown={handleMouseDown}
+            //             onClick={onClick}
+            //         >
+            //             <SearchIcon />
+            //         </IconButton>
+            //     </InputAdornment>
+            // }
             />
         </FormControl>
     )

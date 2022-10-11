@@ -339,7 +339,7 @@ export default function Mold() {
         />
 
       </ThemeProvider>
-    </React.Fragment >
+    </React.Fragment>
 
   )
 }

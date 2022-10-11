@@ -12,18 +12,6 @@ const getSuppliers = async (params) => {
     }
 }
 
-const getDeletedSuppliers = async (params) => {
-    try {
-        return await axios.get('/api/supplier/get-deleted', {
-            params: {
-                ...params
-            }
-        });
-    } catch (error) {
-        console.log(`ERROR: ${error}`);
-    }
-}
-
 const create = async (params) => {
     try {
         return await axios.post('/api/supplier/create-supplier', {
@@ -47,20 +35,7 @@ const modify = async (params) => {
 const handleDelete = async (params) => {
 
     try {
-        return await axios.delete('/api/supplier/delete-supplier', {
-            data: {
-                ...params
-            }
-        });
-    } catch (error) {
-        console.log(`ERROR: ${error}`);
-    }
-}
-
-const handleReuse = async (params) => {
-
-    try {
-        return await axios.put('/api/supplier/reuse-supplier', {
+        return await axios.put('/api/supplier/delete-reuse-supplier', {
             ...params
         });
     } catch (error) {
@@ -70,9 +45,7 @@ const handleReuse = async (params) => {
 
 export {
     getSuppliers,
-    getDeletedSuppliers,
     create,
     modify,
     handleDelete,
-    handleReuse,
 }
