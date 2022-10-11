@@ -15,10 +15,12 @@ import Grid from '@mui/material/Grid'
 import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
 import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
-import moment from "moment";
+import moment from "moment"
+import ProductDto from "@models"
+import EditIcon from '@mui/icons-material/Edit'
 
 import CreateDialog from './CreateProductDialog'
-
+import ModifyDialog from './ModifyProductDialog'
 
 
 const myTheme = createTheme({
@@ -41,16 +43,9 @@ const myTheme = createTheme({
 
 const Product = () => {
     const intl = useIntl();
-    const initProductModel = {
-        ProductId: 0
-        , ProductCode: ''
-        ,Description: ''
-        ,Model :''
-        ,ProductType : ''
-        ,Inch : ''
 
-    }
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
+    const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false)
 
     const [productState, setproductState] = useState({
         isLoading: false,
@@ -64,14 +59,25 @@ const Product = () => {
     });
 
     const [selectedRow, setSelectedRow] = useState({
-        ...initProductModel
+        ...ProductDto
     })
 
-    const [newData, setNewData] = useState({ ...initProductModel })
+    const [newData, setNewData] = useState({ ...ProductDto })
     const toggleCreateDialog = () => {
 
         setIsOpenCreateDialog(!isOpenCreateDialog);
     }
+    const toggleModifyDialog = () => {
+        setIsOpenModifyDialog(!isOpenModifyDialog);
+    }
+    useEffect(() => {
+        console.log(productState.data)
+    }, [productState.data]);
+
+    useEffect(() => {
+
+        fetchData();
+    }, [productState.page, productState.pageSize]);
 
     async function fetchData() {
         setproductState({
@@ -85,7 +91,7 @@ const Product = () => {
             keyword: productState.searchData.keyWord
         }
         const res = await productService.getProductList(params);
-
+     
         setproductState({
             ...productState
             , data: [...res.Data]
@@ -99,6 +105,50 @@ const Product = () => {
         console.log(productState.data)
     }, [productState.data]);
 
+    useEffect(() => {
+        if (!_.isEmpty(newData)) {
+            const data = [newData, ...productState.data];
+            if (data.length > productState.pageSize) {
+                data.pop();
+            }
+            setproductState({
+                ...productState
+                , data: [...data]
+                , totalRow: productState.totalRow + 1
+            });
+        }
+    }, [newData]);
+
+
+    useEffect(() => {
+        if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, ProductDto)) {
+            let newArr = [...productState.data]
+            const index = _.findIndex(newArr, function (o) { return o.ProductId == selectedRow.ProductId; });
+            if (index !== -1) {
+                newArr[index] = selectedRow
+            }
+
+            setproductState({
+                ...productState
+                , data: [...newArr]
+            });
+        }
+    }, [selectedRow]);
+
+    const handleRowSelection = (arrIds) => {
+
+        const rowSelected = productState.data.filter(function (item) {
+            return item.ProductId === arrIds[0]
+        });
+        if (rowSelected && rowSelected.length > 0) {
+            setSelectedRow({ ...rowSelected[0] });
+           
+        }
+        else {
+            setSelectedRow({ ...ProductDto });
+           
+        }
+    }
 
     const columns = [
         { field: 'ProductId', headerName: '', flex: 0.01, hide: true },
@@ -107,11 +157,50 @@ const Product = () => {
             filterable: false,
             renderCell: (index) => index.api.getRowIndex(index.row.ProductId) + 1,
         },
-        
+        {
+            field: "action",
+            headerName: "",
+            flex: 0.1,
+            disableClickEventBubbling: true,
+            sortable: false,
+            renderCell: (params) => {
+                return (
+                    <Grid container spacing={1} alignItems="center" justifyContent="center">
+                        <Grid item xs={6}>
+                            <IconButton
+                                aria-label="edit"
+                                color="warning"
+                                size="small"
+                                sx={[{ '&:hover': { border: '1px solid orange', }, }]}
+                                onClick={toggleModifyDialog}
+                            >
+                                <EditIcon fontSize="inherit" />
+                            </IconButton>
+
+
+                        </Grid>
+                        <Grid item xs={6}>
+                            <IconButton
+                                aria-label="delete"
+                                color="error"
+                                size="small"
+                                sx={[{ '&:hover': { border: '1px solid red', }, }]}
+                            //    onClick={() => handleDeleteCommonMS(params.row)}
+                            >
+                                <DeleteIcon fontSize="inherit" />
+                            </IconButton>
+
+                        </Grid>
+                    </Grid>
+                );
+            },
+        },
+        { field: 'ModelName', headerName: 'ModelName', flex: 0.3 },
         { field: 'Model', headerName: 'Model', flex: 0.3 },
         { field: 'ProductCode', headerName: 'ProductCode', flex: 0.3 },
         { field: 'Description', headerName: 'Description', flex: 0.3 },
         { field: 'ProductType', headerName: 'ProductType', flex: 0.3 },
+        { field: 'ProductTypeName', headerName: 'ProductTypeName', flex: 0.3 },
         { field: 'Inch', headerName: 'Inch', flex: 0.3 },
 
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
@@ -140,7 +229,7 @@ const Product = () => {
 
     return (
 
-       <>
+        <>
             <Grid
                 container
                 direction="row"
@@ -153,7 +242,7 @@ const Product = () => {
                     <MuiButton
                         text="create"
                         color='success'
-                     onClick={toggleCreateDialog}
+                        onClick={toggleCreateDialog}
                     />
                 </Grid>
                 <Grid item xs={2}>
@@ -161,7 +250,7 @@ const Product = () => {
                         <FormControlLabel
                             control={<Checkbox />}
                             label="Show data deleted"
-                           // onChange={handleChangeClick}
+                        // onChange={handleChangeClick}
                         />
                     </FormGroup>
                 </Grid>
@@ -169,45 +258,52 @@ const Product = () => {
                     <MuiSearchField
                         label='general.name'
                         name='keyWord'
-                      //  onClick={showdataHidden ? fetchDataDeleted : fetchData}
-                       // onChange={(e) => changeSearchData(e, 'keyWord')}
+                    //  onClick={showdataHidden ? fetchDataDeleted : fetchData}
+                    // onChange={(e) => changeSearchData(e, 'keyWord')}
                     />
                 </Grid>
 
             </Grid>
-      
-                <MuiDataGrid
-                  //  getData={commonService.getProductList}
-                    showLoading={productState.isLoading}
-                    isPagingServer={true}
-                    headerHeight={45}
-                    gridHeight={345}
-                    columns={columns}
-                    rows={productState.data}
-                    page={productState.page - 1}
-                    pageSize={productState.pageSize}
-                    rowCount={productState.totalRow}
-                   
-                    rowsPerPageOptions={[5, 10, 20, 30]}
-                  
-                   
-                    getRowId={(rows) => rows.ProductId}
-                   
-                    getRowClassName={(params) => {
-                        if (_.isEqual(params.row, newData)) {
-                            return `Mui-created`
-                        }
-                    }}
-                />
-            
+
+            <MuiDataGrid
+                getData={productService.getProductList}
+                showLoading={productState.isLoading}
+                isPagingServer={true}
+                headerHeight={45}
+                gridHeight={345}
+                columns={columns}
+                rows={productState.data}
+                page={productState.page - 1}
+                pageSize={productState.pageSize}
+                rowCount={productState.totalRow}
+
+                rowsPerPageOptions={[5, 10, 20, 30]}
+
+                onSelectionModelChange={(newSelectedRowId) => {
+                    handleRowSelection(newSelectedRowId)
+                }}
+                getRowId={(rows) => rows.ProductId}
+
+                getRowClassName={(params) => {
+                    if (_.isEqual(params.row, newData)) {
+                        return `Mui-created`
+                    }
+                }}
+            />
+
             <CreateDialog
-                initModal={initProductModel}
+                initModal={ProductDto}
                 setNewData={setNewData}
                 isOpen={isOpenCreateDialog}
                 onClose={toggleCreateDialog}
             />
-
-            </>
+            <ModifyDialog
+                initModal={selectedRow}
+                setModifyData={setSelectedRow}
+                isOpen={isOpenModifyDialog}
+                onClose={toggleModifyDialog}
+            />
+        </>
 
     )
 }

@@ -111,7 +111,8 @@
         "roleName": "Role"
     },
     "product": {
-        "product_type": "product_type"
+        "product_type": "product_type",
+        "Inch": "Inch"
     },
     "supplier": {
         "contact": "Contact"

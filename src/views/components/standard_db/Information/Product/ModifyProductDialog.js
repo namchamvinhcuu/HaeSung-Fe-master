@@ -11,43 +11,59 @@ import * as yup from 'yup'
 
 import { productService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
-import { margin } from '@mui/system'
 
-const CreateDialog = (props) => {
+const ModifyProductDialog = (props) => {
+
     const intl = useIntl();
-    const { initModal, isOpen, onClose, setNewData } = props;
 
-    const [modelArr, setModelArr] = useState([initModal]);
-    const [productTypeArr, setproductTypeArr] = useState([initModal]);
+    const { initModal, isOpen, onClose, setModifyData } = props;
+    console.log(initModal,'product111111');
+
+    const clearParent = useRef(null);
 
     const dataModalRef = useRef({ ...initModal });
     const [dialogState, setDialogState] = useState({
-        isSubmit: false
+        ...initModal,
+        isSubmit: false,
     })
-    const schema = yup.object().shape({
 
-        ProductCode: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
-        ProductType: yup.number().required(),
-        Model: yup.number().required(),
-        Inch: yup.number().required(),
+  
+
+    const schema = yup.object().shape({
+      
+        ProductCode: yup.string().required(),
 
 
     });
-    const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
-
+    const { control, register, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
         mode: 'onChange',
         resolver: yupResolver(schema),
         defaultValues: {
-            ...initModal
+            ...initModal,
+
         },
     });
-
+    const [modelArr, setModelArr] = useState([initModal]);
+    const [productTypeArr, setproductTypeArr] = useState([initModal]);
 
     useEffect(() => {
         if (isOpen)
             getModel();
         getproductType();
     }, [isOpen])
+
+    useEffect(() => {
+        reset({ ...initModal });
+    }, [initModal]);
+
+    const handleCloseDialog = () => {
+        reset();
+        clearErrors();
+        setDialogState({
+            ...dialogState,
+        })
+        onClose();
+    }
 
     const getModel = async () => {
         const res = await productService.getProductModel();
@@ -67,44 +83,24 @@ const CreateDialog = (props) => {
             setproductTypeArr([])
         }
     }
-    const handleReset = () => {
-        reset();
-        clearErrors();
-        setDialogState({
-            ...dialogState
-        })
-    }
-
-    const handleCloseDialog = () => {
-        reset();
-        clearErrors();
-        setDialogState({
-            ...dialogState
-        })
-        onClose();
-    }
 
     const onSubmit = async (data) => {
+       
+        // dataModalRef.current = { ...initModal, ...data };
+        // setDialogState({ ...dialogState, isSubmit: true });
 
-        dataModalRef.current = { ...initModal, ...data };
-        setDialogState({ ...dialogState, isSubmit: true });
+        // const res = await commonService.modifyCommonMaster(dataModalRef.current);
+        // if (res.HttpResponseCode === 200 && res.Data) {
+        //     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        //     setModifyData({ ...res.Data });
 
-        const res = await productService.createProduct(dataModalRef.current);
-        // console.log(dataModalRef.current, 'submit');
+        //     handleCloseDialog(); 
+        // }
+        // else {
+        //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        // }
 
-        if (res.HttpResponseCode === 200 && res.Data) {
-            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-            setNewData({ ...res.Data });
-            setDialogState({ ...dialogState, isSubmit: false });
-            handleReset();
-            // handleCloseDialog();
-
-        }
-        else {
-            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-            setDialogState({ ...dialogState, isSubmit: false });
-        }
-        handleCloseDialog();
+        // setDialogState({ ...dialogState, isSubmit: false });
     };
 
 
@@ -112,26 +108,28 @@ const CreateDialog = (props) => {
     return (
         <MuiDialog
             maxWidth='sm'
-            title={intl.formatMessage({ id: 'general.create' })}
+            title={intl.formatMessage({ id: 'general.modify' })}
             isOpen={isOpen}
             disabledCloseBtn={dialogState.isSubmit}
             disable_animate={300}
             onClose={handleCloseDialog}
         >
             <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                   
                     <Grid item xs={12}>
-                        <Grid container item spacing={2}>
-                            <Grid item xs={6} marginBottom= {2}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
                                 <TextField
                                     autoFocus
                                     fullWidth
+                                  
                                     size='small'
                                     label={intl.formatMessage({ id: 'general.code' })}
-
-                                    name="ProductCode"
                                     {...register('ProductCode', {
+                                        // onChange: (e) => handleInputChange(e)
                                     })}
+                                    //defaultValue={initModal.commonMasterName}
                                     error={!!errors?.ProductCode}
                                     helperText={errors?.ProductCode ? errors.ProductCode.message : null}
                                 />
@@ -166,23 +164,23 @@ const CreateDialog = (props) => {
                                                     options={modelArr}
                                                     autoHighlight
                                                     openOnFocus
-                                                    getOptionLabel={option => option.commonDetailName}
-                                                    isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
+                                                    getOptionLabel={option => option.ModelName}
+                                                 
                                                     defaultValue={initModal}
-                                                    onChange={(e, item) => {
-                                                        if (item) {
-                                                            onChange(item.commonDetailId ?? '');
-                                                        }
-                                                        else {
-                                                            onChange('')
-                                                        }
-                                                    }}
+                                                    // onChange={(e, item) => {
+                                                    //     if (item) {
+                                                    //         onChange(item.commonDetailId ?? '');
+                                                    //     }
+                                                    //     else {
+                                                    //         onChange('')
+                                                    //     }
+                                                    // }}
                                                     renderInput={(params) => {
                                                         return <TextField
                                                             {...params}
                                                             label={intl.formatMessage({ id: 'general.model' })}
-                                                            error={!!errors.Model}
-                                                            helperText={errors?.Model ? errors.Model.message : null}
+                                                            //error={!!errors.Model}
+                                                          //  helperText={errors?.Model ? errors.Model.message : null}
                                                         />
                                                     }}
                                                 />
@@ -203,7 +201,7 @@ const CreateDialog = (props) => {
                                                     options={productTypeArr}
                                                     autoHighlight
                                                     openOnFocus
-                                                    getOptionLabel={option => option.commonDetailName}
+                                                    getOptionLabel={option => option.ProductTypeName}
                                                     isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
                                                     defaultValue={initModal}
                                                     onChange={(e, item) => {
@@ -247,7 +245,6 @@ const CreateDialog = (props) => {
                             </Grid>
                         </Grid>
                     </Grid>
-
                     <Grid item xs={12}>
                         <Grid
                             container
@@ -257,10 +254,7 @@ const CreateDialog = (props) => {
                                 text="save"
                                 loading={dialogState.isSubmit}
                             />
-                            <MuiResetButton
-                                onClick={handleReset}
-                                disabled={dialogState.isSubmit}
-                            />
+                          
                         </Grid>
                     </Grid>
                 </Grid>
@@ -269,4 +263,4 @@ const CreateDialog = (props) => {
     )
 }
 
-export default CreateDialog
+export default ModifyProductDialog

@@ -111,7 +111,8 @@
         "roleName": "Role"
     },
     "product": {
-        "product_type": "Loại sản phẩm"
+        "product_type": "Loại sản phẩm",
+        "Inch": "Inch"
     },
     "supplier": {
         "contact": "Liên hệ"

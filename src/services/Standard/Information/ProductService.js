@@ -11,10 +11,10 @@ const getProductList = async (params) => {
         console.log(`ERROR: ${error}`);
     }
 }
-const getModels = async (params) => {
+const getProductModel = async (params) => {
 
     try {
-        return await axios.get(`${apiProduct}/get-by-model`, {
+        return await axios.get(`${apiProduct}/get-product-model`, {
             params: {
                 ...params 
             }
@@ -24,9 +24,33 @@ const getModels = async (params) => {
         console.log(`ERROR: ${error}`);
     }
 }
+const getProductType = async (params) => {
+
+    try {
+        return await axios.get(`${apiProduct}/get-product-type`, {
+            params: {
+                ...params 
+            }
+        });
+    } 
+    catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
+const createProduct = async (params) => {
+
+    try {
+        return await axios.post(`${apiProduct}/create-product`, {
+            ...params
+        });
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
 
 export {
     getProductList,
-    getModels
-   
+    getProductModel,
+    getProductType,
+    createProduct
 }
