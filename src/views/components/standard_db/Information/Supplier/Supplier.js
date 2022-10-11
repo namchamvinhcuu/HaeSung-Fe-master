@@ -9,7 +9,8 @@ import moment from "moment";
 import { useIntl } from 'react-intl';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { createTheme, ThemeProvider } from "@mui/material";
+import UndoIcon from '@mui/icons-material/Undo';
+import { createTheme, ThemeProvider, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
@@ -55,6 +56,7 @@ const Supplier = (props) => {
 
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false);
     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
+    const [showDeleteData, setShowDeleteData] = useState(false);
 
     const [selectedRow, setSelectedRow] = useState({
         ...SupplierDto
@@ -111,6 +113,71 @@ const Supplier = (props) => {
             , isLoading: false
         });
     }
+
+    const fetchDataDeleted = async () => {
+        setSupplierState({
+            ...supplierState
+            , isLoading: true
+
+        });
+        const params = {
+            page: supplierState.page,
+            pageSize: supplierState.pageSize,
+            SupplierCode: supplierState.searchData.SupplierCode,
+            SupplierName: supplierState.searchData.SupplierName,
+        }
+        const res = await supplierService.getDeletedSuppliers(params);
+
+        setSupplierState({
+            ...supplierState
+            , data: !res.Data ? [] : [...res.Data]
+            , totalRow: res.TotalRow
+            , isLoading: false
+        });
+    }
+
+    const handleDeleteSupplier = async (supplier) => {
+        if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
+            try {
+                let res = await supplierService.handleDelete(supplier);
+                if (res && res.HttpResponseCode === 200) {
+                    await fetchData();
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    }
+
+    const handleReuseSupplier = async (supplier) => {
+        if (window.confirm(intl.formatMessage({ id: 'general.confirm_redo_deleted' }))) {
+            try {
+                let res = await supplierService.handleReuse(supplier);
+                if (res && res.HttpResponseCode === 200) {
+                    await fetchDataDeleted();
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    }
+
+    const handleShowDeleteData = async (event) => {
+        setShowDeleteData(event.target.checked);
+        if (showDeleteData) {
+            await fetchData();
+        }
+        else {
+            if (event.target.checked) {
+                setSupplierState({
+                    ...supplierState
+                    , page: 1
+                });
+            }
+            await fetchDataDeleted();
+        }
+
+    };
 
     useEffect(() => {
         fetchData();
@@ -171,23 +238,35 @@ const Supplier = (props) => {
                         </Grid>
 
                         <Grid item xs={6}>
-                            <IconButton
-                                aria-label="delete"
-                                color="error"
-                                size="small"
-                                sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                                onClick={() => handleDeleteSupplier(params.row)}
-                            >
-                                <DeleteIcon fontSize="inherit" />
-                            </IconButton>
+                            {showDeleteData ?
+                                <IconButton
+                                    aria-label="reuse"
+                                    color="error"
+                                    size="small"
+                                    sx={[{ '&:hover': { border: '1px solid red', }, }]}
+                                    onClick={() => handleReuseSupplier(params.row)}
+                                >
+                                    <UndoIcon fontSize="inherit" />
+                                </IconButton>
+                                :
+                                <IconButton
+                                    aria-label="delete"
+                                    color="error"
+                                    size="small"
+                                    sx={[{ '&:hover': { border: '1px solid red', }, }]}
+                                    onClick={() => handleDeleteSupplier(params.row)}
+                                >
+                                    <DeleteIcon fontSize="inherit" />
+                                </IconButton>
+                            }
                         </Grid>
                     </Grid>
                 );
             },
         },
-        { field: 'SupplierCode', headerName: intl.formatMessage({ id: "supplier.SupplierCode" }), flex: 0.7, },
-        { field: 'SupplierName', headerName: intl.formatMessage({ id: "supplier.SupplierName" }), flex: 0.7, },
-        { field: 'SupplierContact', headerName: intl.formatMessage({ id: "supplier.SupplierContact" }), flex: 0.7, },
+        { field: 'SupplierCode', headerName: intl.formatMessage({ id: "supplier.SupplierCode" }), /*flex: 0.7,*/  width: 150, },
+        { field: 'SupplierName', headerName: intl.formatMessage({ id: "supplier.SupplierName" }), flex: 1, },
+        { field: 'SupplierContact', headerName: intl.formatMessage({ id: "supplier.SupplierContact" }), flex: 1, },
         {
             field: 'createdDate', headerName: intl.formatMessage({ id: "general.created_date" }), flex: 0.3, valueFormatter: params => {
                 if (params.value !== null) {
@@ -219,6 +298,15 @@ const Supplier = (props) => {
                             text="create"
                             color='success'
                             onClick={toggleCreateDialog}
+                        />
+                    </Grid>
+
+                    <Grid item xs>
+                        <FormControlLabel
+                            style={{ marginBottom: '0px' }}
+                            control={<Checkbox />}
+                            label="Show data deleted"
+                            onChange={handleShowDeleteData}
                         />
                     </Grid>
 
@@ -289,7 +377,7 @@ const Supplier = (props) => {
                 />
 
             </ThemeProvider>
-        </React.Fragment>
+        </React.Fragment >
     )
 }
 

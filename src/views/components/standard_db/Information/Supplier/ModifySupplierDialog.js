@@ -84,7 +84,7 @@ const ModifySupplierDialog = (props) => {
                             autoFocus
                             fullWidth
                             size='small'
-                            disabled
+                            disabled={dialogState.isSubmit}
                             label={intl.formatMessage({ id: 'supplier.SupplierCode' })}
                             name='SupplierCode'
                             value={values.SupplierCode}
