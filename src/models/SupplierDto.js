@@ -1,15 +1,15 @@
+import moment from "moment";
+
 const SupplierDto = {
-    SupplierId: null
-    , SupplierCode: null
-    , SupplerName: null
-    , SupplerName: null
-    , SupplierContact: null
+    SupplierId: 0
+    , SupplierCode: ''
+    , SupplierName: ''
+    , SupplierContact: ''
     , isActived: true
-    , createdDate: null
-    , createdBy: null
-    , createdBy: null
-    , modifiedDate: null
-    , modifiedBy: null
+    , createdDate: moment.utc()
+    , createdBy: 0
+    , modifiedDate: moment.utc()
+    , modifiedBy: 0
     , row_version: null
 }
 

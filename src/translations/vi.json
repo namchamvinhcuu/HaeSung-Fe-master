@@ -114,6 +114,10 @@
         "product_type": "Loại sản phẩm"
     },
     "supplier": {
-        "contact": "Liên hệ"
+        "SupplierContact": "Liên hệ",
+        "SupplierCode": "Mã",
+        "SupplierName": "Tên",
+        "SupplierCode_required": "Mã không được để trống",
+        "SupplierName_required": "Tên không được để trống"
     }
 }

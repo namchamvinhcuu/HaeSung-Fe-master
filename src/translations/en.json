@@ -114,6 +114,10 @@
         "product_type": "product_type"
     },
     "supplier": {
-        "contact": "Contact"
+        "SupplierContact": "Contact",
+        "SupplierCode": "Supplier Code",
+        "SupplierName": "Supplier Name",
+        "SupplierCode_required": "Supplier Code cannot be blank",
+        "SupplierName_required": "Supplier Name cannot be blank"
     }
 }

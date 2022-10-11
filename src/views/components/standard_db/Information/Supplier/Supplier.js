@@ -5,6 +5,7 @@ import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS'
 import { User_Operations } from '@appstate/user'
 import { Store } from '@appstate'
 import _ from 'lodash';
+import moment from "moment";
 import { useIntl } from 'react-intl';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -160,9 +161,9 @@ const Supplier = (props) => {
                 );
             },
         },
-        { field: 'SupplierCode', headerName: intl.formatMessage({ id: "general.code" }), flex: 0.7, },
-        { field: 'SupplierName', headerName: intl.formatMessage({ id: "general.name" }), flex: 0.7, },
-        { field: 'SupplierContact', headerName: intl.formatMessage({ id: "supplier.contact" }), flex: 0.7, },
+        { field: 'SupplierCode', headerName: intl.formatMessage({ id: "supplier.SupplierCode" }), flex: 0.7, },
+        { field: 'SupplierName', headerName: intl.formatMessage({ id: "supplier.SupplierName" }), flex: 0.7, },
+        { field: 'SupplierContact', headerName: intl.formatMessage({ id: "supplier.SupplierContact" }), flex: 0.7, },
         {
             field: 'createdDate', headerName: intl.formatMessage({ id: "general.created_date" }), flex: 0.3, valueFormatter: params => {
                 if (params.value !== null) {
@@ -249,14 +250,14 @@ const Supplier = (props) => {
                     }}
                 />
 
-                {/* <CreateMenuDialog
-                    initModal={initMenuModel}
+                <CreateSupplierDialog
+                    initModal={SupplierDto}
                     setNewData={setNewData}
                     isOpen={isOpenCreateDialog}
-                    onClose={toggleCreateMenuDialog}
+                    onClose={toggleCreateSupplierDialog}
                 />
 
-                <ModifyMenuDialog
+                {/* <ModifyMenuDialog
                     initModal={selectedRow}
                     setModifyData={setSelectedRow}
                     isOpen={isOpenModifyDialog}
