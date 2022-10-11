@@ -17,7 +17,7 @@ const ModifyProductDialog = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setModifyData } = props;
-    console.log(initModal,'product111111');
+   // console.log(initModal,'product111111');
 
     const clearParent = useRef(null);
 
@@ -49,7 +49,7 @@ const ModifyProductDialog = (props) => {
     useEffect(() => {
         if (isOpen)
             getModel();
-        getproductType();
+            getproductType();
     }, [isOpen])
 
     useEffect(() => {
@@ -86,21 +86,20 @@ const ModifyProductDialog = (props) => {
 
     const onSubmit = async (data) => {
        
-        // dataModalRef.current = { ...initModal, ...data };
-        // setDialogState({ ...dialogState, isSubmit: true });
+        dataModalRef.current = { ...initModal, ...data };
+        setDialogState({ ...dialogState, isSubmit: true });
 
-        // const res = await commonService.modifyCommonMaster(dataModalRef.current);
-        // if (res.HttpResponseCode === 200 && res.Data) {
-        //     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-        //     setModifyData({ ...res.Data });
-
-        //     handleCloseDialog(); 
-        // }
-        // else {
-        //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-        // }
-
-        // setDialogState({ ...dialogState, isSubmit: false });
+        const res = await productService.modifyProduct(dataModalRef.current);
+        if (res.HttpResponseCode === 200 && res.Data) {
+            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+            setModifyData({ ...res.Data });
+            handleReset();
+        }
+        else {
+            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        }
+        handleCloseDialog(); 
+        setDialogState({ ...dialogState, isSubmit: false });
     };
 
 
@@ -158,23 +157,23 @@ const ModifyProductDialog = (props) => {
                                         render={({ field: { onChange, value } }) => {
                                             return (
                                                 <Autocomplete
-                                                    freeSolo
+                                                   
                                                     fullWidth
                                                     size='small'
                                                     options={modelArr}
                                                     autoHighlight
                                                     openOnFocus
-                                                    getOptionLabel={option => option.ModelName}
+                                                    getOptionLabel={option => option.commonDetailName}
                                                  
-                                                    defaultValue={initModal}
-                                                    // onChange={(e, item) => {
-                                                    //     if (item) {
-                                                    //         onChange(item.commonDetailId ?? '');
-                                                    //     }
-                                                    //     else {
-                                                    //         onChange('')
-                                                    //     }
-                                                    // }}
+                                                    defaultValue={initModal && { commonDetailId: initModal.Model, commonDetailName: initModal.ModelName }}
+                                                    onChange={(e, item) => {
+                                                        if (item) {
+                                                            onChange(item.commonDetailId ?? '');
+                                                        }
+                                                        else {
+                                                            onChange('')
+                                                        }
+                                                    }}
                                                     renderInput={(params) => {
                                                         return <TextField
                                                             {...params}
@@ -201,9 +200,10 @@ const ModifyProductDialog = (props) => {
                                                     options={productTypeArr}
                                                     autoHighlight
                                                     openOnFocus
-                                                    getOptionLabel={option => option.ProductTypeName}
+                                                    getOptionLabel={option => option.commonDetailName}
+                                                  
                                                     isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
-                                                    defaultValue={initModal}
+                                                    defaultValue={initModal && { commonDetailId: initModal.ProductType, commonDetailName: initModal.ProductTypeName }}
                                                     onChange={(e, item) => {
                                                         if (item) {
                                                             onChange(item.commonDetailId ?? '');

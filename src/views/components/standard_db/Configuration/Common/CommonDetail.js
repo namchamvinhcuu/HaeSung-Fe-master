@@ -156,7 +156,7 @@ const CommonDetail = ({ rowmaster }) => {
 
 
     const columns = [
-        { field: 'commonDetailId', headerName: '', flex: 0.03, },
+        { field: 'commonDetailId', headerName: '', flex: 0.03, hide:true},
         {
             field: 'id', headerName: '', flex: 0.01,
             filterable: false,
