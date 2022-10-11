@@ -8,11 +8,9 @@ export default function MuiDateField({ label, value, onChange, sx, variant, marg
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
-        size='small'
         label={label}
         value={value ? value : null}
         onChange={onChange}
-        defaultValue={defaultValue}
         renderInput={(params) => (
           <TextField
             fullWidth

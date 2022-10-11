@@ -1,33 +1,33 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField } from '@controls'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Autocomplete, Box, Checkbox, FormControlLabel, Grid, Radio, RadioGroup, TextField } from '@mui/material'
+import { Autocomplete, Grid, TextField } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
-import { moldService, roleService } from '@services'
+import { moldService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
-import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { CREATE_ACTION } from '@constants/ConfigConstants';
 
 const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) => {
   const intl = useIntl();
   const [PMList, setPMList] = useState([]);// Product Model list
   const [PTList, setPTList] = useState([]);// Product Type list
   const [MTList, setMTList] = useState([]);// Machine Type list
-  const [date, setDate] = useState();
+  const [date, setDate] = useState(initModal?.ETADate);
   const ETAStatus = [{ value: true, label: 'YES' }, { value: false, label: 'NO' }]
   const [dialogState, setDialogState] = useState({ isSubmit: false })
+
   const schema = yup.object().shape({
     MoldSerial: yup.string().required(intl.formatMessage({ id: 'mold.MoldSerial_required' })),
     MoldCode: yup.string().required(intl.formatMessage({ id: 'mold.MoldCode_required' })),
     Inch: yup.string().required(intl.formatMessage({ id: 'mold.Inch_required' })),
     Cabity: yup.string().required(intl.formatMessage({ id: 'mold.Cabity_required' })),
-    Remark: yup.string().required(intl.formatMessage({ id: 'mold.Remark_required' })),
-    Model: yup.string().nullable().required(intl.formatMessage({ id: 'mold.Model_required' })),
-    MoldType: yup.string().nullable().required(intl.formatMessage({ id: 'mold.MoldType_required' })),
-    MachineType: yup.string().nullable().required(intl.formatMessage({ id: 'mold.MachineType_required' })),
-    ETAStatus: yup.string().nullable().required(intl.formatMessage({ id: 'mold.ETAStatus_required' })),
-    ETADate: yup.string().nullable().required(intl.formatMessage({ id: 'mold.ETADate_required' }))
+    Model: yup.number().nullable().required(intl.formatMessage({ id: 'mold.Model_required' })),
+    MoldType: yup.number().nullable().required(intl.formatMessage({ id: 'mold.MoldType_required' })),
+    MachineType: yup.number().nullable().required(intl.formatMessage({ id: 'mold.MachineType_required' })),
+    ETAStatus: yup.bool().nullable().required(intl.formatMessage({ id: 'mold.ETAStatus_required' })),
+    ETADate: yup.date().nullable().required(intl.formatMessage({ id: 'mold.ETADate_required' }))
   });
 
   const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
@@ -43,10 +43,15 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
   }, [])
 
   useEffect(() => {
-    if (mode == CREATE_ACTION)
+    console.log(mode, initModal)
+    if (mode == CREATE_ACTION) {
+      setDate();
       reset({});
-    else
+    }
+    else {
+      setDate(initModal?.ETADate);
       reset(initModal);
+    }
   }, [initModal, mode])
 
   const handleReset = () => {
@@ -179,7 +184,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                       renderInput={(params) => {
                         return <TextField
                           {...params}
-                          label={intl.formatMessage({ id: 'general.Model' })}
+                          label={intl.formatMessage({ id: 'mold.Model' })}
                           error={!!errors.Model}
                           helperText={errors?.Model ? errors.Model.message : null}
                         />
@@ -229,7 +234,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                       renderInput={(params) => {
                         return <TextField
                           {...params}
-                          label={intl.formatMessage({ id: 'general.MoldType' })}
+                          label={intl.formatMessage({ id: 'mold.MoldType' })}
                           error={!!errors.MoldType}
                           helperText={errors?.MoldType ? errors.MoldType.message : null}
                         />
@@ -265,7 +270,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                       renderInput={(params) => {
                         return <TextField
                           {...params}
-                          label={intl.formatMessage({ id: 'general.MachineType' })}
+                          label={intl.formatMessage({ id: 'mold.MachineType' })}
                           error={!!errors.MachineType}
                           helperText={errors?.MachineType ? errors.MachineType.message : null}
                         />
@@ -305,16 +310,16 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                       defaultValue={mode == CREATE_ACTION ? null : initModal.ETAStatus ? { value: true, label: 'YES' } : { value: false, label: 'NO' }}
                       onChange={(e, item) => {
                         if (item) {
-                          onChange(item.value ?? '');
+                          onChange(item.value ?? null);
                         }
                         else {
-                          onChange('')
+                          onChange(null)
                         }
                       }}
                       renderInput={(params) => {
                         return <TextField
                           {...params}
-                          label={intl.formatMessage({ id: 'general.ETAStatus' })}
+                          label={intl.formatMessage({ id: 'mold.ETAStatus' })}
                           error={!!errors.ETAStatus}
                           helperText={errors?.ETAStatus ? errors.ETAStatus.message : null}
                         />
@@ -328,16 +333,22 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
 
           <Grid item container spacing={2}>
             <Grid item xs={6}>
-              <MuiDateField
-                label="ETA Date"
-                value={date}
-                onChange={(e) => {
-                  setDate(e);
-                  setValue("ETADate", e ?? null);
+              <Controller
+                control={control}
+                name="ETADate"
+                render={({ field: { onChange, value } }) => {
+                  return (
+                    <MuiDateField
+                      label="ETA Date"
+                      value={date}
+                      onChange={(e) => {
+                        setDate(e);
+                        onChange(e ?? null);
+                      }}
+                      error={!!errors?.ETADate}
+                      helperText={errors?.ETADate ? errors.ETADate.message : null}
+                    />);
                 }}
-                //defaultValue={initModal.ETADate}
-                error={!!errors?.ETADate}
-                helperText={errors?.ETADate ? errors.ETADate.message : null}
               />
             </Grid>
             <Grid item xs={6}>
