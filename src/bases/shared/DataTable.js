@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import { DataGrid } from "@mui/x-data-grid";
 import BoxLoading from './BoxLoading'
-import { api_get, api_post, AlertSuccess, ErrorAlert } from "@utils";
+import { api_get, api_post, SuccessAlert, ErrorAlert } from "@utils";
 import * as ConfigConstants from '@constants/ConfigConstants';
 import { styled } from '@mui/material/styles';
 
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
- 
+
   boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;',
   color:
     theme.palette.mode === 'light' ? 'rgba(0,0,0,.85)' : 'rgba(255,255,255,0.85)',
@@ -57,7 +57,7 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   '& .MuiDataGrid-row.Mui-selected': {
     backgroundColor: 'palegoldenrod !important'
   },
- 
+
 
 }));
 

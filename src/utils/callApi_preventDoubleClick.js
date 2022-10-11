@@ -1,8 +1,8 @@
-import { api_get, api_post, AlertSuccess, ErrorAlert } from "@utils";
+import { api_get, api_post, SuccessAlert, ErrorAlert } from "@utils";
 
 var clicks = 0; var timer = null; var current_uid;
 
- function api_post_prevent_doubleclick(url, data, callback) {
+function api_post_prevent_doubleclick(url, data, callback) {
     clicks++
 
     if (clicks === 1) {
@@ -14,27 +14,27 @@ var clicks = 0; var timer = null; var current_uid;
             if (callback) {
 
                 new Promise(function (Resolve, Reject) {
-                   // $('.ajaxloading').show();
+                    // $('.ajaxloading').show();
 
-                   api_post(url, data)
+                    api_post(url, data)
                         .then(function (res) {
 
                             // clicks = 0;
                             if (uid == current_uid) {
 
-                               // $('.ajaxloading').hide();
+                                // $('.ajaxloading').hide();
                             }
-                         //   console.log(res)
+                            //   console.log(res)
                             //if (res.success) {
 
-                                Resolve("");
-                                if (uid == current_uid) {
-                                    callback(res);
-                                }
+                            Resolve("");
+                            if (uid == current_uid) {
+                                callback(res);
+                            }
 
-                          //  } else Reject("");
+                            //  } else Reject("");
 
-                        }).catch(error=>{
+                        }).catch(error => {
 
                             Reject("");
 
@@ -56,7 +56,7 @@ var clicks = 0; var timer = null; var current_uid;
 
 }
 
-function api_get_prevent_doubleclick(url, data,node_fancytree, callback) {
+function api_get_prevent_doubleclick(url, data, node_fancytree, callback) {
     clicks++
 
     if (clicks === 1) {
@@ -68,50 +68,50 @@ function api_get_prevent_doubleclick(url, data,node_fancytree, callback) {
             if (callback) {
 
                 new Promise(function (Resolve, Reject) {
-                   // $('.ajaxloading').show();
-                   if (node_fancytree){
-                    var title_node=node_fancytree.title;
-                    var isFinish=false; var title_set_loading=false;
-                  setTimeout(() => {
-                        if (isFinish) return;
+                    // $('.ajaxloading').show();
+                    if (node_fancytree) {
+                        var title_node = node_fancytree.title;
+                        var isFinish = false; var title_set_loading = false;
+                        setTimeout(() => {
+                            if (isFinish) return;
 
-                        node_fancytree.title=   `<div>
+                            node_fancytree.title = `<div>
                         <span >${title_node}</span>
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         </div>
                         `
-                        node_fancytree.renderTitle();
-                        title_set_loading=true;
-                   }, 800);
-                   }
-                  
-                  
- 
-                   api_get(url, data)
+                            node_fancytree.renderTitle();
+                            title_set_loading = true;
+                        }, 800);
+                    }
+
+
+
+                    api_get(url, data)
                         .then(function (res) {
-                            isFinish=true;
+                            isFinish = true;
                             if (uid == current_uid) {
-                                    if (title_set_loading)
+                                if (title_set_loading)
                                     setTimeout(() => {
-                                        node_fancytree.title= `<span >${title_node}</span>`;
+                                        node_fancytree.title = `<span >${title_node}</span>`;
                                         node_fancytree.renderTitle();
-                                     }, 200);
-                               // $('.ajaxloading').hide();
+                                    }, 200);
+                                // $('.ajaxloading').hide();
                             }
- 
-                                Resolve("");
-                                if (uid == current_uid) {
-                                    callback(res);
-                                }
 
-                          //  } else Reject("");
+                            Resolve("");
+                            if (uid == current_uid) {
+                                callback(res);
+                            }
 
-                        }).catch(error=>{
+                            //  } else Reject("");
+
+                        }).catch(error => {
                             if (title_set_loading)
-                                    setTimeout(() => {
-                                        node_fancytree.title= `<span >${title_node}</span>`;
-                                        node_fancytree.renderTitle();
-                                     }, 200);
+                                setTimeout(() => {
+                                    node_fancytree.title = `<span >${title_node}</span>`;
+                                    node_fancytree.renderTitle();
+                                }, 200);
                             Reject("");
 
                         })
@@ -125,8 +125,8 @@ function api_get_prevent_doubleclick(url, data,node_fancytree, callback) {
 
     } else {
 
-        clearTimeout(timer);    
-        clicks = 0;     
+        clearTimeout(timer);
+        clicks = 0;
     }
 
 }
@@ -141,4 +141,4 @@ function generateUID() {
     return firstPart + secondPart;
 }
 
-export {api_post_prevent_doubleclick, api_get_prevent_doubleclick}
+export { api_post_prevent_doubleclick, api_get_prevent_doubleclick }

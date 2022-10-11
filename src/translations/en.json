@@ -115,6 +115,34 @@
         "Inch": "Inch"
     },
     "supplier": {
-        "contact": "Contact"
+        "SupplierContact": "Contact",
+        "SupplierCode": "Supplier Code",
+        "SupplierName": "Supplier Name",
+        "SupplierCode_required": "Supplier Code cannot be blank",
+        "SupplierName_required": "Supplier Name cannot be blank"
+    },
+    "mold": {
+        "MoldSerial": "Mold Serial",
+        "MoldCode": "Mold Code",
+        "Model": "Model",
+        "MoldType": "Mold Type",
+        "ModelName": "Model Name",
+        "MoldTypeName": "Mold Type Name",
+        "Inch": "Inch",
+        "MachineType": "Machine Type",
+        "MachineTypeName": "Machine Type Name",
+        "ETADate": "ETA Date",
+        "Cabity": "Cabity",
+        "ETAStatus": "ETA Status",
+        "Remark": "Remark",
+        "MoldSerial_required": "MoldSerial required",
+        "MoldCode_required": "MoldCode required",
+        "Model_required": "Model required",
+        "MoldType_required": "MoldType required",
+        "Inch_required": "Inch required",
+        "MachineType_required": "MachineType required",
+        "ETADate_required": "ETADate required",
+        "Cabity_required": "Cabity required",
+        "ETAStatus_required": "ETAStatus required"
     }
 }

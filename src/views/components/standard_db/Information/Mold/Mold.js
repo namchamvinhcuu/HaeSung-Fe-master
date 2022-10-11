@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
-import { Badge, Grid, IconButton, TextField } from '@mui/material'
+import { Grid, IconButton, TextField } from '@mui/material'
 import { createTheme, ThemeProvider } from "@mui/material"
 import { useIntl } from 'react-intl'
-import { MuiButton, MuiDataGrid } from '@controls'
-import { userService, roleService, moldService } from '@services'
-import { useModal, useModal2, useModal3 } from "@basesShared"
+import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
+import { moldService } from '@services'
+import { useModal } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import moment from 'moment';
 import MoldDialog from './MoldDialog'
 
 const myTheme = createTheme({
@@ -29,22 +30,18 @@ export default function Mold() {
   const intl = useIntl();
   const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
-  const { isShowing2, toggle2 } = useModal2();
-  const { isShowing3, toggle3 } = useModal3();
   const [moldState, setMoldState] = useState({
     isLoading: false,
     data: [],
     totalRow: 0,
     page: 1,
     pageSize: 20,
+    searchData: {
+      keyWord: ''
+    }
   });
-
   const [newData, setNewData] = useState({})
   const [rowData, setRowData] = useState({});
-  const [search, setSearch] = useState("");
-  const [roleId, setRoleId] = useState(0);
-  const [selectMenu, setSelectMenu] = useState([]);
-  const [selectPermission, setSelectPermission] = useState([]);
 
   const columns = [
     { field: 'MoldId', hide: true },
@@ -91,14 +88,14 @@ export default function Mold() {
     { field: 'MoldTypeName', headerName: intl.formatMessage({ id: "mold.MoldTypeName" }), flex: 0.7, },
     { field: 'Inch', headerName: intl.formatMessage({ id: "mold.Inch" }), flex: 0.4, },
     { field: 'MachineTypeName', headerName: intl.formatMessage({ id: "mold.MachineTypeName" }), flex: 0.7, },
-    { field: 'ETADate', headerName: intl.formatMessage({ id: "mold.ETADate" }), flex: 0.7, },
+    {
+      field: 'ETADate', headerName: intl.formatMessage({ id: "mold.ETADate" }), flex: 0.7,
+      valueFormatter: params => moment(params?.value).format("DD/MM/YYYY")
+    },
     { field: 'Cabity', headerName: intl.formatMessage({ id: "mold.Cabity" }), flex: 0.4, },
     {
-      field: 'ETAStatus', headerName: intl.formatMessage({ id: "mold.ETAStatus" }), flex: 0.5, renderCell: (params) => {
-        return (
-          params.row.ETAStatus ? "Y" : "N"
-        )
-      }
+      field: 'ETAStatus', headerName: intl.formatMessage({ id: "mold.ETAStatus" }), flex: 0.5,
+      renderCell: params => params.row.ETAStatus ? "Y" : "N"
     },
     { field: 'Remark', headerName: intl.formatMessage({ id: "mold.Remark" }), flex: 0.7, },
   ];
@@ -121,62 +118,31 @@ export default function Mold() {
     }
   }
 
-  const handleRoleClick = async (Id) => {
-    setRoleId(Id);
-    fetchDataPermission(Id);
-    fetchDataMenu(Id);
-  }
-
   const handleAdd = () => {
     setMode(CREATE_ACTION);
     setRowData();
-    toggle3();
+    toggle();
   };
 
   const handleUpdate = (row) => {
     setMode(UPDATE_ACTION);
     setRowData({ ...row });
-    toggle3();
+    toggle();
   };
 
-  const handleDeleteMenu = async () => {
-    if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
-      try {
-        let res = await roleService.deleteMenu({ menuIds: selectMenu, roleId: roleId });
-        if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: 'general.success' }))
-          await fetchDataMenu(roleId);
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  };
+  const handleSearch = (e, inputName) => {
+    let newSearchData = { ...moldState.searchData };
+    newSearchData[inputName] = e.target.value;
 
-  const handleDeletePermission = async () => {
-    if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
-      try {
-        let res = await roleService.deletePermission({ permissionIds: selectPermission, roleId: roleId });
-        if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: 'general.success' }))
-          await fetchDataPermission(roleId);
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  };
+    setMoldState({ ...moldState, searchData: { ...newSearchData } })
+  }
 
   async function fetchData() {
-    setMoldState({
-      ...moldState
-      , isLoading: true
-
-    });
+    setMoldState({ ...moldState, isLoading: true });
     const params = {
       page: moldState.page,
       pageSize: moldState.pageSize,
-      keyword: search
+      keyWord: moldState.searchData.keyWord
     }
     const res = await moldService.getMoldList(params);
     setMoldState({
@@ -209,26 +175,25 @@ export default function Mold() {
   return (
     <React.Fragment>
       <ThemeProvider theme={myTheme}>
-        <Grid container sx={{ mb: 1 }}>
-          <Grid item xs={8}>
+        <Grid container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+          <Grid item xs={6}>
             <MuiButton text="create" color='success' onClick={handleAdd} />
           </Grid>
-          <Grid item xs={4} container>
-            {/* <Grid item xs={9}>
-              <TextField
-                fullWidth
-                size='small'
-                label={intl.formatMessage({ id: 'user.userName' })}
-                onChange={e => setSearch(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0, ml: 2 }} />
-            </Grid> */}
+
+          <Grid item>
+            <MuiSearchField
+              label='general.name'
+              name='keyWord'
+              onClick={fetchData}
+              onChange={(e) => handleSearch(e, 'keyWord')}
+            />
           </Grid>
         </Grid>
+
         <MuiDataGrid
-          getData={userService.getUserList}
           showLoading={moldState.isLoading}
           isPagingServer={true}
           headerHeight={45}
@@ -239,26 +204,19 @@ export default function Mold() {
           pageSize={moldState.pageSize}
           rowCount={moldState.totalRow}
           rowsPerPageOptions={[5, 10, 20]}
-          onPageChange={(newPage) => {
-            setMoldState({ ...moldState, page: newPage + 1 });
-          }}
-          onPageSizeChange={(newPageSize) => {
-            setMoldState({ ...moldState, pageSize: newPageSize, page: 1 });
-          }}
+          onPageChange={(newPage) => setMoldState({ ...moldState, page: newPage + 1 })}
+          onPageSizeChange={(newPageSize) => setMoldState({ ...moldState, pageSize: newPageSize, page: 1 })}
           onCellClick={handleCellClick}
-          onRowClick={(rowData) => handleRoleClick(rowData.row.roleId)}
           getRowId={(rows) => rows.MoldId}
           getRowClassName={(params) => {
-            if (_.isEqual(params.row, newData)) {
-              return `Mui-created`
-            }
+            if (_.isEqual(params.row, newData)) return `Mui-created`
           }}
         />
 
         <MoldDialog setNewData={setNewData}
           initModal={rowData}
-          isOpen={isShowing3}
-          onClose={toggle3}
+          isOpen={isShowing}
+          onClose={toggle}
           loadData={fetchData}
           mode={mode}
         />
