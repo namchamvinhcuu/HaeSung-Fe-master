@@ -1,30 +1,34 @@
-import { MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls'
-import { yupResolver } from '@hookform/resolvers/yup'
-import {
-    Autocomplete,
-    Checkbox, FormControlLabel, Grid, Radio, RadioGroup, TextField
-} from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
+import { useFormik } from 'formik'
 import * as yup from 'yup'
+import {
+    Autocomplete, Checkbox, FormControlLabel, Grid, Radio, RadioGroup, TextField
+} from '@mui/material'
 
-import { menuService } from '@services'
+import { MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls'
 import { ErrorAlert, SuccessAlert } from '@utils'
+import { menuService } from '@services'
 
-const CreateMenuDialog = (props) => {
+const CreateMenuFormik = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setNewData } = props;
 
-    const [parentMenuArr, setParentMenuArr] = useState([initModal]);
-
-    const dataModalRef = useRef({ ...initModal });
-    const clearParent = useRef(null);
     const [dialogState, setDialogState] = useState({
         isSubmit: false,
         menuLevel: 3,
     });
+
+    const getParentMenus = async (menuLevel) => {
+        const res = await menuService.getParentMenus(menuLevel);
+        if (res.HttpResponseCode === 200 && res.Data) {
+            setParentMenuArr([...res.Data])
+        }
+        else {
+            setParentMenuArr([])
+        }
+    }
 
     const schema = yup.object().shape({
         menuName: yup.string().required(intl.formatMessage({ id: 'menu.menuName_required' })),
@@ -66,69 +70,45 @@ const CreateMenuDialog = (props) => {
                 }
             }),
     });
-    const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
-        mode: 'onChange',
-        resolver: yupResolver(schema),
-        defaultValues: {
-            ...initModal,
-            menuLevel: 3,
-            parentId: initModal.menuId
 
-        },
+    const formik = useFormik({
+        validationSchema: schema,
+        initialValues: { ...initModal },
+        onSubmit: async values => {
+            console.log(values)
+            // const res = await supplierService.create(values);
+            // if (res.HttpResponseCode === 200 && res.Data) {
+            //     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+            //     setNewData({ ...res.Data });
+            //     setDialogState({ ...dialogState, isSubmit: false });
+            //     handleCloseDialog();
+            // }
+            // else {
+            //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+            // }
+        }
     });
 
-    const getParentMenus = async (menuLevel) => {
-        const res = await menuService.getParentMenus(menuLevel);
-        if (res.HttpResponseCode === 200 && res.Data) {
-            setParentMenuArr([...res.Data])
-        }
-        else {
-            setParentMenuArr([])
-        }
-    }
-
-    const handleReset = () => {
-        reset();
-        clearErrors();
-        setDialogState({
-            ...dialogState,
-            menuLevel: 3
-        })
-    }
+    const {
+        handleChange
+        , handleBlur
+        , handleSubmit
+        , values
+        , setFieldValue
+        , errors
+        , touched
+        , isValid
+        , resetForm
+    } = formik;
 
     const handleCloseDialog = () => {
-        reset();
-        clearErrors();
         setDialogState({
             ...dialogState,
             menuLevel: 3
-        })
+        });
+        resetForm();
         onClose();
     }
-
-    const onSubmit = async (data) => {
-        dataModalRef.current = { ...initModal, ...data, sortOrder: 0, parentId: data.parentId === '' ? 0 : data.parentId };
-        setDialogState({ ...dialogState, isSubmit: true });
-
-        const res = await menuService.createMenu(dataModalRef.current);
-
-        if (res.HttpResponseCode === 200 && res.Data) {
-            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-            setNewData({ ...res.Data });
-            setDialogState({ ...dialogState, isSubmit: false });
-            handleReset();
-            handleCloseDialog();
-        }
-        else {
-            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-        }
-
-    };
-
-    useEffect(() => {
-        if (isOpen)
-            getParentMenus(dialogState.menuLevel);
-    }, [isOpen, dialogState.menuLevel])
 
     return (
         <MuiDialog
@@ -148,31 +128,42 @@ const CreateMenuDialog = (props) => {
                                 <span style={{ marginTop: '5px', marginRight: '16px', fontWeight: '700' }}>
                                     {intl.formatMessage({ id: 'general.level' })}
                                 </span>
-                                <Controller
-                                    rules={{ required: true }}
-                                    control={control}
-                                    name="menuLevel"
-                                    render={({ field: { onChange, value } }) => {
-                                        return (
-                                            <RadioGroup
-                                                row
-                                                value={value}
-                                                onChange={(e) => {
-                                                    onChange(e.target.value);
-                                                    setDialogState({ ...dialogState, menuLevel: e.target.value });
-                                                    clearErrors('parentId');
-                                                    setValue('parentId', null);
-                                                    const ele = clearParent.current.getElementsByClassName('MuiAutocomplete-clearIndicator')[0];
-                                                    if (ele) ele.click();
-                                                }}
-                                            >
-                                                <FormControlLabel value={1} control={<Radio size="small" />} label="1" />
-                                                <FormControlLabel value={2} control={<Radio size="small" />} label="2" />
-                                                <FormControlLabel value={3} control={<Radio size="small" />} label="3" />
-                                            </RadioGroup>
-                                        );
-                                    }}
-                                />
+                                <FormControl>
+                                    <FormLabel style={{ fontSize: '0.8rem' }}>{label}</FormLabel>
+                                    <RadioGroup
+                                        id={id}
+                                        row={row === 1 ? true : false}
+                                        value={value}
+                                        onChange={(event) => {
+                                            console.log(event.target.value)
+                                            setFieldValue(name, event.target.value);
+                                            onChange ? onChange(event.target.value) : setFieldValue(name, event.target.value);
+                                        }}
+                                    >
+                                        {
+                                            options.map(
+                                                (option) => (
+                                                    <FormControlLabel
+                                                        key={option.id}
+                                                        value={option.id}
+                                                        name={name}
+                                                        control={
+                                                            <Radio
+                                                                size={size || 'small'}
+                                                                style={{
+                                                                    color: pink[800],
+                                                                    '&.MuiChecked': {
+                                                                        color: pink[600],
+                                                                    },
+                                                                    padding: '0 11px',
+                                                                }}
+                                                            />}
+                                                        label={option.title} />
+                                                )
+                                            )
+                                        }
+                                    </RadioGroup>
+                                </FormControl>
                             </Grid>
                             <Grid item xs={6}>
                                 {dialogState.menuLevel > 1
@@ -345,4 +336,4 @@ const CreateMenuDialog = (props) => {
     )
 }
 
-export default CreateMenuDialog
+export default CreateMenuFormik

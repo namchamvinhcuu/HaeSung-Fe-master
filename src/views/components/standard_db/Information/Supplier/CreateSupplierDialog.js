@@ -61,11 +61,6 @@ const CreateSupplierDialog = (props) => {
         onClose();
     }
 
-    useEffect(() => {
-        if (isOpen) { }
-        // getPermissionTypeArr(dialogState.menuLevel);
-    }, [isOpen, dialogState]);
-
     return (
         <MuiDialog
             maxWidth='md'
