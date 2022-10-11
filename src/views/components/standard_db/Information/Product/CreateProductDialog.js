@@ -119,10 +119,10 @@ const CreateDialog = (props) => {
             onClose={handleCloseDialog}
         >
             <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                     <Grid item xs={12}>
-                        <Grid container item spacing={2}>
-                            <Grid item xs={6} marginBottom= {2}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6} >
                                 <TextField
                                     autoFocus
                                     fullWidth
@@ -136,7 +136,7 @@ const CreateDialog = (props) => {
                                     helperText={errors?.ProductCode ? errors.ProductCode.message : null}
                                 />
                             </Grid>
-                            <Grid item xs={6}  marginBottom= {2}>
+                            <Grid item xs={6} >
                                 <TextField
 
                                     fullWidth
@@ -151,108 +151,106 @@ const CreateDialog = (props) => {
                                 />
                             </Grid>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Grid container item spacing={2}  marginBottom= {2}>
-                                <Grid item xs={6} > 
-                                    <Controller
-                                        control={control}
-                                        name="Model"
-                                        render={({ field: { onChange, value } }) => {
-                                            return (
-                                                <Autocomplete
-                                                    freeSolo
-                                                    fullWidth
-                                                    size='small'
-                                                    options={modelArr}
-                                                    autoHighlight
-                                                    openOnFocus
-                                                    getOptionLabel={option => option.commonDetailName}
-                                                    isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
-                                                    defaultValue={initModal}
-                                                    onChange={(e, item) => {
-                                                        if (item) {
-                                                            onChange(item.commonDetailId ?? '');
-                                                        }
-                                                        else {
-                                                            onChange('')
-                                                        }
-                                                    }}
-                                                    renderInput={(params) => {
-                                                        return <TextField
-                                                            {...params}
-                                                            label={intl.formatMessage({ id: 'general.model' })}
-                                                            error={!!errors.Model}
-                                                            helperText={errors?.Model ? errors.Model.message : null}
-                                                        />
-                                                    }}
-                                                />
-                                            );
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Controller
-                                        control={control}
-                                        name={'ProductType'}
-                                        render={({ field: { onChange, value } }) => {
-                                            return (
-                                                <Autocomplete
-                                                    freeSolo
-                                                    fullWidth
-                                                    size='small'
-                                                    options={productTypeArr}
-                                                    autoHighlight
-                                                    openOnFocus
-                                                    getOptionLabel={option => option.commonDetailName}
-                                                    isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
-                                                    defaultValue={initModal}
-                                                    onChange={(e, item) => {
-                                                        if (item) {
-                                                            onChange(item.commonDetailId ?? '');
-                                                        }
-                                                        else {
-                                                            onChange('')
-                                                        }
-                                                    }}
-                                                    renderInput={(params) => {
-                                                        return <TextField
-                                                            {...params}
-                                                            label={intl.formatMessage({ id: 'product.product_type' })}
-                                                            error={!!errors.ProductType}
-                                                            helperText={errors?.ProductType ? errors.ProductType.message : null}
-                                                        />
-                                                    }}
-                                                />
-                                            );
-                                        }}
-                                    />
-                                </Grid>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Grid container item spacing={2} marginBottom={2}>
+                            <Grid item xs={6} >
+                                <Controller
+                                    control={control}
+                                    name="Model"
+                                    render={({ field: { onChange, value } }) => {
+                                        return (
+                                            <Autocomplete
+                                                freeSolo
+                                                fullWidth
+                                                size='small'
+                                                options={modelArr}
+                                                autoHighlight
+                                                openOnFocus
+                                                getOptionLabel={option => option.commonDetailName}
+                                                isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
+                                                defaultValue={initModal}
+                                                onChange={(e, item) => {
+                                                    if (item) {
+                                                        onChange(item.commonDetailId ?? '');
+                                                    }
+                                                    else {
+                                                        onChange('')
+                                                    }
+                                                }}
+                                                renderInput={(params) => {
+                                                    return <TextField
+                                                        {...params}
+                                                        label={intl.formatMessage({ id: 'general.model' })}
+                                                        error={!!errors.Model}
+                                                        helperText={errors?.Model ? errors.Model.message : null}
+                                                    />
+                                                }}
+                                            />
+                                        );
+                                    }}
+                                />
                             </Grid>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Grid container item spacing={2}>
-                                <Grid item xs={6}>
-                                    
-                                        <TextField
-                                            fullWidth
-                                            size='small'
-                                            label={intl.formatMessage({ id: 'product.Inch' })}
-                                            name="Inch"
-                                            {...register('Inch', {
-                                            })}
-                                            error={!!errors?.Inch}
-                                            helperText={errors?.Inch ? errors.Inch.message : null}
-                                        />
-                                </Grid>
+                            <Grid item xs={6}>
+                                <Controller
+                                    control={control}
+                                    name={'ProductType'}
+                                    render={({ field: { onChange, value } }) => {
+                                        return (
+                                            <Autocomplete
+                                                freeSolo
+                                                fullWidth
+                                                size='small'
+                                                options={productTypeArr}
+                                                autoHighlight
+                                                openOnFocus
+                                                getOptionLabel={option => option.commonDetailName}
+                                                isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
+                                                defaultValue={initModal}
+                                                onChange={(e, item) => {
+                                                    if (item) {
+                                                        onChange(item.commonDetailId ?? '');
+                                                    }
+                                                    else {
+                                                        onChange('')
+                                                    }
+                                                }}
+                                                renderInput={(params) => {
+                                                    return <TextField
+                                                        {...params}
+                                                        label={intl.formatMessage({ id: 'product.product_type' })}
+                                                        error={!!errors.ProductType}
+                                                        helperText={errors?.ProductType ? errors.ProductType.message : null}
+                                                    />
+                                                }}
+                                            />
+                                        );
+                                    }}
+                                />
                             </Grid>
                         </Grid>
                     </Grid>
-
                     <Grid item xs={12}>
-                        <Grid
-                            container
-                            direction="row-reverse"
-                        >
+                        <Grid container item spacing={2}>
+                            <Grid item xs={6}>
+
+                                <TextField
+                                    fullWidth
+                                    size='small'
+                                    label={intl.formatMessage({ id: 'product.Inch' })}
+                                    name="Inch"
+                                    {...register('Inch', {
+                                    })}
+                                    error={!!errors?.Inch}
+                                    helperText={errors?.Inch ? errors.Inch.message : null}
+                                />
+                            </Grid>
+                        </Grid>
+
+
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Grid container direction="row-reverse">
                             <MuiSubmitButton
                                 text="save"
                                 loading={dialogState.isSubmit}

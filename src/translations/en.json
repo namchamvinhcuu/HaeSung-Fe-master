@@ -44,7 +44,11 @@
         "one_data_at_least": "Please choose one option",
         "confirm_redo_deleted": "Confirm to redo deleted",
         "description": "Description",
-        "model": "model"
+        "model": "model",
+        "createdName": "User create",
+        "createdDate": "Create date",
+        "modifiedName": "User update",
+        "modifiedDate": "Update date"
     },
     "login": {
         "account_password_invalid": "Account/Password is invalid",
@@ -135,14 +139,16 @@
         "Cabity": "Cabity",
         "ETAStatus": "ETA Status",
         "Remark": "Remark",
-        "MoldSerial_required": "MoldSerial required",
-        "MoldCode_required": "MoldCode required",
+        "MoldSerial_required": "Mold Serial required",
+        "MoldCode_required": "Mold Code required",
         "Model_required": "Model required",
-        "MoldType_required": "MoldType required",
+        "MoldType_required": "Mold Type required",
         "Inch_required": "Inch required",
-        "MachineType_required": "MachineType required",
-        "ETADate_required": "ETADate required",
+        "MachineType_required": "Machine Type required",
+        "ETADate_required": "ETA Date required",
         "Cabity_required": "Cabity required",
-        "ETAStatus_required": "ETAStatus required"
+        "ETAStatus_required": "ETA Status required",
+        "duplicated_code":"Mold Code duplicated",
+        "duplicated_serial":"Mold Serial duplicated"
     }
 }

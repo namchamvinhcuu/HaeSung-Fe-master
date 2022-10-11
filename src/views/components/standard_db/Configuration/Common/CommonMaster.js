@@ -235,7 +235,7 @@ const CommonMaster = () => {
     };
 
     const columns = [
-        { field: 'commonMasterId', headerName: '', flex: 0.3 },
+        { field: 'commonMasterId', headerName: '', flex: 0.3,hide:true },
         {
             field: 'id', headerName: '', flex: 0.01,
             filterable: false,
