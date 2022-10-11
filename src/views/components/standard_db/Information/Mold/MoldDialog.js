@@ -118,7 +118,6 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
         setDialogState({ ...dialogState, isSubmit: false });
       }
     }
-
   };
 
   return (
@@ -171,15 +170,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                       getOptionLabel={option => option.commonDetailName}
                       isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
                       defaultValue={initModal && { commonDetailId: initModal.Model, commonDetailName: initModal.ModelName }}
-                      onChange={(e, item) => {
-                        console.log(item)
-                        if (item) {
-                          onChange(item.commonDetailId ?? '');
-                        }
-                        else {
-                          onChange('')
-                        }
-                      }}
+                      onChange={(e, item) => onChange(item ? item.commonDetailId ?? null : null)}
                       renderInput={(params) => {
                         return <TextField
                           {...params}
@@ -222,14 +213,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                       getOptionLabel={option => option.commonDetailName}
                       isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
                       defaultValue={initModal && { commonDetailId: initModal.MoldType, commonDetailName: initModal.MoldTypeName }}
-                      onChange={(e, item) => {
-                        if (item) {
-                          onChange(item.commonDetailId ?? '');
-                        }
-                        else {
-                          onChange('')
-                        }
-                      }}
+                      onChange={(e, item) => onChange(item ? item.commonDetailId ?? null : null)}
                       renderInput={(params) => {
                         return <TextField
                           {...params}
@@ -258,14 +242,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                       getOptionLabel={option => option.commonDetailName}
                       isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
                       defaultValue={initModal && { commonDetailId: initModal.MachineType, commonDetailName: initModal.MachineTypeName }}
-                      onChange={(e, item) => {
-                        if (item) {
-                          onChange(item.commonDetailId ?? '');
-                        }
-                        else {
-                          onChange('')
-                        }
-                      }}
+                      onChange={(e, item) => onChange(item ? item.commonDetailId ?? null : null)}
                       renderInput={(params) => {
                         return <TextField
                           {...params}
@@ -307,14 +284,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                       getOptionLabel={option => option.label}
                       isOptionEqualToValue={(option, value) => option.value === value.value}
                       defaultValue={mode == CREATE_ACTION ? null : initModal.ETAStatus ? { value: true, label: 'YES' } : { value: false, label: 'NO' }}
-                      onChange={(e, item) => {
-                        if (item) {
-                          onChange(item.value ?? null);
-                        }
-                        else {
-                          onChange(null)
-                        }
-                      }}
+                      onChange={(e, item) => onChange(item ? item.value ?? null : null)}
                       renderInput={(params) => {
                         return <TextField
                           {...params}

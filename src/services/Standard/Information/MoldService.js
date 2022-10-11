@@ -29,9 +29,9 @@ const modifyMold = async (params) => {
   }
 }
 
-const deleteMold = async (id) => {
+const deleteMold = async (params) => {
   try {
-    return await axios.delete(`${apiName}/delete/${id}`);
+    return await axios.delete(`${apiName}/delete`, { data: params });
   }
   catch (error) {
     console.log(`ERROR: ${error}`);
