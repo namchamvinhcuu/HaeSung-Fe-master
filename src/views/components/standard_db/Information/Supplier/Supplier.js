@@ -47,7 +47,7 @@ const Supplier = (props) => {
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 20,
+        pageSize: 1,
         searchData: {
             SupplierCode: null,
             SupplierName: null
@@ -164,24 +164,23 @@ const Supplier = (props) => {
 
     const handleShowDeleteData = async (event) => {
         setShowDeleteData(event.target.checked);
-        if (showDeleteData) {
-            await fetchData();
+        if (event.target.checked) {
+            setSupplierState({
+                ...supplierState
+                , page: 1
+            });
         }
-        else {
-            if (event.target.checked) {
-                setSupplierState({
-                    ...supplierState
-                    , page: 1
-                });
-            }
-            await fetchDataDeleted();
-        }
-
     };
 
     useEffect(() => {
-        fetchData();
-    }, [supplierState.page, supplierState.pageSize]);
+
+        if (showDeleteData) {
+            fetchDataDeleted();
+        }
+        else {
+            fetchData();
+        }
+    }, [supplierState.page, supplierState.pageSize, showDeleteData]);
 
     useEffect(() => {
         if (!_.isEmpty(newData) && !_.isEqual(newData, SupplierDto)) {
@@ -342,7 +341,7 @@ const Supplier = (props) => {
                     page={supplierState.page - 1}
                     pageSize={supplierState.pageSize}
                     rowCount={supplierState.totalRow}
-                    rowsPerPageOptions={[5, 10, 20, 30]}
+                    rowsPerPageOptions={[1, 10, 20, 30]}
 
                     onPageChange={(newPage) => {
                         setSupplierState({ ...supplierState, page: newPage + 1 });

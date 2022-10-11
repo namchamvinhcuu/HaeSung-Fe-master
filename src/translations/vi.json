@@ -44,7 +44,11 @@
         "one_data_at_least": "Vui lòng chọn một",
         "confirm_redo_deleted": "Xác nhận để quay lại dữ liệu đã xóa",
         "description": "Mô tả",
-        "model": "Model"
+        "model": "Model",
+        "createdName": "Người tạo",
+        "createdDate": "Ngày tạo",
+        "modifiedName": "Người sửa",
+        "modifiedDate": "Ngày sửa"
     },
     "login": {
         "account_password_invalid": "Tài khoản/Mật khẩu không hợp lệ",
@@ -135,14 +139,17 @@
         "Cabity": "Cabity",
         "ETAStatus": "ETA Status",
         "Remark": "Remark",
-        "MoldSerial_required": "MoldSerial required",
-        "MoldCode_required": "MoldCode required",
-        "Model_required": "Model required",
-        "MoldType_required": "MoldType required",
-        "Inch_required": "Inch required",
-        "MachineType_required": "MachineType required",
-        "ETADate_required": "ETADate required",
-        "Cabity_required": "Cabity required",
-        "ETAStatus_required": "ETAStatus required"
+        "MoldSerial_required": "Mold Serial không được để trống",
+        "MoldCode_required": "Mold Code không được để trống",
+        "Model_required": "Model không được để trống",
+        "MoldType_required": "Mold Type không được để trống",
+        "Inch_required": "Inch không được để trống",
+        "MachineType_required": "Machine Type không được để trống",
+        "ETADate_required": "ETADate không được để trống",
+        "Cabity_required": "Cabity không được để trống",
+        "ETAStatus_required": "ETAStatus không được để trống",
+        "duplicated_code":"Mold Code đã trùng",
+        "duplicated_serial":"Mold Serial đã trùng"
+
     }
 }
