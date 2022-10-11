@@ -53,7 +53,7 @@ const Product = () => {
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 20,
+        pageSize: 2,
         searchData: {
             keyWord: ''
 
@@ -83,7 +83,7 @@ const Product = () => {
         else {
             fetchData();
         }
-    }, [productState.page, productState.pageSize]);
+    }, [productState.page, productState.pageSize,showdataHidden]);
 
     useEffect(() => {
         if (!_.isEmpty(newData)) {
@@ -197,17 +197,17 @@ const Product = () => {
         setproductState({ ...productState, searchData: { ...newSearchData } })
 
     }
+
     const handleChangeClick = async (event) => {
         setshowdataHidden(event.target.checked);
-        if (showdataHidden) {
-            fetchData();
+        
+        if (event.target.checked) {
+            // fetchData();
+            setproductState({
+                ...productState
+                , page: 1
+            });
         }
-        else {
-
-          
-            fetchDataDeleted();
-        }
-
     };
     const handleRedoDelete = async (id) => {
         if (window.confirm(intl.formatMessage({ id: 'general.confirm_redo_deleted' }))) {
@@ -289,9 +289,9 @@ const Product = () => {
         },
         { field: 'ModelName', headerName: 'Model', flex: 0.3 },
         { field: 'Model', headerName: 'Model', flex: 0.3, hide: true },
-        { field: 'ProductCode', headerName: 'ProductCode', flex: 0.3 },
+        { field: 'ProductCode', headerName: 'Product Code', flex: 0.3 },
         { field: 'Description', headerName: 'Description', flex: 0.3 },
-        { field: 'ProductType', headerName: 'ProductType', flex: 0.3, hide: true },
+        { field: 'ProductType', headerName: 'Product Type', flex: 0.3, hide: true },
         { field: 'ProductTypeName', headerName: 'Product Type', flex: 0.3 },
         { field: 'Inch', headerName: 'Inch', flex: 0.3 },
 
