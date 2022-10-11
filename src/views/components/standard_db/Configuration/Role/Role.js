@@ -4,7 +4,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import { Badge, Grid, IconButton, TextField } from '@mui/material'
 import { createTheme, ThemeProvider } from "@mui/material"
 import { useIntl } from 'react-intl'
-import { MuiButton, MuiDataGrid } from '@controls'
+import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
 import { userService, roleService } from '@services'
 import { useModal, useModal2, useModal3 } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
@@ -40,6 +40,9 @@ export default function Role() {
     totalRow: 0,
     page: 1,
     pageSize: 5,
+    searchData: {
+      keyWord: ''
+    }
   });
 
   const [permissionState, setPermissionState] = useState({
@@ -199,7 +202,7 @@ export default function Role() {
     const params = {
       page: roleState.page,
       pageSize: roleState.pageSize,
-      keyword: search
+      keyWord: roleState.searchData.keyWord
     }
     const res = await roleService.getRoleList(params);
     setRoleState({
@@ -228,6 +231,13 @@ export default function Role() {
     });
   }
 
+  const handleSearch = (e, inputName) => {
+    let newSearchData = { ...roleState.searchData };
+    newSearchData[inputName] = e.target.value;
+
+    setRoleState({ ...roleState, searchData: { ...newSearchData } })
+  }
+
   useEffect(() => {
     if (!_.isEmpty(newData)) {
       const data = [newData, ...roleState.data];
@@ -250,24 +260,24 @@ export default function Role() {
   return (
     <React.Fragment>
       <ThemeProvider theme={myTheme}>
-        <Grid container sx={{ mb: 1 }}>
-          <Grid item xs={8}>
+
+        <Grid container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+          <Grid item xs={6}>
             <MuiButton text="create" color='success' onClick={handleAdd} />
           </Grid>
-          <Grid item xs={4} container>
-            {/* <Grid item xs={9}>
-              <TextField
-                fullWidth
-                size='small'
-                label={intl.formatMessage({ id: 'user.userName' })}
-                onChange={e => setSearch(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0, ml: 2 }} />
-            </Grid> */}
+          <Grid item>
+            <MuiSearchField
+              label='general.name'
+              name='keyWord'
+              onClick={fetchData}
+              onChange={(e) => handleSearch(e, 'keyWord')}
+            />
           </Grid>
         </Grid>
+
         <MuiDataGrid
           gridHeight={256}
           getData={userService.getUserList}

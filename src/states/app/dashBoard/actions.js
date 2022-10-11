@@ -10,7 +10,7 @@ import {
     UPDATE_TIME_AGO,
     SET_DATA_NOTIFY_USER
 } from './types';
-import { api_get, api_post, AlertSuccess, ErrorAlert, historyDashboard, firstLogin } from "@utils";
+import { api_get, api_post, SuccessAlert, ErrorAlert, historyDashboard, firstLogin } from "@utils";
 
 const appendTab = (data) => {
     return (dispatch, getState) => {
