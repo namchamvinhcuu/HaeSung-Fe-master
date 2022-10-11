@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
-import { api_get, api_post, AlertSuccess, ErrorAlert } from "@utils";
+import { api_get, api_post, SuccessAlert, ErrorAlert } from "@utils";
 import { Button, Box, TextField, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, FormControlLabel, Checkbox } from "@mui/material";
-import { useModal,useModal2,useModal3, SelectBox, ButtonAsync, DataTable, DraggableDialog } from "@basesShared";
+import { useModal, useModal2, useModal3, SelectBox, ButtonAsync, DataTable, DraggableDialog } from "@basesShared";
 import moment from 'moment'
 
 import Modal_ChangePassword from './Modals/Modal_ChangePassword'
@@ -27,16 +27,16 @@ export default function UserList() {
       disableClickEventBubbling: true,
       renderCell: (params) => {
         return (
-          params.row.AdminType!==1?
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={() => editrow(params)}
-          >
-            Edit
-          </Button>
-          :''
+          params.row.AdminType !== 1 ?
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => editrow(params)}
+            >
+              Edit
+            </Button>
+            : ''
         );
       },
     },
@@ -47,16 +47,16 @@ export default function UserList() {
       disableClickEventBubbling: true,
       renderCell: (params) => {
         return (
-          params.row.AdminType!==1?
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            onClick={() => deleterow(params)}
-          >
-            Delete
-          </Button>
-          :''
+          params.row.AdminType !== 1 ?
+            <Button
+              variant="contained"
+              color="error"
+              size="small"
+              onClick={() => deleterow(params)}
+            >
+              Delete
+            </Button>
+            : ''
         );
       },
     },
@@ -67,7 +67,7 @@ export default function UserList() {
       disableClickEventBubbling: true,
       renderCell: (params) => {
         return (
-           
+
           <Button
             variant="contained"
             color="warning"
@@ -76,7 +76,7 @@ export default function UserList() {
           >
             Change Password
           </Button>
-           
+
         );
       },
     },
@@ -88,21 +88,21 @@ export default function UserList() {
       disableClickEventBubbling: true,
       renderCell: (params) => {
         return (
-          params.row.AdminType!==1?
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={() => changeroles(params)}
-          >
-            Roles
-          </Button>
-          :''
+          params.row.AdminType !== 1 ?
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => changeroles(params)}
+            >
+              Roles
+            </Button>
+            : ''
         );
       },
     },
 
-    { field: "id", headerName: "ID", hide:true },
+    { field: "id", headerName: "ID", hide: true },
     { field: "Account", headerName: "Account", width: 100, },
     { field: "FullName", headerName: "Full name", width: 140, editable: false, },
     {
@@ -111,26 +111,26 @@ export default function UserList() {
       width: 150,
       disableClickEventBubbling: true,
       renderCell: (params) => {
-        
-         if (params.row.AdminType==1) return <span style={{fontSize:14}} className="badge badge-danger">Super Admin</span> 
-        else if (params.row.AdminType==2) return <span style={{fontSize:12}} className="badge badge-secondary">Customer Admin</span>
-        
-        else if (params.row.AdminType==3) return <b>Regular</b> 
+
+        if (params.row.AdminType == 1) return <span style={{ fontSize: 14 }} className="badge badge-danger">Super Admin</span>
+        else if (params.row.AdminType == 2) return <span style={{ fontSize: 12 }} className="badge badge-secondary">Customer Admin</span>
+
+        else if (params.row.AdminType == 3) return <b>Regular</b>
 
       },
     },
     {
-     
-      field:'LastLoginTime',
+
+      field: 'LastLoginTime',
       headerName: 'Last Login Time',
       width: 150,
-      valueFormatter: params => 
-      moment(params?.value).format("DD/MM/YYYY HH:mm:ss")
+      valueFormatter: params =>
+        moment(params?.value).format("DD/MM/YYYY HH:mm:ss")
     },
 
   ];
 
-  const changeroles =(params)=>{
+  const changeroles = (params) => {
     var row_data = params.row;
     setRowData(row_data);
     toggle3();
@@ -156,14 +156,14 @@ export default function UserList() {
 
   const deleterow = (params) => {
     if (window.confirm("Delete the item?")) {
-      api_post("account/delete", {...params.row,Id:params.row.id}).then(() => {
+      api_post("account/delete", { ...params.row, Id: params.row.id }).then(() => {
         refreshTable();
       });
     }
   };
 
   const refreshTable = () => {
-    gridRef.current.refreshGrid().then(() => AlertSuccess("save success"));
+    gridRef.current.refreshGrid().then(() => SuccessAlert("save success"));
   };
 
   const search = () => {
@@ -210,7 +210,7 @@ export default function UserList() {
         ref={gridRef}
         url="account/getlist"
         columns={columns}
-        
+
       />
 
       <Modal_UserAccount
@@ -219,21 +219,21 @@ export default function UserList() {
         mode={mode}
         data={rowdata}
         refreshTable={refreshTable}
-   
+
       />
-      <Modal_ChangePassword 
-          isShowing={isShowing2}
-          hide={toggle2}
-          data={rowdata}
-          refreshTable={refreshTable}
+      <Modal_ChangePassword
+        isShowing={isShowing2}
+        hide={toggle2}
+        data={rowdata}
+        refreshTable={refreshTable}
       />
 
-      <Modal_Roles 
-          isShowing={isShowing3}
-          hide={toggle3}
-          data={rowdata}
+      <Modal_Roles
+        isShowing={isShowing3}
+        hide={toggle3}
+        data={rowdata}
       />
-      
+
 
     </Box>
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
-import { api_get, api_post, AlertSuccess, ErrorAlert } from "@utils";
+import { api_get, api_post, SuccessAlert, ErrorAlert } from "@utils";
 import {
   useModal,
   useModal2,
@@ -27,7 +27,7 @@ export default function RoleList() {
 
 
   const [searchName, setSearchName] = useState("");
- const [roleId, setRoleId] = useState();
+  const [roleId, setRoleId] = useState();
 
   const [searchName_Menu, setSearchName_Menu] = useState("");
 
@@ -50,8 +50,9 @@ export default function RoleList() {
             color="primary"
             size="small"
             onClick={e => {
-              
-              editrow(e,params)}}
+
+              editrow(e, params)
+            }}
           >
             Edit
           </Button>
@@ -69,7 +70,7 @@ export default function RoleList() {
             variant="contained"
             color="error"
             size="small"
-            onClick={e => {deleterowrole(e,params)}}
+            onClick={e => { deleterowrole(e, params) }}
           >
             Delete
           </Button>
@@ -107,13 +108,14 @@ export default function RoleList() {
     { field: "id", headerName: "ID", hide: true },
     { field: "Name", headerName: "Menu Name", width: 200 },
     { field: "Code", headerName: "Menu Code", width: 200 },
-    { field: "MenuType", headerName: "Type", width: 100,
-    renderCell: (params) => {
-      if (params.row.MenuType===0) return <span style={{fontSize:14}} className="badge badge-info">Folder</span>
-      else  return <b >Item</b>
+    {
+      field: "MenuType", headerName: "Type", width: 100,
+      renderCell: (params) => {
+        if (params.row.MenuType === 0) return <span style={{ fontSize: 14 }} className="badge badge-info">Folder</span>
+        else return <b >Item</b>
+      },
+
     },
-  
-  },
   ];
 
   const addNewRole = () => {
@@ -126,21 +128,21 @@ export default function RoleList() {
     gridRef.current.search({ search_name: searchName });
   };
 
-  const editrow = (e,params) => {
-   
+  const editrow = (e, params) => {
+
     e.stopPropagation();
     var row_data = params.row;
     setMode("edit");
-    setRowData({...row_data,ignore:true});
+    setRowData({ ...row_data, ignore: true });
     toggle();
   };
 
-  const deleterowrole = (e,params) => {
+  const deleterowrole = (e, params) => {
     e.stopPropagation();
     if (window.confirm("Delete the item?")) {
       api_post("sysRoleaApi/delete", params.row).then(() => {
         refreshTable();
-       setRowData({})
+        setRowData({})
       });
     }
   };
@@ -159,11 +161,11 @@ export default function RoleList() {
   };
 
   const refreshTable = () => {
-    gridRef.current.refreshGrid().then(() => AlertSuccess("save success"));
+    gridRef.current.refreshGrid().then(() => SuccessAlert("save success"));
   };
 
   const refreshTable_menu = () => {
-    gridRef_menu.current.refreshGrid().then(() => AlertSuccess("save success"));
+    gridRef_menu.current.refreshGrid().then(() => SuccessAlert("save success"));
   };
 
   const addMenu = () => {
@@ -213,65 +215,65 @@ export default function RoleList() {
         </Grid>
 
         <DataTable
-        sx={{height:300}}
+          sx={{ height: 300 }}
           ref={gridRef}
           url={"sysRoleaApi"}
           columns={columns}
           getRowId={(rows) => rows.id}
           onRowClick={(params, event) => {
-          
+
             setRoleId(params.row.id);
             setRowData(params.row)
           }}
           hideFooter={true}
         />
 
-        
-          <Box>
-            <Grid
-              container
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Grid item>
-                <Button
-                  variant="contained"
-                  color="success"
-                  sx={{ boxShadow: 1, borderRadius: 2, mb: 1 }}
-                  onClick={addMenu}
-                >
-                  Add Menu
-                </Button>
-              </Grid>
-              <Grid item>
-                <TextField
-                  label="Search name"
-                  variant="standard"
-                  onChange={(e) => setSearchName_Menu(e.target.value)}
-                  sx={{ borderRadius: 2, mb: 1 }}
-                />
 
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ mx: 3, boxShadow: 1, mb: -4 }}
-                  onClick={searchMenus}
-                >
-                  Search
-                </Button>
-              </Grid>
+        <Box>
+          <Grid
+            container
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Grid item>
+              <Button
+                variant="contained"
+                color="success"
+                sx={{ boxShadow: 1, borderRadius: 2, mb: 1 }}
+                onClick={addMenu}
+              >
+                Add Menu
+              </Button>
             </Grid>
+            <Grid item>
+              <TextField
+                label="Search name"
+                variant="standard"
+                onChange={(e) => setSearchName_Menu(e.target.value)}
+                sx={{ borderRadius: 2, mb: 1 }}
+              />
 
-            <DataTable
-              ref={gridRef_menu}
-              url={roleId? ( "sysRoleaApi/get-list-role-menu/" + roleId):null}
-              columns={columns_menu}
-              getRowId={(rows) => rows.id}
-              sx={{ height: 400 }}
-            />
-          </Box>
-       
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ mx: 3, boxShadow: 1, mb: -4 }}
+                onClick={searchMenus}
+              >
+                Search
+              </Button>
+            </Grid>
+          </Grid>
+
+          <DataTable
+            ref={gridRef_menu}
+            url={roleId ? ("sysRoleaApi/get-list-role-menu/" + roleId) : null}
+            columns={columns_menu}
+            getRowId={(rows) => rows.id}
+            sx={{ height: 400 }}
+          />
+        </Box>
+
 
         <Modal_Role
           isShowing={isShowing}

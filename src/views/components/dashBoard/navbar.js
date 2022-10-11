@@ -4,7 +4,7 @@ import Tab from '@mui/material/Tab';
 import CloseIcon from '@mui/icons-material/Close';
 import { withStyles } from '@mui/styles';
 import { historyDashboard, historyApp, calDateAgo, UserManager } from '@utils'
-import { api_get, api_post, api_push_notify, AlertSuccess, ErrorAlert } from "@utils";
+import { api_get, api_post, api_push_notify, SuccessAlert, ErrorAlert } from "@utils";
 import * as ConfigConstants from "@constants/ConfigConstants";
 
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';

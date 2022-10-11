@@ -43,7 +43,6 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
   }, [])
 
   useEffect(() => {
-    console.log(mode, initModal)
     if (mode == CREATE_ACTION) {
       setDate();
       reset({});
