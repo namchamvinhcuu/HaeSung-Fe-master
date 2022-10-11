@@ -14,8 +14,6 @@ const CreateSupplierDialog = (props) => {
 
     const { initModal, isOpen, onClose, setNewData } = props;
 
-    console.log('initModal', initModal)
-
     const [dialogState, setDialogState] = useState({
         ...initModal,
         isSubmit: false,
@@ -24,23 +22,22 @@ const CreateSupplierDialog = (props) => {
     const schema = yup.object().shape({
         SupplierCode: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
         SupplierName: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
-    })
+    });
 
     const formik = useFormik({
         validationSchema: schema,
         initialValues: { ...initModal },
         onSubmit: async values => {
-            console.log(values);
-            // const res = await supplierService.create(values);
-            // if (res.HttpResponseCode === 200 && res.Data) {
-            //     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-            //     setNewData({ ...res.Data });
-            //     setDialogState({ ...dialogState, isSubmit: false });
-            //     handleCloseDialog();
-            // }
-            // else {
-            //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-            // }
+            const res = await supplierService.create(values);
+            if (res.HttpResponseCode === 200 && res.Data) {
+                SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                setNewData({ ...res.Data });
+                setDialogState({ ...dialogState, isSubmit: false });
+                handleCloseDialog();
+            }
+            else {
+                ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+            }
         }
     });
 
@@ -86,6 +83,7 @@ const CreateSupplierDialog = (props) => {
                             autoFocus
                             fullWidth
                             size='small'
+                            disabled={dialogState.isSubmit}
                             label={intl.formatMessage({ id: 'supplier.SupplierCode' })}
                             name='SupplierCode'
                             value={values.SupplierCode}
@@ -98,6 +96,7 @@ const CreateSupplierDialog = (props) => {
                         <TextField
                             fullWidth
                             size='small'
+                            disabled={dialogState.isSubmit}
                             label={intl.formatMessage({ id: 'supplier.SupplierName' })}
                             name='SupplierName'
                             value={values.SupplierName}
@@ -112,12 +111,11 @@ const CreateSupplierDialog = (props) => {
                             size='small'
                             multiline={true}
                             rows={3}
+                            disabled={dialogState.isSubmit}
                             label={intl.formatMessage({ id: 'supplier.SupplierContact' })}
                             name='SupplierContact'
                             value={values.SupplierContact}
                             onChange={handleChange}
-                            error={touched.SupplierContact && Boolean(errors.SupplierContact)}
-                            helperText={touched.SupplierContact && errors.SupplierContact}
                         />
                     </Grid>
                     <Grid item xs={12}>

@@ -62,11 +62,11 @@ const Supplier = (props) => {
 
     const [newData, setNewData] = useState({ ...SupplierDto });
 
-    const toggleCreateSupplierDialog = () => {
+    const toggleCreateDialog = () => {
         setIsOpenCreateDialog(!isOpenCreateDialog);
     }
 
-    const toggleModifySupplierDialog = () => {
+    const toggleModifyDialog = () => {
         setIsOpenModifyDialog(!isOpenModifyDialog);
     }
 
@@ -116,17 +116,41 @@ const Supplier = (props) => {
         fetchData();
     }, [supplierState.page, supplierState.pageSize]);
 
+    useEffect(() => {
+        if (!_.isEmpty(newData) && !_.isEqual(newData, SupplierDto)) {
+            const data = [newData, ...supplierState.data]
+            if (data.length > supplierState.pageSize) {
+                data.pop();
+            }
+            setSupplierState({
+                ...supplierState
+                , data: [...data]
+                , totalRow: supplierState.totalRow + 1
+            });
+        }
+    }, [newData]);
+
+    useEffect(() => {
+        if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, SupplierDto)) {
+            let newArr = [...supplierState.data]
+            const index = _.findIndex(newArr, function (o) { return o.SupplierId == selectedRow.SupplierId; });
+            if (index !== -1) {
+                newArr[index] = selectedRow
+            }
+
+            setSupplierState({
+                ...supplierState
+                , data: [...newArr]
+            });
+        }
+    }, [selectedRow]);
+
     const columns = [
         { field: 'SupplierId', headerName: '', hide: true },
         {
-            field: 'id', headerName: '', flex: 0.01,
-            filterable: false,
-            renderCell: (index) => index.api.getRowIndex(index.row.menuId) + 1,
-        },
-        {
             field: "action",
             headerName: "",
-            flex: 0.4,
+            width: 80,
             // headerAlign: 'center',
             disableClickEventBubbling: true,
             sortable: false,
@@ -140,7 +164,7 @@ const Supplier = (props) => {
                                 color="warning"
                                 size="small"
                                 sx={[{ '&:hover': { border: '1px solid orange', }, }]}
-                                onClick={toggleModifySupplierDialog}
+                                onClick={toggleModifyDialog}
                             >
                                 <EditIcon fontSize="inherit" />
                             </IconButton>
@@ -194,7 +218,7 @@ const Supplier = (props) => {
                         <MuiButton
                             text="create"
                             color='success'
-                            onClick={toggleCreateSupplierDialog}
+                            onClick={toggleCreateDialog}
                         />
                     </Grid>
 
@@ -254,15 +278,15 @@ const Supplier = (props) => {
                     initModal={SupplierDto}
                     setNewData={setNewData}
                     isOpen={isOpenCreateDialog}
-                    onClose={toggleCreateSupplierDialog}
+                    onClose={toggleCreateDialog}
                 />
 
-                {/* <ModifyMenuDialog
+                <ModifySupplierDialog
                     initModal={selectedRow}
                     setModifyData={setSelectedRow}
                     isOpen={isOpenModifyDialog}
-                    onClose={toggleModifyMenuDialog}
-                /> */}
+                    onClose={toggleModifyDialog}
+                />
 
             </ThemeProvider>
         </React.Fragment>

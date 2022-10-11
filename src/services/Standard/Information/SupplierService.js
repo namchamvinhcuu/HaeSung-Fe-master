@@ -14,7 +14,17 @@ const getSuppliers = async (params) => {
 
 const create = async (params) => {
     try {
-        return await axios.post('/api/permission/create-permission', {
+        return await axios.post('/api/supplier/create-supplier', {
+            ...params
+        });
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
+
+const modify = async (params) => {
+    try {
+        return await axios.put('/api/supplier/modify-supplier', {
             ...params
         });
     } catch (error) {
@@ -23,5 +33,7 @@ const create = async (params) => {
 }
 
 export {
-    getSuppliers
+    getSuppliers,
+    create,
+    modify,
 }
