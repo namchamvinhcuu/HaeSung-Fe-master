@@ -23,7 +23,29 @@ const createStaff = async (params) => {
     }
 }
 
+const modifyStaff = async (params) => {
+    try {
+        return await axios.put(`${apiStaff}/modify-staff`, {
+            ...params
+        });
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
+const deleteStaff = async (params) => {
+
+    try {
+        return await axios.put(`${apiStaff}/delete-staff`, {
+            ...params
+        });
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
+
 export {
     getStaffList,
     createStaff,
+    modifyStaff,
+    deleteStaff,
 }
