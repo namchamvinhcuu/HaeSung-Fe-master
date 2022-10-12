@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField } from '@controls'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Autocomplete, Grid, TextField } from '@mui/material'
+import { Grid, TextField } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
@@ -9,11 +9,8 @@ import { moldService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION } from '@constants/ConfigConstants';
 
-const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) => {
+const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
   const intl = useIntl();
-  const [PMList, setPMList] = useState([]);// Product Model list
-  const [PTList, setPTList] = useState([]);// Product Type list
-  const [MTList, setMTList] = useState([]);// Machine Type list
   const [date, setDate] = useState(initModal?.ETADate);
   const ETAStatus = [{ value: true, label: 'YES' }, { value: false, label: 'NO' }]
   const [dialogState, setDialogState] = useState({ isSubmit: false })
@@ -36,12 +33,6 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
     resolver: yupResolver(schema),
     defaultValues: initModal
   });
-
-  useEffect(() => {
-    getProductModel();
-    getProductType();
-    getMachineType();
-  }, [])
 
   useEffect(() => {
     if (mode == CREATE_ACTION) {
@@ -67,27 +58,6 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
     onClose();
   }
 
-  const getProductModel = async () => {
-    const res = await moldService.getProductModel();
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setPMList([...res.Data])
-    }
-  }
-
-  const getProductType = async () => {
-    const res = await moldService.getProductType();
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setPTList([...res.Data])
-    }
-  }
-
-  const getMachineType = async () => {
-    const res = await moldService.getMachineType();
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setMTList([...res.Data])
-    }
-  }
-
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
 
@@ -109,10 +79,10 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
       const res = await moldService.modifyMold({ ...data, MoldId: initModal.MoldId, row_version: initModal.row_version });
       if (res.HttpResponseCode === 200) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        setUpdateData({ ...res.Data });
         setDialogState({ ...dialogState, isSubmit: false });
         handleReset();
         handleCloseDialog();
-        loadData();
       }
       else {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -167,7 +137,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                     <MuiSelectField
                       disabled={dialogState.isSubmit}
                       label={intl.formatMessage({ id: 'mold.Model' })}
-                      options={PMList}
+                      options={valueOption.PMList}
                       displayLabel="commonDetailName"
                       displayValue="commonDetailId"
                       onChange={(e, item) => onChange(item ? item.commonDetailId ?? null : null)}
@@ -202,13 +172,13 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                     <MuiSelectField
                       disabled={dialogState.isSubmit}
                       label={intl.formatMessage({ id: 'mold.MoldType' })}
-                      options={PTList}
+                      options={valueOption.PTList}
                       displayLabel="commonDetailName"
                       displayValue="commonDetailId"
                       onChange={(e, item) => onChange(item ? item.commonDetailId ?? null : null)}
                       defaultValue={initModal && { commonDetailId: initModal.MoldType, commonDetailName: initModal.MoldTypeName }}
-                      error={!!errors.Model}
-                      helperText={errors?.Model ? errors.Model.message : null}
+                      error={!!errors.MoldType}
+                      helperText={errors?.MoldType ? errors.MoldType.message : null}
                     />
                   );
                 }}
@@ -223,13 +193,13 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                     <MuiSelectField
                       disabled={dialogState.isSubmit}
                       label={intl.formatMessage({ id: 'mold.MachineType' })}
-                      options={MTList}
+                      options={valueOption.MTList}
                       displayLabel="commonDetailName"
                       displayValue="commonDetailId"
                       onChange={(e, item) => onChange(item ? item.commonDetailId ?? null : null)}
                       defaultValue={initModal && { commonDetailId: initModal.MachineType, commonDetailName: initModal.MachineTypeName }}
-                      error={!!errors.Model}
-                      helperText={errors?.Model ? errors.Model.message : null}
+                      error={!!errors.MachineType}
+                      helperText={errors?.MachineType ? errors.MachineType.message : null}
                     />
                   );
                 }}
