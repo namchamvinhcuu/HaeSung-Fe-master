@@ -4,10 +4,11 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
-export default function MuiDateField({ label, value, onChange, sx, variant, margin, error, helperText, defaultValue }) {
+export default function MuiDateField({ label, value, onChange, sx, variant, margin, error, helperText, disabled }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
+        disabled={disabled}
         label={label}
         value={value ? value : null}
         onChange={onChange}

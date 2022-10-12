@@ -19,15 +19,15 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
   const [dialogState, setDialogState] = useState({ isSubmit: false })
 
   const schema = yup.object().shape({
-    MoldSerial: yup.string().required(intl.formatMessage({ id: 'mold.MoldSerial_required' })),
-    MoldCode: yup.string().required(intl.formatMessage({ id: 'mold.MoldCode_required' })),
-    Inch: yup.string().required(intl.formatMessage({ id: 'mold.Inch_required' })),
-    Cabity: yup.string().required(intl.formatMessage({ id: 'mold.Cabity_required' })),
-    Model: yup.number().nullable().required(intl.formatMessage({ id: 'mold.Model_required' })),
-    MoldType: yup.number().nullable().required(intl.formatMessage({ id: 'mold.MoldType_required' })),
-    MachineType: yup.number().nullable().required(intl.formatMessage({ id: 'mold.MachineType_required' })),
-    ETAStatus: yup.bool().nullable().required(intl.formatMessage({ id: 'mold.ETAStatus_required' })),
-    ETADate: yup.date().nullable().required(intl.formatMessage({ id: 'mold.ETADate_required' }))
+    // MoldSerial: yup.string().required(intl.formatMessage({ id: 'mold.MoldSerial_required' })),
+    // MoldCode: yup.string().required(intl.formatMessage({ id: 'mold.MoldCode_required' })),
+    // Inch: yup.string().nullable().required(intl.formatMessage({ id: 'mold.Inch_required' })),
+    // Cabity: yup.string().nullable().required(intl.formatMessage({ id: 'mold.Cabity_required' })),
+    // Model: yup.number().nullable().required(intl.formatMessage({ id: 'mold.Model_required' })),
+    // MoldType: yup.number().nullable().required(intl.formatMessage({ id: 'mold.MoldType_required' })),
+    // MachineType: yup.number().nullable().required(intl.formatMessage({ id: 'mold.MachineType_required' })),
+    // ETAStatus: yup.bool().nullable().required(intl.formatMessage({ id: 'mold.ETAStatus_required' })),
+    // ETADate: yup.date().nullable().required(intl.formatMessage({ id: 'mold.ETADate_required' }))
   });
 
   const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
@@ -45,7 +45,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
   useEffect(() => {
     if (mode == CREATE_ACTION) {
       setDate();
-      reset({});
+      reset({ Inch: null, Cabity: null });
     }
     else {
       setDate(initModal?.ETADate);
@@ -129,11 +129,12 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
       disable_animate={300}
       onClose={handleCloseDialog}
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} >
         <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item container spacing={2}>
             <Grid item xs={6}>
               <TextField
+                disabled={dialogState.isSubmit}
                 autoFocus
                 fullWidth
                 size='small'
@@ -145,6 +146,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
             </Grid>
             <Grid item xs={6}>
               <TextField
+                disabled={dialogState.isSubmit}
                 fullWidth
                 size='small'
                 label={intl.formatMessage({ id: 'mold.MoldCode' })}
@@ -163,6 +165,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                   return (
                     <Autocomplete
                       fullWidth
+                      disabled={dialogState.isSubmit}
                       size='small'
                       options={PMList}
                       autoHighlight
@@ -187,6 +190,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
             <Grid item xs={6}>
               <TextField
                 fullWidth
+                disabled={dialogState.isSubmit}
                 type='number'
                 size='small'
                 label={intl.formatMessage({ id: 'mold.Inch' })}
@@ -205,6 +209,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                 render={({ field: { onChange, value } }) => {
                   return (
                     <Autocomplete
+                      disabled={dialogState.isSubmit}
                       fullWidth
                       size='small'
                       options={PTList}
@@ -234,6 +239,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                 render={({ field: { onChange, value } }) => {
                   return (
                     <Autocomplete
+                      disabled={dialogState.isSubmit}
                       fullWidth
                       size='small'
                       options={MTList}
@@ -261,6 +267,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
             <Grid item xs={6}>
               <TextField
                 fullWidth
+                disabled={dialogState.isSubmit}
                 size='small'
                 type='number'
                 label={intl.formatMessage({ id: 'mold.Cabity' })}
@@ -277,6 +284,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                   return (
                     <Autocomplete
                       fullWidth
+                      disabled={dialogState.isSubmit}
                       size='small'
                       options={ETAStatus}
                       autoHighlight
@@ -308,6 +316,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
                 render={({ field: { onChange, value } }) => {
                   return (
                     <MuiDateField
+                      disabled={dialogState.isSubmit}
                       label="ETA Date"
                       value={date}
                       onChange={(e) => {
@@ -322,6 +331,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, mode, loadData }) 
             </Grid>
             <Grid item xs={6}>
               <TextField
+                disabled={dialogState.isSubmit}
                 fullWidth
                 size='small'
                 label={intl.formatMessage({ id: 'mold.Remark' })}
