@@ -5,7 +5,7 @@ import UndoIcon from '@mui/icons-material/Undo';
 import { Autocomplete, FormControlLabel, Grid, IconButton, Switch, TextField } from '@mui/material'
 import { createTheme, ThemeProvider } from "@mui/material"
 import { useIntl } from 'react-intl'
-import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
+import { MuiButton, MuiDataGrid, MuiSelectField } from '@controls'
 import { moldService } from '@services'
 import { useModal } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
@@ -93,26 +93,26 @@ export default function Mold() {
     },
     { field: 'MoldSerial', headerName: intl.formatMessage({ id: "mold.MoldSerial" }), flex: 0.7, },
     { field: 'MoldCode', headerName: intl.formatMessage({ id: "mold.MoldCode" }), flex: 0.7, },
-    { field: 'ModelName', headerName: intl.formatMessage({ id: "mold.ModelName" }), flex: 0.7, },
-    { field: 'MoldTypeName', headerName: intl.formatMessage({ id: "mold.MoldTypeName" }), flex: 0.7, },
-    { field: 'Inch', headerName: intl.formatMessage({ id: "mold.Inch" }), flex: 0.4, },
-    { field: 'MachineTypeName', headerName: intl.formatMessage({ id: "mold.MachineTypeName" }), flex: 0.7, },
+    { field: 'ModelName', headerName: intl.formatMessage({ id: "mold.Model" }), flex: 0.6, },
+    { field: 'MoldTypeName', headerName: intl.formatMessage({ id: "mold.MoldType" }), flex: 0.6, },
+    { field: 'Inch', headerName: intl.formatMessage({ id: "mold.Inch" }), flex: 0.3, },
+    { field: 'MachineTypeName', headerName: intl.formatMessage({ id: "mold.MachineType" }), flex: 0.6, },
     {
-      field: 'ETADate', headerName: intl.formatMessage({ id: "mold.ETADate" }), flex: 0.7,
+      field: 'ETADate', headerName: intl.formatMessage({ id: "mold.ETADate" }), flex: 0.5,
       valueFormatter: params => moment(params?.value).format("DD/MM/YYYY")
     },
-    { field: 'Cabity', headerName: intl.formatMessage({ id: "mold.Cabity" }), flex: 0.4, },
+    { field: 'Cabity', headerName: intl.formatMessage({ id: "mold.Cabity" }), flex: 0.3, },
     {
-      field: 'ETAStatus', headerName: intl.formatMessage({ id: "mold.ETAStatus" }), flex: 0.5,
+      field: 'ETAStatus', headerName: intl.formatMessage({ id: "mold.ETAStatus" }), flex: 0.5, align: 'center',
       renderCell: params => params.row.ETAStatus ? "Y" : "N"
     },
     { field: 'Remark', headerName: intl.formatMessage({ id: "mold.Remark" }), flex: 0.7, },
-    { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.4, },
+    { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
     {
       field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.5,
       valueFormatter: params => params?.value ? moment(params?.value).format("DD/MM/YYYY") : null
     },
-    { field: 'modifiedName', headerName: intl.formatMessage({ id: "general.modifiedName" }), flex: 0.4, },
+    { field: 'modifiedName', headerName: intl.formatMessage({ id: "general.modifiedName" }), flex: 0.5, },
     {
       field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modifiedDate" }), flex: 0.5,
       valueFormatter: params => params?.value ? moment(params?.value).format("DD/MM/YYYY") : null
@@ -124,7 +124,7 @@ export default function Mold() {
   }, [moldState.page, moldState.pageSize, moldState.searchData.showDelete]);
 
   const handleDelete = async (mold) => {
-    if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
+    if (window.confirm(intl.formatMessage({ id: mold.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
       try {
         let res = await moldService.deleteMold({ MoldId: mold.MoldId, row_version: mold.row_version });
         if (res && res.HttpResponseCode === 200) {
@@ -237,7 +237,6 @@ export default function Mold() {
     <React.Fragment>
       <ThemeProvider theme={myTheme}>
         <Grid container
-
           direction="row"
           justifyContent="space-between"
           alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
@@ -250,53 +249,41 @@ export default function Mold() {
               fullWidth
               variant="standard"
               size='small'
-              label='Code / Serial'
+              label='Serial / Code'
               onChange={(e) => handleSearch(e.target.value, 'keyWord')}
             />
           </Grid>
           <Grid item>
-            <Autocomplete
-              fullWidth
-              size='small'
+            <MuiSelectField
+              label={intl.formatMessage({ id: 'mold.Model' })}
               options={PMList}
-              autoHighlight
-              openOnFocus
-              getOptionLabel={option => option.commonDetailName}
-              isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
+              displayLabel="commonDetailName"
+              displayValue="commonDetailId"
               onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Model')}
-              renderInput={(params) => {
-                return <TextField {...params} label={intl.formatMessage({ id: 'mold.Model' })} variant="standard" sx={{ width: 200 }} />
-              }}
+              variant="standard"
+              sx={{ width: 200 }}
             />
           </Grid>
           <Grid item>
-            <Autocomplete
-              fullWidth
-              size='small'
+            <MuiSelectField
+              label={intl.formatMessage({ id: 'mold.MoldType' })}
               options={PTList}
-              autoHighlight
-              openOnFocus
-              getOptionLabel={option => option.commonDetailName}
-              isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
+              displayLabel="commonDetailName"
+              displayValue="commonDetailId"
               onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'MoldType')}
-              renderInput={(params) => {
-                return <TextField {...params} label={intl.formatMessage({ id: 'mold.MoldType' })} variant="standard" sx={{ width: 200 }} />
-              }}
+              variant="standard"
+              sx={{ width: 200 }}
             />
           </Grid>
           <Grid item>
-            <Autocomplete
-              fullWidth
-              size='small'
+            <MuiSelectField
+              label={intl.formatMessage({ id: 'mold.MachineType' })}
               options={MTList}
-              autoHighlight
-              openOnFocus
-              getOptionLabel={option => option.commonDetailName}
-              isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
+              displayLabel="commonDetailName"
+              displayValue="commonDetailId"
               onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'MachineType')}
-              renderInput={(params) => {
-                return <TextField {...params} label={intl.formatMessage({ id: 'mold.MachineType' })} variant="standard" sx={{ width: 200 }} />
-              }}
+              variant="standard"
+              sx={{ width: 200 }}
             />
           </Grid>
           <Grid item>
@@ -339,7 +326,7 @@ export default function Mold() {
         />
 
       </ThemeProvider>
-    </React.Fragment >
+    </React.Fragment>
 
   )
 }

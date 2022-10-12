@@ -8,7 +8,6 @@ import { createTheme, ThemeProvider, TextField } from "@mui/material"
 import { staffService } from '@services'
 import { useIntl } from 'react-intl'
 import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Box from "@mui/material/Box";
 import Grid from '@mui/material/Grid'
@@ -18,35 +17,26 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import StaffDto from "@models"
 import EditIcon from '@mui/icons-material/Edit'
 import moment from "moment";
-import CreateDialog from './CreateStaffDialog'
+import CreateStaffDialog from './CreateStaffDialog'
+import _ from 'lodash'
+import { FormControlLabel, Switch } from "@mui/material"
 
 
-const myTheme = createTheme({
-    components: {
-        //@ts-ignore - this isn't in the TS because DataGird is not exported from `@mui/material`
-        MuiDataGrid: {
-            styleOverrides: {
-                row: {
-                    "&.Mui-created": {
-                        backgroundColor: "#A0DB8E",
-                        //   "&:hover": {
-                        //     backgroundColor: "#98958F"
-                        //   }
-                    }
-                }
-            }
-        }
-    }
-});
 const Staff = (props) => {
+    const intl = useIntl();
 
-    const initStaffModel = {
-        StaffId: 0
-        , StaffCode: ''
-        , StaffName: ''
+    // const initStaffModel = {
+    //     StaffId: 0
+    //     , StaffCode: ''
+    //     , StaffName: ''
 
-    }
-    const [newData, setNewData] = useState({ ...initStaffModel })
+    // }
+    const [newData, setNewData] = useState({ ...StaffDto });
+
+    const [selectedRow, setSelectedRow] = useState({
+        ...StaffDto
+    })
+
 
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
     const toggleCreateDialog = () => {
@@ -54,19 +44,17 @@ const Staff = (props) => {
         setIsOpenCreateDialog(!isOpenCreateDialog);
     }
 
-    const [selectedRow, setSelectedRow] = useState({
-        ...StaffDto
-    })
-
+    
 
     const [staffState, setstaffState] = useState({
         isLoading: false,
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 10,
+        pageSize: 20,
         searchData: {
-            keyWord: ''
+            StaffCode: null,
+            StaffName: null
         }
     });
 
@@ -83,6 +71,7 @@ const Staff = (props) => {
             setSelectedRow({ ...StaffDto });
            
         }
+
     }
 
     async function fetchData() {
@@ -94,27 +83,29 @@ const Staff = (props) => {
         const params = {
             page: staffState.page,
             pageSize: staffState.pageSize,
-            keyword: staffState.searchData.keyWord
+            StaffCode: staffState.searchData.StaffCode,
+            StaffName: staffState.searchData.StaffName,
+            //isActived: showActivedData,
         }
         const res = await staffService.getStaffList(params);
      
         setstaffState({
             ...staffState
-            , data: [...res.Data]
+            , data: !res.Data ? [] : [...res.Data]
             , totalRow: res.TotalRow
             , isLoading: false
         });
     }
 
-    useEffect(() => {
-        console.log(staffState.data)
-    }, [staffState.data]);
+    // useEffect(() => {
+    //     console.log(staffState.data)
+    // }, [staffState.data]);
     useEffect(() => {
 
         fetchData();
-    }, [staffState.page, staffState.pageSize]);
+    }, [staffState.page, staffState.pageSize]); //, showActivedData
     useEffect(() => {
-        if (!_.isEmpty(newData)) {
+        if (!_.isEmpty(newData) && !_.isEqual(newData, StaffDto)) {
             const data = [newData, ...staffState.data];
             if (data.length > staffState.pageSize) {
                 data.pop();
@@ -144,12 +135,12 @@ const Staff = (props) => {
     }, [selectedRow]);
 
     const columns = [
-        { field: 'StaffId', headerName: '', flex: 0.01, hide: true },
-        {
-            field: 'id', headerName: '', flex: 0.01,
-            filterable: false,
-            renderCell: (index) => index.api.getRowIndex(index.row.StaffId) + 1,
-        },
+        { field: 'StaffId', headerName: '', hide: true},
+        // {
+        //     field: 'id', headerName: '', flex: 0.01,
+        //     filterable: false,
+        //     renderCell: (index) => index.api.getRowIndex(index.row.StaffId) + 1,
+        // },
         {
             field: "action",
             headerName: "",
@@ -174,92 +165,64 @@ const Staff = (props) => {
                         </Grid>
 
                         <Grid item xs={6}>
-                            {/* {showDeleteData ?
-                                <IconButton
-                                    aria-label="reuse"
-                                    color="error"
-                                    size="small"
-                                    sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                                    //onClick={() => handleReuseSupplier(params.row)}
-                                >
-                                    <UndoIcon fontSize="inherit" />
-                                </IconButton>
-                                :
-                                <IconButton
-                                    aria-label="delete"
-                                    color="error"
-                                    size="small"
-                                    sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                                    //onClick={() => handleDeleteSupplier(params.row)}
-                                >
-                                    <DeleteIcon fontSize="inherit" />
-                                </IconButton>
-                            } */}
+                            <IconButton
+                                aria-label="delete"
+                                color="error"
+                                size="small"
+                                sx={[{ '&:hover': { border: '1px solid red', }, }]}
+                                //onClick={() => handleDeleteSupplier(params.row)}
+                            >
+                               {/* {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />} */}
+                            </IconButton>
                         </Grid>
                     </Grid>
                 );
             },
         },
-        { field: 'StaffCode', headerName: 'Staff Code', flex: 0.2 },
-        { field: 'StaffName', headerName: 'Staff Name', flex: 0.3 },
-
-        { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
-
+        { field: 'StaffCode', headerName: intl.formatMessage({ id: "staff.StaffCode" }), /*flex: 0.7,*/  width: 150, },
+        { field: 'StaffName', headerName: intl.formatMessage({ id: "staff.StaffName" }), flex: 1, },
 
         {
-            field: 'createdDate', headerName: 'Created Date', flex: 0.3,
-            valueFormatter: params => {
+            field: 'createdDate', headerName: intl.formatMessage({ id: "general.created_date" }), flex: 0.3, valueFormatter: params => {
                 if (params.value !== null) {
                     return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
                 }
             },
         },
-        //{ field: 'createdBy', headerName: 'Created By', flex: 0.3, hide: true },
         {
-            field: 'modifiedDate', headerName: 'Modified Date', flex: 0.3,
-            valueFormatter: params => {
+            field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modified_date" }), flex: 0.3, valueFormatter: params => {
                 if (params.value !== null) {
                     return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
                 }
             },
         },
-
         //{ field: 'modifiedBy', headerName: 'Modified By', flex: 0.3, hide: true },
     ];
 
     return (
         <React.Fragment>
-            <ThemeProvider theme={myTheme}>
             <Grid
                 container
+                spacing={2}
                 direction="row"
                 justifyContent="space-between"
                 alignItems="flex-end"
-
             >
 
-                <Grid item xs={6}>
+                <Grid item xs={5}>
                     <MuiButton
                         text="create"
                         color='success'
                         onClick={toggleCreateDialog}
                     />
                 </Grid>
-                <Grid item xs={2}>
-                    <FormGroup>
-                        <FormControlLabel
-                            control={<Checkbox />}
-                            label="Show data deleted"
-                           // onChange={handleChangeClick}
-                        />
-                    </FormGroup>
-                </Grid>
+                
                 <Grid item xs>
                         <MuiSearchField
                             label='general.code'
                             name='StaffCode'
                             // onClick={fetchData}
-                            // onChange={(e) => changeSearchData(e, 'SupplierCode')}
+                            // onChange={(e) => changeSearchData(e, 'StaffCode')}
                         />
                 </Grid>
 
@@ -268,14 +231,28 @@ const Staff = (props) => {
                             label='general.name'
                             name='StaffName'
                             // onClick={fetchData}
-                            // onChange={(e) => changeSearchData(e, 'SupplierName')}
+                            // onChange={(e) => changeSearchData(e, 'StaffName')}
                         />
+                </Grid>
+
+                <Grid item xs sx={{ display: 'flex', justifyContent: 'right' }}>
+                    <MuiButton
+                        text="search"
+                        color='info'
+                        //onClick={fetchData}
+                    />
+                    {/* <FormControlLabel
+                        sx={{ mb: 0, ml: '1px' }}
+                        control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleshowActivedData(e)} />}
+                        label={showActivedData ? "Actived" : "Deleted"} 
+                            
+                        /> */}
                 </Grid>
 
             </Grid>
 
             <MuiDataGrid
-                getData={staffService.getStaffList}
+                //getData={staffService.getStaffList}
                 showLoading={staffState.isLoading}
                 isPagingServer={true}
                 headerHeight={45}
@@ -288,10 +265,16 @@ const Staff = (props) => {
 
                 rowsPerPageOptions={[5, 10, 20, 30]}
 
+                onPageChange={(newPage) => {
+                    setstaffState({ ...staffState, page: newPage + 1 });
+                }}
+                onPageSizeChange={(newPageSize) => {
+                    setstaffState({ ...staffState, pageSize: newPageSize, page: 1 });
+                }}
+                getRowId={(rows) => rows.StaffId}
                 onSelectionModelChange={(newSelectedRowId) => {
                     handleRowSelection(newSelectedRowId)
                 }}
-                getRowId={(rows) => rows.StaffId}
 
                 getRowClassName={(params) => {
                     if (_.isEqual(params.row, newData)) {
@@ -300,13 +283,12 @@ const Staff = (props) => {
                 }}
             />
 
-            {/* <CreateDialog
-                initModal={initStaffModel}
+            <CreateStaffDialog
+                initModal={StaffDto}
                 setNewData={setNewData}
                 isOpen={isOpenCreateDialog}
                 onClose={toggleCreateDialog}
-            /> */}
-            </ThemeProvider>
+            />
         </React.Fragment >
     )
 }
