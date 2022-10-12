@@ -98,14 +98,15 @@ const ModifyProductDialog = (props) => {
         const res = await productService.modifyProduct(dataModalRef.current);
         if (res.HttpResponseCode === 200 && res.Data) {
             SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+            setDialogState({ ...dialogState, isSubmit: false });
             setModifyData({ ...res.Data });
             handleReset();
         }
         else {
+            setDialogState({ ...dialogState, isSubmit: false });
             ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
         }
         handleCloseDialog(); 
-        setDialogState({ ...dialogState, isSubmit: false });
     };
 
 
@@ -170,16 +171,9 @@ const ModifyProductDialog = (props) => {
                                                     autoHighlight
                                                     openOnFocus
                                                     getOptionLabel={option => option.commonDetailName}
-                                                 
+                                                    isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
                                                     defaultValue={initModal && { commonDetailId: initModal.Model, commonDetailName: initModal.ModelName }}
-                                                    onChange={(e, item) => {
-                                                        if (item) {
-                                                            onChange(item.commonDetailId ?? '');
-                                                        }
-                                                        else {
-                                                            onChange('')
-                                                        }
-                                                    }}
+                                                    onChange={(e, item) => onChange(item ? item.commonDetailId ?? null : null)}
                                                     renderInput={(params) => {
                                                         return <TextField
                                                             {...params}
@@ -210,14 +204,7 @@ const ModifyProductDialog = (props) => {
                                                   
                                                     isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
                                                     defaultValue={initModal && { commonDetailId: initModal.ProductType, commonDetailName: initModal.ProductTypeName }}
-                                                    onChange={(e, item) => {
-                                                        if (item) {
-                                                            onChange(item.commonDetailId ?? '');
-                                                        }
-                                                        else {
-                                                            onChange('')
-                                                        }
-                                                    }}
+                                                    onChange={(e, item) => onChange(item ? item.commonDetailId ?? null : null)}
                                                     renderInput={(params) => {
                                                         return <TextField
                                                             {...params}

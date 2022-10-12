@@ -26,11 +26,11 @@ const CreateDialog = (props) => {
     })
     const schema = yup.object().shape({
 
-        ProductCode: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
+        ProductCode: yup.string().trim().required(intl.formatMessage({ id: 'general.field_required' })),
         ProductType: yup.number().required(),
         Model: yup.number().required(),
         Inch: yup.number().required(),
-
+        Description: yup.string().trim()
 
     });
     const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
@@ -173,14 +173,7 @@ const CreateDialog = (props) => {
                                                 getOptionLabel={option => option.commonDetailName}
                                                 isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
                                                 defaultValue={initModal}
-                                                onChange={(e, item) => {
-                                                    if (item) {
-                                                        onChange(item.commonDetailId ?? '');
-                                                    }
-                                                    else {
-                                                        onChange('')
-                                                    }
-                                                }}
+                                                onChange={(e, item) => onChange(item ? item.commonDetailId ?? null : null)}
                                                 renderInput={(params) => {
                                                     return <TextField
                                                         {...params}
@@ -210,14 +203,7 @@ const CreateDialog = (props) => {
                                                 getOptionLabel={option => option.commonDetailName}
                                                 isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
                                                 defaultValue={initModal}
-                                                onChange={(e, item) => {
-                                                    if (item) {
-                                                        onChange(item.commonDetailId ?? '');
-                                                    }
-                                                    else {
-                                                        onChange('')
-                                                    }
-                                                }}
+                                                onChange={(e, item) => onChange(item ? item.commonDetailId ?? null : null)}
                                                 renderInput={(params) => {
                                                     return <TextField
                                                         {...params}

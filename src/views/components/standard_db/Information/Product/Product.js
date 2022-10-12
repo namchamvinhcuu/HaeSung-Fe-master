@@ -30,8 +30,8 @@ const Product = () => {
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false)
 
-    const [modelArr, setModelArr] = useState({});//Model Product
-    const [productTypeArr, setproductTypeArr] = useState({});//Product Type
+    const [modelArr, setModelArr] = useState([]);//Model Product
+    const [productTypeArr, setproductTypeArr] = useState([]);//Product Type
 
     const [productState, setproductState] = useState({
         isLoading: false,
