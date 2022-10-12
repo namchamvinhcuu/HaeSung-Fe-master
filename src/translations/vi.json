@@ -118,7 +118,8 @@
         "product_type": "Loại sản phẩm",
         "Inch": "Inch",
         "Model": "Model",
-        "Description": "Mô tả"
+        "Description": "Mô tả",
+        "duplicated_name": "Product Code: Sản phẩm đã được tạo"
     },
     "supplier": {
         "SupplierContact": "Liên hệ",

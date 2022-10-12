@@ -67,6 +67,10 @@ const CreateDialog = (props) => {
             setproductTypeArr([])
         }
     }
+    useEffect(() => {
+        reset({ ...initModal });
+    }, [initModal]);
+    
     const handleReset = () => {
         reset();
         clearErrors();
@@ -97,7 +101,6 @@ const CreateDialog = (props) => {
             setNewData({ ...res.Data });
             setDialogState({ ...dialogState, isSubmit: false });
             handleReset();
-            // handleCloseDialog();
 
         }
         else {
@@ -181,7 +184,7 @@ const CreateDialog = (props) => {
                                                 renderInput={(params) => {
                                                     return <TextField
                                                         {...params}
-                                                        label={intl.formatMessage({ id: 'general.model' })}
+                                                        label={intl.formatMessage({ id: 'product.Model' })}
                                                         error={!!errors.Model}
                                                         helperText={errors?.Model ? errors.Model.message : null}
                                                     />
