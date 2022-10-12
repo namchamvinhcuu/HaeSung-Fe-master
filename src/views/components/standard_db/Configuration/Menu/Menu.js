@@ -278,14 +278,14 @@ const Menu = (props) => {
                 page={menuState.page - 1}
                 pageSize={menuState.pageSize}
                 rowCount={menuState.totalRow}
-                rowsPerPageOptions={[5, 10, 20, 30]}
+                // rowsPerPageOptions={[5, 10, 20, 30]}
 
                 onPageChange={(newPage) => {
                     setMenuState({ ...menuState, page: newPage + 1 });
                 }}
-                onPageSizeChange={(newPageSize) => {
-                    setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
-                }}
+                // onPageSizeChange={(newPageSize) => {
+                //     setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
+                // }}
                 getRowId={(rows) => rows.menuId}
                 onSelectionModelChange={(newSelectedRowId) => {
                     handleRowSelection(newSelectedRowId)
