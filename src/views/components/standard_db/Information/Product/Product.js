@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS'
 import { User_Operations } from '@appstate/user'
 import { Store } from '@appstate'
-import { createTheme, ThemeProvider, TextField } from "@mui/material"
+import { Autocomplete, createTheme, ThemeProvider, TextField, Switch } from "@mui/material"
 import { productService } from '@services'
 import { useIntl } from 'react-intl'
 import React, { useEffect, useRef, useState } from 'react'
@@ -46,8 +46,10 @@ const Product = () => {
 
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false)
-    const [showdataHidden, setshowdataHidden] = useState(false)
-   
+
+    const [modelArr, setModelArr] = useState({});//Model Product
+    const [productTypeArr, setproductTypeArr] = useState({});//Product Type
+
     const [productState, setproductState] = useState({
         isLoading: false,
         data: [],
@@ -55,8 +57,11 @@ const Product = () => {
         page: 1,
         pageSize: 2,
         searchData: {
-            keyWord: ''
-
+            Model: null,
+            ProductCode: null,
+            ProductType: null,
+            Description: null,
+            showDelete: true
         }
     });
 
@@ -72,18 +77,20 @@ const Product = () => {
     const toggleModifyDialog = () => {
         setIsOpenModifyDialog(!isOpenModifyDialog);
     }
+
+    useEffect(() => {
+        getModel();
+        getproductType();
+    }, [])
+
     useEffect(() => {
         console.log(productState.data)
     }, [productState.data]);
 
     useEffect(() => {
-        if (showdataHidden) {
-            fetchDataDeleted();
-        }
-        else {
-            fetchData();
-        }
-    }, [productState.page, productState.pageSize,showdataHidden]);
+        fetchData();
+    }, [productState.page, productState.pageSize, productState.searchData.showDelete]);
+
 
     useEffect(() => {
         if (!_.isEmpty(newData)) {
@@ -114,16 +121,34 @@ const Product = () => {
         }
     }, [selectedRow]);
 
+    const getModel = async () => {
+        const res = await productService.getProductModel();
+        if (res.HttpResponseCode === 200 && res.Data) {
+            setModelArr([...res.Data])
+        }
+        else {
+            setModelArr([])
+        }
+    }
+    const getproductType = async () => {
+        const res = await productService.getProductType();
+        if (res.HttpResponseCode === 200 && res.Data) {
+            setproductTypeArr([...res.Data])
+        }
+        else {
+            setproductTypeArr([])
+        }
+    }
     async function fetchData() {
-        setproductState({
-            ...productState
-            , isLoading: true
-
-        });
+        setproductState({ ...productState, isLoading: true });
         const params = {
             page: productState.page,
             pageSize: productState.pageSize,
-            keyword: productState.searchData.keyWord
+            Model: productState.searchData.Model,
+            ProductCode: productState.searchData.ProductCode,
+            ProductType: productState.searchData.ProductType,
+            Description: productState.searchData.Description,
+            showDelete: productState.searchData.showDelete
         }
         const res = await productService.getProductList(params);
 
@@ -168,11 +193,11 @@ const Product = () => {
 
         }
     }
-    const handleDelete = async (ProductId) => {
+    const handleDelete = async (row) => {
 
         if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
             try {
-                let res = await productService.deleteProduct(ProductId);
+                let res = await productService.deleteProduct({ ProductId: row.ProductId, row_version: row.row_version });
                 if (res && res.HttpResponseCode === 200) {
 
                     SuccessAlert(intl.formatMessage({ id: 'general.success' }))
@@ -188,41 +213,20 @@ const Product = () => {
             }
         }
     }
-
-    const changeSearchData = (e, inputName) => {
-
+    const handleSearch = (e, inputName) => {
+        console.log('a', inputName)
         let newSearchData = { ...productState.searchData };
-        newSearchData[inputName] = e.target.value;
-
-        setproductState({ ...productState, searchData: { ...newSearchData } })
-
-    }
-
-    const handleChangeClick = async (event) => {
-        setshowdataHidden(event.target.checked);
-        
-        if (event.target.checked) {
-            // fetchData();
-            setproductState({
-                ...productState
-                , page: 1
-            });
+        newSearchData[inputName] = e;
+        if (inputName == 'showDelete') {
+            //  console.log(productState, inputName)
+            setproductState({ ...productState, page: 1, searchData: { ...newSearchData } })
         }
-    };
-    const handleRedoDelete = async (id) => {
-        if (window.confirm(intl.formatMessage({ id: 'general.confirm_redo_deleted' }))) {
-            try {
-                let res = await productService.RedoDataDeleted(id);
-                if (res && res.HttpResponseCode === 200) {
-                    SuccessAlert(intl.formatMessage({ id: 'general.success' }))
-                    await fetchDataDeleted();
-                }
+        else {
 
-            } catch (error) {
-                console.log(error)
-            }
+            setproductState({ ...productState, searchData: { ...newSearchData } })
         }
     }
+
     const columns = [
         { field: 'ProductId', headerName: '', flex: 0.3, hide: true },
         {
@@ -242,46 +246,26 @@ const Product = () => {
                 return (
                     <Grid container spacing={1} alignItems="center" justifyContent="center">
                         <Grid item xs={6}>
-                            {
-                                showdataHidden ?
-                                    ""
-                                    :
-                                    <IconButton
-                                        aria-label="edit"
-                                        color="warning"
-                                        size="small"
-                                        sx={[{ '&:hover': { border: '1px solid orange', }, }]}
-                                        onClick={toggleModifyDialog}
-                                    >
-                                        <EditIcon fontSize="inherit" />
-                                    </IconButton>
-                            }
-
+                            <IconButton
+                                aria-label="edit"
+                                color="warning"
+                                size="small"
+                                sx={[{ '&:hover': { border: '1px solid orange', }, }]}
+                                onClick={toggleModifyDialog}
+                            >
+                                {params.row.isActived ? <EditIcon fontSize="inherit" /> : ""}
+                            </IconButton>
                         </Grid>
                         <Grid item xs={6}>
-                            {showdataHidden ?
-
-                                <IconButton
-                                    color="error"
-                                    size="small"
-                                    sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                                    onClick={() => handleRedoDelete(params.row.ProductId)}
-                                >
-                                    <UndoIcon fontSize="inherit" />
-                                </IconButton> :
-                                <IconButton
-                                    aria-label="delete"
-                                    color="error"
-                                    size="small"
-                                    sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                                    onClick={() => handleDelete(params.row.ProductId)}
-                                >
-                                    <DeleteIcon fontSize="inherit" />
-                                </IconButton>
-
-                            }
-
-
+                            <IconButton
+                                color="error"
+                                size="small"
+                                sx={[{ '&:hover': { border: '1px solid red', }, }]}
+                                onClick={() => handleDelete(params.row)}
+                            >
+                                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> :
+                                    <UndoIcon fontSize="inherit" />}
+                            </IconButton>
                         </Grid>
                     </Grid>
                 );
@@ -290,9 +274,9 @@ const Product = () => {
         { field: 'ModelName', headerName: 'Model', flex: 0.3 },
         { field: 'Model', headerName: 'Model', flex: 0.3, hide: true },
         { field: 'ProductCode', headerName: 'Product Code', flex: 0.3 },
-        { field: 'Description', headerName: 'Description', flex: 0.3 },
         { field: 'ProductType', headerName: 'Product Type', flex: 0.3, hide: true },
         { field: 'ProductTypeName', headerName: 'Product Type', flex: 0.3 },
+        { field: 'Description', headerName: 'Description', flex: 0.3 },
         { field: 'Inch', headerName: 'Inch', flex: 0.3 },
 
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
@@ -306,7 +290,7 @@ const Product = () => {
                 }
             },
         },
-        { field: 'createdBy', headerName: 'Created By', flex: 0.3, hide: true },
+        { field: 'createdName', headerName: 'Created By', flex: 0.3 },
         {
             field: 'modifiedDate', headerName: 'Modified Date', flex: 0.3,
             valueFormatter: params => {
@@ -316,88 +300,124 @@ const Product = () => {
             },
         },
 
-        { field: 'modifiedBy', headerName: 'modifiedBy', flex: 0.3, hide: true },
+        { field: 'modifiedName', headerName: 'modifiedBy', flex: 0.3 },
     ];
 
     return (
+        <React.Fragment>
+            <ThemeProvider theme={myTheme}>
+                <Grid container direction="row"
+                    justifyContent="space-between"
+                    alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
 
-        <>
-            <Grid
-                container
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-end"
-
-            >
-
-                <Grid item xs={6}>
-                    <MuiButton
-                        text="create"
-                        color='success'
-                        onClick={toggleCreateDialog}
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <FormGroup>
-                        <FormControlLabel
-                            control={<Checkbox />}
-                            label="Show data deleted"
-                            onChange={handleChangeClick}
+                    <Grid item xs={2}>
+                        <MuiButton
+                            text="create"
+                            color='success'
+                            onClick={toggleCreateDialog}
                         />
-                    </FormGroup>
+                    </Grid>
+                    <Grid item>
+                        <Autocomplete
+                            fullWidth
+                            size='small'
+                            options={modelArr}
+                            autoHighlight
+                            openOnFocus
+                            getOptionLabel={option => option.commonDetailName}
+                            isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
+                            onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Model')}
+                            renderInput={(params) => {
+                                return <TextField {...params} label={intl.formatMessage({ id: 'product.Model' })} variant="standard" sx={{ width: 200 }} />
+                            }}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <TextField
+                            sx={{ width: 200 }}
+                            fullWidth
+                            variant="standard"
+                            size='small'
+                            label='Product Code'
+                            onChange={(e) => handleSearch(e.target.value, 'ProductCode')}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <Autocomplete
+                            fullWidth
+                            size='small'
+                            options={productTypeArr}
+                            autoHighlight
+                            openOnFocus
+                            getOptionLabel={option => option.commonDetailName}
+                            isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
+                            onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'ProductType')}
+                            renderInput={(params) => {
+                                return <TextField {...params} label={intl.formatMessage({ id: 'product.product_type' })} variant="standard" sx={{ width: 200 }} />
+                            }}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <TextField
+                            sx={{ width: 200 }}
+                            fullWidth
+                            variant="standard"
+                            size='small'
+                            label={intl.formatMessage({ id: 'product.Description' })}
+                            onChange={(e) => handleSearch(e.target.value, 'Description')}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <FormControlLabel
+                            sx={{ mb: 0 }}
+                            control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
+                            label={productState.searchData.showDelete ? "Active Data" : "Delete Data"} />
+                    </Grid>
+                    <Grid item>
+                    <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0 }} />
                 </Grid>
-                <Grid item xs={4}>
-                    <MuiSearchField
-                        label='general.name'
-                        name='keyWord'
-                        onClick={showdataHidden ? fetchDataDeleted : fetchData}
-                        onChange={(e) => changeSearchData(e, 'keyWord')}
-                    />
                 </Grid>
+                <MuiDataGrid
+                    getData={productService.getProductList}
+                    showLoading={productState.isLoading}
+                    isPagingServer={true}
+                    headerHeight={45}
+                    columns={columns}
+                    gridHeight={736}
+                    rows={productState.data}
+                    page={productState.page - 1}
+                    pageSize={productState.pageSize}
+                    rowCount={productState.totalRow}
 
-            </Grid>
+                    rowsPerPageOptions={[5, 10, 20]}
+                    onPageChange={(newPage) => setproductState({ ...productState, page: newPage + 1 })}
+                    onPageSizeChange={(newPageSize) => setproductState({ ...productState, pageSize: newPageSize, page: 1 })}
 
-            <MuiDataGrid
-                getData={productService.getProductList}
-                showLoading={productState.isLoading}
-                isPagingServer={true}
-                headerHeight={45}
-                columns={columns}
-                gridHeight={736}
-                rows={productState.data}
-                page={productState.page - 1}
-                pageSize={productState.pageSize}
-                rowCount={productState.totalRow}
+                    onSelectionModelChange={(newSelectedRowId) => {
+                        handleRowSelection(newSelectedRowId)
+                    }}
+                    getRowId={(rows) => rows.ProductId}
+                    getRowClassName={(params) => {
+                        if (_.isEqual(params.row, newData)) {
+                            return `Mui-created`
+                        }
+                    }}
+                />
 
-                rowsPerPageOptions={[5, 10, 20]}
-                onPageChange={(newPage) => setproductState({ ...productState, page: newPage + 1 })}
-                onPageSizeChange={(newPageSize) => setproductState({ ...productState, pageSize: newPageSize, page: 1 })}
-               
-                onSelectionModelChange={(newSelectedRowId) => {
-                    handleRowSelection(newSelectedRowId)
-                }}
-                getRowId={(rows) => rows.ProductId}
-                getRowClassName={(params) => {
-                    if (_.isEqual(params.row, newData)) {
-                        return `Mui-created`
-                    }
-                }}
-            />
-
-            <CreateDialog
-                initModal={ProductDto}
-                setNewData={setNewData}
-                isOpen={isOpenCreateDialog}
-                onClose={toggleCreateDialog}
-            />
-            <ModifyDialog
-                initModal={selectedRow}
-                setModifyData={setSelectedRow}
-                isOpen={isOpenModifyDialog}
-                onClose={toggleModifyDialog}
-            />
-        </>
-
+                <CreateDialog
+                    initModal={ProductDto}
+                    setNewData={setNewData}
+                    isOpen={isOpenCreateDialog}
+                    onClose={toggleCreateDialog}
+                />
+                <ModifyDialog
+                    initModal={selectedRow}
+                    setModifyData={setSelectedRow}
+                    isOpen={isOpenModifyDialog}
+                    onClose={toggleModifyDialog}
+                />
+            </ThemeProvider>
+        </React.Fragment >
     )
 }
 

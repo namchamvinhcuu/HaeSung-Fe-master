@@ -116,7 +116,10 @@
     },
     "product": {
         "product_type": "product_type",
-        "Inch": "Inch"
+        "Inch": "Inch",
+        "Model": "Model",
+        "Description": "Decription"
+
     },
     "supplier": {
         "SupplierContact": "Contact",
