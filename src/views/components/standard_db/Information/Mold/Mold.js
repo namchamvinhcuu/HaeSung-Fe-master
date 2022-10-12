@@ -34,6 +34,7 @@ export default function Mold() {
     }
   });
   const [newData, setNewData] = useState({})
+  const [updateData, setUpdateData] = useState({})
   const [rowData, setRowData] = useState({});
   const [PMList, setPMList] = useState([]);// Product Model list
   const [PTList, setPTList] = useState([]);// Product Type list
@@ -112,10 +113,44 @@ export default function Mold() {
     },
   ];
 
+  //useEffect
+  useEffect(() => {
+    getProductModel();
+    getProductType();
+    getMachineType();
+  }, [])
+
   useEffect(() => {
     fetchData();
   }, [moldState.page, moldState.pageSize, moldState.searchData.showDelete]);
 
+  useEffect(() => {
+    if (!_.isEmpty(newData)) {
+      const data = [newData, ...moldState.data];
+      if (data.length > moldState.pageSize) {
+        data.pop();
+      }
+      setMoldState({
+        ...moldState
+        , data: [...data]
+        , totalRow: moldState.totalRow + 1
+      });
+    }
+  }, [newData]);
+
+  useEffect(() => {
+    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData)) {
+      let newArr = [...moldState.data]
+      const index = _.findIndex(newArr, function (o) { return o.MoldId == updateData.MoldId; });
+      if (index !== -1) {
+        newArr[index] = updateData
+      }
+
+      setMoldState({ ...moldState, data: [...newArr] });
+    }
+  }, [updateData]);
+
+  //handle 
   const handleDelete = async (mold) => {
     if (window.confirm(intl.formatMessage({ id: mold.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
       try {
@@ -146,11 +181,9 @@ export default function Mold() {
   };
 
   const handleSearch = (e, inputName) => {
-    console.log('a', inputName)
     let newSearchData = { ...moldState.searchData };
     newSearchData[inputName] = e;
     if (inputName == 'showDelete') {
-      console.log(moldState, inputName)
       setMoldState({ ...moldState, page: 1, searchData: { ...newSearchData } })
     }
     else {
@@ -158,6 +191,11 @@ export default function Mold() {
       setMoldState({ ...moldState, searchData: { ...newSearchData } })
     }
   }
+
+  const handleCellClick = (param, event) => {
+    //disable click cell 
+    event.defaultMuiPrevented = (param.field === "action");
+  };
 
   async function fetchData() {
     setMoldState({ ...moldState, isLoading: true });
@@ -179,31 +217,6 @@ export default function Mold() {
       , isLoading: false
     });
   }
-
-  useEffect(() => {
-    if (!_.isEmpty(newData)) {
-      const data = [newData, ...moldState.data];
-      if (data.length > moldState.pageSize) {
-        data.pop();
-      }
-      setMoldState({
-        ...moldState
-        , data: [...data]
-        , totalRow: moldState.totalRow + 1
-      });
-    }
-  }, [newData]);
-
-  const handleCellClick = (param, event) => {
-    //disable click cell 
-    event.defaultMuiPrevented = (param.field === "action");
-  };
-
-  useEffect(() => {
-    getProductModel();
-    getProductType();
-    getMachineType();
-  }, [])
 
   const getProductModel = async () => {
     const res = await moldService.getProductModel();
@@ -309,11 +322,12 @@ export default function Mold() {
       />
 
       <MoldDialog
+        valueOption={{ PMList: PMList, PTList: PTList, MTList: MTList }}
         setNewData={setNewData}
+        setUpdateData={setUpdateData}
         initModal={rowData}
         isOpen={isShowing}
         onClose={toggle}
-        loadData={fetchData}
         mode={mode}
       />
     </React.Fragment>
