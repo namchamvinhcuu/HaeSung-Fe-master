@@ -12,22 +12,6 @@ import moment from "moment";
 import CreateCommonDetailDialog from './CreateCommonDetailDialog'
 import ModifyCommonDetailDialog from './ModifyCommonDetailDialog'
 
-const myTheme = createTheme({
-    components: {
-        //@ts-ignore - this isn't in the TS because DataGird is not exported from `@mui/material`
-        MuiDataGrid: {
-            styleOverrides: {
-                row: {
-                    "&.Mui-created": {
-                        backgroundColor: "#A0DB8E",
-
-                    }
-                }
-            }
-        }
-    }
-});
-//export default function CommonDetail({ t, rowmaster }) {
 const CommonDetail = ({ rowmaster }) => {
 
     const intl = useIntl();
@@ -107,8 +91,6 @@ const CommonDetail = ({ rowmaster }) => {
         fetchData();
     }, [rowmaster.commonMasterId, menuState.page, menuState.pageSize, rowmaster]);
 
-
-
     useEffect(() => {
         if (!_.isEmpty(newData) && !_.isEqual(newData, initCommonDetailModel)) {
             const data = [newData, ...menuState.data]
@@ -156,11 +138,11 @@ const CommonDetail = ({ rowmaster }) => {
 
 
     const columns = [
-        { field: 'commonDetailId', headerName: '', flex: 0.03, hide:true},
+        { field: 'commonDetailId', headerName: '', flex: 0.1, hide: true },
         {
-            field: 'id', headerName: '', flex: 0.01,
+            field: 'id', headerName: '', flex: 0.1,
             filterable: false,
-            renderCell: (index) => index.api.getRowIndex(index.row.commonDetailId) + 1,
+            renderCell: (index) => (index.api.getRowIndex(index.row.commonDetailId) + 1) + (menuState.page - 1) * menuState.pageSize,
         },
         {
             field: "action",
@@ -224,64 +206,62 @@ const CommonDetail = ({ rowmaster }) => {
 
     return (
         <React.Fragment>
-            <ThemeProvider theme={myTheme}>
+            <Grid container>
                 <MuiButton
                     text="create"
                     color='success'
                     onClick={toggleCreateCommonDetailDialog}
                 />
-                {menuState?.data &&
-                    <MuiDataGrid
-                        showLoading={menuState.isLoading}
-                        isPagingServer={true}
-                        headerHeight={45}
-                        // rowHeight={30}
-                        gridHeight={345}
-                        columns={columns}
-                        rows={menuState.data}
-                        page={menuState.page - 1}
-                        pageSize={menuState.pageSize}
-                        rowCount={menuState.totalRow}
+            </Grid>
+            {menuState?.data &&
+                <MuiDataGrid
+                     getData={commonService.getCommonDetailList}
+                    showLoading={menuState.isLoading}
+                    isPagingServer={true}
+                    headerHeight={45}
+                 
+                    gridHeight={345}
+                    columns={columns}
+                    rows={menuState.data}
+                    page={menuState.page - 1}
+                    pageSize={menuState.pageSize}
+                    rowCount={menuState.totalRow}
+                    rowsPerPageOptions={[5, 10, 20, 30]}
 
+                    onPageChange={(newPage) => setMenuState({ ...menuState, page: newPage + 1 })}
+                    onPageSizeChange={(newPageSize) => setMenuState({ ...menuState, pageSize: newPageSize, page: 1 })}
 
-                        rowsPerPageOptions={[5, 10, 20, 30]}
+                    getRowId={(rows) => rows.commonDetailId}
+                    onSelectionModelChange={(newSelectedRowId) => {
+                        handleRowSelection(newSelectedRowId)
+                    }}
 
-                        onPageChange={(newPage) => {
-                            setMenuState({ ...menuState, page: newPage + 1 });
-                        }}
-                        onPageSizeChange={(newPageSize) => {
-                            setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
-                        }}
-                        getRowId={(rows) => rows.commonDetailId}
-                        onSelectionModelChange={(newSelectedRowId) => {
-                            handleRowSelection(newSelectedRowId)
-                        }}
-
-                        getRowClassName={(params) => {
-                            if (_.isEqual(params.row, newData)) {
-                                return `Mui-created`
-                            }
-                        }}
-
-                    />
-                }
-
-
-                <CreateCommonDetailDialog
-                    initModal={initCommonDetailModel}
-                    setNewData={setNewData}
-                    isOpen={isOpenCreateDialog}
-                    onClose={toggleCreateCommonDetailDialog}
-                />
-
-                <ModifyCommonDetailDialog
-                    initModal={selectedRow}
-                    setModifyData={setSelectedRow}
-                    isOpen={isOpenModifyDialog}
-                    onClose={toggleModifyCommonDetailDialog}
+                    getRowClassName={(params) => {
+                        if (_.isEqual(params.row, newData)) {
+                            return `Mui-created`
+                        }
+                    }}
 
                 />
-            </ThemeProvider>
+            }
+
+
+            <CreateCommonDetailDialog
+                initModal={initCommonDetailModel}
+                setNewData={setNewData}
+                isOpen={isOpenCreateDialog}
+                onClose={toggleCreateCommonDetailDialog}
+            />
+
+            <ModifyCommonDetailDialog
+                initModal={selectedRow}
+                setModifyData={setSelectedRow}
+                isOpen={isOpenModifyDialog}
+                onClose={toggleModifyCommonDetailDialog}
+
+            />
+
+
         </React.Fragment>
     )
 }

@@ -2,7 +2,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
-import { createTheme, ThemeProvider, TextField } from "@mui/material"
+import { createTheme, ThemeProvider, TextField, Switch } from "@mui/material"
 import React, { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
@@ -18,32 +18,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Box from "@mui/material/Box";
 import UndoIcon from '@mui/icons-material/Undo';
-const myTheme = createTheme({
-    components: {
-        //@ts-ignore - this isn't in the TS because DataGird is not exported from `@mui/material`
-        MuiDataGrid: {
-            styleOverrides: {
-                row: {
-                    "&.Mui-created": {
-                        backgroundColor: "#A0DB8E",
-                        //   "&:hover": {
-                        //     backgroundColor: "#98958F"
-                        //   }
-                    }
-                }
-            }
-        }
-    }
-});
-
 const CommonMaster = () => {
     const intl = useIntl();
     const initCommonMasterModel = {
         commonMasterId: 0
         , commonMasterName: ''
     }
-
-
     const [commomMasterState, setcommomMasterState] = useState({
         isLoading: false,
         data: [],
@@ -51,7 +31,8 @@ const CommonMaster = () => {
         page: 1,
         pageSize: 10,
         searchData: {
-            keyWord: ''
+            keyWord: '',
+            showDelete: true
         }
     });
 
@@ -92,17 +73,17 @@ const CommonMaster = () => {
         });
         if (rowSelected && rowSelected.length > 0) {
             setSelectedRow({ ...rowSelected[0] });
-           
+
         }
         else {
             setSelectedRow({ ...initCommonMasterModel });
-           
+
         }
     }
     const [rowmaster, setRowmaster] = useState(null);
     const master_row_click = (row) => {
 
-       // console.log(row, 'row');
+        // console.log(row, 'row');
         setRowmaster(row);
 
     }
@@ -115,7 +96,8 @@ const CommonMaster = () => {
         const params = {
             page: commomMasterState.page,
             pageSize: commomMasterState.pageSize,
-            keyword: commomMasterState.searchData.keyWord
+            keyword: commomMasterState.searchData.keyWord,
+            showDelete: commomMasterState.searchData.showDelete
         }
         const res = await commonService.getCommonMasterList(params);
 
@@ -126,37 +108,10 @@ const CommonMaster = () => {
             , isLoading: false
         });
     }
-    async function fetchDataDeleted() {
-        setcommomMasterState({
-            ...commomMasterState
-            , isLoading: true
-
-        });
-        const params = {
-            page: commomMasterState.page,
-            pageSize: commomMasterState.pageSize,
-            keyword: commomMasterState.searchData.keyWord
-
-        }
-        const res = await commonService.getCommonMasterListDeleted(params);
-
-        setcommomMasterState({
-            ...commomMasterState
-            , data: [...res.Data]
-            , totalRow: res.TotalRow
-            , isLoading: false
-        });
-    }
 
     useEffect(() => {
-
-        if (showdataHidden) {
-            fetchDataDeleted();
-        }
-        else {
-            fetchData();
-        }
-    }, [commomMasterState.page, commomMasterState.pageSize]);
+        fetchData();
+    }, [commomMasterState.page, commomMasterState.pageSize, commomMasterState.searchData.showDelete]);
 
     useEffect(() => {
         if (!_.isEmpty(newData)) {
@@ -191,55 +146,26 @@ const CommonMaster = () => {
             });
         }
     }, [selectedRow]);
-
-    const handleDeleteCommonMS = async (menu) => {
-        if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
-            try {
-                let res = await commonService.deleteCommonMater(menu);
-                if (res && res.HttpResponseCode === 200) {
-                    await fetchData();
-
-                }
-                if (res && res.HttpResponseCode === 300) {
-                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-
-                    return;
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        }
-    }
-    const handleRedoDeleteCommonMS = async (id) => {
-        if (window.confirm(intl.formatMessage({ id: 'general.confirm_redo_deleted' }))) {
-            try {
-                let res = await commonService.deleteCommonMaterRedoDeleted(id);
-                if (res && res.HttpResponseCode === 200) {
-                    await fetchDataDeleted();
-                }
-
-            } catch (error) {
-                console.log(error)
-            }
-        }
-    }
-    const handleChangeClick = async (event) => {
-        setshowdataHidden(event.target.checked);
-        if (showdataHidden) {
-            fetchData();
+    const handleSearch = (e, inputName) => {
+        console.log('a', inputName)
+        let newSearchData = { ...commomMasterState.searchData };
+        newSearchData[inputName] = e;
+        if (inputName == 'showDelete') {
+            //  console.log(commomMasterState, inputName)
+            setcommomMasterState({ ...commomMasterState, page: 1, searchData: { ...newSearchData } })
         }
         else {
-            fetchDataDeleted();
-        }
 
-    };
+            setcommomMasterState({ ...commomMasterState, searchData: { ...newSearchData } })
+        }
+    }
 
     const columns = [
-        { field: 'commonMasterId', headerName: '', flex: 0.3,hide:true },
+        { field: 'commonMasterId', headerName: '', flex: 0.3, hide: true },
         {
             field: 'id', headerName: '', flex: 0.01,
             filterable: false,
-            renderCell: (index) => index.api.getRowIndex(index.row.commonMasterId) + 1,
+            renderCell: (index) => (index.api.getRowIndex(index.row.commonMasterId) + 1) + (commomMasterState.page - 1) * commomMasterState.pageSize,
         },
         {
             field: "action",
@@ -253,59 +179,40 @@ const CommonMaster = () => {
                 return (
                     <Grid container spacing={1} alignItems="center" justifyContent="center">
                         <Grid item xs={6}>
-                            {
-                                showdataHidden ?
-                                    ""
-                                    :
-                                    <IconButton
-                                        aria-label="edit"
-                                        color="warning"
-                                        size="small"
-                                        sx={[{ '&:hover': { border: '1px solid orange', }, }]}
-                                        onClick={toggleModifyCommonMSDialog}
-                                    >
-                                        <EditIcon fontSize="inherit" />
-                                    </IconButton>
+                            {params.row.isActived ?
+                                <IconButton
+                                    aria-label="edit"
+                                    color="warning"
+                                    size="small"
+                                    sx={[{ '&:hover': { border: '1px solid orange', }, }]}
+                                    onClick={toggleModifyCommonMSDialog}
+                                >
+                                    <EditIcon fontSize="inherit" />
+                                </IconButton>
+                                : ""
                             }
-
-
                         </Grid>
                         <Grid item xs={6}>
-                            {showdataHidden ?
-
-                                <IconButton
-                                    color="error"
-                                    size="small"
-                                    sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                                    onClick={() => handleRedoDeleteCommonMS(params.row)}
-                                >
-                                    <UndoIcon fontSize="inherit" />
-                                </IconButton> :
-                                <IconButton
-                                    aria-label="delete"
-                                    color="error"
-                                    size="small"
-                                    sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                                    onClick={() => handleDeleteCommonMS(params.row)}
-                                >
-                                    <DeleteIcon fontSize="inherit" />
-                                </IconButton>
-
-                            }
-
+                            <IconButton
+                                color="error"
+                                size="small"
+                                sx={[{ '&:hover': { border: '1px solid red', }, }]}
+                                onClick={() => handleRedoDeleteCommonMS(params.row)}
+                            >
+                                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> :
+                                    <UndoIcon fontSize="inherit" />}
+                            </IconButton>
                         </Grid>
                     </Grid>
                 );
             },
         },
-
-
         { field: 'commonMasterName', headerName: 'Common Master Name', flex: 0.3 },
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
 
 
         {
-            field: 'createdDate', headerName: 'created Date', flex: 0.3,
+            field: 'createdDate', headerName: 'Created Date', flex: 0.3,
             valueFormatter: params => {
                 if (params.value !== null) {
                     return moment(params?.value).format("YYYY-MM-DD HH:mm:ss")
@@ -326,22 +233,8 @@ const CommonMaster = () => {
     ];
 
     return (
-
-        <Box
-            sx={{
-                pb: 5,
-                height: 300,
-                width: "100%",
-            }}
-        >
-            <Grid
-                container
-                direction="row"
-                justifyContent="space-between"
-                alignItems="flex-end"
-
-            >
-
+        <React.Fragment>
+            <Grid container direction="row" justifyContent="space-between" alignItems="flex-end" >
                 <Grid item xs={6}>
                     <MuiButton
                         text="create"
@@ -349,15 +242,7 @@ const CommonMaster = () => {
                         onClick={toggleCreateCommonMSDialog}
                     />
                 </Grid>
-                <Grid item xs={2}>
-                    <FormGroup>
-                        <FormControlLabel
-                            control={<Checkbox />}
-                            label="Show data deleted"
-                            onChange={handleChangeClick}
-                        />
-                    </FormGroup>
-                </Grid>
+
                 <Grid item xs={4}>
                     <MuiSearchField
                         label='general.name'
@@ -366,7 +251,12 @@ const CommonMaster = () => {
                         onChange={(e) => changeSearchData(e, 'keyWord')}
                     />
                 </Grid>
-
+                <Grid item>
+                    <FormControlLabel
+                        sx={{ mb: 0 }}
+                        control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
+                        label={commomMasterState.searchData.showDelete ? "Active Data" : "Delete Data"} />
+                </Grid>
             </Grid>
             {commomMasterState.data &&
                 <MuiDataGrid
@@ -419,10 +309,7 @@ const CommonMaster = () => {
             <Grid item sm={6} sx={{ margin: 1, background: "#fff" }}>
                 {rowmaster && <CommonDetail rowmaster={rowmaster} />}
             </Grid>
-
-        </Box>
-
-
+        </React.Fragment>
     )
 }
 
