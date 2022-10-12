@@ -380,7 +380,7 @@ const MuiDataGrid = (props) => {
                     </g>
                 </svg>
                     :
-                    <img src={bat_ngo} />}
+                    <img src={bat_ngo} style={{ width: 350, height: 200 }} />}
                 <Box sx={{ mt: 1 }}>{intl.formatMessage({ id: 'general.no_data' })}</Box>
             </StyledGridOverlay>
         );
