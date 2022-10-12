@@ -13,19 +13,7 @@ import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import moment from 'moment';
 import MoldDialog from './MoldDialog'
 
-const myTheme = createTheme({
-  components: {
-    MuiDataGrid: {
-      styleOverrides: {
-        row: {
-          "&.Mui-created": {
-            backgroundColor: "#A0DB8E",
-          }
-        }
-      }
-    }
-  }
-});
+
 
 export default function Mold() {
   const intl = useIntl();
@@ -52,16 +40,20 @@ export default function Mold() {
   const [MTList, setMTList] = useState([]);// Machine Type list
 
   const columns = [
+    {
+      field: 'id', headerName: '', width: 50, align: 'center',
+      filterable: false,
+      renderCell: (index) => (index.api.getRowIndex(index.row.MoldId) + 1) + (moldState.page - 1) * moldState.pageSize,
+    },
     { field: 'MoldId', hide: true },
     { field: 'row_version', hide: true },
     {
       field: "action",
       headerName: "",
-      flex: 0.4,
+      width: 80,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
-      //width: 150,
       renderCell: (params) => {
         return (
           <Grid container spacing={1} alignItems="center" justifyContent="center">
@@ -91,31 +83,32 @@ export default function Mold() {
         );
       },
     },
-    { field: 'MoldSerial', headerName: intl.formatMessage({ id: "mold.MoldSerial" }), flex: 0.7, },
-    { field: 'MoldCode', headerName: intl.formatMessage({ id: "mold.MoldCode" }), flex: 0.7, },
-    { field: 'ModelName', headerName: intl.formatMessage({ id: "mold.Model" }), flex: 0.6, },
-    { field: 'MoldTypeName', headerName: intl.formatMessage({ id: "mold.MoldType" }), flex: 0.6, },
-    { field: 'Inch', headerName: intl.formatMessage({ id: "mold.Inch" }), flex: 0.3, },
-    { field: 'MachineTypeName', headerName: intl.formatMessage({ id: "mold.MachineType" }), flex: 0.6, },
+    { field: 'MoldSerial', headerName: intl.formatMessage({ id: "mold.MoldSerial" }), width: 150, },
+    { field: 'MoldCode', headerName: intl.formatMessage({ id: "mold.MoldCode" }), width: 150, },
+    { field: 'ModelName', headerName: intl.formatMessage({ id: "mold.Model" }), width: 150, },
+    { field: 'MoldTypeName', headerName: intl.formatMessage({ id: "mold.MoldType" }), width: 150, },
+    { field: 'Inch', headerName: intl.formatMessage({ id: "mold.Inch" }), width: 100, },
+    { field: 'MachineTypeName', headerName: intl.formatMessage({ id: "mold.MachineType" }), width: 150, },
+    { field: 'MachineTon', headerName: intl.formatMessage({ id: "mold.MachineTon" }), width: 150, },
     {
-      field: 'ETADate', headerName: intl.formatMessage({ id: "mold.ETADate" }), flex: 0.5,
-      valueFormatter: params => moment(params?.value).format("DD/MM/YYYY")
+      field: 'ETADate', headerName: intl.formatMessage({ id: "mold.ETADate" }), width: 150,
+      valueFormatter: params => moment(params?.value).add(7, 'hours').format("YYYY-MM-DD")
     },
-    { field: 'Cabity', headerName: intl.formatMessage({ id: "mold.Cabity" }), flex: 0.3, },
+    { field: 'Cabity', headerName: intl.formatMessage({ id: "mold.Cabity" }), width: 100, },
     {
-      field: 'ETAStatus', headerName: intl.formatMessage({ id: "mold.ETAStatus" }), flex: 0.5, align: 'center',
+      field: 'ETAStatus', headerName: intl.formatMessage({ id: "mold.ETAStatus" }), width: 150, align: 'center',
       renderCell: params => params.row.ETAStatus ? "Y" : "N"
     },
-    { field: 'Remark', headerName: intl.formatMessage({ id: "mold.Remark" }), flex: 0.7, },
-    { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
+    { field: 'Remark', headerName: intl.formatMessage({ id: "mold.Remark" }), width: 150, },
+    { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), width: 150, },
     {
-      field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.5,
-      valueFormatter: params => params?.value ? moment(params?.value).format("DD/MM/YYYY") : null
+      field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), width: 150,
+      valueFormatter: params => params?.value ? moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss") : null
     },
-    { field: 'modifiedName', headerName: intl.formatMessage({ id: "general.modifiedName" }), flex: 0.5, },
+    { field: 'modifiedName', headerName: intl.formatMessage({ id: "general.modifiedName" }), width: 150, },
     {
-      field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modifiedDate" }), flex: 0.5,
-      valueFormatter: params => params?.value ? moment(params?.value).format("DD/MM/YYYY") : null
+      field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modifiedDate" }), width: 150,
+      valueFormatter: params => params?.value ? moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss") : null
     },
   ];
 
@@ -235,97 +228,94 @@ export default function Mold() {
 
   return (
     <React.Fragment>
-      <ThemeProvider theme={myTheme}>
-        <Grid container
-          direction="row"
-          justifyContent="space-between"
-          alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
-          <Grid item xs={3}>
-            <MuiButton text="create" color='success' onClick={handleAdd} />
-          </Grid>
-          <Grid item>
-            <TextField
-              sx={{ width: 200 }}
-              fullWidth
-              variant="standard"
-              size='small'
-              label='Serial / Code'
-              onChange={(e) => handleSearch(e.target.value, 'keyWord')}
-            />
-          </Grid>
-          <Grid item>
-            <MuiSelectField
-              label={intl.formatMessage({ id: 'mold.Model' })}
-              options={PMList}
-              displayLabel="commonDetailName"
-              displayValue="commonDetailId"
-              onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Model')}
-              variant="standard"
-              sx={{ width: 200 }}
-            />
-          </Grid>
-          <Grid item>
-            <MuiSelectField
-              label={intl.formatMessage({ id: 'mold.MoldType' })}
-              options={PTList}
-              displayLabel="commonDetailName"
-              displayValue="commonDetailId"
-              onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'MoldType')}
-              variant="standard"
-              sx={{ width: 200 }}
-            />
-          </Grid>
-          <Grid item>
-            <MuiSelectField
-              label={intl.formatMessage({ id: 'mold.MachineType' })}
-              options={MTList}
-              displayLabel="commonDetailName"
-              displayValue="commonDetailId"
-              onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'MachineType')}
-              variant="standard"
-              sx={{ width: 200 }}
-            />
-          </Grid>
-          <Grid item>
-            <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0 }} />
-          </Grid>
-          <Grid item>
-            <FormControlLabel
-              sx={{ mb: 0 }}
-              control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
-              label={moldState.searchData.showDelete ? "Active Data" : "Delete Data"} />
-          </Grid>
+      <Grid container
+        direction="row"
+        justifyContent="space-between"
+        alignItems="width-end">
+        <Grid item xs={3}>
+          <MuiButton text="create" color='success' onClick={handleAdd} sx={{ mt: 1 }} />
         </Grid>
-        <MuiDataGrid
-          showLoading={moldState.isLoading}
-          isPagingServer={true}
-          headerHeight={45}
-          columns={columns}
-          rows={moldState.data}
-          gridHeight={736}
-          page={moldState.page - 1}
-          pageSize={moldState.pageSize}
-          rowCount={moldState.totalRow}
-          rowsPerPageOptions={[5, 10, 20]}
-          onPageChange={(newPage) => setMoldState({ ...moldState, page: newPage + 1 })}
-          onPageSizeChange={(newPageSize) => setMoldState({ ...moldState, pageSize: newPageSize, page: 1 })}
-          onCellClick={handleCellClick}
-          getRowId={(rows) => rows.MoldId}
-          getRowClassName={(params) => {
-            if (_.isEqual(params.row, newData)) return `Mui-created`
-          }}
-        />
+        <Grid item>
+          <TextField
+            sx={{ width: 200 }}
+            fullWidth
+            variant="standard"
+            size='small'
+            label='Serial / Code'
+            onChange={(e) => handleSearch(e.target.value, 'keyWord')}
+          />
+        </Grid>
+        <Grid item>
+          <MuiSelectField
+            label={intl.formatMessage({ id: 'mold.Model' })}
+            options={PMList}
+            displayLabel="commonDetailName"
+            displayValue="commonDetailId"
+            onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Model')}
+            variant="standard"
+            sx={{ width: 200 }}
+          />
+        </Grid>
+        <Grid item>
+          <MuiSelectField
+            label={intl.formatMessage({ id: 'mold.MoldType' })}
+            options={PTList}
+            displayLabel="commonDetailName"
+            displayValue="commonDetailId"
+            onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'MoldType')}
+            variant="standard"
+            sx={{ width: 200 }}
+          />
+        </Grid>
+        <Grid item>
+          <MuiSelectField
+            label={intl.formatMessage({ id: 'mold.MachineType' })}
+            options={MTList}
+            displayLabel="commonDetailName"
+            displayValue="commonDetailId"
+            onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'MachineType')}
+            variant="standard"
+            sx={{ width: 200 }}
+          />
+        </Grid>
+        <Grid item>
+          <MuiButton text="search" color='info' onClick={fetchData} sx={{ mt: 1 }} />
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            sx={{ mt: 1 }}
+            control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
+            label={moldState.searchData.showDelete ? "Active Data" : "Delete Data"} />
+        </Grid>
+      </Grid>
+      <MuiDataGrid
+        showLoading={moldState.isLoading}
+        isPagingServer={true}
+        headerHeight={45}
+        columns={columns}
+        rows={moldState.data}
+        gridHeight={736}
+        page={moldState.page - 1}
+        pageSize={moldState.pageSize}
+        rowCount={moldState.totalRow}
+        rowsPerPageOptions={[5, 10, 20]}
+        onPageChange={(newPage) => setMoldState({ ...moldState, page: newPage + 1 })}
+        onPageSizeChange={(newPageSize) => setMoldState({ ...moldState, pageSize: newPageSize, page: 1 })}
+        onCellClick={handleCellClick}
+        getRowId={(rows) => rows.MoldId}
+        getRowClassName={(params) => {
+          if (_.isEqual(params.row, newData)) return `Mui-created`
+        }}
+      />
 
-        <MoldDialog
-          setNewData={setNewData}
-          initModal={rowData}
-          isOpen={isShowing}
-          onClose={toggle}
-          loadData={fetchData}
-          mode={mode}
-        />
-
-      </ThemeProvider>
+      <MoldDialog
+        setNewData={setNewData}
+        initModal={rowData}
+        isOpen={isShowing}
+        onClose={toggle}
+        loadData={fetchData}
+        mode={mode}
+      />
     </React.Fragment>
 
   )
