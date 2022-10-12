@@ -26,22 +26,6 @@ const Menu = (props) => {
     let isRendered = useRef(false);
 
     const initMenuModel = {
-        // menuId: 0
-        // , parentId: 0
-        // , menuName: ''
-        // , menuLevel: '3'
-        // , sortOrder: ''
-        // , menuIcon: ''
-        // , languageKey: ''
-        // , menuComponent: ''
-        // , navigateUrl: ''
-        // , forRoot: true
-        // , isActived: true
-        // , createdDate: null
-        // , createdBy: 0
-        // , modifiedDate: null
-        // , modifiedBy: null
-        // , row_version: null
         ...MenuDto
     }
 
@@ -197,7 +181,7 @@ const Menu = (props) => {
         {
             field: 'id', headerName: '', flex: 0.01,
             filterable: false,
-            renderCell: (index) => index.api.getRowIndex(index.row.menuId) + 1,
+            renderCell: (index) => (index.api.getRowIndex(index.row.menuId) + 1) + (menuState.page - 1) * menuState.pageSize,
         },
         {
             field: "action",
