@@ -12,24 +12,6 @@ import _ from 'lodash'
 import CreatePermissionDialog from './CreatePermissionDialog'
 import ModifyPermissionDialog from './ModifyPermissionDialog'
 
-const myTheme = createTheme({
-    components: {
-        //@ts-ignore - this isn't in the TS because DataGird is not exported from `@mui/material`
-        MuiDataGrid: {
-            styleOverrides: {
-                row: {
-                    "&.Mui-created": {
-                        backgroundColor: "#A0DB8E",
-                        //   "&:hover": {
-                        //     backgroundColor: "#98958F"
-                        //   }
-                    }
-                }
-            }
-        }
-    }
-});
-
 const Permission = () => {
     const intl = useIntl();
     let isRendered = useRef(false);
@@ -40,25 +22,25 @@ const Permission = () => {
         , commonDetailName: ''
         , forRoot: false
     }
-
-    const menuGridRef = useRef();
-
     const [menuState, setMenuState] = useState({
         isLoading: false,
         data: [],
         totalRow: 0,
         page: 1,
         pageSize: 50,
+        searchData: {
+            keyWord: null
+        }
+
     });
 
+    const [newData, setNewData] = useState({ ...initPermissionModel })
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false)
 
     const [selectedRow, setSelectedRow] = useState({
         ...initPermissionModel
     })
-
-    const [newData, setNewData] = useState({ ...initPermissionModel })
 
     const toggleCreatePermissionDialog = () => {
         setIsOpenCreateDialog(!isOpenCreateDialog);
@@ -89,7 +71,8 @@ const Permission = () => {
         });
         const params = {
             page: menuState.page,
-            pageSize: menuState.pageSize
+            pageSize: menuState.pageSize,
+            keyWord: menuState.searchData.keyWord,
         }
         const res = await permissionService.getPermissionList(params);
 
@@ -133,7 +116,12 @@ const Permission = () => {
         });
     }, [selectedRow]);
 
-
+    const changeSearchData = (e, inputName) => {
+        console.log('a', inputName)
+        let newSearchData = { ...menuState.searchData };
+        newSearchData[inputName] = e;
+        setMenuState({ ...menuState, searchData: { ...newSearchData } })
+    }
 
     const columns = [
         { field: 'permissionId', headerName: '', flex: 0.01, hide: true },
@@ -179,7 +167,6 @@ const Permission = () => {
 
     return (
         <React.Fragment>
-            <ThemeProvider theme={myTheme}>
                 <Grid
                     container
                     direction="row"
@@ -195,27 +182,23 @@ const Permission = () => {
                     </Grid>
                     <Grid item xs>
                         <MuiSearchField
-                            label='general.name'
+                            label='permission.permissionName'
                             name='keyWord'
                             onClick={fetchData}
-                            onChange={(e) => changeSearchData(e, 'keyWord')}
+                            onChange={(e) => changeSearchData(e.target.value, 'keyWord')}
                         />
                     </Grid>
 
                 </Grid>
                 <MuiDataGrid
-
                     showLoading={menuState.isLoading}
                     isPagingServer={true}
                     headerHeight={45}
-                    // rowHeight={30}
                     columns={columns}
                     rows={menuState.data}
                     page={menuState.page - 1}
                     pageSize={menuState.pageSize}
                     rowCount={menuState.totalRow}
-
-
                     rowsPerPageOptions={[50, 100, 200]}
 
                     onPageChange={(newPage) => {
@@ -234,23 +217,19 @@ const Permission = () => {
                             return `Mui-created`
                         }
                     }}
-                // 
                 />
-
                 <CreatePermissionDialog
                     initModal={initPermissionModel}
                     refreshGrid={fetchData}
                     isOpen={isOpenCreateDialog}
                     onClose={toggleCreatePermissionDialog}
                 />
-
                 {isOpenModifyDialog && <ModifyPermissionDialog
                     initModal={selectedRow}
                     setModifyData={setSelectedRow}
                     isOpen={isOpenModifyDialog}
                     onClose={toggleModifyPermissionDialog}
                 />}
-            </ThemeProvider>
         </React.Fragment>
 
     )

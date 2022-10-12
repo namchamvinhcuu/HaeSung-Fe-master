@@ -142,26 +142,7 @@ const Product = () => {
             , isLoading: false
         });
     }
-    async function fetchDataDeleted() {
-        setproductState({
-            ...productState
-            , isLoading: true
-
-        });
-        const params = {
-            page: productState.page,
-            pageSize: productState.pageSize,
-            keyword: productState.searchData.keyWord
-        }
-        const res = await productService.getProductListDeleted(params);
-
-        setproductState({
-            ...productState
-            , data: [...res.Data]
-            , totalRow: res.TotalRow
-            , isLoading: false
-        });
-    }
+    
     const handleRowSelection = (arrIds) => {
 
         const rowSelected = productState.data.filter(function (item) {
