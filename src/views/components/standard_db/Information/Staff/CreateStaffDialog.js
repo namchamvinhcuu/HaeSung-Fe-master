@@ -8,103 +8,64 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
+import { useFormik } from 'formik'
 
 import { staffService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { margin } from '@mui/system'
 
-const CreateDialog = (props) => {
+const CreateStaffDialog = (props) => {
+    
     const intl = useIntl();
+
     const { initModal, isOpen, onClose, setNewData } = props;
 
-    const [modelArr, setModelArr] = useState([initModal]);
-    const [staffTypeArr, setstaffTypeArr] = useState([initModal]);
-
-    const dataModalRef = useRef({ ...initModal });
     const [dialogState, setDialogState] = useState({
-        isSubmit: false
-    })
+        ...initModal,
+        isSubmit: false,
+    });
+
     const schema = yup.object().shape({
-
         StaffCode: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
-        StaffName: yup.number().required(),
-
-    });
-    const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
-
-        mode: 'onChange',
-        resolver: yupResolver(schema),
-        defaultValues: {
-            ...initModal
-        },
+        StaffName: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
     });
 
+    const formik = useFormik({
+        validationSchema: schema,
+        initialValues: { ...initModal },
+        onSubmit: async values => {
+            const res = await staffService.createStaff(values);
+            if (res.HttpResponseCode === 200 && res.Data) {
+                SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                setNewData({ ...res.Data });
+                setDialogState({ ...dialogState, isSubmit: false });
+                handleCloseDialog();
+            }
+            else {
+                ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+            }
+        }
+    });
 
-    // useEffect(() => {
-    //     if (isOpen)
-    //         getModel();
-    //     getstaffType();
-    // }, [isOpen])
-
-    // const getModel = async () => {
-    //     const res = await staffService.getStaffModel();
-    //     if (res.HttpResponseCode === 200 && res.Data) {
-    //         setModelArr([...res.Data])
-    //     }
-    //     else {
-    //         setModelArr([])
-    //     }
-    // }
-    // const getstaffType = async () => {
-    //     const res = await staffService.getStaffType();
-    //     if (res.HttpResponseCode === 200 && res.Data) {
-    //         setstaffTypeArr([...res.Data])
-    //     }
-    //     else {
-    //         setstaffTypeArr([])
-    //     }
-    // }
-    const handleReset = () => {
-        reset();
-        clearErrors();
-        setDialogState({
-            ...dialogState
-        })
-    }
+    const {
+        handleChange
+        , handleBlur
+        , handleSubmit
+        , values
+        , setFieldValue
+        , errors
+        , touched
+        , isValid
+        , resetForm
+    } = formik;
 
     const handleCloseDialog = () => {
-        reset();
-        clearErrors();
         setDialogState({
             ...dialogState
-        })
+        });
+        resetForm();
         onClose();
     }
-
-    const onSubmit = async (data) => {
-
-        dataModalRef.current = { ...initModal, ...data };
-        setDialogState({ ...dialogState, isSubmit: true });
-
-        const res = await staffService.createStaff(dataModalRef.current);
-        // console.log(dataModalRef.current, 'submit');
-
-        if (res.HttpResponseCode === 200 && res.Data) {
-            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-            setNewData({ ...res.Data });
-            setDialogState({ ...dialogState, isSubmit: false });
-            handleReset();
-            // handleCloseDialog();
-
-        }
-        else {
-            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-            setDialogState({ ...dialogState, isSubmit: false });
-        }
-        handleCloseDialog();
-    };
-
-
 
     return (
         <MuiDialog
@@ -115,36 +76,36 @@ const CreateDialog = (props) => {
             disable_animate={300}
             onClose={handleCloseDialog}
         >
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit}>
             <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                     <Grid item xs={12}>
                         <Grid container item spacing={2}>
-                            <Grid item xs={6} marginBottom= {2}>
+                            <Grid item xs={12} marginBottom= {2}>
                                 <TextField
-                                    autoFocus
+                                   autoFocus
                                     fullWidth
                                     size='small'
-                                    label={intl.formatMessage({ id: 'general.code' })}
-
-                                    name="Staff Code"
-                                    {...register('StaffCode', {
-                                    })}
-                                    error={!!errors?.StaffCode}
-                                    helperText={errors?.StaffCode ? errors.StaffCode.message : null}
+                                    disabled={dialogState.isSubmit}
+                                    label={intl.formatMessage({ id: 'staff.StaffCode' })}
+                                    name='StaffCode'
+                                    value={values.StaffCode}
+                                    onChange={handleChange}
+                                    error={touched.StaffCode && Boolean(errors.StaffCode)}
+                                    helperText={touched.StaffCode && errors.StaffCode}
                                 />
                             </Grid>
-                            <Grid item xs={6}  marginBottom= {2}>
+                            <Grid item xs={12}  marginBottom= {2}>
                                 <TextField
 
                                     fullWidth
                                     size='small'
-                                    label={intl.formatMessage({ id: 'general.name' })}
-
-                                    name="Staff Name"
-                                    {...register('StaffName', {
-                                    })}
-                                    error={!!errors?.StaffName}
-                                    helperText={errors?.StaffName ? errors.StaffName.message : null}
+                                    disabled={dialogState.isSubmit}
+                                    label={intl.formatMessage({ id: 'staff.StaffName' })}
+                                    name='StaffName'
+                                    value={values.StaffName}
+                                    onChange={handleChange}
+                                    error={touched.StaffName && Boolean(errors.StaffName)}
+                                    helperText={touched.StaffName && errors.StaffName}
                                 />
                             </Grid>
                         </Grid>
@@ -162,7 +123,7 @@ const CreateDialog = (props) => {
                                 loading={dialogState.isSubmit}
                             />
                             <MuiResetButton
-                                onClick={handleReset}
+                                onClick={resetForm}
                                 disabled={dialogState.isSubmit}
                             />
                         </Grid>
@@ -173,4 +134,4 @@ const CreateDialog = (props) => {
     )
 }
 
-export default CreateDialog
+export default CreateStaffDialog

@@ -153,5 +153,11 @@
         "duplicated_code":"Mold Code đã trùng",
         "duplicated_serial":"Mold Serial đã trùng"
 
+    },
+    "staff": {
+        "StaffCode": "Mã Nhân Viên",
+        "StaffName": "Tên Nhân Viên",
+        "StaffCode_required": "Mã nhân viên không được để trống",
+        "StaffName_required": "Tên nhân viên không được để trống"
     }
 }

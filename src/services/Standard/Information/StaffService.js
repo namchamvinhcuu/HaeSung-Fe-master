@@ -25,5 +25,5 @@ const createStaff = async (params) => {
 
 export {
     getStaffList,
-    createStaff
+    createStaff,
 }
