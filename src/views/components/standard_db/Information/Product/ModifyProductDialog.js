@@ -83,7 +83,13 @@ const ModifyProductDialog = (props) => {
             setproductTypeArr([])
         }
     }
-
+    const handleReset = () => {
+        reset();
+        clearErrors();
+        setDialogState({
+            ...dialogState
+        })
+    }
     const onSubmit = async (data) => {
        
         dataModalRef.current = { ...initModal, ...data };

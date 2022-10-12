@@ -23,23 +23,6 @@ import CreateDialog from './CreateProductDialog'
 import ModifyDialog from './ModifyProductDialog'
 import { ErrorAlert, SuccessAlert } from '@utils'
 
-const myTheme = createTheme({
-    components: {
-        //@ts-ignore - this isn't in the TS because DataGird is not exported from `@mui/material`
-        MuiDataGrid: {
-            styleOverrides: {
-                row: {
-                    "&.Mui-created": {
-                        backgroundColor: "#A0DB8E",
-                        //   "&:hover": {
-                        //     backgroundColor: "#98958F"
-                        //   }
-                    }
-                }
-            }
-        }
-    }
-});
 
 const Product = () => {
     const intl = useIntl();
@@ -55,7 +38,7 @@ const Product = () => {
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 2,
+        pageSize: 20,
         searchData: {
             Model: null,
             ProductCode: null,
@@ -64,7 +47,7 @@ const Product = () => {
             showDelete: true
         }
     });
-
+  
     const [selectedRow, setSelectedRow] = useState({
         ...ProductDto
     })
@@ -230,9 +213,9 @@ const Product = () => {
     const columns = [
         { field: 'ProductId', headerName: '', flex: 0.3, hide: true },
         {
-            field: 'id', headerName: '', flex: 0.01,
+            field: 'id', headerName: '', flex: 0.1,
             filterable: false,
-            renderCell: (index) => index.api.getRowIndex(index.row.ProductId) + 1,
+            renderCell: (index) => index.api.getRowIndex(index.row.ProductId) + 1 + (productState.page - 1) * productState.pageSize,
         },
         {
             field: "action",
@@ -271,17 +254,15 @@ const Product = () => {
                 );
             },
         },
-        { field: 'ModelName', headerName: 'Model', flex: 0.3 },
+        { field: 'ModelName',headerName: intl.formatMessage({ id: "product.Model" }), flex: 0.3 },
         { field: 'Model', headerName: 'Model', flex: 0.3, hide: true },
         { field: 'ProductCode', headerName: 'Product Code', flex: 0.3 },
         { field: 'ProductType', headerName: 'Product Type', flex: 0.3, hide: true },
-        { field: 'ProductTypeName', headerName: 'Product Type', flex: 0.3 },
-        { field: 'Description', headerName: 'Description', flex: 0.3 },
-        { field: 'Inch', headerName: 'Inch', flex: 0.3 },
+        { field: 'ProductTypeName', headerName: intl.formatMessage({ id: "product.product_type" }) ,flex: 0.3 },
+        { field: 'Description', headerName: intl.formatMessage({ id: "product.Description" }) , flex: 0.3 },
+        { field: 'Inch', headerName: intl.formatMessage({ id: "product.Inch" }) , flex: 0.3 },
 
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
-
-
         {
             field: 'createdDate', headerName: 'Created Date', flex: 0.3,
             valueFormatter: params => {
@@ -300,12 +281,11 @@ const Product = () => {
             },
         },
 
-        { field: 'modifiedName', headerName: 'modifiedBy', flex: 0.3 },
+        { field: 'modifiedName', headerName: 'Modified By', flex: 0.3 },
     ];
 
     return (
         <React.Fragment>
-            <ThemeProvider theme={myTheme}>
                 <Grid container direction="row"
                     justifyContent="space-between"
                     alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
@@ -416,7 +396,6 @@ const Product = () => {
                     isOpen={isOpenModifyDialog}
                     onClose={toggleModifyDialog}
                 />
-            </ThemeProvider>
         </React.Fragment >
     )
 }

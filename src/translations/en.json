@@ -115,11 +115,11 @@
         "roleName": "Role"
     },
     "product": {
-        "product_type": "product_type",
+        "product_type": "Product Type",
         "Inch": "Inch",
         "Model": "Model",
-        "Description": "Decription"
-
+        "Description": "Description",
+        "duplicated_name": "Product Code: duplicated name"
     },
     "supplier": {
         "SupplierContact": "Contact",
