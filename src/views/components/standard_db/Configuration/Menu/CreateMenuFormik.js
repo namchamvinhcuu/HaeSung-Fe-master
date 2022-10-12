@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import {
-    Autocomplete, Checkbox, FormControlLabel, Grid, Radio, RadioGroup, TextField
+    Autocomplete, Checkbox, FormControlLabel, Grid, Radio, RadioGroup, TextField, FormControl, FormLabel
 } from '@mui/material'
 
 import { MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls'
@@ -16,9 +16,11 @@ const CreateMenuFormik = (props) => {
     const { initModal, isOpen, onClose, setNewData } = props;
 
     const [dialogState, setDialogState] = useState({
-        isSubmit: false,
-        menuLevel: 3,
+        isSubmit: false
     });
+
+    const [parentMenuArr, setParentMenuArr] = useState([]);
+    const clearParent = useRef(null);
 
     const getParentMenus = async (menuLevel) => {
         const res = await menuService.getParentMenus(menuLevel);
@@ -60,12 +62,12 @@ const CreateMenuFormik = (props) => {
 
         menuLevel: yup.number().required(),
 
-
         parentId: yup.string().nullable()
             .when("menuLevel", (menuLevel) => {
                 if (parseInt(menuLevel) > 1) {
                     return yup.number()
                         .required()
+                        .min(1, intl.formatMessage({ id: 'menu.parentId_required' }))
                         .typeError(intl.formatMessage({ id: 'menu.parentId_required' }))
                 }
             }),
@@ -76,16 +78,16 @@ const CreateMenuFormik = (props) => {
         initialValues: { ...initModal },
         onSubmit: async values => {
             console.log(values)
-            // const res = await supplierService.create(values);
-            // if (res.HttpResponseCode === 200 && res.Data) {
-            //     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-            //     setNewData({ ...res.Data });
-            //     setDialogState({ ...dialogState, isSubmit: false });
-            //     handleCloseDialog();
-            // }
-            // else {
-            //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-            // }
+            const res = await menuService.createMenu(values);
+            if (res.HttpResponseCode === 200 && res.Data) {
+                SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                setNewData({ ...res.Data });
+                setDialogState({ ...dialogState, isSubmit: false });
+                handleCloseDialog();
+            }
+            else {
+                ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+            }
         }
     });
 
@@ -103,12 +105,16 @@ const CreateMenuFormik = (props) => {
 
     const handleCloseDialog = () => {
         setDialogState({
-            ...dialogState,
-            menuLevel: 3
+            ...dialogState
         });
         resetForm();
         onClose();
     }
+
+    useEffect(() => {
+        if (isOpen)
+            getParentMenus(values.menuLevel);
+    }, [isOpen, values.menuLevel])
 
     return (
         <MuiDialog
@@ -119,7 +125,7 @@ const CreateMenuFormik = (props) => {
             disable_animate={300}
             onClose={handleCloseDialog}
         >
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit}>
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                     <Grid item xs={12}>
                         <Grid container spacing={2}>
@@ -128,93 +134,45 @@ const CreateMenuFormik = (props) => {
                                 <span style={{ marginTop: '5px', marginRight: '16px', fontWeight: '700' }}>
                                     {intl.formatMessage({ id: 'general.level' })}
                                 </span>
+
                                 <FormControl>
-                                    <FormLabel style={{ fontSize: '0.8rem' }}>{label}</FormLabel>
                                     <RadioGroup
-                                        id={id}
-                                        row={row === 1 ? true : false}
-                                        value={value}
+                                        row
+                                        name='menuLevel'
+                                        value={values.menuLevel}
                                         onChange={(event) => {
-                                            console.log(event.target.value)
-                                            setFieldValue(name, event.target.value);
-                                            onChange ? onChange(event.target.value) : setFieldValue(name, event.target.value);
+                                            setFieldValue('menuLevel', event.target.value);
+                                            const ele = clearParent.current.getElementsByClassName('MuiAutocomplete-clearIndicator')[0];
+                                            if (ele) ele.click();
                                         }}
                                     >
-                                        {
-                                            options.map(
-                                                (option) => (
-                                                    <FormControlLabel
-                                                        key={option.id}
-                                                        value={option.id}
-                                                        name={name}
-                                                        control={
-                                                            <Radio
-                                                                size={size || 'small'}
-                                                                style={{
-                                                                    color: pink[800],
-                                                                    '&.MuiChecked': {
-                                                                        color: pink[600],
-                                                                    },
-                                                                    padding: '0 11px',
-                                                                }}
-                                                            />}
-                                                        label={option.title} />
-                                                )
-                                            )
-                                        }
+                                        <FormControlLabel label='1' value={1} control={<Radio size='small' />} />
+                                        <FormControlLabel label='2' value={2} control={<Radio size='small' />} />
+                                        <FormControlLabel label='3' value={3} control={<Radio size='small' />} />
                                     </RadioGroup>
                                 </FormControl>
                             </Grid>
                             <Grid item xs={6}>
-                                {dialogState.menuLevel > 1
-                                    && <Controller
-                                        control={control}
-                                        name="parentId"
-                                        render={({ field: { onChange, value } }) => {
-                                            return (
-                                                <Autocomplete
-                                                    // multiple
-                                                    // disablePortal
-                                                    freeSolo
-                                                    ref={clearParent}
-                                                    fullWidth
-                                                    size='small'
-                                                    options={parentMenuArr}
-                                                    autoHighlight
-                                                    openOnFocus
-                                                    getOptionLabel={option => option.menuName}
-                                                    isOptionEqualToValue={(option, value) => option.menuId === value.menuId}
-                                                    // value={value => {
-                                                    //     parentMenuArr.forEach(element => {
-                                                    //         if (element.menuId === value) {
-                                                    //             return element.menuName
-                                                    //         }
-                                                    //     })
-                                                    // }}
-                                                    // getOptionSelected={(option, value) =>
-                                                    //     value === undefined || value === "" || option.menuId === value.menuId
-                                                    // }
-                                                    defaultValue={initModal}
-                                                    onChange={(e, item) => {
-
-                                                        if (item) {
-                                                            onChange(item.menuId ?? '');
-                                                        }
-                                                        else {
-                                                            onChange('')
-                                                        }
-                                                    }}
-                                                    renderInput={(params) => {
-                                                        return <TextField
-                                                            {...params}
-                                                            label={intl.formatMessage({ id: 'general.parent' })}
-                                                            error={!!errors.parentId}
-                                                            helperText={errors?.parentId ? errors.parentId.message : null}
-                                                        />
-                                                    }}
-                                                />
-                                            );
-                                        }}
+                                {values.menuLevel > 1
+                                    && <Autocomplete
+                                        ref={clearParent}
+                                        options={parentMenuArr}
+                                        getOptionLabel={(menuP) => menuP?.menuName}
+                                        onChange={(e, value) => setFieldValue("parentId", value?.menuId || "")}
+                                        onOpen={handleBlur}
+                                        includeInputInList
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                fullWidth
+                                                size='small'
+                                                label="Parent"
+                                                name="parentId"
+                                                variant="outlined"
+                                                error={Boolean(errors.parentId)}
+                                                helperText={errors.parentId}
+                                            />
+                                        )}
                                     />
                                 }
                             </Grid>
@@ -230,11 +188,11 @@ const CreateMenuFormik = (props) => {
                                     fullWidth
                                     size='small'
                                     label={intl.formatMessage({ id: 'general.name' })}
-                                    {...register('menuName', {
-                                        // onChange: (e) => handleInputChange(e)
-                                    })}
-                                    error={!!errors?.menuName}
-                                    helperText={errors?.menuName ? errors.menuName.message : null}
+                                    name='menuName'
+                                    value={values.menuName}
+                                    onChange={handleChange}
+                                    error={Boolean(touched.menuName && errors.menuName)}
+                                    helperText={touched.menuName && errors.menuName}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -242,10 +200,9 @@ const CreateMenuFormik = (props) => {
                                     fullWidth
                                     size='small'
                                     label={intl.formatMessage({ id: 'general.icon' })}
-                                    {...register('menuIcon', {
-                                    })}
-                                    error={!!errors?.menuIcon}
-                                    helperText={errors?.menuIcon ? errors.menuIcon.message : null}
+                                    name='menuIcon'
+                                    value={values.menuIcon}
+                                    onChange={handleChange}
                                 />
                             </Grid>
                         </Grid>
@@ -259,10 +216,10 @@ const CreateMenuFormik = (props) => {
                                     size='small'
                                     label={intl.formatMessage({ id: 'general.component' })}
                                     name="menuComponent"
-                                    {...register('menuComponent', {
-                                    })}
+                                    value={values.menuComponent}
+                                    onChange={handleChange}
                                     error={!!errors?.menuComponent}
-                                    helperText={errors?.menuComponent ? errors.menuComponent.message : null}
+                                    helperText={errors?.menuComponent}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -271,10 +228,10 @@ const CreateMenuFormik = (props) => {
                                     size='small'
                                     label={intl.formatMessage({ id: 'general.url' })}
                                     name="navigateUrl"
-                                    {...register('navigateUrl', {
-                                    })}
+                                    value={values.navigateUrl}
+                                    onChange={handleChange}
                                     error={!!errors?.navigateUrl}
-                                    helperText={errors?.navigateUrl ? errors.navigateUrl.message : null}
+                                    helperText={errors?.navigateUrl}
                                 />
                             </Grid>
                         </Grid>
@@ -288,28 +245,18 @@ const CreateMenuFormik = (props) => {
                                     size='small'
                                     label={intl.formatMessage({ id: 'general.language_key' })}
                                     name="languageKey"
-                                    {...register('languageKey', {
-                                    })}
+                                    value={values.languageKey}
+                                    onChange={handleChange}
                                     error={!!errors?.languageKey}
-                                    helperText={errors?.languageKey ? errors.languageKey.message : null}
+                                    helperText={errors?.languageKey}
                                 />
                             </Grid>
                             <Grid item xs={6}>
                                 <FormControlLabel
-                                    control={
-                                        <Controller
-                                            name='forRoot'
-                                            control={control}
-                                            render={({ field: props }) => (
-                                                <Checkbox
-                                                    {...props}
-                                                    checked={props.value}
-                                                    onChange={(e) => props.onChange(e.target.checked)}
-                                                />
-                                            )}
-                                        />
-                                    }
-                                    label='For Root'
+                                    checked={values.forRoot}
+                                    onChange={() => setFieldValue("forRoot", !values.forRoot)}
+                                    control={<Checkbox />}
+                                    label="For Root"
                                 />
                             </Grid>
                         </Grid>
@@ -325,7 +272,7 @@ const CreateMenuFormik = (props) => {
                                 loading={dialogState.isSubmit}
                             />
                             <MuiResetButton
-                                onClick={handleReset}
+                                // onClick={handleReset}
                                 disabled={dialogState.isSubmit}
                             />
                         </Grid>
