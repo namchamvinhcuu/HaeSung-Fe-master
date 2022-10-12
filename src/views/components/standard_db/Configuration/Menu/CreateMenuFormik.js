@@ -111,6 +111,12 @@ const CreateMenuFormik = (props) => {
         onClose();
     }
 
+    const handleReset = () => {
+        const ele = clearParent.current.getElementsByClassName('MuiAutocomplete-clearIndicator')[0];
+        if (ele) ele.click();
+        resetForm();
+    }
+
     useEffect(() => {
         if (isOpen)
             getParentMenus(values.menuLevel);
@@ -272,7 +278,7 @@ const CreateMenuFormik = (props) => {
                                 loading={dialogState.isSubmit}
                             />
                             <MuiResetButton
-                                // onClick={handleReset}
+                                onClick={handleReset}
                                 disabled={dialogState.isSubmit}
                             />
                         </Grid>
