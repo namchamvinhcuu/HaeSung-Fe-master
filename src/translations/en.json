@@ -150,5 +150,11 @@
         "ETAStatus_required": "ETA Status required",
         "duplicated_code":"Mold Code duplicated",
         "duplicated_serial":"Mold Serial duplicated"
+    },
+    "staff": {
+        "StaffCode": "Staff Code",
+        "StaffName": "Staff Name",
+        "StaffCode_required": "Staff Code cannot be blank",
+        "StaffName_required": "Staff Name cannot be blank"
     }
 }
