@@ -6,6 +6,7 @@ import MuiButton from "./MuiButton"
 import MuiDropDownList from "./MuiDropDownList"
 import MuiSearchField from "./MuiSearchField"
 import MuiDateField from "./MuiDateField"
+import MuiSelectField from "./MuiSelectField"
 
 export {
     MuiDataGrid,
@@ -15,5 +16,6 @@ export {
     MuiButton,
     MuiDropDownList,
     MuiSearchField,
-    MuiDateField
+    MuiDateField,
+    MuiSelectField,
 }

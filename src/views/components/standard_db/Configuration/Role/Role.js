@@ -306,7 +306,7 @@ export default function Role() {
           }}
         />
         <Grid container sx={{ mt: 1 }} spacing={3}>
-          <Grid item xs={6} >
+          <Grid item xs={6} style={{ paddingTop: 0 }}>
             <Grid container sx={{ mb: 1 }}>
               <MuiButton text="Create" color='success' onClick={toggle} disabled={roleId != 0 ? false : true} />
               <Badge badgeContent={selectPermission.length} color="warning">
@@ -342,7 +342,7 @@ export default function Role() {
               }}
             />
           </Grid>
-          <Grid item xs={6} >
+          <Grid item xs={6} style={{ paddingTop: 0 }}>
             <Grid container sx={{ mb: 1 }}>
               <MuiButton text="Create" color='success' onClick={toggle2} disabled={roleId != 0 ? false : true} />
               <Badge badgeContent={selectMenu.length} color="warning">
