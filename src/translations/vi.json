@@ -116,7 +116,9 @@
     },
     "product": {
         "product_type": "Loại sản phẩm",
-        "Inch": "Inch"
+        "Inch": "Inch",
+        "Model": "Model",
+        "Description": "Mô tả"
     },
     "supplier": {
         "SupplierContact": "Liên hệ",

@@ -57,42 +57,21 @@ const modifyProduct = async (params) => {
         console.log(`ERROR: ${error}`);
     }
 }
-const deleteProduct = async (id) => {
+const deleteProduct = async (params) => {
     try {
-      return await axios.delete(`${apiProduct}/delete-product/${id}`);
+      return await axios.delete(`${apiProduct}/delete-product`, { data: params });
     }
     catch (error) {
       console.log(`ERROR: ${error}`);
     }
   }
-  const getProductListDeleted = async (params) => {
-    try {
-        return await axios.get(`${apiProduct}/get-all-data-deleted`, {
-            params: {
-                ...params 
-            }
-        });
-    } catch (error) {
-        console.log(`ERROR: ${error}`);
-    }
-}
-const RedoDataDeleted = async (params) => {
+  
 
-    try {
-        return await axios.delete(`${apiProduct}/redo-product/${params}`, {
-         
-        });
-    } catch (error) {
-        console.log(`ERROR: ${error}`);
-    }
-}
 export {
     getProductList,
     getProductModel,
     getProductType,
     createProduct,
     modifyProduct,
-    deleteProduct,
-    getProductListDeleted,
-    RedoDataDeleted
+    deleteProduct
 }
