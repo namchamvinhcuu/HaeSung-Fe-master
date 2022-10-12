@@ -42,8 +42,13 @@ export const MuiDialog = ({ isOpen, onClose, title, disable_animate, maxWidth, d
         );
     }, []);
 
-    const handleClose = () => {
-        onClose();
+    const handleClose = (event, reason) => {
+        if (reason === "backdropClick" || reason === 'escapeKeyDown') {
+            console.log(reason);
+        } else {
+            onClose();
+        }
+
     };
 
     useEffect(() => {
@@ -62,7 +67,7 @@ export const MuiDialog = ({ isOpen, onClose, title, disable_animate, maxWidth, d
             fullWidth
             maxWidth={maxWidth ?? 'md'}
             open={isOpen}
-            onClose={onClose}
+            onClose={handleClose}
             {...others}
         >
             <DialogTitle

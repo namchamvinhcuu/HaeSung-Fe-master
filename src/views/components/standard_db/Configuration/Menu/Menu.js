@@ -18,27 +18,31 @@ import _ from 'lodash';
 import CreateMenuDialog from './CreateMenuDialog';
 import ModifyMenuDialog from './ModifyMenuDialog';
 
+import CreateMenuFormik from './CreateMenuFormik';
+import { MenuDto } from '@models'
+
 const Menu = (props) => {
     const intl = useIntl();
     let isRendered = useRef(false);
 
     const initMenuModel = {
-        menuId: 0
-        , parentId: 0
-        , menuName: ''
-        , menuLevel: ''
-        , sortOrder: ''
-        , menuIcon: ''
-        , languageKey: ''
-        , menuComponent: ''
-        , navigateUrl: ''
-        , forRoot: true
-        , isActived: true
-        , createdDate: null
-        , createdBy: 0
-        , modifiedDate: null
-        , modifiedBy: null
-        , row_version: null
+        // menuId: 0
+        // , parentId: 0
+        // , menuName: ''
+        // , menuLevel: '3'
+        // , sortOrder: ''
+        // , menuIcon: ''
+        // , languageKey: ''
+        // , menuComponent: ''
+        // , navigateUrl: ''
+        // , forRoot: true
+        // , isActived: true
+        // , createdDate: null
+        // , createdBy: 0
+        // , modifiedDate: null
+        // , modifiedBy: null
+        // , row_version: null
+        ...MenuDto
     }
 
     const menuGridRef = useRef();
@@ -317,7 +321,14 @@ const Menu = (props) => {
                     isOpen={isOpenCreateDialog}
                     onClose={toggleCreateMenuDialog}
                 />} */}
-            <CreateMenuDialog
+            {/* <CreateMenuDialog
+                initModal={initMenuModel}
+                setNewData={setNewData}
+                isOpen={isOpenCreateDialog}
+                onClose={toggleCreateMenuDialog}
+            /> */}
+
+            <CreateMenuFormik
                 initModal={initMenuModel}
                 setNewData={setNewData}
                 isOpen={isOpenCreateDialog}
