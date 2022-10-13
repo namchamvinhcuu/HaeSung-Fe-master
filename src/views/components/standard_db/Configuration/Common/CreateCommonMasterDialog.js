@@ -16,7 +16,7 @@ import { ErrorAlert, SuccessAlert } from '@utils'
 const CreateCommonMasterDialog = (props) => {
     const intl = useIntl();
 
-    const { initModal, isOpen, onClose, refreshGrid } = props;
+    const { initModal, isOpen, onClose, setNewData  } = props;
 
     const dataModalRef = useRef({ ...initModal });
 
@@ -38,6 +38,7 @@ const CreateCommonMasterDialog = (props) => {
             const res = await commonService.createCommonMaster(values);
             if (res.HttpResponseCode === 200) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+                setNewData({ ...res.Data });
                 setDialogState({ ...dialogState, isSubmit: false });
                 handleCloseDialog();
             }
@@ -58,13 +59,7 @@ const CreateCommonMasterDialog = (props) => {
         , isValid
     } = formik;
 
-    const handleReset = () => {
-        reset();
-        clearErrors();
-        setDialogState({
-            ...dialogState
-        })
-    }
+    
     const handleCloseDialog = () => {
         setDialogState({
             ...dialogState
@@ -73,27 +68,6 @@ const CreateCommonMasterDialog = (props) => {
         onClose();
     }
 
-    // const handleSubmit = async (data) => {
-
-
-    //   dataModalRef.current = { ...initModal, ...data};
-    //     setDialogState({ ...dialogState, isSubmit: true });
-
-    //      const res = await commonService.createCommonMaster(dataModalRef.current);
-
-    //     if (res.HttpResponseCode === 200 && res.Data) {
-    //         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-    //         setNewData({ ...res.Data });
-    //         setDialogState({ ...dialogState, isSubmit: false });
-    //         handleReset();
-    //         handleCloseDialog();
-    //     }
-    //     else {
-    //         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-    //         setDialogState({ ...dialogState, isSubmit: false });
-    //     }
-
-    // };
 
  
     return (
