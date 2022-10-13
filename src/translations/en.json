@@ -45,10 +45,12 @@
         "confirm_redo_deleted": "Confirm to redo deleted",
         "description": "Description",
         "model": "model",
-        "createdName": "User create",
+        "createdName": "User created",
         "createdDate": "Create date",
-        "modifiedName": "User update",
-        "modifiedDate": "Update date"
+        "modifiedName": "User updated",
+        "modifiedDate": "Update date",
+        "duplicated_code": "Duplicated code",
+        "duplicated_name": "Duplicated name"
     },
     "login": {
         "account_password_invalid": "Account/Password is invalid",
@@ -149,12 +151,12 @@
         "MoldType_required": "Mold Type required",
         "Inch_required": "Inch required",
         "MachineType_required": "Machine Type required",
-        "MachineTon_required":"Machine Ton required",
+        "MachineTon_required": "Machine Ton required",
         "ETADate_required": "ETA Date required",
         "Cabity_required": "Cabity required",
         "ETAStatus_required": "ETA Status required",
-        "duplicated_code":"Mold Code duplicated",
-        "duplicated_serial":"Mold Serial duplicated"
+        "duplicated_code": "Mold Code duplicated",
+        "duplicated_serial": "Mold Serial duplicated"
     },
     "staff": {
         "StaffCode": "Staff Code",
@@ -162,19 +164,36 @@
         "StaffCode_required": "Staff Code cannot be blank",
         "StaffName_required": "Staff Name cannot be blank"
     },
-    "tray":{
+    "tray": {
         "TrayCode": "Tray Code",
         "TrayType": "Tray Type",
         "IsReuse": "Is Reuse",
         "TrayCode_required": "Tray Code is required",
         "TrayType_required": "Tray Type is required"
     },
-    "buyer":{
+    "line": {
+        "LineName": "Line Name",
+        "Description": "Description",
+        "IsUsed": "Using",
+        "LineName_required": "Line Name is required"
+    },
+    "buyer": {
         "BuyerCode": "Buyer Code",
         "BuyerName": "Buyer Name",
         "Contact": "Contact",
         "Description": "Description",
         "BuyerCode_required": "Buyer Code is required",
         "BuyerName_required": "Buyer Name is required"
+    },
+    "material": {
+        "MaterialCode": "Material Code",
+        "MaterialType": "Material Type",
+        "Unit": "Unit",
+        "SupplierId": "Supplier",
+        "Description": "Description",
+        "MaterialCode_required": "Material Code is required",
+        "MaterialType_required": "Material Type is required",
+        "Unit_required": "Unit is required",
+        "SupplierId_required": "Supplier is required"
     }
 }

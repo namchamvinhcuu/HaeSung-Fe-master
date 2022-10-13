@@ -48,7 +48,9 @@
         "createdName": "Người tạo",
         "createdDate": "Ngày tạo",
         "modifiedName": "Người sửa",
-        "modifiedDate": "Ngày sửa"
+        "modifiedDate": "Ngày sửa",
+        "duplicated_code": "Trùng mã",
+        "duplicated_name": "Trùng tên"
     },
     "login": {
         "account_password_invalid": "Tài khoản/Mật khẩu không hợp lệ",
@@ -149,13 +151,12 @@
         "MoldType_required": "Mold Type không được để trống",
         "Inch_required": "Inch không được để trống",
         "MachineType_required": "Machine Type không được để trống",
-        "MachineTon_required":"Machine Ton không được để trống",
+        "MachineTon_required": "Machine Ton không được để trống",
         "ETADate_required": "ETADate không được để trống",
         "Cabity_required": "Cabity không được để trống",
         "ETAStatus_required": "ETAStatus không được để trống",
-        "duplicated_code":"Mold Code đã trùng",
-        "duplicated_serial":"Mold Serial đã trùng"
-
+        "duplicated_code": "Mold Code đã trùng",
+        "duplicated_serial": "Mold Serial đã trùng"
     },
     "staff": {
         "StaffCode": "Mã Nhân Viên",
@@ -163,19 +164,36 @@
         "StaffCode_required": "Mã nhân viên không được để trống",
         "StaffName_required": "Tên nhân viên không được để trống"
     },
-    "tray":{
+    "tray": {
         "TrayCode": "Tray Code",
         "TrayType": "Tray Type",
         "IsReuse": "Is Reuse",
         "TrayCode_required": "Tray Code không được để trống",
         "TrayType_required": "Tray Type không được để trống"
     },
-    "buyer":{
+    "line": {
+        "LineName": "Tên line",
+        "Description": "Mô tả",
+        "IsUsed": "Đang sử dụng",
+        "LineName_required": "Line Name không được để trống"
+    },
+    "buyer": {
         "BuyerCode": "Buyer Code",
         "BuyerName": "Buyer Name",
         "Contact": "Contact",
         "Description": "Description",
         "BuyerCode_required": "Buyer Code không được để trống",
         "BuyerName_required": "Buyer Name không được để trống"
+    },
+    "material": {
+        "MaterialCode": "Material Code",
+        "MaterialType": "Material Type",
+        "Unit": "Unit",
+        "SupplierId": "Supplier",
+        "Description": "Description",
+        "MaterialCode_required": "Material Code không được để trống",
+        "MaterialType_required": "Material Type không được để trống",
+        "Unit_required": "Unit không được để trống",
+        "SupplierId_required": "Supplier không được để trống"
     }
 }
