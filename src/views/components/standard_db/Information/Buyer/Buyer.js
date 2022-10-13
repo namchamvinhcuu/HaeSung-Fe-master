@@ -36,18 +36,18 @@ const Buyer = (props) => {
     })
 
 
-    const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
-    const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
-    const [showActivedData, setShowActivedData] = useState(true);
+    // const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
+    // const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
+     const [showActivedData, setShowActivedData] = useState(true);
 
-    const toggleCreateDialog = () => {
+    // const toggleCreateDialog = () => {
 
-        setIsOpenCreateDialog(!isOpenCreateDialog);
-    }
+    //     setIsOpenCreateDialog(!isOpenCreateDialog);
+    // }
 
-    const toggleModifyDialog = () => {
-        setIsOpenModifyDialog(!isOpenModifyDialog);
-    }
+    // const toggleModifyDialog = () => {
+    //     setIsOpenModifyDialog(!isOpenModifyDialog);
+    // }
 
 
     const [buyerState, setbuyerState] = useState({
@@ -98,7 +98,8 @@ const Buyer = (props) => {
             BuyerName: buyerState.searchData.BuyerName,
             isActived: showActivedData,
         }
-        const res = await buyerService.getBuyerList(params);
+        console.log(params,'dsds');
+       const res = await buyerService.getBuyerList(params);
      
         setbuyerState({
             ...buyerState
@@ -108,39 +109,40 @@ const Buyer = (props) => {
         });
     }
 
-    const handleDeleteBuyer = async (buyer) => {
-        if (window.confirm(intl.formatMessage({ id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
-            try {
-                let res = await buyerService.deleteBuyer(buyer);
-                if (res && res.HttpResponseCode === 200) {
-                    SuccessAlert(intl.formatMessage({ id: 'general.success' }))
-                    await fetchData();
-                }
-                if (res && res.HttpResponseCode === 300) {
-                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+    // const handleDeleteBuyer = async (buyer) => {
+    //     if (window.confirm(intl.formatMessage({ id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
+    //         try {
+    //             let res = await buyerService.deleteBuyer(buyer);
+    //             if (res && res.HttpResponseCode === 200) {
+    //                 SuccessAlert(intl.formatMessage({ id: 'general.success' }))
+    //                 await fetchData();
+    //             }
+    //             if (res && res.HttpResponseCode === 300) {
+    //                 ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
 
-                    return;
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        }
-    }
+    //                 return;
+    //             }
+    //         } catch (error) {
+    //             console.log(error)
+    //         }
+    //     }
+    // }
 
-    const handleshowActivedData = async (event) => {
-        setShowActivedData(event.target.checked);
-        if (!event.target.checked) {
-            setbuyerState({
-                ...buyerState
-                , page: 1
-            });
-        }
-    };
+    // const handleshowActivedData = async (event) => {
+    //     setShowActivedData(event.target.checked);
+    //     if (!event.target.checked) {
+    //         setbuyerState({
+    //             ...buyerState
+    //             , page: 1
+    //         });
+    //     }
+    // };
 
     useEffect(() => {
 
         fetchData();
-    }, [buyerState.page, buyerState.pageSize, showActivedData]); //
+    }, [buyerState.page, buyerState.pageSize,showActivedData]); //, 
+
     useEffect(() => {
         if (!_.isEmpty(newData) && !_.isEqual(newData, BuyerDto)) {
             const data = [newData, ...buyerState.data];
@@ -222,7 +224,7 @@ const Buyer = (props) => {
         { field: 'Description', headerName: intl.formatMessage({ id: "buyer.Description" }), flex: 1, },
         { field: 'createdName', headerName: 'User Create', width: 150, },
         {
-            field: 'createdDate', headerName: intl.formatMessage({ id: "general.created_date" }), flex: 0.3, valueFormatter: params => {
+            field: 'createdDate', headerName: intl.formatMessage({ id: "general.created_date" }), width: 150, valueFormatter: params => {
                 if (params.value !== null) {
                     return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
                 }
@@ -231,7 +233,7 @@ const Buyer = (props) => {
         
         { field: 'modifiedName', headerName: 'User Update', width: 150, },
         {
-            field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modified_date" }), flex: 0.3, valueFormatter: params => {
+            field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modified_date" }), width: 150, valueFormatter: params => {
                 if (params.value !== null) {
                     return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
                 }
@@ -294,7 +296,7 @@ const Buyer = (props) => {
             </Grid>
 
             <MuiDataGrid
-                //getData={buyerService.getBuyerList}
+                getData={buyerService.getBuyerList}
                 showLoading={buyerState.isLoading}
                 isPagingServer={true}
                 headerHeight={45}
@@ -341,28 +343,5 @@ const Buyer = (props) => {
     )
 }
 
-User_Operations.toString = function () {
-    return 'User_Operations';
-}
 
-const mapStateToProps = state => {
-
-    const { User_Reducer: { language } } = CombineStateToProps(state.AppReducer, [
-        [Store.User_Reducer]
-    ]);
-
-    return { language };
-
-};
-
-const mapDispatchToProps = dispatch => {
-
-    const { User_Operations: { changeLanguage } } = CombineDispatchToProps(dispatch, bindActionCreators, [
-        [User_Operations]
-    ]);
-
-    return { changeLanguage }
-
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Buyer);
+export default Buyer;
