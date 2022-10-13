@@ -38,8 +38,6 @@ const CommonMaster = () => {
 
     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false)
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
-    const [showdataHidden, setshowdataHidden] = useState(false)
-
 
 
     const changeSearchData = (e, inputName) => {
@@ -209,6 +207,7 @@ const CommonMaster = () => {
         },
         { field: 'commonMasterName', headerName: 'Common Master Name', flex: 0.3 },
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
+        { field: 'forRoot', headerName: 'forRoot', flex: 0.3 },
 
 
         {
@@ -247,7 +246,7 @@ const CommonMaster = () => {
                     <MuiSearchField
                         label='general.name'
                         name='keyWord'
-                        onClick={showdataHidden ? fetchDataDeleted : fetchData}
+                        onClick={fetchData}
                         onChange={(e) => changeSearchData(e, 'keyWord')}
                     />
                 </Grid>

@@ -2,7 +2,7 @@ import { MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
     Autocomplete,
-    Checkbox, FormControlLabel, Grid, Radio, RadioGroup, TextField
+    Checkbox, FormControlLabel, Grid, RadioGroup, TextField
 } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -11,32 +11,53 @@ import * as yup from 'yup'
 
 import { commonService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
+import { useFormik } from 'formik'
 
 const CreateCommonMasterDialog = (props) => {
     const intl = useIntl();
  
-    const { initModal, isOpen, onClose, setNewData } = props;
 
-    const [parentMenuArr, setParentMenuArr] = useState([]);
+    const { initModal, isOpen, onClose, refreshGrid } = props;
 
     const dataModalRef = useRef({ ...initModal });
-    const clearParent = useRef(null);
+
     const [dialogState, setDialogState] = useState({
-        isSubmit: false
+        ...initModal,
+        isSubmit: false,
     })
+   
 
     const schema = yup.object().shape({
         commonMasterName: yup.string().required(intl.formatMessage({ id: 'general.name' })),
     });
-    const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
-        mode: 'onChange',
-        resolver: yupResolver(schema),
-        defaultValues: {
-            ...initModal
-        },
-    });
 
-  
+    const formik = useFormik({
+        validationSchema: schema,
+        initialValues: { ...initModal },
+        onSubmit: async values => {
+            console.log(values);
+            const res = await commonService.createCommonMaster(values);
+            if (res.HttpResponseCode === 200) {
+                SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+                setDialogState({ ...dialogState, isSubmit: false });
+                refreshGrid()
+                handleCloseDialog();
+            }
+            else {
+                ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+            }
+        }
+    });
+    const {
+        handleChange
+        , handleBlur
+        , handleSubmit
+        , values
+        , errors
+        , setFieldValue
+        , touched
+        , isValid
+    } = formik;
 
     const handleReset = () => {
         reset();
@@ -47,35 +68,35 @@ const CreateCommonMasterDialog = (props) => {
     }
 
     const handleCloseDialog = () => {
-        reset();
-        clearErrors();
+
         setDialogState({
             ...dialogState
-        })
+        });
+        formik.resetForm();
         onClose();
     }
 
-    const onSubmit = async (data) => {
+    // const onSubmit = async (data) => {
     
  
-      dataModalRef.current = { ...initModal, ...data};
-        setDialogState({ ...dialogState, isSubmit: true });
+    //   dataModalRef.current = { ...initModal, ...data};
+    //     setDialogState({ ...dialogState, isSubmit: true });
 
-         const res = await commonService.createCommonMaster(dataModalRef.current);
+    //      const res = await commonService.createCommonMaster(dataModalRef.current);
        
-        if (res.HttpResponseCode === 200 && res.Data) {
-            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-            setNewData({ ...res.Data });
-            setDialogState({ ...dialogState, isSubmit: false });
-            handleReset();
-            handleCloseDialog();
-        }
-        else {
-            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-            setDialogState({ ...dialogState, isSubmit: false });
-        }
+    //     if (res.HttpResponseCode === 200 && res.Data) {
+    //         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+    //         setNewData({ ...res.Data });
+    //         setDialogState({ ...dialogState, isSubmit: false });
+    //         handleReset();
+    //         handleCloseDialog();
+    //     }
+    //     else {
+    //         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //         setDialogState({ ...dialogState, isSubmit: false });
+    //     }
 
-    };
+    // };
 
 
 
@@ -88,7 +109,7 @@ const CreateCommonMasterDialog = (props) => {
             disable_animate={300}
             onClose={handleCloseDialog}
         >
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit}>
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                    
                 <Grid item xs={12}>
@@ -98,16 +119,23 @@ const CreateCommonMasterDialog = (props) => {
                                     autoFocus
                                     fullWidth
                                     size='small'
+                                    disabled={dialogState.isSubmit}
                                     label={intl.formatMessage({ id: 'general.name' })}
-                                  
-                                    name="commonMasterName"
-                                    {...register('commonMasterName', {
-                                    })}
-                                    error={!!errors?.commonMasterName}
-                                    helperText={errors?.commonMasterName ? errors.commonMasterName.message : null}
+                                    name='commonMasterName'
+                                    value={values.commonMasterName}
+                                    onChange={handleChange}
+                                    error={touched.commonMasterName && Boolean(errors.commonMasterName)}
+                                    helperText={touched.commonMasterName && errors.commonMasterName}
                                 />
                             </Grid>
-                        
+                            <Grid item xs={3}>
+                            <FormControlLabel
+                                control={<Checkbox checked={values.forRoot} />}
+                                label='For Root'
+                                name="forRoot"
+                                onChange={formik.handleChange}
+                        />
+                    </Grid>
                         </Grid>
                     </Grid>
 
@@ -120,6 +148,7 @@ const CreateCommonMasterDialog = (props) => {
                                 text="save"
                                 loading={dialogState.isSubmit}
                             />
+                            
                             <MuiResetButton
                                 onClick={handleReset}
                                 disabled={dialogState.isSubmit}
