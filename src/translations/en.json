@@ -48,7 +48,9 @@
         "createdName": "User create",
         "createdDate": "Create date",
         "modifiedName": "User update",
-        "modifiedDate": "Update date"
+        "modifiedDate": "Update date",
+        "duplicated_code":"Duplicated code",
+        "duplicated_name":"Duplicated name"
     },
     "login": {
         "account_password_invalid": "Account/Password is invalid",

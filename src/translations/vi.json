@@ -48,7 +48,9 @@
         "createdName": "Người tạo",
         "createdDate": "Ngày tạo",
         "modifiedName": "Người sửa",
-        "modifiedDate": "Ngày sửa"
+        "modifiedDate": "Ngày sửa",
+        "duplicated_code":"Trùng mã",
+        "duplicated_name":"Trùng tên"
     },
     "login": {
         "account_password_invalid": "Tài khoản/Mật khẩu không hợp lệ",
