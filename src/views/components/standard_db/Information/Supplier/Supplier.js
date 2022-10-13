@@ -272,14 +272,14 @@ const Supplier = (props) => {
                 page={supplierState.page - 1}
                 pageSize={supplierState.pageSize}
                 rowCount={supplierState.totalRow}
-                rowsPerPageOptions={[5, 10, 20, 30]}
+                // rowsPerPageOptions={[5, 10, 20, 30]}
 
                 onPageChange={(newPage) => {
                     setSupplierState({ ...supplierState, page: newPage + 1 });
                 }}
-                onPageSizeChange={(newPageSize) => {
-                    setSupplierState({ ...supplierState, pageSize: newPageSize, page: 1 });
-                }}
+                // onPageSizeChange={(newPageSize) => {
+                //     setSupplierState({ ...supplierState, pageSize: newPageSize, page: 1 });
+                // }}
                 getRowId={(rows) => rows.SupplierId}
                 onSelectionModelChange={(newSelectedRowId) => {
                     handleRowSelection(newSelectedRowId)
