@@ -66,6 +66,7 @@ const CreateStaffDialog = (props) => {
         resetForm();
         onClose();
     }
+    
 
     return (
         <MuiDialog
