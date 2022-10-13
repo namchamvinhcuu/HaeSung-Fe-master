@@ -16,7 +16,7 @@ import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
 import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
 import moment from "moment"
-import ProductDto from "@models"
+import { ProductDto } from "@models"
 import EditIcon from '@mui/icons-material/Edit'
 import UndoIcon from '@mui/icons-material/Undo';
 import CreateDialog from './CreateProductDialog'
@@ -47,7 +47,7 @@ const Product = () => {
             showDelete: true
         }
     });
-  
+
     const [selectedRow, setSelectedRow] = useState({
         ...ProductDto
     })
@@ -142,7 +142,7 @@ const Product = () => {
             , isLoading: false
         });
     }
-    
+
     const handleRowSelection = (arrIds) => {
 
         const rowSelected = productState.data.filter(function (item) {
@@ -235,13 +235,13 @@ const Product = () => {
                 );
             },
         },
-        { field: 'ModelName',headerName: intl.formatMessage({ id: "product.Model" }), flex: 0.3 },
+        { field: 'ModelName', headerName: intl.formatMessage({ id: "product.Model" }), flex: 0.3 },
         { field: 'Model', headerName: 'Model', flex: 0.3, hide: true },
         { field: 'ProductCode', headerName: 'Product Code', flex: 0.3 },
         { field: 'ProductType', headerName: 'Product Type', flex: 0.3, hide: true },
-        { field: 'ProductTypeName', headerName: intl.formatMessage({ id: "product.product_type" }) ,flex: 0.3 },
-        { field: 'Description', headerName: intl.formatMessage({ id: "product.Description" }) , flex: 0.3 },
-        { field: 'Inch', headerName: intl.formatMessage({ id: "product.Inch" }) , flex: 0.3 },
+        { field: 'ProductTypeName', headerName: intl.formatMessage({ id: "product.product_type" }), flex: 0.3 },
+        { field: 'Description', headerName: intl.formatMessage({ id: "product.Description" }), flex: 0.3 },
+        { field: 'Inch', headerName: intl.formatMessage({ id: "product.Inch" }), flex: 0.3 },
 
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
         {
@@ -267,116 +267,116 @@ const Product = () => {
 
     return (
         <React.Fragment>
-                <Grid container direction="row"
-                    justifyContent="space-between"
-                    alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+            <Grid container direction="row"
+                justifyContent="space-between"
+                alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
 
-                    <Grid item xs={2}>
-                        <MuiButton
-                            text="create"
-                            color='success'
-                            onClick={toggleCreateDialog}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <Autocomplete
-                            fullWidth
-                            size='small'
-                            options={modelArr}
-                            autoHighlight
-                            openOnFocus
-                            getOptionLabel={option => option.commonDetailName}
-                            isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
-                            onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Model')}
-                            renderInput={(params) => {
-                                return <TextField {...params} label={intl.formatMessage({ id: 'product.Model' })} variant="standard" sx={{ width: 200 }} />
-                            }}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <TextField
-                            sx={{ width: 200 }}
-                            fullWidth
-                            variant="standard"
-                            size='small'
-                            label='Product Code'
-                            onChange={(e) => handleSearch(e.target.value, 'ProductCode')}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <Autocomplete
-                            fullWidth
-                            size='small'
-                            options={productTypeArr}
-                            autoHighlight
-                            openOnFocus
-                            getOptionLabel={option => option.commonDetailName}
-                            isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
-                            onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'ProductType')}
-                            renderInput={(params) => {
-                                return <TextField {...params} label={intl.formatMessage({ id: 'product.product_type' })} variant="standard" sx={{ width: 200 }} />
-                            }}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <TextField
-                            sx={{ width: 200 }}
-                            fullWidth
-                            variant="standard"
-                            size='small'
-                            label={intl.formatMessage({ id: 'product.Description' })}
-                            onChange={(e) => handleSearch(e.target.value, 'Description')}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <FormControlLabel
-                            sx={{ mb: 0 }}
-                            control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
-                            label={productState.searchData.showDelete ? "Active Data" : "Delete Data"} />
-                    </Grid>
-                    <Grid item>
+                <Grid item xs={2}>
+                    <MuiButton
+                        text="create"
+                        color='success'
+                        onClick={toggleCreateDialog}
+                    />
+                </Grid>
+                <Grid item>
+                    <Autocomplete
+                        fullWidth
+                        size='small'
+                        options={modelArr}
+                        autoHighlight
+                        openOnFocus
+                        getOptionLabel={option => option.commonDetailName}
+                        isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
+                        onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Model')}
+                        renderInput={(params) => {
+                            return <TextField {...params} label={intl.formatMessage({ id: 'product.Model' })} variant="standard" sx={{ width: 200 }} />
+                        }}
+                    />
+                </Grid>
+                <Grid item>
+                    <TextField
+                        sx={{ width: 200 }}
+                        fullWidth
+                        variant="standard"
+                        size='small'
+                        label='Product Code'
+                        onChange={(e) => handleSearch(e.target.value, 'ProductCode')}
+                    />
+                </Grid>
+                <Grid item>
+                    <Autocomplete
+                        fullWidth
+                        size='small'
+                        options={productTypeArr}
+                        autoHighlight
+                        openOnFocus
+                        getOptionLabel={option => option.commonDetailName}
+                        isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
+                        onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'ProductType')}
+                        renderInput={(params) => {
+                            return <TextField {...params} label={intl.formatMessage({ id: 'product.product_type' })} variant="standard" sx={{ width: 200 }} />
+                        }}
+                    />
+                </Grid>
+                <Grid item>
+                    <TextField
+                        sx={{ width: 200 }}
+                        fullWidth
+                        variant="standard"
+                        size='small'
+                        label={intl.formatMessage({ id: 'product.Description' })}
+                        onChange={(e) => handleSearch(e.target.value, 'Description')}
+                    />
+                </Grid>
+                <Grid item>
+                    <FormControlLabel
+                        sx={{ mb: 0 }}
+                        control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
+                        label={productState.searchData.showDelete ? "Active Data" : "Delete Data"} />
+                </Grid>
+                <Grid item>
                     <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0 }} />
                 </Grid>
-                </Grid>
-                <MuiDataGrid
-                    getData={productService.getProductList}
-                    showLoading={productState.isLoading}
-                    isPagingServer={true}
-                    headerHeight={45}
-                    columns={columns}
-                    gridHeight={736}
-                    rows={productState.data}
-                    page={productState.page - 1}
-                    pageSize={productState.pageSize}
-                    rowCount={productState.totalRow}
+            </Grid>
+            <MuiDataGrid
+                getData={productService.getProductList}
+                showLoading={productState.isLoading}
+                isPagingServer={true}
+                headerHeight={45}
+                columns={columns}
+                gridHeight={736}
+                rows={productState.data}
+                page={productState.page - 1}
+                pageSize={productState.pageSize}
+                rowCount={productState.totalRow}
 
-                    rowsPerPageOptions={[5, 10, 20]}
-                    onPageChange={(newPage) => setproductState({ ...productState, page: newPage + 1 })}
-                    onPageSizeChange={(newPageSize) => setproductState({ ...productState, pageSize: newPageSize, page: 1 })}
+                rowsPerPageOptions={[5, 10, 20]}
+                onPageChange={(newPage) => setproductState({ ...productState, page: newPage + 1 })}
+                onPageSizeChange={(newPageSize) => setproductState({ ...productState, pageSize: newPageSize, page: 1 })}
 
-                    onSelectionModelChange={(newSelectedRowId) => {
-                        handleRowSelection(newSelectedRowId)
-                    }}
-                    getRowId={(rows) => rows.ProductId}
-                    getRowClassName={(params) => {
-                        if (_.isEqual(params.row, newData)) {
-                            return `Mui-created`
-                        }
-                    }}
-                />
+                onSelectionModelChange={(newSelectedRowId) => {
+                    handleRowSelection(newSelectedRowId)
+                }}
+                getRowId={(rows) => rows.ProductId}
+                getRowClassName={(params) => {
+                    if (_.isEqual(params.row, newData)) {
+                        return `Mui-created`
+                    }
+                }}
+            />
 
-                <CreateDialog
-                    initModal={ProductDto}
-                    setNewData={setNewData}
-                    isOpen={isOpenCreateDialog}
-                    onClose={toggleCreateDialog}
-                />
-                <ModifyDialog
-                    initModal={selectedRow}
-                    setModifyData={setSelectedRow}
-                    isOpen={isOpenModifyDialog}
-                    onClose={toggleModifyDialog}
-                />
+            <CreateDialog
+                initModal={ProductDto}
+                setNewData={setNewData}
+                isOpen={isOpenCreateDialog}
+                onClose={toggleCreateDialog}
+            />
+            <ModifyDialog
+                initModal={selectedRow}
+                setModifyData={setSelectedRow}
+                isOpen={isOpenModifyDialog}
+                onClose={toggleModifyDialog}
+            />
         </React.Fragment >
     )
 }

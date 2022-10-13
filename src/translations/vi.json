@@ -50,7 +50,9 @@
         "modifiedName": "Người sửa",
         "modifiedDate": "Ngày sửa",
         "duplicated_code": "Trùng mã",
-        "duplicated_name": "Trùng tên"
+        "duplicated_name": "Trùng tên",
+        "data_actived":"Actived data",
+        "data_deleted":"Deleted data"
     },
     "login": {
         "account_password_invalid": "Tài khoản/Mật khẩu không hợp lệ",

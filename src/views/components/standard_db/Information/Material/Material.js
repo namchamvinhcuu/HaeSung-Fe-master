@@ -218,8 +218,6 @@ export default function Material() {
     }
   }
 
-
-
   return (
     <React.Fragment>
       <Grid container
@@ -279,7 +277,7 @@ export default function Material() {
           <FormControlLabel
             sx={{ mt: 1 }}
             control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
-            label={state.searchData.showDelete ? "Active Data" : "Delete Data"} />
+            label={intl.formatMessage({ id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted' })} />
         </Grid>
       </Grid>
       <MuiDataGrid
