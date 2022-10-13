@@ -78,22 +78,22 @@ export default function Tray() {
         );
       },
     },
-    { field: 'TrayCode', headerName: intl.formatMessage({ id: "tray.TrayCode" }), flex: 0.5, },
-    { field: 'TrayTypeName', headerName: intl.formatMessage({ id: "tray.TrayType" }), flex: 0.5, },
-    {
-      field: 'IsReuse', headerName: intl.formatMessage({ id: "tray.IsReuse" }), flex: 0.5, align: 'center',
-      renderCell: params => params.row.ETAStatus ? "Y" : "N"
-    },
-    { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
-    {
-      field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.5,
-      valueFormatter: params => params?.value ? moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss") : null
-    },
-    { field: 'modifiedName', headerName: intl.formatMessage({ id: "general.modifiedName" }), flex: 0.5, },
-    {
-      field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modifiedDate" }), flex: 0.5,
-      valueFormatter: params => params?.value ? moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss") : null
-    },
+    // { field: 'TrayCode', headerName: intl.formatMessage({ id: "tray.TrayCode" }), flex: 0.5, },
+    // { field: 'TrayTypeName', headerName: intl.formatMessage({ id: "tray.TrayType" }), flex: 0.5, },
+    // {
+    //   field: 'IsReuse', headerName: intl.formatMessage({ id: "tray.IsReuse" }), flex: 0.5, align: 'center',
+    //   renderCell: params => params.row.ETAStatus ? "Y" : "N"
+    // },
+    // { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
+    // {
+    //   field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.5,
+    //   valueFormatter: params => params?.value ? moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss") : null
+    // },
+    // { field: 'modifiedName', headerName: intl.formatMessage({ id: "general.modifiedName" }), flex: 0.5, },
+    // {
+    //   field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modifiedDate" }), flex: 0.5,
+    //   valueFormatter: params => params?.value ? moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss") : null
+    // },
   ];
 
   //useEffect
@@ -131,7 +131,7 @@ export default function Tray() {
     }
   }, [updateData]);
 
-  //handle 
+  //handle
   const handleDelete = async (tray) => {
     if (window.confirm(intl.formatMessage({ id: tray.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
       try {
@@ -174,7 +174,7 @@ export default function Tray() {
   }
 
   const handleCellClick = (param, event) => {
-    //disable click cell 
+    //disable click cell
     event.defaultMuiPrevented = (param.field === "action");
   };
 
@@ -220,7 +220,7 @@ export default function Tray() {
 
   return (
     <React.Fragment>
-      <Grid container
+      {/* <Grid container
         direction="row"
         justifyContent="space-between"
         alignItems="width-end">
@@ -257,7 +257,7 @@ export default function Tray() {
             control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
             label={trayState.searchData.showDelete ? "Active Data" : "Delete Data"} />
         </Grid>
-      </Grid>
+      </Grid> */}
       <MuiDataGrid
         showLoading={trayState.isLoading}
         isPagingServer={true}
