@@ -7,6 +7,7 @@ import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils'
 import config from './config'
 import { FormattedMessage, useIntl } from 'react-intl'
 
+import { firstLogin, login } from "@utils";
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { historyApp } from '@utils';
 
@@ -104,10 +105,14 @@ instance.interceptors.response.use(
     (response) => {
         // Thrown error for request with OK status code
         const { data } = response
-        if (data.ResponseMessage === 'login.lost_authorization') {
-            // ErrorAlert(<FormattedMessage id="login.lost_authorization" />);
+        if (data.HttpResponseCode === 401 && data.ResponseMessage === 'login.lost_authorization') {
+
+            ErrorAlert(<FormattedMessage id="login.lost_authorization" />);
             instance.Logout();
-            return response.data;
+        }
+
+        if (data.ResponseMessage === 'general.unauthorized') {
+            instance.Logout(data.ResponseMessage);
         }
 
         return response.data;
@@ -191,10 +196,12 @@ instance.getNewAccessToken = async () => {
         return false;
 }
 
-instance.Logout = async () => {
+instance.Logout = async (e) => {
     RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
     RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
     RemoveLocalStorage(ConfigConstants.CURRENT_USER);
+    firstLogin.isfirst = false;
+    ErrorAlert(e)
     historyApp.push("/logout");
 }
 
