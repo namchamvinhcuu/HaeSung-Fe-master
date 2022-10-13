@@ -29,11 +29,11 @@ const modifyCommonMaster = async (params) => {
     } catch (error) {
         console.log(`ERROR: ${error}`);
     }
-}
+} 
 const deleteCommonMater = async (params) => {
 
     try {
-        return await axios.delete('/api/CommonMaster/delete-commonmaster/' + params.commonMasterId, {
+        return await axios.delete('/api/CommonMaster/delete-commonmaster/', { data: params }, {
          
         });
     } catch (error) {

@@ -15,14 +15,13 @@ import CreateCommonMasterDialog from './CreateCommonMasterDialog'
 import ModifyCommonMasterDialog from './ModifyCommonMasterDialog'
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Box from "@mui/material/Box";
 import UndoIcon from '@mui/icons-material/Undo';
 const CommonMaster = () => {
     const intl = useIntl();
     const initCommonMasterModel = {
         commonMasterId: 0
         , commonMasterName: ''
+        , forRoot: false
     }
     const [commomMasterState, setcommomMasterState] = useState({
         isLoading: false,
@@ -52,7 +51,6 @@ const CommonMaster = () => {
     const [selectedRow, setSelectedRow] = useState({
         ...initCommonMasterModel
     })
-
     const [newData, setNewData] = useState({ ...initCommonMasterModel })
 
     const toggleCreateCommonMSDialog = () => {
@@ -80,10 +78,7 @@ const CommonMaster = () => {
     }
     const [rowmaster, setRowmaster] = useState(null);
     const master_row_click = (row) => {
-
-        // console.log(row, 'row');
         setRowmaster(row);
-
     }
     async function fetchData() {
         setcommomMasterState({
@@ -157,6 +152,22 @@ const CommonMaster = () => {
             setcommomMasterState({ ...commomMasterState, searchData: { ...newSearchData } })
         }
     }
+    const handleDeleteCommonMS = async (row) => {
+        if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
+            try {
+                let res = await commonService.deleteCommonMater({commonMasterId :row.commonMasterId,row_version: row.row_version });
+                if (res && res.HttpResponseCode === 200) {
+                    await fetchData();
+                }
+                if (res && res.HttpResponseCode === 300) {
+                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+                   // await fetchData();
+                }
+            } catch (error) {
+
+            }
+        }
+    };
 
     const columns = [
         { field: 'commonMasterId', headerName: '', flex: 0.3, hide: true },
@@ -169,7 +180,6 @@ const CommonMaster = () => {
             field: "action",
             headerName: "",
             flex: 0.1,
-            // headerAlign: 'center',
             disableClickEventBubbling: true,
             sortable: false,
             disableColumnMenu: true,
@@ -195,7 +205,7 @@ const CommonMaster = () => {
                                 color="error"
                                 size="small"
                                 sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                                onClick={() => handleRedoDeleteCommonMS(params.row)}
+                                onClick={() => handleDeleteCommonMS(params.row)}
                             >
                                 {params.row.isActived ? <DeleteIcon fontSize="inherit" /> :
                                     <UndoIcon fontSize="inherit" />}
@@ -207,14 +217,14 @@ const CommonMaster = () => {
         },
         { field: 'commonMasterName', headerName: 'Common Master Name', flex: 0.3 },
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
-        { field: 'forRoot', headerName: 'forRoot', flex: 0.3 },
+        { field: 'forRoot', headerName: 'For Root', flex: 0.3 },
 
 
         {
             field: 'createdDate', headerName: 'Created Date', flex: 0.3,
             valueFormatter: params => {
                 if (params.value !== null) {
-                    return moment(params?.value).format("YYYY-MM-DD HH:mm:ss")
+                    return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
                 }
             },
         },
@@ -223,12 +233,13 @@ const CommonMaster = () => {
             field: 'modifiedDate', headerName: 'Modified Date', flex: 0.3,
             valueFormatter: params => {
                 if (params.value !== null) {
-                    return moment(params?.value).format("YYYY-MM-DD HH:mm:ss")
+                    return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
                 }
             },
         },
 
         { field: 'modifiedBy', headerName: 'modifiedBy', flex: 0.3, hide: true },
+        { field: 'row_version', headerName: 'row_version', flex: 0.3, hide: true  },
     ];
 
     return (
@@ -257,9 +268,8 @@ const CommonMaster = () => {
                         label={commomMasterState.searchData.showDelete ? "Active Data" : "Delete Data"} />
                 </Grid>
             </Grid>
-            {commomMasterState.data &&
+   
                 <MuiDataGrid
-                    getData={commonService.getCommonMasterList}
                     showLoading={commomMasterState.isLoading}
                     isPagingServer={true}
                     headerHeight={45}
@@ -269,16 +279,15 @@ const CommonMaster = () => {
                     page={commomMasterState.page - 1}
                     pageSize={commomMasterState.pageSize}
                     rowCount={commomMasterState.totalRow}
+
                     onRowClick={(params, event) => {
                         master_row_click && master_row_click(params.row);
                     }}
                     rowsPerPageOptions={[5, 10, 20, 30]}
-                    onPageChange={(newPage) => {
-                        setcommomMasterState({ ...commomMasterState, page: newPage + 1 });
-                    }}
-                    onPageSizeChange={(newPageSize) => {
-                        setcommomMasterState({ ...commomMasterState, pageSize: newPageSize, page: 1 });
-                    }}
+                 
+                    onPageChange={(newPage) => setcommomMasterState({ ...commomMasterState, page: newPage + 1 })}
+                    onPageSizeChange={(newPageSize) => setcommomMasterState({ ...commomMasterState, pageSize: newPageSize, page: 1 })}
+
                     getRowId={(rows) => rows.commonMasterId}
                     onSelectionModelChange={(newSelectedRowId) => {
                         handleRowSelection(newSelectedRowId)
@@ -289,7 +298,6 @@ const CommonMaster = () => {
                         }
                     }}
                 />
-            }
 
             <CreateCommonMasterDialog
                 initModal={initCommonMasterModel}
@@ -312,4 +320,5 @@ const CommonMaster = () => {
     )
 }
 
-export default CommonMaster
+
+export default (CommonMaster)
