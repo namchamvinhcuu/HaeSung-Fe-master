@@ -45,9 +45,9 @@
         "confirm_redo_deleted": "Confirm to redo deleted",
         "description": "Description",
         "model": "model",
-        "createdName": "User create",
+        "createdName": "User created",
         "createdDate": "Create date",
-        "modifiedName": "User update",
+        "modifiedName": "User updated",
         "modifiedDate": "Update date"
     },
     "login": {
@@ -149,12 +149,12 @@
         "MoldType_required": "Mold Type required",
         "Inch_required": "Inch required",
         "MachineType_required": "Machine Type required",
-        "MachineTon_required":"Machine Ton required",
+        "MachineTon_required": "Machine Ton required",
         "ETADate_required": "ETA Date required",
         "Cabity_required": "Cabity required",
         "ETAStatus_required": "ETA Status required",
-        "duplicated_code":"Mold Code duplicated",
-        "duplicated_serial":"Mold Serial duplicated"
+        "duplicated_code": "Mold Code duplicated",
+        "duplicated_serial": "Mold Serial duplicated"
     },
     "staff": {
         "StaffCode": "Staff Code",
@@ -162,11 +162,17 @@
         "StaffCode_required": "Staff Code cannot be blank",
         "StaffName_required": "Staff Name cannot be blank"
     },
-    "tray":{
+    "tray": {
         "TrayCode": "Tray Code",
         "TrayType": "Tray Type",
         "IsReuse": "Is Reuse",
         "TrayCode_required": "Tray Code is required",
         "TrayType_required": "Tray Type is required"
+    },
+    "line": {
+        "LineName": "Line Name",
+        "Description": "Description",
+        "IsUsed": "Using",
+        "LineName_required": "Line Name is required"
     }
 }

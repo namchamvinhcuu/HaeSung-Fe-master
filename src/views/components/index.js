@@ -30,6 +30,7 @@ import Staff from "./standard_db/Information/Staff/Staff";
 import Supplier from "./standard_db/Information/Supplier/Supplier";
 import Tray from "./standard_db/Information/Tray/Tray";
 import Buyer from "./standard_db/Information/Buyer/Buyer";
+import Line from "./standard_db/Information/Line/Line";
 
 //KPI
 import Analytics from "./KPI/Analytics/Analytics";
@@ -93,6 +94,7 @@ export {
   Supplier,
   Tray,
   Buyer,
+  Line,
 
   //KPI
   Analytics,

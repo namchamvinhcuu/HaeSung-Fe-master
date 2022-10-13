@@ -149,13 +149,12 @@
         "MoldType_required": "Mold Type không được để trống",
         "Inch_required": "Inch không được để trống",
         "MachineType_required": "Machine Type không được để trống",
-        "MachineTon_required":"Machine Ton không được để trống",
+        "MachineTon_required": "Machine Ton không được để trống",
         "ETADate_required": "ETADate không được để trống",
         "Cabity_required": "Cabity không được để trống",
         "ETAStatus_required": "ETAStatus không được để trống",
-        "duplicated_code":"Mold Code đã trùng",
-        "duplicated_serial":"Mold Serial đã trùng"
-
+        "duplicated_code": "Mold Code đã trùng",
+        "duplicated_serial": "Mold Serial đã trùng"
     },
     "staff": {
         "StaffCode": "Mã Nhân Viên",
@@ -163,11 +162,17 @@
         "StaffCode_required": "Mã nhân viên không được để trống",
         "StaffName_required": "Tên nhân viên không được để trống"
     },
-    "tray":{
+    "tray": {
         "TrayCode": "Tray Code",
         "TrayType": "Tray Type",
         "IsReuse": "Is Reuse",
         "TrayCode_required": "Tray Code không được để trống",
         "TrayType_required": "Tray Type không được để trống"
+    },
+    "line": {
+        "LineName": "Tên line",
+        "Description": "Mô tả",
+        "IsUsed": "Đang sử dụng",
+        "LineName_required": "Line Name không được để trống"
     }
 }
