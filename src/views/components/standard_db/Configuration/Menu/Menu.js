@@ -254,14 +254,27 @@ const Menu = (props) => {
                     />
                 </Grid>
                 <Grid item xs>
-                    <MuiSearchField
-                        label='general.name'
-                        name='keyWord'
-                        onClick={fetchData}
-                        onChange={(e) => changeSearchData(e, 'keyWord')}
-                    />
+                    <Grid container columnSpacing={2}
+                        direction="row"
+                        justifyContent="flex-end"
+                        alignItems="flex-end">
+                        <Grid item xs={8}>
+                            <MuiSearchField
+                                label='general.name'
+                                name='keyWord'
+                                onClick={fetchData}
+                                onChange={(e) => changeSearchData(e, 'keyWord')}
+                            />
+                        </Grid>
+                        <Grid item xs>
+                            <MuiButton
+                                text="search"
+                                color='info'
+                                onClick={fetchData}
+                            />
+                        </Grid>
+                    </Grid>
                 </Grid>
-
             </Grid>
 
             <MuiDataGrid
@@ -294,15 +307,8 @@ const Menu = (props) => {
                         return `Mui-created`
                     }
                 }}
-            // 
             />
 
-            {/* {isOpenCreateDialog && <CreateMenuDialog
-                    initModal={initMenuModel}
-                    setNewData={setNewData}
-                    isOpen={isOpenCreateDialog}
-                    onClose={toggleCreateMenuDialog}
-                />} */}
             {/* <CreateMenuDialog
                 initModal={initMenuModel}
                 setNewData={setNewData}
@@ -323,7 +329,7 @@ const Menu = (props) => {
                 isOpen={isOpenModifyDialog}
                 onClose={toggleModifyMenuDialog}
             />
-        </React.Fragment>
+        </React.Fragment >
     )
 }
 
