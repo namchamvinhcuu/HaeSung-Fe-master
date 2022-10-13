@@ -27,7 +27,7 @@ const Permission = () => {
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 50,
+        pageSize: 20,
         searchData: {
             keyWord: null
         }
@@ -85,12 +85,10 @@ const Permission = () => {
     }
 
     useEffect(() => {
-
         fetchData();
     }, [menuState.page, menuState.pageSize]);
 
     useEffect(() => {
-
         const data = [newData, ...menuState.data]
         data.pop();
         setMenuState({
@@ -167,69 +165,69 @@ const Permission = () => {
 
     return (
         <React.Fragment>
-                <Grid
-                    container
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="flex-end"
-                >
-                    <Grid item xs={6}>
-                        <MuiButton
-                            text="create"
-                            color='success'
-                            onClick={toggleCreatePermissionDialog}
-                        />
-                    </Grid>
-                    <Grid item xs>
-                        <MuiSearchField
-                            label='permission.permissionName'
-                            name='keyWord'
-                            onClick={fetchData}
-                            onChange={(e) => changeSearchData(e.target.value, 'keyWord')}
-                        />
-                    </Grid>
-
+            <Grid
+                container
+                direction="row"
+                justifyContent="space-between"
+                alignItems="flex-end"
+            >
+                <Grid item xs={6}>
+                    <MuiButton
+                        text="create"
+                        color='success'
+                        onClick={toggleCreatePermissionDialog}
+                    />
                 </Grid>
-                <MuiDataGrid
-                    showLoading={menuState.isLoading}
-                    isPagingServer={true}
-                    headerHeight={45}
-                    columns={columns}
-                    rows={menuState.data}
-                    page={menuState.page - 1}
-                    pageSize={menuState.pageSize}
-                    rowCount={menuState.totalRow}
-                    rowsPerPageOptions={[50, 100, 200]}
+                <Grid item xs>
+                    <MuiSearchField
+                        label='permission.permissionName'
+                        name='keyWord'
+                        onClick={fetchData}
+                        onChange={(e) => changeSearchData(e.target.value, 'keyWord')}
+                    />
+                </Grid>
 
-                    onPageChange={(newPage) => {
-                        setMenuState({ ...menuState, page: newPage + 1 });
-                    }}
-                    onPageSizeChange={(newPageSize) => {
-                        setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
-                    }}
-                    getRowId={(rows) => rows.permissionId}
-                    onSelectionModelChange={(newSelectedRowId) => {
-                        handleRowSelection(newSelectedRowId)
-                    }}
+            </Grid>
+            <MuiDataGrid
+                showLoading={menuState.isLoading}
+                isPagingServer={true}
+                headerHeight={45}
+                columns={columns}
+                rows={menuState.data}
+                page={menuState.page - 1}
+                pageSize={menuState.pageSize}
+                rowCount={menuState.totalRow}
+                // rowsPerPageOptions={[50, 100, 200]}
 
-                    getRowClassName={(params) => {
-                        if (_.isEqual(params.row, newData)) {
-                            return `Mui-created`
-                        }
-                    }}
-                />
-                <CreatePermissionDialog
-                    initModal={initPermissionModel}
-                    refreshGrid={fetchData}
-                    isOpen={isOpenCreateDialog}
-                    onClose={toggleCreatePermissionDialog}
-                />
-                {isOpenModifyDialog && <ModifyPermissionDialog
-                    initModal={selectedRow}
-                    setModifyData={setSelectedRow}
-                    isOpen={isOpenModifyDialog}
-                    onClose={toggleModifyPermissionDialog}
-                />}
+                onPageChange={(newPage) => {
+                    setMenuState({ ...menuState, page: newPage + 1 });
+                }}
+                // onPageSizeChange={(newPageSize) => {
+                //     setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
+                // }}
+                getRowId={(rows) => rows.permissionId}
+                onSelectionModelChange={(newSelectedRowId) => {
+                    handleRowSelection(newSelectedRowId)
+                }}
+
+                getRowClassName={(params) => {
+                    if (_.isEqual(params.row, newData)) {
+                        return `Mui-created`
+                    }
+                }}
+            />
+            <CreatePermissionDialog
+                initModal={initPermissionModel}
+                refreshGrid={fetchData}
+                isOpen={isOpenCreateDialog}
+                onClose={toggleCreatePermissionDialog}
+            />
+            {isOpenModifyDialog && <ModifyPermissionDialog
+                initModal={selectedRow}
+                setModifyData={setSelectedRow}
+                isOpen={isOpenModifyDialog}
+                onClose={toggleModifyPermissionDialog}
+            />}
         </React.Fragment>
 
     )

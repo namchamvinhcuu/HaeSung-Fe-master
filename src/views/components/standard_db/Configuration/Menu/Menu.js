@@ -329,7 +329,7 @@ const Menu = (props) => {
                 isOpen={isOpenModifyDialog}
                 onClose={toggleModifyMenuDialog}
             />
-        </React.Fragment >
+        </React.Fragment>
     )
 }
 

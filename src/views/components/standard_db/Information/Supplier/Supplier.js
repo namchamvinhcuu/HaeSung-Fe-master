@@ -261,7 +261,6 @@ const Supplier = (props) => {
             </Grid>
 
             <MuiDataGrid
-                // ref={menuGridRef}
                 showLoading={supplierState.isLoading}
                 isPagingServer={true}
                 headerHeight={45}
