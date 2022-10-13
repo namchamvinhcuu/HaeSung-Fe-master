@@ -187,7 +187,7 @@ const Line = (props) => {
                                 color="error"
                                 size="small"
                                 sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                                onClick={() => handleDeleteSupplier(params.row)}
+                                onClick={() => handleDelete(params.row)}
                             >
                                 {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
                             </IconButton>
