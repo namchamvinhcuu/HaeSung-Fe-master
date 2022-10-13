@@ -3,7 +3,7 @@ const MenuDto = {
     , parentId: 0
     , menuName: ''
     , menuLevel: '3'
-    , sortOrder: ''
+    , sortOrder: 0
     , menuIcon: ''
     , languageKey: ''
     , menuComponent: ''

@@ -52,12 +52,10 @@ const Menu = (props) => {
     const [newData, setNewData] = useState({ ...initMenuModel })
 
     const toggleCreateMenuDialog = () => {
-        // setMenuState({ ...menuState, isOpenCreateDialog: !menuState.isOpenCreateDialog });
         setIsOpenCreateDialog(!isOpenCreateDialog);
     }
 
     const toggleModifyMenuDialog = () => {
-        // setMenuState({ ...menuState, isOpenModifyDialog: !menuState.isOpenModifyDialog });
         setIsOpenModifyDialog(!isOpenModifyDialog);
     }
 
@@ -278,14 +276,14 @@ const Menu = (props) => {
                 page={menuState.page - 1}
                 pageSize={menuState.pageSize}
                 rowCount={menuState.totalRow}
-                rowsPerPageOptions={[5, 10, 20, 30]}
-
+                // rowsPerPageOptions={[5, 10, 20, 30]}
+                disableGrid={menuState.isLoading}
                 onPageChange={(newPage) => {
                     setMenuState({ ...menuState, page: newPage + 1 });
                 }}
-                onPageSizeChange={(newPageSize) => {
-                    setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
-                }}
+                // onPageSizeChange={(newPageSize) => {
+                //     setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
+                // }}
                 getRowId={(rows) => rows.menuId}
                 onSelectionModelChange={(newSelectedRowId) => {
                     handleRowSelection(newSelectedRowId)

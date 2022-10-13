@@ -18,8 +18,11 @@ import StaffDto from "@models"
 import EditIcon from '@mui/icons-material/Edit'
 import moment from "moment";
 import CreateStaffDialog from './CreateStaffDialog'
+import ModifyStaffDialog from './ModifyStaffDialog'
 import _ from 'lodash'
 import { FormControlLabel, Switch } from "@mui/material"
+import UndoIcon from '@mui/icons-material/Undo'
+import { ErrorAlert, SuccessAlert } from '@utils'
 
 
 const Staff = (props) => {
@@ -39,12 +42,18 @@ const Staff = (props) => {
 
 
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
+    const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
+    const [showActivedData, setShowActivedData] = useState(true);
+
     const toggleCreateDialog = () => {
 
         setIsOpenCreateDialog(!isOpenCreateDialog);
     }
 
-    
+    const toggleModifyDialog = () => {
+        setIsOpenModifyDialog(!isOpenModifyDialog);
+    }
+
 
     const [staffState, setstaffState] = useState({
         isLoading: false,
@@ -74,6 +83,13 @@ const Staff = (props) => {
 
     }
 
+    const changeSearchData = (e, inputName) => {
+        let newSearchData = { ...staffState.searchData };
+        newSearchData[inputName] = e.target.value;
+
+        setstaffState({ ...staffState, searchData: { ...newSearchData } })
+    }
+
     async function fetchData() {
         setstaffState({
             ...staffState
@@ -85,7 +101,7 @@ const Staff = (props) => {
             pageSize: staffState.pageSize,
             StaffCode: staffState.searchData.StaffCode,
             StaffName: staffState.searchData.StaffName,
-            //isActived: showActivedData,
+            isActived: showActivedData,
         }
         const res = await staffService.getStaffList(params);
      
@@ -97,13 +113,39 @@ const Staff = (props) => {
         });
     }
 
-    // useEffect(() => {
-    //     console.log(staffState.data)
-    // }, [staffState.data]);
+    const handleDeleteStaff = async (staff) => {
+        if (window.confirm(intl.formatMessage({ id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
+            try {
+                let res = await staffService.deleteStaff(staff);
+                if (res && res.HttpResponseCode === 200) {
+                    SuccessAlert(intl.formatMessage({ id: 'general.success' }))
+                    await fetchData();
+                }
+                if (res && res.HttpResponseCode === 300) {
+                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+
+                    return;
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    }
+
+    const handleshowActivedData = async (event) => {
+        setShowActivedData(event.target.checked);
+        if (!event.target.checked) {
+            setstaffState({
+                ...staffState
+                , page: 1
+            });
+        }
+    };
+
     useEffect(() => {
 
         fetchData();
-    }, [staffState.page, staffState.pageSize]); //, showActivedData
+    }, [staffState.page, staffState.pageSize, showActivedData]); //
     useEffect(() => {
         if (!_.isEmpty(newData) && !_.isEqual(newData, StaffDto)) {
             const data = [newData, ...staffState.data];
@@ -158,7 +200,7 @@ const Staff = (props) => {
                                 color="warning"
                                 size="small"
                                 sx={[{ '&:hover': { border: '1px solid orange', }, }]}
-                                //onClick={toggleModifyDialog}
+                                onClick={toggleModifyDialog}
                             >
                                 <EditIcon fontSize="inherit" />
                             </IconButton>
@@ -170,9 +212,9 @@ const Staff = (props) => {
                                 color="error"
                                 size="small"
                                 sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                                //onClick={() => handleDeleteSupplier(params.row)}
+                                onClick={() => handleDeleteStaff(params.row)}
                             >
-                               {/* {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />} */}
+                               {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
                             </IconButton>
                         </Grid>
                     </Grid>
@@ -181,7 +223,7 @@ const Staff = (props) => {
         },
         { field: 'StaffCode', headerName: intl.formatMessage({ id: "staff.StaffCode" }), /*flex: 0.7,*/  width: 150, },
         { field: 'StaffName', headerName: intl.formatMessage({ id: "staff.StaffName" }), flex: 1, },
-
+        { field: 'createdName', headerName: 'User Create', width: 150, },
         {
             field: 'createdDate', headerName: intl.formatMessage({ id: "general.created_date" }), flex: 0.3, valueFormatter: params => {
                 if (params.value !== null) {
@@ -189,6 +231,8 @@ const Staff = (props) => {
                 }
             },
         },
+        
+        { field: 'modifiedName', headerName: 'User Update', width: 150, },
         {
             field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modified_date" }), flex: 0.3, valueFormatter: params => {
                 if (params.value !== null) {
@@ -196,7 +240,8 @@ const Staff = (props) => {
                 }
             },
         },
-        //{ field: 'modifiedBy', headerName: 'Modified By', flex: 0.3, hide: true },
+        //{ field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), width: 150, },
+        //{ field: 'modifiedBy', headerName: 'Modified By', flex: 0.3},
     ];
 
     return (
@@ -221,8 +266,8 @@ const Staff = (props) => {
                         <MuiSearchField
                             label='general.code'
                             name='StaffCode'
-                            // onClick={fetchData}
-                            // onChange={(e) => changeSearchData(e, 'StaffCode')}
+                            onClick={fetchData}
+                            onChange={(e) => changeSearchData(e, 'StaffCode')}
                         />
                 </Grid>
 
@@ -230,8 +275,8 @@ const Staff = (props) => {
                         <MuiSearchField
                             label='general.name'
                             name='StaffName'
-                            // onClick={fetchData}
-                            // onChange={(e) => changeSearchData(e, 'StaffName')}
+                            onClick={fetchData}
+                            onChange={(e) => changeSearchData(e, 'StaffName')}
                         />
                 </Grid>
 
@@ -239,14 +284,14 @@ const Staff = (props) => {
                     <MuiButton
                         text="search"
                         color='info'
-                        //onClick={fetchData}
+                        onClick={fetchData}
                     />
-                    {/* <FormControlLabel
+                    <FormControlLabel
                         sx={{ mb: 0, ml: '1px' }}
                         control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleshowActivedData(e)} />}
                         label={showActivedData ? "Actived" : "Deleted"} 
                             
-                        /> */}
+                        />
                 </Grid>
 
             </Grid>
@@ -256,7 +301,7 @@ const Staff = (props) => {
                 showLoading={staffState.isLoading}
                 isPagingServer={true}
                 headerHeight={45}
-                gridHeight={345}
+                gridHeight={736}
                 columns={columns}
                 rows={staffState.data}
                 page={staffState.page - 1}
@@ -288,6 +333,12 @@ const Staff = (props) => {
                 setNewData={setNewData}
                 isOpen={isOpenCreateDialog}
                 onClose={toggleCreateDialog}
+            />
+            <ModifyStaffDialog
+                initModal={selectedRow}
+                setModifyData={setSelectedRow}
+                isOpen={isOpenModifyDialog}
+                onClose={toggleModifyDialog}
             />
         </React.Fragment >
     )
