@@ -17,8 +17,8 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { BuyerDto } from "@models"
 import EditIcon from '@mui/icons-material/Edit'
 import moment from "moment";
-//import CreateBuyerDialog from './CreateBuyerDialog'
-//import ModifyBuyerDialog from './ModifyBuyerDialog'
+import CreateBuyerDialog from './CreateBuyerDialog'
+import ModifyBuyerDialog from './ModifyBuyerDialog'
 import _ from 'lodash'
 import { FormControlLabel, Switch } from "@mui/material"
 import UndoIcon from '@mui/icons-material/Undo'
@@ -36,18 +36,18 @@ const Buyer = (props) => {
     })
 
 
-    // const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
-    // const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
+     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
+     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
      const [showActivedData, setShowActivedData] = useState(true);
 
-    // const toggleCreateDialog = () => {
+    const toggleCreateDialog = () => {
 
-    //     setIsOpenCreateDialog(!isOpenCreateDialog);
-    // }
+        setIsOpenCreateDialog(!isOpenCreateDialog);
+    }
 
-    // const toggleModifyDialog = () => {
-    //     setIsOpenModifyDialog(!isOpenModifyDialog);
-    // }
+    const toggleModifyDialog = () => {
+        setIsOpenModifyDialog(!isOpenModifyDialog);
+    }
 
 
     const [buyerState, setbuyerState] = useState({
@@ -109,34 +109,34 @@ const Buyer = (props) => {
         });
     }
 
-    // const handleDeleteBuyer = async (buyer) => {
-    //     if (window.confirm(intl.formatMessage({ id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
-    //         try {
-    //             let res = await buyerService.deleteBuyer(buyer);
-    //             if (res && res.HttpResponseCode === 200) {
-    //                 SuccessAlert(intl.formatMessage({ id: 'general.success' }))
-    //                 await fetchData();
-    //             }
-    //             if (res && res.HttpResponseCode === 300) {
-    //                 ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+    const handleDeleteBuyer = async (buyer) => {
+        if (window.confirm(intl.formatMessage({ id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
+            try {
+                let res = await buyerService.deleteBuyer(buyer);
+                if (res && res.HttpResponseCode === 200) {
+                    SuccessAlert(intl.formatMessage({ id: 'general.success' }))
+                    await fetchData();
+                }
+                if (res && res.HttpResponseCode === 300) {
+                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
 
-    //                 return;
-    //             }
-    //         } catch (error) {
-    //             console.log(error)
-    //         }
-    //     }
-    // }
+                    return;
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    }
 
-    // const handleshowActivedData = async (event) => {
-    //     setShowActivedData(event.target.checked);
-    //     if (!event.target.checked) {
-    //         setbuyerState({
-    //             ...buyerState
-    //             , page: 1
-    //         });
-    //     }
-    // };
+    const handleshowActivedData = async (event) => {
+        setShowActivedData(event.target.checked);
+        if (!event.target.checked) {
+            setbuyerState({
+                ...buyerState
+                , page: 1
+            });
+        }
+    };
 
     useEffect(() => {
 
@@ -197,7 +197,7 @@ const Buyer = (props) => {
                                 color="warning"
                                 size="small"
                                 sx={[{ '&:hover': { border: '1px solid orange', }, }]}
-                                //onClick={toggleModifyDialog}
+                                onClick={toggleModifyDialog}
                             >
                                 <EditIcon fontSize="inherit" />
                             </IconButton>
@@ -209,9 +209,9 @@ const Buyer = (props) => {
                                 color="error"
                                 size="small"
                                 sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                               // onClick={() => handleDeleteBuyer(params.row)}
+                               onClick={() => handleDeleteBuyer(params.row)}
                             >
-                               {/* {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />} */}
+                               {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
                             </IconButton>
                         </Grid>
                     </Grid>
@@ -257,7 +257,7 @@ const Buyer = (props) => {
                     <MuiButton
                         text="create"
                         color='success'
-                        //onClick={toggleCreateDialog}
+                        onClick={toggleCreateDialog}
                     />
                 </Grid>
                 
@@ -265,8 +265,8 @@ const Buyer = (props) => {
                         <MuiSearchField
                             label='general.code'
                             name='BuyerCode'
-                            // onClick={fetchData}
-                            // onChange={(e) => changeSearchData(e, 'BuyerCode')}
+                            onClick={fetchData}
+                            onChange={(e) => changeSearchData(e, 'BuyerCode')}
                         />
                 </Grid>
 
@@ -274,8 +274,8 @@ const Buyer = (props) => {
                         <MuiSearchField
                             label='general.name'
                             name='BuyerName'
-                            // onClick={fetchData}
-                            // onChange={(e) => changeSearchData(e, 'BuyerName')}
+                            onClick={fetchData}
+                            onChange={(e) => changeSearchData(e, 'BuyerName')}
                         />
                 </Grid>
 
@@ -283,14 +283,14 @@ const Buyer = (props) => {
                     <MuiButton
                         text="search"
                         color='info'
-                        //onClick={fetchData}
+                        onClick={fetchData}
                     />
-                    {/* <FormControlLabel
+                    <FormControlLabel
                         sx={{ mb: 0, ml: '1px' }}
                         control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleshowActivedData(e)} />}
                         label={showActivedData ? "Actived" : "Deleted"} 
                             
-                        /> */}
+                        />
                 </Grid>
 
             </Grid>
@@ -327,7 +327,7 @@ const Buyer = (props) => {
                 }}
             />
 
-            {/* <CreateBuyerDialog
+            <CreateBuyerDialog
                 initModal={BuyerDto}
                 setNewData={setNewData}
                 isOpen={isOpenCreateDialog}
@@ -338,7 +338,7 @@ const Buyer = (props) => {
                 setModifyData={setSelectedRow}
                 isOpen={isOpenModifyDialog}
                 onClose={toggleModifyDialog}
-            /> */}
+            />
         </React.Fragment>
     )
 }
