@@ -48,7 +48,9 @@
         "createdName": "User created",
         "createdDate": "Create date",
         "modifiedName": "User updated",
-        "modifiedDate": "Update date"
+        "modifiedDate": "Update date",
+        "duplicated_code": "Duplicated code",
+        "duplicated_name": "Duplicated name"
     },
     "login": {
         "account_password_invalid": "Account/Password is invalid",
@@ -174,5 +176,24 @@
         "Description": "Description",
         "IsUsed": "Using",
         "LineName_required": "Line Name is required"
+    },
+    "buyer": {
+        "BuyerCode": "Buyer Code",
+        "BuyerName": "Buyer Name",
+        "Contact": "Contact",
+        "Description": "Description",
+        "BuyerCode_required": "Buyer Code is required",
+        "BuyerName_required": "Buyer Name is required"
+    },
+    "material": {
+        "MaterialCode": "Material Code",
+        "MaterialType": "Material Type",
+        "Unit": "Unit",
+        "SupplierId": "Supplier",
+        "Description": "Description",
+        "MaterialCode_required": "Material Code is required",
+        "MaterialType_required": "Material Type is required",
+        "Unit_required": "Unit is required",
+        "SupplierId_required": "Supplier is required"
     }
 }

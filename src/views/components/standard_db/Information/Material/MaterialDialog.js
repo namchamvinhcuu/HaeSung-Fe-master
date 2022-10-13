@@ -5,19 +5,21 @@ import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
-import { trayService } from '@services'
+import { materialService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION } from '@constants/ConfigConstants';
 import { useFormik } from 'formik'
 
-const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
+const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
-  const defaultValue = { TrayCode: '', IsReuse: false, TrayType: null };
+  const defaultValue = { MaterialCode: '', Unit: null, MaterialType: null, SupplierId: null };
 
   const schema = yup.object().shape({
-    TrayCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    TrayType: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+    MaterialCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+    MaterialType: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+    Unit: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+    SupplierId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
   });
 
   const formik = useFormik({
@@ -51,7 +53,7 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
     setDialogState({ ...dialogState, isSubmit: true });
 
     if (mode == CREATE_ACTION) {
-      const res = await trayService.createTray(data);
+      const res = await materialService.createMaterial(data);
       if (res.HttpResponseCode === 200 && res.Data) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
         setNewData({ ...res.Data });
@@ -65,7 +67,7 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
       }
     }
     else {
-      const res = await trayService.modifyTray({ ...data, TrayId: initModal.TrayId, row_version: initModal.row_version });
+      const res = await materialService.modifyMaterial({ ...data, TrayId: initModal.MaterialId, row_version: initModal.row_version });
       if (res.HttpResponseCode === 200) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
         setUpdateData({ ...res.Data });
@@ -96,34 +98,63 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
               autoFocus
               fullWidth
               size='small'
-              name='TrayCode'
+              name='MaterialCode'
               disabled={dialogState.isSubmit}
-              value={values.TrayCode}
+              value={values.MaterialCode}
               onChange={handleChange}
-              label={intl.formatMessage({ id: 'tray.TrayCode' })}
-              error={touched.TrayCode && Boolean(errors.TrayCode)}
-              helperText={touched.TrayCode && errors.TrayCode}
+              label={intl.formatMessage({ id: 'material.MaterialCode' })}
+              error={touched.MaterialCode && Boolean(errors.MaterialCode)}
+              helperText={touched.MaterialCode && errors.MaterialCode}
             />
           </Grid>
           <Grid item xs={12}>
             <MuiSelectField
               disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: 'tray.TrayType' })}
-              options={valueOption.TrayTypeList}
+              label={intl.formatMessage({ id: 'material.MaterialType' })}
+              options={valueOption.MaterialTypeList}
               displayLabel="commonDetailName"
               displayValue="commonDetailId"
-              onChange={(e, value) => setFieldValue("TrayType", value?.commonDetailId || "")}
-              defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.TrayType, commonDetailName: initModal.TrayTypeName }}
-              error={touched.TrayType && Boolean(errors.TrayType)}
-              helperText={touched.TrayType && errors.TrayType}
+              onChange={(e, value) => setFieldValue("MaterialType", value?.commonDetailId || "")}
+              defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.MaterialType, commonDetailName: initModal.MaterialTypeName }}
+              error={touched.MaterialType && Boolean(errors.MaterialType)}
+              helperText={touched.MaterialType && errors.MaterialType}
             />
           </Grid>
           <Grid item xs={12}>
-            <FormControlLabel
-              checked={values.IsReuse}
-              onChange={(e) => setFieldValue("IsReuse", e.target.checked)}
-              control={<Checkbox />}
-              label={intl.formatMessage({ id: 'tray.IsReuse' })}
+            <MuiSelectField
+              disabled={dialogState.isSubmit}
+              label={intl.formatMessage({ id: 'material.Unit' })}
+              options={valueOption.UnitList}
+              displayLabel="commonDetailName"
+              displayValue="commonDetailId"
+              onChange={(e, value) => setFieldValue("Unit", value?.commonDetailId || "")}
+              defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.Unit, commonDetailName: initModal.UnitName }}
+              error={touched.Unit && Boolean(errors.Unit)}
+              helperText={touched.Unit && errors.Unit}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <MuiSelectField
+              disabled={dialogState.isSubmit}
+              label={intl.formatMessage({ id: 'material.SupplierId' })}
+              options={valueOption.SupplierList}
+              displayLabel="SupplierName"
+              displayValue="SupplierId"
+              onChange={(e, value) => setFieldValue("SupplierId", value?.SupplierId || "")}
+              defaultValue={mode == CREATE_ACTION ? null : { SupplierId: initModal.SupplierId, SupplierName: initModal.SupplierName }}
+              error={touched.SupplierId && Boolean(errors.SupplierId)}
+              helperText={touched.SupplierId && errors.SupplierId}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              size='small'
+              name='Description'
+              disabled={dialogState.isSubmit}
+              value={values.Description}
+              onChange={handleChange}
+              label={intl.formatMessage({ id: 'material.Description' })}
             />
           </Grid>
           <Grid item xs={12}>
@@ -138,4 +169,4 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
   )
 }
 
-export default TrayDialog
+export default MaterialDialog

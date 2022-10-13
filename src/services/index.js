@@ -12,6 +12,7 @@ import * as staffService from './Standard/Information/StaffService'
 import * as moldService from './Standard/Information/MoldService'
 import * as trayService from './Standard/Information/TrayService'
 import * as lineService from './Standard/Information/LineService'
+import * as materialService from './Standard/Information/MaterialService'
 
 export {
     loginService,
@@ -28,4 +29,5 @@ export {
     moldService,
     trayService,
     lineService,
+    materialService,
 }
