@@ -27,6 +27,7 @@ const CreateLineDialog = (props) => {
         validationSchema: schema,
         initialValues: { ...initModal },
         onSubmit: async values => {
+            console.log(values, 'va')
             const res = await lineService.create(values);
             if (res.HttpResponseCode === 200 && res.Data) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
