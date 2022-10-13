@@ -14,7 +14,7 @@ import Grid from '@mui/material/Grid'
 import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
 import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
-import StaffDto from "@models"
+import { StaffDto } from "@models"
 import EditIcon from '@mui/icons-material/Edit'
 import moment from "moment";
 import CreateStaffDialog from './CreateStaffDialog'
@@ -340,7 +340,7 @@ const Staff = (props) => {
                 isOpen={isOpenModifyDialog}
                 onClose={toggleModifyDialog}
             />
-        </React.Fragment >
+        </React.Fragment>
     )
 }
 

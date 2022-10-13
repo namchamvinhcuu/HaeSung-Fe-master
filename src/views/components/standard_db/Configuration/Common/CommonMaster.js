@@ -15,14 +15,13 @@ import CreateCommonMasterDialog from './CreateCommonMasterDialog'
 import ModifyCommonMasterDialog from './ModifyCommonMasterDialog'
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Box from "@mui/material/Box";
 import UndoIcon from '@mui/icons-material/Undo';
 const CommonMaster = () => {
     const intl = useIntl();
     const initCommonMasterModel = {
         commonMasterId: 0
         , commonMasterName: ''
+        , forRoot: false
     }
     const [commomMasterState, setcommomMasterState] = useState({
         isLoading: false,
@@ -52,7 +51,6 @@ const CommonMaster = () => {
     const [selectedRow, setSelectedRow] = useState({
         ...initCommonMasterModel
     })
-
     const [newData, setNewData] = useState({ ...initCommonMasterModel })
 
     const toggleCreateCommonMSDialog = () => {
@@ -207,14 +205,14 @@ const CommonMaster = () => {
         },
         { field: 'commonMasterName', headerName: 'Common Master Name', flex: 0.3 },
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
-        { field: 'forRoot', headerName: 'forRoot', flex: 0.3 },
+        { field: 'forRoot', headerName: 'For Root', flex: 0.3 },
 
 
         {
             field: 'createdDate', headerName: 'Created Date', flex: 0.3,
             valueFormatter: params => {
                 if (params.value !== null) {
-                    return moment(params?.value).format("YYYY-MM-DD HH:mm:ss")
+                    return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
                 }
             },
         },
@@ -223,7 +221,7 @@ const CommonMaster = () => {
             field: 'modifiedDate', headerName: 'Modified Date', flex: 0.3,
             valueFormatter: params => {
                 if (params.value !== null) {
-                    return moment(params?.value).format("YYYY-MM-DD HH:mm:ss")
+                    return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
                 }
             },
         },
@@ -259,7 +257,7 @@ const CommonMaster = () => {
             </Grid>
             {commomMasterState.data &&
                 <MuiDataGrid
-                    getData={commonService.getCommonMasterList}
+                
                     showLoading={commomMasterState.isLoading}
                     isPagingServer={true}
                     headerHeight={45}

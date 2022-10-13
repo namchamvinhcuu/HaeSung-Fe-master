@@ -32,7 +32,7 @@ const ModifyCommonMasterDialog = (props) => {
     const schema = yup.object().shape({
       
         commonMasterName: yup.string().required(),
-
+        forRoot: yup.bool().required(),
 
     });
     const { control, register, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
@@ -94,21 +94,7 @@ const ModifyCommonMasterDialog = (props) => {
                    
                     <Grid item xs={12}>
                         <Grid container spacing={2}>
-                            {/* <Grid item xs={6}>
-                                <TextField
-                                    autoFocus
-                                    fullWidth
-                                  
-                                    size='small'
-                                    label={intl.formatMessage({ id: 'general.name' })}
-                                    {...register('commonMasterName', {
-                                        // onChange: (e) => handleInputChange(e)
-                                    })}
-                                   // error={!!errors?.commonMasterName}
-                                    //helperText={errors?.commonMasterName ? errors.commonMasterName.message : null}
-                                />
-                            </Grid> */}
-                            <Grid item xs={6}>
+                            <Grid item xs={9}>
                                 <TextField
                                     autoFocus
                                     fullWidth
@@ -121,6 +107,24 @@ const ModifyCommonMasterDialog = (props) => {
                                     //defaultValue={initModal.commonMasterName}
                                     error={!!errors?.commonMasterName}
                                     helperText={errors?.commonMasterName ? errors.commonMasterName.message : null}
+                                />
+                            </Grid>
+                            <Grid item xs={3}>
+                                <FormControlLabel
+                                    control={
+                                        <Controller
+                                            name='forRoot'
+                                            control={control}
+                                            render={({ field: props }) => (
+                                                <Checkbox
+                                                    {...props}
+                                                    checked={props.value}
+                                                    onChange={(e) => props.onChange(e.target.checked)}
+                                                />
+                                            )}
+                                        />
+                                    }
+                                    label='For Root'
                                 />
                             </Grid>
                         </Grid>
