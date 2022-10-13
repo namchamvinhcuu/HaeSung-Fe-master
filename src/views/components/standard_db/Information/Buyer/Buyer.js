@@ -307,14 +307,15 @@ const Buyer = (props) => {
                 pageSize={buyerState.pageSize}
                 rowCount={buyerState.totalRow}
 
-                rowsPerPageOptions={[5, 10, 20, 30]}
+                //rowsPerPageOptions={[5, 10, 20, 30]}
+                disableGrid={buyerState.isLoading}
 
                 onPageChange={(newPage) => {
                     setbuyerState({ ...buyerState, page: newPage + 1 });
                 }}
-                onPageSizeChange={(newPageSize) => {
-                    setbuyerState({ ...buyerState, pageSize: newPageSize, page: 1 });
-                }}
+                // onPageSizeChange={(newPageSize) => {
+                //     setbuyerState({ ...buyerState, pageSize: newPageSize, page: 1 });
+                // }}
                 getRowId={(rows) => rows.BuyerId}
                 onSelectionModelChange={(newSelectedRowId) => {
                     handleRowSelection(newSelectedRowId)

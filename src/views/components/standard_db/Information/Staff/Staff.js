@@ -308,14 +308,15 @@ const Staff = (props) => {
                 pageSize={staffState.pageSize}
                 rowCount={staffState.totalRow}
 
-                rowsPerPageOptions={[5, 10, 20, 30]}
+                //rowsPerPageOptions={[5, 10, 20, 30]}
+                disableGrid={staffState.isLoading}
 
                 onPageChange={(newPage) => {
                     setstaffState({ ...staffState, page: newPage + 1 });
                 }}
-                onPageSizeChange={(newPageSize) => {
-                    setstaffState({ ...staffState, pageSize: newPageSize, page: 1 });
-                }}
+                // onPageSizeChange={(newPageSize) => {
+                //     setstaffState({ ...staffState, pageSize: newPageSize, page: 1 });
+                // }}
                 getRowId={(rows) => rows.StaffId}
                 onSelectionModelChange={(newSelectedRowId) => {
                     handleRowSelection(newSelectedRowId)

@@ -81,7 +81,7 @@ const CreateStaffDialog = (props) => {
             <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                     <Grid item xs={12}>
                         <Grid container item spacing={2}>
-                            <Grid item xs={12} marginBottom= {2}>
+                            <Grid item xs={12}>
                                 <TextField
                                    autoFocus
                                     fullWidth
@@ -95,7 +95,7 @@ const CreateStaffDialog = (props) => {
                                     helperText={touched.StaffCode && errors.StaffCode}
                                 />
                             </Grid>
-                            <Grid item xs={12}  marginBottom= {2}>
+                            <Grid item xs={12}>
                                 <TextField
 
                                     fullWidth
