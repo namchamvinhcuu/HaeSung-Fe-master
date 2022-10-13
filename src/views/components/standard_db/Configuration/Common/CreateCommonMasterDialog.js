@@ -4,18 +4,17 @@ import {
     Autocomplete,
     Checkbox, FormControlLabel, Grid, RadioGroup, TextField
 } from '@mui/material'
+import { useFormik } from 'formik'
 import React, { useEffect, useRef, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 
 import { commonService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
-import { useFormik } from 'formik'
+
 
 const CreateCommonMasterDialog = (props) => {
     const intl = useIntl();
- 
 
     const { initModal, isOpen, onClose, refreshGrid } = props;
 
@@ -25,7 +24,7 @@ const CreateCommonMasterDialog = (props) => {
         ...initModal,
         isSubmit: false,
     })
-   
+
 
     const schema = yup.object().shape({
         commonMasterName: yup.string().required(intl.formatMessage({ id: 'general.name' })),
@@ -40,11 +39,11 @@ const CreateCommonMasterDialog = (props) => {
             if (res.HttpResponseCode === 200) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
                 setDialogState({ ...dialogState, isSubmit: false });
-                refreshGrid()
                 handleCloseDialog();
             }
             else {
                 ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+                handleCloseDialog();
             }
         }
     });
@@ -53,8 +52,8 @@ const CreateCommonMasterDialog = (props) => {
         , handleBlur
         , handleSubmit
         , values
-        , errors
         , setFieldValue
+        , errors
         , touched
         , isValid
     } = formik;
@@ -66,9 +65,7 @@ const CreateCommonMasterDialog = (props) => {
             ...dialogState
         })
     }
-
     const handleCloseDialog = () => {
-
         setDialogState({
             ...dialogState
         });
@@ -76,14 +73,14 @@ const CreateCommonMasterDialog = (props) => {
         onClose();
     }
 
-    // const onSubmit = async (data) => {
-    
- 
+    // const handleSubmit = async (data) => {
+
+
     //   dataModalRef.current = { ...initModal, ...data};
     //     setDialogState({ ...dialogState, isSubmit: true });
 
     //      const res = await commonService.createCommonMaster(dataModalRef.current);
-       
+
     //     if (res.HttpResponseCode === 200 && res.Data) {
     //         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
     //         setNewData({ ...res.Data });
@@ -98,8 +95,7 @@ const CreateCommonMasterDialog = (props) => {
 
     // };
 
-
-
+ 
     return (
         <MuiDialog
             maxWidth='sm'
@@ -111,10 +107,9 @@ const CreateCommonMasterDialog = (props) => {
         >
             <form onSubmit={handleSubmit}>
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                   
-                <Grid item xs={12}>
+                    <Grid item xs={12}>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
+                            <Grid item xs={9}>
                                 <TextField
                                     autoFocus
                                     fullWidth
@@ -129,30 +124,25 @@ const CreateCommonMasterDialog = (props) => {
                                 />
                             </Grid>
                             <Grid item xs={3}>
-                            <FormControlLabel
-                                control={<Checkbox checked={values.forRoot} />}
-                                label='For Root'
-                                name="forRoot"
-                                onChange={formik.handleChange}
-                        />
-                    </Grid>
+                                <FormControlLabel
+                                    control={<Checkbox checked={values.forRoot} />}
+                                    label='For Root'
+                                    name="forRoot"
+                                    onChange={formik.handleChange}
+                                />
+                            </Grid>
                         </Grid>
                     </Grid>
-
                     <Grid item xs={12}>
-                        <Grid
-                            container
-                            direction="row-reverse"
-                        >
+                        <Grid container   direction="row-reverse">
                             <MuiSubmitButton
                                 text="save"
                                 loading={dialogState.isSubmit}
                             />
-                            
-                            <MuiResetButton
+                            {/* <MuiResetButton
                                 onClick={handleReset}
                                 disabled={dialogState.isSubmit}
-                            />
+                            /> */}
                         </Grid>
                     </Grid>
                 </Grid>
