@@ -19,7 +19,7 @@ import { LineDto } from '@models'
 import { lineService } from '@services'
 
 import CreateLineDialog from './CreateLineDialog'
-// import ModifySupplierDialog from './ModifySupplierDialog'
+import ModifyLineDialog from './ModifyLineDialog'
 
 const Line = (props) => {
     const intl = useIntl();
@@ -55,7 +55,7 @@ const Line = (props) => {
 
     const handleRowSelection = (arrIds) => {
         const rowSelected = lineState.data.filter(function (item) {
-            return item.SupplierId === arrIds[0]
+            return item.LineId === arrIds[0]
         });
 
         if (rowSelected && rowSelected.length > 0) {
@@ -293,12 +293,12 @@ const Line = (props) => {
                 onClose={toggleCreateDialog}
             />
 
-            {/* <ModifySupplierDialog
+            <ModifyLineDialog
                 initModal={selectedRow}
                 setModifyData={setSelectedRow}
                 isOpen={isOpenModifyDialog}
                 onClose={toggleModifyDialog}
-            /> */}
+            />
 
         </React.Fragment>
     )
