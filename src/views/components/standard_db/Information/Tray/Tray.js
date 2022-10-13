@@ -2,11 +2,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import UndoIcon from '@mui/icons-material/Undo';
-import { Autocomplete, FormControlLabel, Grid, IconButton, Switch, TextField } from '@mui/material'
-import { createTheme, ThemeProvider } from "@mui/material"
+import { FormControlLabel, Grid, IconButton, Switch, TextField } from '@mui/material'
 import { useIntl } from 'react-intl'
 import { MuiButton, MuiDataGrid, MuiSelectField } from '@controls'
-import { moldService, trayService } from '@services'
+import { trayService } from '@services'
 import { useModal } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
@@ -168,15 +167,9 @@ export default function Tray() {
       setTrayState({ ...trayState, page: 1, searchData: { ...newSearchData } })
     }
     else {
-
       setTrayState({ ...trayState, searchData: { ...newSearchData } })
     }
   }
-
-  const handleCellClick = (param, event) => {
-    //disable click cell
-    event.defaultMuiPrevented = (param.field === "action");
-  };
 
   async function fetchData() {
     setTrayState({ ...trayState, isLoading: true });
@@ -203,20 +196,6 @@ export default function Tray() {
       setTrayTypeList([...res.Data])
     }
   }
-
-  // const getProductType = async () => {
-  //     const res = await moldService.getProductType();
-  //     if (res.HttpResponseCode === 200 && res.Data) {
-  //         setPTList([...res.Data])
-  //     }
-  // }
-
-  // const getMachineType = async () => {
-  //     const res = await moldService.getMachineType();
-  //     if (res.HttpResponseCode === 200 && res.Data) {
-  //         setMTList([...res.Data])
-  //     }
-  // }
 
   return (
     <React.Fragment>
@@ -271,7 +250,6 @@ export default function Tray() {
         rowsPerPageOptions={[5, 10, 20]}
         onPageChange={(newPage) => setTrayState({ ...trayState, page: newPage + 1 })}
         onPageSizeChange={(newPageSize) => setTrayState({ ...trayState, pageSize: newPageSize, page: 1 })}
-        onCellClick={handleCellClick}
         getRowId={(rows) => rows.TrayId}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`

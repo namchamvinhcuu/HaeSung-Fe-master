@@ -176,5 +176,16 @@
         "Description": "Description",
         "BuyerCode_required": "Buyer Code is required",
         "BuyerName_required": "Buyer Name is required"
+    }, 
+    "material":{
+        "MaterialCode": "Material Code",
+        "MaterialType": "Material Type",
+        "Unit": "Unit",
+        "SupplierId":"Supplier",
+        "Description":"Description",
+        "MaterialCode_required":"Material Code is required",
+        "MaterialType_required":"Material Type is required",
+        "Unit_required":"Unit is required",
+        "SupplierId_required":"Supplier is required"
     }
 }
