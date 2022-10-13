@@ -162,5 +162,12 @@
         "StaffName": "Tên Nhân Viên",
         "StaffCode_required": "Mã nhân viên không được để trống",
         "StaffName_required": "Tên nhân viên không được để trống"
+    },
+    "tray":{
+        "TrayCode": "Tray Code",
+        "TrayType": "Tray Type",
+        "IsReuse": "Is Reuse",
+        "TrayCode_required": "Tray Code không được để trống",
+        "TrayType_required": "Tray Type không được để trống"
     }
 }

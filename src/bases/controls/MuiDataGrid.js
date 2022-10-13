@@ -211,7 +211,6 @@ const MuiDataGrid = (props) => {
         getRowId,
 
         onSelectionModelChange,
-        disableGrid,
         language,
     } = props;
 
@@ -226,7 +225,7 @@ const MuiDataGrid = (props) => {
             <Pagination
                 color="error"
                 size='small'
-                disabled={disableGrid}
+                disabled={showLoading}
                 showFirstButton
                 showLastButton
                 count={pageCount}
