@@ -178,11 +178,11 @@ const Staff = (props) => {
 
     const columns = [
         { field: 'StaffId', headerName: '', hide: true},
-        // {
-        //     field: 'id', headerName: '', flex: 0.01,
-        //     filterable: false,
-        //     renderCell: (index) => index.api.getRowIndex(index.row.StaffId) + 1,
-        // },
+        {
+            field: 'id', headerName: '', flex: 0.01,
+            filterable: false,
+            renderCell: (index) => index.api.getRowIndex(index.row.StaffId) + 1,
+        },
         {
             field: "action",
             headerName: "",
