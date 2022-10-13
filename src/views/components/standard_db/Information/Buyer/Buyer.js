@@ -57,15 +57,15 @@ const Buyer = (props) => {
         page: 1,
         pageSize: 20,
         searchData: {
-            StaffCode: null,
-            StaffName: null
+            BuyerCode: null,
+            BuyerName: null
         }
     });
 
     const handleRowSelection = (arrIds) => {
 
         const rowSelected = buyerState.data.filter(function (item) {
-            return item.StaffId === arrIds[0]
+            return item.BuyerId === arrIds[0]
         });
         if (rowSelected && rowSelected.length > 0) {
             setSelectedRow({ ...rowSelected[0] });
@@ -94,11 +94,11 @@ const Buyer = (props) => {
         const params = {
             page: buyerState.page,
             pageSize: buyerState.pageSize,
-            StaffCode: buyerState.searchData.StaffCode,
-            StaffName: buyerState.searchData.StaffName,
+            BuyerCode: buyerState.searchData.BuyerCode,
+            BuyerName: buyerState.searchData.BuyerName,
             isActived: showActivedData,
         }
-        const res = await staffService.getStaffList(params);
+        const res = await buyerService.getBuyerList(params);
      
         setbuyerState({
             ...buyerState
@@ -108,10 +108,10 @@ const Buyer = (props) => {
         });
     }
 
-    const handleDeleteStaff = async (staff) => {
+    const handleDeleteBuyer = async (buyer) => {
         if (window.confirm(intl.formatMessage({ id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
             try {
-                let res = await staffService.deleteStaff(staff);
+                let res = await buyerService.deleteBuyer(buyer);
                 if (res && res.HttpResponseCode === 200) {
                     SuccessAlert(intl.formatMessage({ id: 'general.success' }))
                     await fetchData();
@@ -159,7 +159,7 @@ const Buyer = (props) => {
     useEffect(() => {
         if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, BuyerDto)) {
             let newArr = [...buyerState.data]
-            const index = _.findIndex(newArr, function (o) { return o.StaffId == selectedRow.StaffId; });
+            const index = _.findIndex(newArr, function (o) { return o.BuyerId == selectedRow.BuyerId; });
             if (index !== -1) {
                 newArr[index] = selectedRow
             }
@@ -207,7 +207,7 @@ const Buyer = (props) => {
                                 color="error"
                                 size="small"
                                 sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                               // onClick={() => handleDeleteStaff(params.row)}
+                               // onClick={() => handleDeleteBuyer(params.row)}
                             >
                                {/* {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />} */}
                             </IconButton>
@@ -218,6 +218,8 @@ const Buyer = (props) => {
         },
         { field: 'BuyerCode', headerName: intl.formatMessage({ id: "buyer.BuyerCode" }), /*flex: 0.7,*/  width: 150, },
         { field: 'BuyerName', headerName: intl.formatMessage({ id: "buyer.BuyerName" }), flex: 1, },
+        { field: 'Contact', headerName: intl.formatMessage({ id: "buyer.Contact" }), flex: 1, },
+        { field: 'Description', headerName: intl.formatMessage({ id: "buyer.Description" }), flex: 1, },
         { field: 'createdName', headerName: 'User Create', width: 150, },
         {
             field: 'createdDate', headerName: intl.formatMessage({ id: "general.created_date" }), flex: 0.3, valueFormatter: params => {
@@ -292,7 +294,7 @@ const Buyer = (props) => {
             </Grid>
 
             <MuiDataGrid
-                //getData={staffService.getStaffList}
+                //getData={buyerService.getBuyerList}
                 showLoading={buyerState.isLoading}
                 isPagingServer={true}
                 headerHeight={45}
@@ -311,7 +313,7 @@ const Buyer = (props) => {
                 onPageSizeChange={(newPageSize) => {
                     setbuyerState({ ...buyerState, pageSize: newPageSize, page: 1 });
                 }}
-                getRowId={(rows) => rows.StaffId}
+                getRowId={(rows) => rows.BuyerId}
                 onSelectionModelChange={(newSelectedRowId) => {
                     handleRowSelection(newSelectedRowId)
                 }}
@@ -323,13 +325,13 @@ const Buyer = (props) => {
                 }}
             />
 
-            {/* <CreateStaffDialog
+            {/* <CreateBuyerDialog
                 initModal={BuyerDto}
                 setNewData={setNewData}
                 isOpen={isOpenCreateDialog}
                 onClose={toggleCreateDialog}
             />
-            <ModifyStaffDialog
+            <ModifyBuyerDialog
                 initModal={selectedRow}
                 setModifyData={setSelectedRow}
                 isOpen={isOpenModifyDialog}

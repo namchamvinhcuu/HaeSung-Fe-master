@@ -168,5 +168,13 @@
         "IsReuse": "Is Reuse",
         "TrayCode_required": "Tray Code is required",
         "TrayType_required": "Tray Type is required"
+    },
+    "buyer":{
+        "BuyerCode": "Buyer Code",
+        "BuyerName": "Buyer Name",
+        "Contact": "Contact",
+        "Description": "Description",
+        "BuyerCode_required": "Buyer Code is required",
+        "BuyerName_required": "Buyer Name is required"
     }
 }

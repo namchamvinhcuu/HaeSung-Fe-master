@@ -169,5 +169,13 @@
         "IsReuse": "Is Reuse",
         "TrayCode_required": "Tray Code không được để trống",
         "TrayType_required": "Tray Type không được để trống"
+    },
+    "buyer":{
+        "BuyerCode": "Buyer Code",
+        "BuyerName": "Buyer Name",
+        "Contact": "Contact",
+        "Description": "Description",
+        "BuyerCode_required": "Buyer Code không được để trống",
+        "BuyerName_required": "Buyer Name không được để trống"
     }
 }
