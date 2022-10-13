@@ -161,5 +161,12 @@
         "StaffName": "Staff Name",
         "StaffCode_required": "Staff Code cannot be blank",
         "StaffName_required": "Staff Name cannot be blank"
+    },
+    "tray":{
+        "TrayCode": "Tray Code",
+        "TrayType": "Tray Type",
+        "IsReuse": "Is Reuse",
+        "TrayCode_required": "Tray Code is required",
+        "TrayType_required": "Tray Type is required"
     }
 }
