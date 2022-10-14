@@ -197,5 +197,8 @@
         "MaterialType_required": "Material Type is required",
         "Unit_required": "Unit is required",
         "SupplierId_required": "Supplier is required"
+    },
+    "standardQC":{
+        "QCCode" : "QC Code"
     }
 }

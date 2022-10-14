@@ -1,3 +1,8 @@
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS'
+import { User_Operations } from '@appstate/user'
+import { Store } from '@appstate'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import Grid from '@mui/material/Grid'
@@ -123,7 +128,7 @@ const CommonMaster = () => {
     }, [commomMasterState.page, commomMasterState.pageSize, commomMasterState.searchData.showDelete]);
 
     useEffect(() => {
-        if (!_.isEmpty(newData)) {
+        if (!_.isEmpty(newData) && !_.isEqual(newData, initCommonMasterModel) ) {
             const data = [newData, ...commomMasterState.data];
             if (data.length > commomMasterState.pageSize) {
                 data.pop();
@@ -160,7 +165,7 @@ const CommonMaster = () => {
         let newSearchData = { ...commomMasterState.searchData };
         newSearchData[inputName] = e;
         if (inputName == 'showDelete') {
-            //  console.log(commomMasterState, inputName)
+         
             setcommomMasterState({ ...commomMasterState, page: 1, searchData: { ...newSearchData } })
         }
         else {
@@ -259,7 +264,7 @@ const CommonMaster = () => {
 
     return (
         <React.Fragment>
-            <Grid container direction="row" justifyContent="space-between" alignItems="flex-end" >
+            <Grid container direction="row" justifyContent="space-between" alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
                 <Grid item xs={6}>
                     <MuiButton
                         text="create"
@@ -267,14 +272,18 @@ const CommonMaster = () => {
                         onClick={toggleCreateCommonMSDialog}
                     />
                 </Grid>
-
-                <Grid item xs={4}>
-                    <MuiSearchField
-                        label='general.name'
-                        name='keyWord'
-                        onClick={fetchData}
-                        onChange={(e) => changeSearchData(e, 'keyWord')}
+                <Grid item >
+                    <TextField
+                        sx={{ width: 200 }}
+                        fullWidth
+                        variant="standard"
+                        size='small'
+                        label={intl.formatMessage({ id: 'general.name' })}
+                        onChange={(e) => handleSearch(e.target.value, 'keyWord')}
                     />
+                </Grid>
+                 <Grid item>
+                    <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0 }} />
                 </Grid>
                 <Grid item>
                     <FormControlLabel
@@ -283,7 +292,6 @@ const CommonMaster = () => {
                         label={commomMasterState.searchData.showDelete ? "Active Data" : "Delete Data"} />
                 </Grid>
             </Grid>
-   
                 <MuiDataGrid
                     showLoading={commomMasterState.isLoading}
                     isPagingServer={true}
@@ -327,7 +335,6 @@ const CommonMaster = () => {
                 isOpen={isOpenModifyDialog}
                 onClose={toggleModifyCommonMSDialog}
             />
-
             <Grid item sm={6} sx={{ margin: 1, background: "#fff" }}>
                 {rowmaster && <CommonDetail rowmaster={rowmaster} />}
             </Grid>
@@ -335,5 +342,27 @@ const CommonMaster = () => {
     )
 }
 
+User_Operations.toString = function () {
+    return 'User_Operations';
+}
 
-export default (CommonMaster)
+const mapStateToProps = state => {
+
+    const { User_Reducer: { language } } = CombineStateToProps(state.AppReducer, [
+        [Store.User_Reducer]
+    ]);
+
+    return { language };
+
+};
+
+const mapDispatchToProps = dispatch => {
+
+    const { User_Operations: { changeLanguage } } = CombineDispatchToProps(dispatch, bindActionCreators, [
+        [User_Operations]
+    ]);
+
+    return { changeLanguage }
+
+};
+export default connect(mapStateToProps, mapDispatchToProps)(CommonMaster)

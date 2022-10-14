@@ -14,6 +14,7 @@ import * as trayService from './Standard/Information/TrayService'
 import * as lineService from './Standard/Information/LineService'
 import * as materialService from './Standard/Information/MaterialService'
 import * as buyerService from './Standard/Information/BuyerService'
+import * as standardQCService from './Standard/Information/StandardQCService'
 
 export {
     loginService,
@@ -31,5 +32,6 @@ export {
     trayService,
     lineService,
     materialService,
-    buyerService
+    buyerService,
+    standardQCService
 }
