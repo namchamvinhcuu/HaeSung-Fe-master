@@ -14,20 +14,6 @@ import RoleAddMenuDialog from './RoleAddMenuDialog'
 import RoleAddPermissionDialog from './RoleAddPermissionDialog'
 import RoleDialog from './RoleDialog'
 
-const myTheme = createTheme({
-  components: {
-    MuiDataGrid: {
-      styleOverrides: {
-        row: {
-          "&.Mui-created": {
-            backgroundColor: "#A0DB8E",
-          }
-        }
-      }
-    }
-  }
-});
-
 export default function Role() {
   const intl = useIntl();
   const [mode, setMode] = useState(CREATE_ACTION);
@@ -127,11 +113,11 @@ export default function Role() {
 
   useEffect(() => {
     fetchDataPermission(roleId);
-  }, [permissionState.page, permissionState.pageSize, roleId]);
+  }, [permissionState.page, permissionState.pageSize]);
 
   useEffect(() => {
     fetchDataMenu(roleId);
-  }, [menuState.page, menuState.pageSize, roleId]);
+  }, [menuState.page, menuState.pageSize]);
 
   const handleDelete = async (role) => {
     if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
@@ -259,153 +245,149 @@ export default function Role() {
 
   return (
     <React.Fragment>
-      <ThemeProvider theme={myTheme}>
-
-        <Grid container
-          direction="row"
-          justifyContent="space-between"
-          alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
-          <Grid item xs={6}>
-            <MuiButton text="create" color='success' onClick={handleAdd} />
-          </Grid>
-          <Grid item>
-            <MuiSearchField
-              label='general.name'
-              name='keyWord'
-              onClick={fetchData}
-              onChange={(e) => handleSearch(e, 'keyWord')}
-            />
-          </Grid>
+      <Grid container
+        direction="row"
+        justifyContent="space-between"
+        alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+        <Grid item xs={6}>
+          <MuiButton text="create" color='success' onClick={handleAdd} />
         </Grid>
-
-        <MuiDataGrid
-          gridHeight={256}
-          getData={userService.getUserList}
-          showLoading={roleState.isLoading}
-          isPagingServer={true}
-          headerHeight={45}
-          columns={columns}
-          rows={roleState.data}
-          page={roleState.page - 1}
-          pageSize={roleState.pageSize}
-          rowCount={roleState.totalRow}
-          rowsPerPageOptions={[5, 10, 20]}
-          onPageChange={(newPage) => {
-            setRoleState({ ...roleState, page: newPage + 1 });
-          }}
-          onPageSizeChange={(newPageSize) => {
-            setRoleState({ ...roleState, pageSize: newPageSize, page: 1 });
-          }}
-          onCellClick={handleCellClick}
-          onRowClick={(rowData) => handleRoleClick(rowData.row.roleId)}
-          getRowId={(rows) => rows.roleId}
-          getRowClassName={(params) => {
-            if (_.isEqual(params.row, newData)) {
-              return `Mui-created`
-            }
-          }}
-        />
-        <Grid container sx={{ mt: 1 }} spacing={3}>
-          <Grid item xs={6} style={{ paddingTop: 0 }}>
-            <Grid container sx={{ mb: 1 }}>
-              <MuiButton text="Create" color='success' onClick={toggle} disabled={roleId != 0 ? false : true} />
-              <Badge badgeContent={selectPermission.length} color="warning">
-                <MuiButton text="Delete" color='error' onClick={handleDeletePermission} disabled={selectPermission.length > 0 ? false : true} />
-              </Badge>
-            </Grid>
-            <MuiDataGrid
-              getData={userService.getUserList}
-              showLoading={permissionState.isLoading}
-              isPagingServer={true}
-              headerHeight={45}
-              columns={permissionColumns}
-              rows={permissionState.data}
-              page={permissionState.page - 1}
-              pageSize={permissionState.pageSize}
-              rowCount={permissionState.totalRow}
-              rowsPerPageOptions={[5, 10, 20]}
-              onPageChange={(newPage) => {
-                setPermissionState({ ...permissionState, page: newPage + 1 });
-              }}
-              onPageSizeChange={(newPageSize) => {
-                setPermissionState({ ...permissionState, pageSize: newPageSize, page: 1 });
-              }}
-              checkboxSelection={true}
-              onSelectionModelChange={(ids) => {
-                setSelectPermission(ids)
-              }}
-              getRowId={(rows) => rows.permissionId}
-              getRowClassName={(params) => {
-                if (_.isEqual(params.row, newData)) {
-                  return `Mui-created`
-                }
-              }}
-            />
-          </Grid>
-          <Grid item xs={6} style={{ paddingTop: 0 }}>
-            <Grid container sx={{ mb: 1 }}>
-              <MuiButton text="Create" color='success' onClick={toggle2} disabled={roleId != 0 ? false : true} />
-              <Badge badgeContent={selectMenu.length} color="warning">
-                <MuiButton text="Delete" color='error' onClick={handleDeleteMenu} disabled={selectMenu.length > 0 ? false : true} />
-              </Badge>
-            </Grid>
-            <MuiDataGrid
-              getData={userService.getUserList}
-              showLoading={menuState.isLoading}
-              isPagingServer={true}
-              headerHeight={45}
-              columns={menuColumns}
-              rows={menuState.data}
-              page={menuState.page - 1}
-              pageSize={menuState.pageSize}
-              rowCount={menuState.totalRow}
-              rowsPerPageOptions={[5, 10, 20]}
-              onPageChange={(newPage) => {
-                setMenuState({ ...menuState, page: newPage + 1 });
-              }}
-              onPageSizeChange={(newPageSize) => {
-                setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
-              }}
-              checkboxSelection={true}
-              onSelectionModelChange={(ids) => {
-                setSelectMenu(ids)
-              }}
-              getRowId={(rows) => rows.menuId}
-              getRowClassName={(params) => {
-                if (_.isEqual(params.row, newData)) {
-                  return `Mui-created`
-                }
-              }}
-            />
-          </Grid>
+        <Grid item>
+          <MuiSearchField
+            label='general.name'
+            name='keyWord'
+            onClick={fetchData}
+            onChange={(e) => handleSearch(e, 'keyWord')}
+          />
         </Grid>
+      </Grid>
 
-        <RoleAddPermissionDialog
-          setNewData={setNewData}
-          isOpen={isShowing}
-          onClose={toggle}
-          roleId={roleId}
-          loadData={fetchDataPermission}
-        />
+      <MuiDataGrid
+        gridHeight={256}
+        // getData={userService.getUserList}
+        showLoading={roleState.isLoading}
+        isPagingServer={true}
+        headerHeight={45}
+        columns={columns}
+        rows={roleState.data}
+        page={roleState.page - 1}
+        pageSize={roleState.pageSize}
+        rowCount={roleState.totalRow}
+        // rowsPerPageOptions={[5, 10, 20]}
+        onPageChange={(newPage) => {
+          setRoleState({ ...roleState, page: newPage + 1 });
+        }}
+        // onPageSizeChange={(newPageSize) => {
+        //   setRoleState({ ...roleState, pageSize: newPageSize, page: 1 });
+        // }}
+        onCellClick={handleCellClick}
+        onRowClick={(rowData) => handleRoleClick(rowData.row.roleId)}
+        getRowId={(rows) => rows.roleId}
+        getRowClassName={(params) => {
+          if (_.isEqual(params.row, newData)) {
+            return `Mui-created`
+          }
+        }}
+      />
+      <Grid container sx={{ mt: 1 }} spacing={3}>
+        <Grid item xs={6} style={{ paddingTop: 0 }}>
+          <Grid container sx={{ mb: 1 }}>
+            <MuiButton text="Create" color='success' onClick={toggle} disabled={roleId != 0 ? false : true} />
+            <Badge badgeContent={selectPermission.length} color="warning">
+              <MuiButton text="Delete" color='error' onClick={handleDeletePermission} disabled={selectPermission.length > 0 ? false : true} />
+            </Badge>
+          </Grid>
+          <MuiDataGrid
+            // getData={userService.getUserList}
+            showLoading={permissionState.isLoading}
+            isPagingServer={true}
+            headerHeight={45}
+            columns={permissionColumns}
+            rows={permissionState.data}
+            page={permissionState.page - 1}
+            pageSize={permissionState.pageSize}
+            rowCount={permissionState.totalRow}
+            rowsPerPageOptions={[5, 10, 20]}
+            onPageChange={(newPage) => {
+              setPermissionState({ ...permissionState, page: newPage + 1 });
+            }}
+            onPageSizeChange={(newPageSize) => {
+              setPermissionState({ ...permissionState, pageSize: newPageSize, page: 1 });
+            }}
+            checkboxSelection={true}
+            onSelectionModelChange={(ids) => {
+              setSelectPermission(ids)
+            }}
+            getRowId={(rows) => rows.permissionId}
+            getRowClassName={(params) => {
+              if (_.isEqual(params.row, newData)) {
+                return `Mui-created`
+              }
+            }}
+          />
+        </Grid>
+        <Grid item xs={6} style={{ paddingTop: 0 }}>
+          <Grid container sx={{ mb: 1 }}>
+            <MuiButton text="Create" color='success' onClick={toggle2} disabled={roleId != 0 ? false : true} />
+            <Badge badgeContent={selectMenu.length} color="warning">
+              <MuiButton text="Delete" color='error' onClick={handleDeleteMenu} disabled={selectMenu.length > 0 ? false : true} />
+            </Badge>
+          </Grid>
+          <MuiDataGrid
+            // getData={userService.getUserList}
+            showLoading={menuState.isLoading}
+            isPagingServer={true}
+            headerHeight={45}
+            columns={menuColumns}
+            rows={menuState.data}
+            page={menuState.page - 1}
+            pageSize={menuState.pageSize}
+            rowCount={menuState.totalRow}
+            rowsPerPageOptions={[5, 10, 20]}
+            onPageChange={(newPage) => {
+              setMenuState({ ...menuState, page: newPage + 1 });
+            }}
+            onPageSizeChange={(newPageSize) => {
+              setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
+            }}
+            checkboxSelection={true}
+            onSelectionModelChange={(ids) => {
+              setSelectMenu(ids)
+            }}
+            getRowId={(rows) => rows.menuId}
+            getRowClassName={(params) => {
+              if (_.isEqual(params.row, newData)) {
+                return `Mui-created`
+              }
+            }}
+          />
+        </Grid>
+      </Grid>
 
-        <RoleAddMenuDialog
-          setNewData={setNewData}
-          isOpen={isShowing2}
-          onClose={toggle2}
-          roleId={roleId}
-          loadData={fetchDataMenu}
-        />
+      <RoleAddPermissionDialog
+        setNewData={setNewData}
+        isOpen={isShowing}
+        onClose={toggle}
+        roleId={roleId}
+        loadData={fetchDataPermission}
+      />
 
-        <RoleDialog
-          setNewData={setNewData}
-          initModal={rowData}
-          isOpen={isShowing3}
-          onClose={toggle3}
-          loadData={fetchData}
-          mode={mode}
-        />
+      <RoleAddMenuDialog
+        setNewData={setNewData}
+        isOpen={isShowing2}
+        onClose={toggle2}
+        roleId={roleId}
+        loadData={fetchDataMenu}
+      />
 
-      </ThemeProvider>
+      <RoleDialog
+        setNewData={setNewData}
+        initModal={rowData}
+        isOpen={isShowing3}
+        onClose={toggle3}
+        loadData={fetchData}
+        mode={mode}
+      />
     </React.Fragment>
 
   )

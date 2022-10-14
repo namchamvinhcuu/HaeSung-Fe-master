@@ -298,7 +298,7 @@ export default function Mold() {
           <FormControlLabel
             sx={{ mt: 1 }}
             control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
-            label={moldState.searchData.showDelete ? "Active Data" : "Delete Data"} />
+            label={intl.formatMessage({ id: moldState.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted' })} />
         </Grid>
       </Grid>
       <MuiDataGrid

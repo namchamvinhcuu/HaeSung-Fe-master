@@ -12,40 +12,40 @@ const getBuyerList = async (params) => {
     }
 }
 
-// const createStaff = async (params) => {
+const createBuyer = async (params) => {
 
-//     try {
-//         return await axios.post(`${apiStaff}/create-staff`, {
-//             ...params
-//         });
-//     } catch (error) {
-//         console.log(`ERROR: ${error}`);
-//     }
-// }
+    try {
+        return await axios.post(`${apiBuyer}/create-buyer`, {
+            ...params
+        });
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
 
-// const modifyStaff = async (params) => {
-//     try {
-//         return await axios.put(`${apiStaff}/modify-staff`, {
-//             ...params
-//         });
-//     } catch (error) {
-//         console.log(`ERROR: ${error}`);
-//     }
-// }
-// const deleteStaff = async (params) => {
+const modifyBuyer = async (params) => {
+    try {
+        return await axios.put(`${apiBuyer}/modify-buyer`, {
+            ...params
+        });
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
+const deleteBuyer = async (params) => {
 
-//     try {
-//         return await axios.put(`${apiStaff}/delete-staff`, {
-//             ...params
-//         });
-//     } catch (error) {
-//         console.log(`ERROR: ${error}`);
-//     }
-// }
+    try {
+        return await axios.put(`${apiBuyer}/delete-buyer`, {
+            ...params
+        });
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
 
 export {
     getBuyerList,
-    // createStaff,
-    // modifyStaff,
-    // deleteStaff,
+    createBuyer,
+    modifyBuyer,
+    deleteBuyer
 }

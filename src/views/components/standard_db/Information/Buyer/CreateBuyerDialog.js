@@ -10,11 +10,11 @@ import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 import { useFormik } from 'formik'
 
-import { staffService } from '@services'
+import { buyerService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { margin } from '@mui/system'
 
-const CreateStaffDialog = (props) => {
+const CreateBuyerDialog = (props) => {
     
     const intl = useIntl();
 
@@ -26,15 +26,16 @@ const CreateStaffDialog = (props) => {
     });
 
     const schema = yup.object().shape({
-        StaffCode: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
-        StaffName: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
+        BuyerCode: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
+        BuyerName: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
+        Description: yup.string().trim()
     });
 
     const formik = useFormik({
         validationSchema: schema,
         initialValues: { ...initModal },
         onSubmit: async values => {
-            const res = await staffService.createStaff(values);
+            const res = await buyerService.createBuyer(values);
             if (res.HttpResponseCode === 200 && res.Data) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
                 setNewData({ ...res.Data });
@@ -87,12 +88,12 @@ const CreateStaffDialog = (props) => {
                                     fullWidth
                                     size='small'
                                     disabled={dialogState.isSubmit}
-                                    label={intl.formatMessage({ id: 'staff.StaffCode' })}
-                                    name='StaffCode'
-                                    value={values.StaffCode}
+                                    label={intl.formatMessage({ id: 'buyer.BuyerCode' })}
+                                    name='BuyerCode'
+                                    value={values.BuyerCode}
                                     onChange={handleChange}
-                                    error={touched.StaffCode && Boolean(errors.StaffCode)}
-                                    helperText={touched.StaffCode && errors.StaffCode}
+                                    error={touched.BuyerCode && Boolean(errors.BuyerCode)}
+                                    helperText={touched.BuyerCode && errors.BuyerCode}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -101,14 +102,41 @@ const CreateStaffDialog = (props) => {
                                     fullWidth
                                     size='small'
                                     disabled={dialogState.isSubmit}
-                                    label={intl.formatMessage({ id: 'staff.StaffName' })}
-                                    name='StaffName'
-                                    value={values.StaffName}
+                                    label={intl.formatMessage({ id: 'buyer.BuyerName' })}
+                                    name='BuyerName'
+                                    value={values.BuyerName}
                                     onChange={handleChange}
-                                    error={touched.StaffName && Boolean(errors.StaffName)}
-                                    helperText={touched.StaffName && errors.StaffName}
+                                    error={touched.BuyerName && Boolean(errors.BuyerName)}
+                                    helperText={touched.BuyerName && errors.BuyerName}
                                 />
                             </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                fullWidth
+                                size='small'
+                                multiline={true}
+                                disabled={dialogState.isSubmit}
+                                label={intl.formatMessage({ id: 'buyer.Description' })}
+                                name='Description'
+                                value={values.Description}
+                                onChange={handleChange}
+                            />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                fullWidth
+                                size='small'
+                                multiline={true}
+                                rows={3}
+                                disabled={dialogState.isSubmit}
+                                label={intl.formatMessage({ id: 'buyer.Contact' })}
+                                name='Contact'
+                                value={values.Contact}
+                                onChange={handleChange}
+                            />
+                            </Grid>
+
+                            
                         </Grid>
                         
                         
@@ -135,4 +163,4 @@ const CreateStaffDialog = (props) => {
     )
 }
 
-export default CreateStaffDialog
+export default CreateBuyerDialog

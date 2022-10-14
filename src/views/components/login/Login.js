@@ -126,7 +126,7 @@ const Login = (props) => {
             else {
                 // setErrorMessages(res.ResponseMessage);
                 // errorMessages.push(res.ResponseMessage)
-                ErrorAlert('You lost your authorization, please login again !');
+                ErrorAlert(intl.formatMessage({ id: 'login.lost_authorization' }));
                 setIsSubmit(false);
             }
         }

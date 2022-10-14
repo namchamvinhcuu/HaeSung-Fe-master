@@ -17,8 +17,8 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { BuyerDto } from "@models"
 import EditIcon from '@mui/icons-material/Edit'
 import moment from "moment";
-//import CreateBuyerDialog from './CreateBuyerDialog'
-//import ModifyBuyerDialog from './ModifyBuyerDialog'
+import CreateBuyerDialog from './CreateBuyerDialog'
+import ModifyBuyerDialog from './ModifyBuyerDialog'
 import _ from 'lodash'
 import { FormControlLabel, Switch } from "@mui/material"
 import UndoIcon from '@mui/icons-material/Undo'
@@ -36,9 +36,9 @@ const Buyer = (props) => {
     })
 
 
-    const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
-    const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
-    const [showActivedData, setShowActivedData] = useState(true);
+     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
+     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
+     const [showActivedData, setShowActivedData] = useState(true);
 
     const toggleCreateDialog = () => {
 
@@ -98,7 +98,8 @@ const Buyer = (props) => {
             BuyerName: buyerState.searchData.BuyerName,
             isActived: showActivedData,
         }
-        const res = await buyerService.getBuyerList(params);
+        console.log(params,'dsds');
+       const res = await buyerService.getBuyerList(params);
      
         setbuyerState({
             ...buyerState
@@ -140,7 +141,8 @@ const Buyer = (props) => {
     useEffect(() => {
 
         fetchData();
-    }, [buyerState.page, buyerState.pageSize, showActivedData]); //
+    }, [buyerState.page, buyerState.pageSize,showActivedData]); //, 
+
     useEffect(() => {
         if (!_.isEmpty(newData) && !_.isEqual(newData, BuyerDto)) {
             const data = [newData, ...buyerState.data];
@@ -195,7 +197,7 @@ const Buyer = (props) => {
                                 color="warning"
                                 size="small"
                                 sx={[{ '&:hover': { border: '1px solid orange', }, }]}
-                                //onClick={toggleModifyDialog}
+                                onClick={toggleModifyDialog}
                             >
                                 <EditIcon fontSize="inherit" />
                             </IconButton>
@@ -207,9 +209,9 @@ const Buyer = (props) => {
                                 color="error"
                                 size="small"
                                 sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                               // onClick={() => handleDeleteBuyer(params.row)}
+                               onClick={() => handleDeleteBuyer(params.row)}
                             >
-                               {/* {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />} */}
+                               {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
                             </IconButton>
                         </Grid>
                     </Grid>
@@ -222,7 +224,7 @@ const Buyer = (props) => {
         { field: 'Description', headerName: intl.formatMessage({ id: "buyer.Description" }), flex: 1, },
         { field: 'createdName', headerName: 'User Create', width: 150, },
         {
-            field: 'createdDate', headerName: intl.formatMessage({ id: "general.created_date" }), flex: 0.3, valueFormatter: params => {
+            field: 'createdDate', headerName: intl.formatMessage({ id: "general.created_date" }), width: 150, valueFormatter: params => {
                 if (params.value !== null) {
                     return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
                 }
@@ -231,7 +233,7 @@ const Buyer = (props) => {
         
         { field: 'modifiedName', headerName: 'User Update', width: 150, },
         {
-            field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modified_date" }), flex: 0.3, valueFormatter: params => {
+            field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modified_date" }), width: 150, valueFormatter: params => {
                 if (params.value !== null) {
                     return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
                 }
@@ -255,7 +257,7 @@ const Buyer = (props) => {
                     <MuiButton
                         text="create"
                         color='success'
-                        //onClick={toggleCreateDialog}
+                        onClick={toggleCreateDialog}
                     />
                 </Grid>
                 
@@ -263,8 +265,8 @@ const Buyer = (props) => {
                         <MuiSearchField
                             label='general.code'
                             name='BuyerCode'
-                            // onClick={fetchData}
-                            // onChange={(e) => changeSearchData(e, 'BuyerCode')}
+                            onClick={fetchData}
+                            onChange={(e) => changeSearchData(e, 'BuyerCode')}
                         />
                 </Grid>
 
@@ -272,8 +274,8 @@ const Buyer = (props) => {
                         <MuiSearchField
                             label='general.name'
                             name='BuyerName'
-                            // onClick={fetchData}
-                            // onChange={(e) => changeSearchData(e, 'BuyerName')}
+                            onClick={fetchData}
+                            onChange={(e) => changeSearchData(e, 'BuyerName')}
                         />
                 </Grid>
 
@@ -281,20 +283,20 @@ const Buyer = (props) => {
                     <MuiButton
                         text="search"
                         color='info'
-                        //onClick={fetchData}
+                        onClick={fetchData}
                     />
-                    {/* <FormControlLabel
+                    <FormControlLabel
                         sx={{ mb: 0, ml: '1px' }}
                         control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleshowActivedData(e)} />}
                         label={showActivedData ? "Actived" : "Deleted"} 
                             
-                        /> */}
+                        />
                 </Grid>
 
             </Grid>
 
             <MuiDataGrid
-                //getData={buyerService.getBuyerList}
+                getData={buyerService.getBuyerList}
                 showLoading={buyerState.isLoading}
                 isPagingServer={true}
                 headerHeight={45}
@@ -305,14 +307,15 @@ const Buyer = (props) => {
                 pageSize={buyerState.pageSize}
                 rowCount={buyerState.totalRow}
 
-                rowsPerPageOptions={[5, 10, 20, 30]}
+                //rowsPerPageOptions={[5, 10, 20, 30]}
+                disableGrid={buyerState.isLoading}
 
                 onPageChange={(newPage) => {
                     setbuyerState({ ...buyerState, page: newPage + 1 });
                 }}
-                onPageSizeChange={(newPageSize) => {
-                    setbuyerState({ ...buyerState, pageSize: newPageSize, page: 1 });
-                }}
+                // onPageSizeChange={(newPageSize) => {
+                //     setbuyerState({ ...buyerState, pageSize: newPageSize, page: 1 });
+                // }}
                 getRowId={(rows) => rows.BuyerId}
                 onSelectionModelChange={(newSelectedRowId) => {
                     handleRowSelection(newSelectedRowId)
@@ -325,7 +328,7 @@ const Buyer = (props) => {
                 }}
             />
 
-            {/* <CreateBuyerDialog
+            <CreateBuyerDialog
                 initModal={BuyerDto}
                 setNewData={setNewData}
                 isOpen={isOpenCreateDialog}
@@ -336,33 +339,10 @@ const Buyer = (props) => {
                 setModifyData={setSelectedRow}
                 isOpen={isOpenModifyDialog}
                 onClose={toggleModifyDialog}
-            /> */}
+            />
         </React.Fragment>
     )
 }
 
-User_Operations.toString = function () {
-    return 'User_Operations';
-}
 
-const mapStateToProps = state => {
-
-    const { User_Reducer: { language } } = CombineStateToProps(state.AppReducer, [
-        [Store.User_Reducer]
-    ]);
-
-    return { language };
-
-};
-
-const mapDispatchToProps = dispatch => {
-
-    const { User_Operations: { changeLanguage } } = CombineDispatchToProps(dispatch, bindActionCreators, [
-        [User_Operations]
-    ]);
-
-    return { changeLanguage }
-
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Buyer);
+export default Buyer;

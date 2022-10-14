@@ -4,7 +4,7 @@ const LineDto = {
     Description: '',
     IsUsed: false,
     isActived: true,
-    row_version: null
+    row_version: null,
 }
 
 export default LineDto
