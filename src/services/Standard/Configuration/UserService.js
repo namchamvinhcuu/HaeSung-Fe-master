@@ -47,6 +47,15 @@ const changePassword = async (params) => {
   }
 }
 
+const changePasswordByRoot = async (params) => {
+  try {
+    return await axios.put(`${apiName}/change-userpassword-by-root`, { ...params });
+  }
+  catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+}
+
 const changeRoles = async (params) => {
   try {
     return await axios.put(`${apiName}/set-role-for-user`, { ...params });
@@ -72,5 +81,6 @@ export {
   createUser,
   changeRoles,
   changePassword,
+  changePasswordByRoot,
   deleteUser,
 }

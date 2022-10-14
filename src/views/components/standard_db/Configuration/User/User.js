@@ -10,6 +10,8 @@ import { userService } from '@services'
 import UserDialog from './UserDialog'
 import { useModal, useModal2, useModal3 } from "@basesShared";
 import { ErrorAlert, SuccessAlert } from '@utils'
+import { GetLocalStorage } from '@utils'
+import * as ConfigConstants from '@constants/ConfigConstants';
 import UserPasswordDialog from './UserPasswordDialog'
 import UserRoleDialog from './UserRoleDialog'
 
@@ -43,6 +45,9 @@ export default function User() {
   const [rowData, setRowData] = useState({});
   const [search, setSearch] = useState("");
 
+  const RoleUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
+  const RoleArr = (RoleUser.RoleNameList.replace(" ", "")).split(',');
+
   const columns = [
     { field: 'userId', hide: true },
     {
@@ -55,7 +60,7 @@ export default function User() {
       renderCell: (params) => {
         return (
           <Grid container spacing={1} alignItems="center" justifyContent="center">
-            <Grid item xs={4} style={{ textAlign: "center" }}>
+            <Grid item xs={RoleArr.includes('ROOT') ? 4 : 6} style={{ textAlign: "center" }}>
               <IconButton
                 aria-label="delete"
                 color="error"
@@ -66,7 +71,7 @@ export default function User() {
                 <DeleteIcon fontSize="inherit" />
               </IconButton>
             </Grid>
-            <Grid item xs={4} style={{ textAlign: "center" }}>
+            <Grid item xs={RoleArr.includes('ROOT') ? 4 : 6} style={{ textAlign: "center" }}>
               <IconButton
                 aria-label="edit"
                 color="warning"
@@ -77,17 +82,19 @@ export default function User() {
                 <EditIcon fontSize="inherit" />
               </IconButton>
             </Grid>
-            <Grid item xs={4} style={{ textAlign: "center" }}>
-              <IconButton
-                aria-label="edit"
-                color="success"
-                size="small"
-                sx={[{ '&:hover': { border: '1px solid green', }, }]}
-                onClick={() => handleUpdate(params.row)}
-              >
-                <LockIcon fontSize="inherit" />
-              </IconButton>
-            </Grid>
+            {RoleArr.includes('ROOT') &&
+              <Grid item xs={4} style={{ textAlign: "center" }}>
+                <IconButton
+                  aria-label="edit"
+                  color="success"
+                  size="small"
+                  sx={[{ '&:hover': { border: '1px solid green', }, }]}
+                  onClick={() => handleUpdate(params.row)}
+                >
+                  <LockIcon fontSize="inherit" />
+                </IconButton>
+              </Grid>
+            }
           </Grid>
         );
       },
