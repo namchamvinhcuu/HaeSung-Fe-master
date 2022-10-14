@@ -117,10 +117,8 @@ const Buyer = (props) => {
                     SuccessAlert(intl.formatMessage({ id: 'general.success' }))
                     await fetchData();
                 }
-                if (res && res.HttpResponseCode === 300) {
+                else {
                     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-
-                    return;
                 }
             } catch (error) {
                 console.log(error)
