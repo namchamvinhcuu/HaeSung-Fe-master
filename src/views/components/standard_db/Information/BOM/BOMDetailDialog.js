@@ -14,7 +14,7 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
   const [MaterialList, setMaterialList] = useState([]);
-  const defaultValue = { BomId: BomId, MaterialId: null, Amount: '', Remark: '' };
+  const defaultValue = { BomId: BomId, MaterialId: null, MaterialCode: '', Amount: '', Remark: '' };
 
   const schema = yup.object().shape({
     Amount: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
@@ -108,12 +108,16 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
         <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12}>
             <MuiSelectField
+              value={values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'bomDetail.MaterialId' })}
               options={MaterialList}
               displayLabel="MaterialCode"
               displayValue="MaterialId"
-              onChange={(e, value) => setFieldValue("MaterialId", value?.MaterialId || "")}
+              onChange={(e, value) => {
+                setFieldValue("MaterialCode", value?.MaterialCode || '');
+                setFieldValue("MaterialId", value?.MaterialId || "");
+              }}
               defaultValue={mode == CREATE_ACTION ? null : { MaterialId: initModal.MaterialId, MaterialCode: initModal.MaterialCode }}
               error={touched.MaterialId && Boolean(errors.MaterialId)}
               helperText={touched.MaterialId && errors.MaterialId}

@@ -2,7 +2,7 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import { Autocomplete } from '@mui/material';
 
-export default function MuiSelectField({ options, displayLabel, displayValue, onChange, defaultValue, sx, margin, disabled, label, error, helperText, variant }) {
+export default function MuiSelectField({ value, options, displayLabel, displayValue, onChange, defaultValue, sx, margin, disabled, label, error, helperText, variant }) {
   return (
     <Autocomplete
       fullWidth
@@ -10,6 +10,7 @@ export default function MuiSelectField({ options, displayLabel, displayValue, on
       size='small'
       margin={margin}
       options={options}
+      value={value}
       autoHighlight
       openOnFocus
       getOptionLabel={option => option[displayLabel]}

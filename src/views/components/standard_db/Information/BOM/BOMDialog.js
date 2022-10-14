@@ -11,7 +11,7 @@ import { useFormik } from 'formik'
 const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
-  const defaultValue = { BomCode: '', ProductId: null, Remark: '' };
+  const defaultValue = { BomCode: '', ProductId: null, ProductCode: '', Remark: '' };
 
   const schema = yup.object().shape({
     BomCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
@@ -105,12 +105,16 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
           </Grid>
           <Grid item xs={12}>
             <MuiSelectField
+              value={values.ProductId ? { ProductId: values.ProductId, ProductCode: values.ProductCode } : null}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'bom.ProductId' })}
               options={valueOption.ProductList}
               displayLabel="ProductCode"
               displayValue="ProductId"
-              onChange={(e, value) => setFieldValue("ProductId", value?.ProductId || "")}
+              onChange={(e, value) => {
+                setFieldValue("ProductCode", value?.ProductCode || '');
+                setFieldValue("ProductId", value?.ProductId || "");
+              }}
               defaultValue={mode == CREATE_ACTION ? null : { ProductId: initModal.ProductId, ProductCode: initModal.ProductCode }}
               error={touched.ProductId && Boolean(errors.ProductId)}
               helperText={touched.ProductId && errors.ProductId}

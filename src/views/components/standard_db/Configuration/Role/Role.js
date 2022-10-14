@@ -127,6 +127,9 @@ export default function Role() {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }))
           await fetchData();
         }
+        else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        }
       } catch (error) {
         console.log(error)
       }
@@ -159,6 +162,9 @@ export default function Role() {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }))
           await fetchDataMenu(roleId);
         }
+        else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        }
       } catch (error) {
         console.log(error)
       }
@@ -172,6 +178,9 @@ export default function Role() {
         if (res && res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }))
           await fetchDataPermission(roleId);
+        }
+        else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
         }
       } catch (error) {
         console.log(error)
@@ -238,10 +247,10 @@ export default function Role() {
     }
   }, [newData]);
 
-  const handleCellClick = (param, event) => {
-    //disable click cell 
-    event.defaultMuiPrevented = (param.field === "action");
-  };
+  // const handleCellClick = (param, event) => {
+  //   //disable click cell 
+  //   event.defaultMuiPrevented = (param.field === "action");
+  // };
 
   return (
     <React.Fragment>
@@ -285,7 +294,7 @@ export default function Role() {
         // onPageSizeChange={(newPageSize) => {
         //   setRoleState({ ...roleState, pageSize: newPageSize, page: 1 });
         // }}
-        onCellClick={handleCellClick}
+        // onCellClick={handleCellClick}
         onRowClick={(rowData) => handleRoleClick(rowData.row.roleId)}
         getRowId={(rows) => rows.roleId}
         getRowClassName={(params) => {

@@ -13,7 +13,6 @@ import { useFormik } from 'formik'
 const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
-  const defaultValue = { MaterialCode: '', Unit: null, MaterialType: null, SupplierId: null };
 
   const schema = yup.object().shape({
     MaterialCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
@@ -109,12 +108,16 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           </Grid>
           <Grid item xs={12}>
             <MuiSelectField
+              value={values.MaterialType ? { commonDetailId: values.MaterialType, commonDetailName: values.MaterialTypeName } : null}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'material.MaterialType' })}
               options={valueOption.MaterialTypeList}
               displayLabel="commonDetailName"
               displayValue="commonDetailId"
-              onChange={(e, value) => setFieldValue("MaterialType", value?.commonDetailId || "")}
+              onChange={(e, value) => {
+                setFieldValue("MaterialTypeName", value?.commonDetailName || '');
+                setFieldValue("MaterialType", value?.commonDetailId || '');
+              }}
               defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.MaterialType, commonDetailName: initModal.MaterialTypeName }}
               error={touched.MaterialType && Boolean(errors.MaterialType)}
               helperText={touched.MaterialType && errors.MaterialType}
@@ -122,12 +125,16 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           </Grid>
           <Grid item xs={12}>
             <MuiSelectField
+              value={values.Unit ? { commonDetailId: values.Unit, commonDetailName: values.UnitName } : null}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'material.Unit' })}
               options={valueOption.UnitList}
               displayLabel="commonDetailName"
               displayValue="commonDetailId"
-              onChange={(e, value) => setFieldValue("Unit", value?.commonDetailId || "")}
+              onChange={(e, value) => {
+                setFieldValue("UnitName", value?.commonDetailName || '');
+                setFieldValue("Unit", value?.commonDetailId || '');
+              }}
               defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.Unit, commonDetailName: initModal.UnitName }}
               error={touched.Unit && Boolean(errors.Unit)}
               helperText={touched.Unit && errors.Unit}
@@ -135,12 +142,16 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           </Grid>
           <Grid item xs={12}>
             <MuiSelectField
+              value={values.SupplierId ? { SupplierId: values.SupplierId, SupplierName: values.SupplierName } : null}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'material.SupplierId' })}
               options={valueOption.SupplierList}
               displayLabel="SupplierName"
               displayValue="SupplierId"
-              onChange={(e, value) => setFieldValue("SupplierId", value?.SupplierId || "")}
+              onChange={(e, value) => {
+                setFieldValue("SupplierName", value?.SupplierName || '');
+                setFieldValue("SupplierId", value?.SupplierId || '');
+              }}
               defaultValue={mode == CREATE_ACTION ? null : { SupplierId: initModal.SupplierId, SupplierName: initModal.SupplierName }}
               error={touched.SupplierId && Boolean(errors.SupplierId)}
               helperText={touched.SupplierId && errors.SupplierId}
@@ -168,5 +179,16 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     </MuiDialog>
   )
 }
+
+const defaultValue = {
+  MaterialCode: '',
+  MaterialType: null,
+  MaterialTypeName: '',
+  Unit: null,
+  UnitName: '',
+  SupplierId: null,
+  SupplierName: '',
+  Description: '',
+};
 
 export default MaterialDialog

@@ -13,7 +13,7 @@ import { useFormik } from 'formik'
 const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
-  const defaultValue = { TrayCode: '', IsReuse: false, TrayType: null };
+  const defaultValue = { TrayCode: '', IsReuse: false, TrayType: null, TrayTypeName: '' };
 
   const schema = yup.object().shape({
     TrayCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
@@ -107,12 +107,16 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
           </Grid>
           <Grid item xs={12}>
             <MuiSelectField
+              value={values.TrayType ? { commonDetailId: values.TrayType, commonDetailName: values.TrayTypeName } : null}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'tray.TrayType' })}
               options={valueOption.TrayTypeList}
               displayLabel="commonDetailName"
               displayValue="commonDetailId"
-              onChange={(e, value) => setFieldValue("TrayType", value?.commonDetailId || "")}
+              onChange={(e, value) => {
+                setFieldValue("TrayTypeName", value?.commonDetailName || '');
+                setFieldValue("TrayType", value?.commonDetailId || "");
+              }}
               defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.TrayType, commonDetailName: initModal.TrayTypeName }}
               error={touched.TrayType && Boolean(errors.TrayType)}
               helperText={touched.TrayType && errors.TrayType}

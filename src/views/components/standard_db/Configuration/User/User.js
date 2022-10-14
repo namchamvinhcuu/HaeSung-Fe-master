@@ -115,6 +115,9 @@ export default function User() {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }))
           await fetchData();
         }
+        else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        }
       } catch (error) {
         console.log(error)
       }
