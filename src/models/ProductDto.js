@@ -1,3 +1,4 @@
+import moment from "moment";
 const ProductDto= {
     ProductId: 0
     ,ProductCode: ''
@@ -8,11 +9,10 @@ const ProductDto= {
     ,ModelName : ''
     ,ProductTypeName: ''
     , isActived: true
-    , createdDate: null
     , createdBy: null
-    , createdBy: null
-    , modifiedDate: null
     , modifiedBy: null
+    , createdDate: moment.utc()
+    , modifiedDate: moment.utc()
     , row_version: null
 }
 

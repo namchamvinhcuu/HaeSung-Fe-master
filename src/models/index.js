@@ -5,6 +5,7 @@ import StaffDto from "./StaffDto";
 import LineDto from './LineDto';
 import BuyerDto from './BuyerDto';
 import StandardQCDto from './StandardQCDto';
+import QCMaterDto from './QCMaterDto';
 
 export {
     SupplierDto,
@@ -13,5 +14,6 @@ export {
     StaffDto,
     LineDto,
     BuyerDto,
-    StandardQCDto
+    StandardQCDto,
+    QCMaterDto
 }

@@ -17,6 +17,7 @@ import * as buyerService from './Standard/Information/BuyerService'
 import * as standardQCService from './Standard/Information/StandardQCService'
 import * as bomService from './Standard/Information/BomService'
 import * as bomDetailService from './Standard/Information/BomDetailService'
+import * as qcMasterService from './Standard/Information/QCMaterService'
 
 export {
     loginService,
@@ -38,5 +39,5 @@ export {
     standardQCService,
     bomService,
     bomDetailService,
-
+    qcMasterService,
 }

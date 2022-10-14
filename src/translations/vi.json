@@ -119,6 +119,7 @@
         "roleName": "Role"
     },
     "product": {
+        "product_code": "Product Code",
         "product_type": "Loại sản phẩm",
         "Inch": "Inch",
         "Model": "Model",
@@ -210,5 +211,12 @@
         "MaterialId": "Material Code",
         "Amount": "Amount",
         "Remark": "Remark"
+    },
+    "qcMaster": {
+        "QCMasterCode": "QC Master Code"
+    },
+    "qcDetail": {
+        "QCDetailCode": "QC Detail Code",
+        "qcDetail_existed": "QC Detail có dữ liệu. Vui lòng xóa bảng chi tiết"
     }
 }

@@ -14,7 +14,7 @@ const getStandardQCList = async (params) => {
 const create = async (params) => {
 
     try {
-        return await axios.post(`${apiStandardQC}/create-standartQC`, {
+        return await axios.post(`${apiStandardQC}/create-standardQC`, {
             ...params
         });
     } catch (error) {
@@ -24,7 +24,7 @@ const create = async (params) => {
 const modify = async (params) => {
 
     try {
-        return await axios.put(`${apiStandardQC}/modify-standartQC`, {
+        return await axios.put(`${apiStandardQC}/modify-standardQC`, {
             ...params
         });
     } catch (error) {
@@ -33,7 +33,7 @@ const modify = async (params) => {
 }
 const deleteStandardQC = async (params) => {
     try {
-      return await axios.delete(`${apiStandardQC}/delete-redo-standartQC`, { data: params });
+      return await axios.delete(`${apiStandardQC}/delete-redo-standardQC`, { data: params });
     }
     catch (error) {
       console.log(`ERROR: ${error}`);
