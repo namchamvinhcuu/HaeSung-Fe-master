@@ -76,7 +76,7 @@ const Product = () => {
 
 
     useEffect(() => {
-        if (!_.isEmpty(newData)) {
+        if (!_.isEmpty(newData) && !_.isEqual(newData, ProductDto)) {
             const data = [newData, ...productState.data];
             if (data.length > productState.pageSize) {
                 data.pop();
@@ -329,13 +329,13 @@ const Product = () => {
                     />
                 </Grid>
                 <Grid item>
+                    <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0 }} />
+                </Grid>
+                <Grid item>
                     <FormControlLabel
                         sx={{ mb: 0 }}
                         control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
                         label={productState.searchData.showDelete ? "Active Data" : "Delete Data"} />
-                </Grid>
-                <Grid item>
-                    <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0 }} />
                 </Grid>
             </Grid>
             <MuiDataGrid

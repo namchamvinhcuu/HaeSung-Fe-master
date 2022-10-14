@@ -27,6 +27,7 @@ const UserRoleDialog = ({ isOpen, onClose, setNewData, rowData, loadData }) => {
   const handleReset = () => {
     reset();
     clearErrors();
+    getRolesByUser(rowData.userId)
     setDialogState({ ...dialogState })
   }
 
@@ -101,6 +102,7 @@ const UserRoleDialog = ({ isOpen, onClose, setNewData, rowData, loadData }) => {
                     autoHighlight
                     openOnFocus
                     value={roleUser}
+                    disableCloseOnSelect
                     getOptionLabel={option => option.roleName}
                     isOptionEqualToValue={(option, value) =>
                       option.roleId === value.roleId

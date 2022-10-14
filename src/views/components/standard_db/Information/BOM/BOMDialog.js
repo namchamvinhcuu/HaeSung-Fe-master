@@ -1,25 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField } from '@controls'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
-import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
-import { materialService } from '@services'
+import { bomService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION } from '@constants/ConfigConstants';
 import { useFormik } from 'formik'
 
-const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
+const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
-  const defaultValue = { MaterialCode: '', Unit: null, MaterialType: null, SupplierId: null };
+  const defaultValue = { BomCode: '', ProductId: null, Remark: '' };
 
   const schema = yup.object().shape({
-    MaterialCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    MaterialType: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    Unit: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    SupplierId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+    BomCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+    ProductId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
   });
 
   const formik = useFormik({
@@ -53,10 +49,10 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     setDialogState({ ...dialogState, isSubmit: true });
 
     if (mode == CREATE_ACTION) {
-      const res = await materialService.createMaterial(data);
+      const res = await bomService.createBom(data);
       if (res.HttpResponseCode === 200 && res.Data) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-        setNewData({ ...res.Data });
+        setNewData(res.Data);
         setDialogState({ ...dialogState, isSubmit: false });
         handleReset();
         handleCloseDialog();
@@ -67,10 +63,10 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
       }
     }
     else {
-      const res = await materialService.modifyMaterial(data);
+      const res = await bomService.modifyBom(data);
       if (res.HttpResponseCode === 200) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-        setUpdateData({ ...res.Data });
+        setUpdateData(res.Data);
         setDialogState({ ...dialogState, isSubmit: false });
         handleReset();
         handleCloseDialog();
@@ -98,63 +94,37 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               autoFocus
               fullWidth
               size='small'
-              name='MaterialCode'
+              name='BomCode'
               disabled={dialogState.isSubmit}
-              value={values.MaterialCode}
+              value={values.BomCode}
               onChange={handleChange}
-              label={intl.formatMessage({ id: 'material.MaterialCode' })}
-              error={touched.MaterialCode && Boolean(errors.MaterialCode)}
-              helperText={touched.MaterialCode && errors.MaterialCode}
+              label={intl.formatMessage({ id: 'bom.BomCode' })}
+              error={touched.BomCode && Boolean(errors.BomCode)}
+              helperText={touched.BomCode && errors.BomCode}
             />
           </Grid>
           <Grid item xs={12}>
             <MuiSelectField
               disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: 'material.MaterialType' })}
-              options={valueOption.MaterialTypeList}
-              displayLabel="commonDetailName"
-              displayValue="commonDetailId"
-              onChange={(e, value) => setFieldValue("MaterialType", value?.commonDetailId || "")}
-              defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.MaterialType, commonDetailName: initModal.MaterialTypeName }}
-              error={touched.MaterialType && Boolean(errors.MaterialType)}
-              helperText={touched.MaterialType && errors.MaterialType}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <MuiSelectField
-              disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: 'material.Unit' })}
-              options={valueOption.UnitList}
-              displayLabel="commonDetailName"
-              displayValue="commonDetailId"
-              onChange={(e, value) => setFieldValue("Unit", value?.commonDetailId || "")}
-              defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.Unit, commonDetailName: initModal.UnitName }}
-              error={touched.Unit && Boolean(errors.Unit)}
-              helperText={touched.Unit && errors.Unit}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <MuiSelectField
-              disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: 'material.SupplierId' })}
-              options={valueOption.SupplierList}
-              displayLabel="SupplierName"
-              displayValue="SupplierId"
-              onChange={(e, value) => setFieldValue("SupplierId", value?.SupplierId || "")}
-              defaultValue={mode == CREATE_ACTION ? null : { SupplierId: initModal.SupplierId, SupplierName: initModal.SupplierName }}
-              error={touched.SupplierId && Boolean(errors.SupplierId)}
-              helperText={touched.SupplierId && errors.SupplierId}
+              label={intl.formatMessage({ id: 'bom.ProductId' })}
+              options={valueOption.ProductList}
+              displayLabel="ProductCode"
+              displayValue="ProductId"
+              onChange={(e, value) => setFieldValue("ProductId", value?.ProductId || "")}
+              defaultValue={mode == CREATE_ACTION ? null : { ProductId: initModal.ProductId, ProductCode: initModal.ProductCode }}
+              error={touched.ProductId && Boolean(errors.ProductId)}
+              helperText={touched.ProductId && errors.ProductId}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
               size='small'
-              name='Description'
+              name='Remark'
               disabled={dialogState.isSubmit}
-              value={values.Description}
+              value={values.Remark}
               onChange={handleChange}
-              label={intl.formatMessage({ id: 'material.Description' })}
+              label={intl.formatMessage({ id: 'bom.Remark' })}
             />
           </Grid>
           <Grid item xs={12}>
@@ -169,4 +139,4 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   )
 }
 
-export default MaterialDialog
+export default BOMDialog

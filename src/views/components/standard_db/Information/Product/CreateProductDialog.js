@@ -172,7 +172,8 @@ const CreateDialog = (props) => {
                                                 openOnFocus
                                                 getOptionLabel={option => option.commonDetailName}
                                                 isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
-                                                defaultValue={initModal}
+                                                // defaultValue={initModal}
+                                                defaultValue={initModal && { commonDetailId: initModal.Model, commonDetailName: initModal.ModelName }}
                                                 onChange={(e, item) => onChange(item ? item.commonDetailId ?? null : null)}
                                                 renderInput={(params) => {
                                                     return <TextField
@@ -202,7 +203,8 @@ const CreateDialog = (props) => {
                                                 openOnFocus
                                                 getOptionLabel={option => option.commonDetailName}
                                                 isOptionEqualToValue={(option, value) => option.commonDetailId === value.commonDetailId}
-                                                defaultValue={initModal}
+                                                // defaultValue={initModal}
+                                                defaultValue={initModal && { commonDetailId: initModal.ProductType, commonDetailName: initModal.ProductTypeName }}
                                                 onChange={(e, item) => onChange(item ? item.commonDetailId ?? null : null)}
                                                 renderInput={(params) => {
                                                     return <TextField
