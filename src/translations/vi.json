@@ -200,5 +200,15 @@
     },
     "standardQC":{
         "QCCode" : "QC Code"
+    },
+    "bom": {
+        "BomCode": "Bom Code",
+        "ProductId": "Product Code",
+        "Remark": "Remark"
+    },
+    "bomDetail": {
+        "MaterialId": "Material Code",
+        "Amount": "Amount",
+        "Remark": "Remark"
     }
 }

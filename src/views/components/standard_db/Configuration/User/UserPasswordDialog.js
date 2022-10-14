@@ -10,12 +10,12 @@ import { ErrorAlert, SuccessAlert } from '@utils'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 
 const UserPasswordDialog = ({ isOpen, onClose, setNewData, rowData }) => {
+
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false })
   const [hide, setHide] = useState({ userPassword: false, newPassword: false })
 
   const schema = yup.object().shape({
-    userPassword: yup.string().required(intl.formatMessage({ id: 'user.userPassword_required' })),
     newPassword: yup.string().required(intl.formatMessage({ id: 'user.newPassword_required' })),
   });
 
@@ -24,8 +24,7 @@ const UserPasswordDialog = ({ isOpen, onClose, setNewData, rowData }) => {
     resolver: yupResolver(schema),
     defaultValues: {
       newPassword: '',
-      userPassword: '',
-      userName: rowData.userName
+      userId: rowData.userId
     }
   });
 
@@ -45,7 +44,7 @@ const UserPasswordDialog = ({ isOpen, onClose, setNewData, rowData }) => {
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
     var data = { ...data, userName: rowData.userName }
-    const res = await userService.changePassword(data);
+    const res = await userService.changePasswordByRoot(data);
 
     if (res.HttpResponseCode === 200) {
       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -70,30 +69,6 @@ const UserPasswordDialog = ({ isOpen, onClose, setNewData, rowData }) => {
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={12}>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel size='small' htmlFor="userPassword" style={errors?.userPassword ? { color: "#d32f2f" } : null}>{intl.formatMessage({ id: 'user.userPassword' })}</InputLabel>
-              <OutlinedInput
-                autoFocus
-                fullWidth
-                id="userPassword"
-                type={hide.userPassword ? 'text' : 'password'}
-                size='small'
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setHide({ ...hide, userPassword: !hide.userPassword })} edge="end">
-                      {hide.userPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label={intl.formatMessage({ id: 'user.userPassword' })}
-                {...register('userPassword')}
-                error={!!errors?.userPassword}
-                helperText={errors?.userPassword ? errors.userPassword.message : null}
-              />
-              {errors?.userPassword && <FormHelperText error id="userPassword"> {errors?.userPassword.message} </FormHelperText>}
-            </FormControl>
-          </Grid>
 
           <Grid item xs={12}>
             <FormControl variant="outlined" fullWidth>

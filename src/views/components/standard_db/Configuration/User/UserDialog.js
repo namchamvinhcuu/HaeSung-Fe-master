@@ -12,6 +12,7 @@ const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
   const intl = useIntl();
   const [roleList, setRoleList] = useState([]);
   const [dialogState, setDialogState] = useState({ isSubmit: false })
+  const [roleUser, setRoleUser] = useState([]);
 
   const schema = yup.object().shape({
     userName: yup.string().required(intl.formatMessage({ id: 'user.userName_required' })),
@@ -29,6 +30,7 @@ const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
 
   const handleReset = () => {
     reset();
+    setRoleUser([]);
     clearErrors();
     setDialogState({ ...dialogState })
   }
@@ -116,16 +118,14 @@ const UserDialog = ({ initModal, isOpen, onClose, setNewData, rowData }) => {
                     options={roleList}
                     autoHighlight
                     openOnFocus
+                    value={roleUser}
                     getOptionLabel={option => option.roleName}
                     defaultValue={initModal}
                     onChange={(e, item) => {
-                      if (item) {
-                        setValue("Roles", item ?? []);
-                      }
-                      else {
-                        setValue("Roles", []);
-                      }
+                      setValue("Roles", item ?? []);
+                      setRoleUser(item ?? []);
                     }}
+                    disableCloseOnSelect
                     renderInput={(params) => {
                       return <TextField
                         {...params}
