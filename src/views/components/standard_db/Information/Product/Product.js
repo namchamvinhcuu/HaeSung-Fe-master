@@ -76,7 +76,7 @@ const Product = () => {
 
 
     useEffect(() => {
-        if (!_.isEmpty(newData)) {
+        if (!_.isEmpty(newData) && !_.isEqual(selectedRow, ProductDto)) {
             const data = [newData, ...productState.data];
             if (data.length > productState.pageSize) {
                 data.pop();
