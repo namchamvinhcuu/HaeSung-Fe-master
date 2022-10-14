@@ -172,6 +172,8 @@ export default function BOM() {
 
   async function fetchData() {
     setState({ ...state, isLoading: true });
+    setBomId(null);
+
     const params = {
       page: state.page,
       pageSize: state.pageSize,
@@ -250,7 +252,7 @@ export default function BOM() {
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
         onPageSizeChange={(newPageSize) => setState({ ...state, pageSize: newPageSize, page: 1 })}
         getRowId={(rows) => rows.BomId}
-        onRowClick={(rowData) => { setBomId(rowData.row.BomId); console.log(rowData.row.BomId) }}
+        onRowClick={(rowData) => setBomId(rowData.row.BomId)}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`
         }}

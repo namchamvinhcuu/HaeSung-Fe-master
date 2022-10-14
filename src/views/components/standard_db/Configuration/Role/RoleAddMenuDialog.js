@@ -139,7 +139,7 @@ const RoleAddMenuDialog = ({ roleId, initModal, isOpen, onClose, setNewData, row
           <Grid item xs={12}>
             <Grid container direction="row-reverse">
               <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
-              <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} />
+              {/* <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} /> */}
             </Grid>
           </Grid>
         </Grid>
