@@ -31,6 +31,8 @@ import Supplier from "./standard_db/Information/Supplier/Supplier";
 import Tray from "./standard_db/Information/Tray/Tray";
 import Buyer from "./standard_db/Information/Buyer/Buyer";
 import Line from "./standard_db/Information/Line/Line";
+import StandardQC from "./standard_db/Information/StandardQC/StandardQC";
+import QCMaster from "./standard_db/Information/QCMaster/QCMaster";
 
 //KPI
 import Analytics from "./KPI/Analytics/Analytics";
@@ -95,6 +97,8 @@ export {
   Tray,
   Buyer,
   Line,
+  StandardQC,
+  QCMaster,
 
   //KPI
   Analytics,
