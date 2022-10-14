@@ -197,5 +197,15 @@
         "MaterialType_required": "Material Type không được để trống",
         "Unit_required": "Unit không được để trống",
         "SupplierId_required": "Supplier không được để trống"
+    },
+    "bom": {
+        "BomCode": "Bom Code",
+        "ProductId": "Product Code",
+        "Remark": "Remark"
+    },
+    "bomDetail": {
+        "MaterialId": "Material Code",
+        "Amount": "Amount",
+        "Remark": "Remark"
     }
 }
