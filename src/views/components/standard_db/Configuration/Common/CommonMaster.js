@@ -16,12 +16,17 @@ import ModifyCommonMasterDialog from './ModifyCommonMasterDialog'
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import UndoIcon from '@mui/icons-material/Undo';
+import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils'
+import * as ConfigConstants from '@constants/ConfigConstants';
+
 const CommonMaster = () => {
     const intl = useIntl();
     const initCommonMasterModel = {
         commonMasterId: 0
         , commonMasterName: ''
         , forRoot: false
+        , RoleArr : []
+
     }
     const [commomMasterState, setcommomMasterState] = useState({
         isLoading: false,
@@ -34,6 +39,14 @@ const CommonMaster = () => {
             showDelete: true
         }
     });
+
+    const RoleUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
+    const setRoleArray = RoleUser.RoleNameList.replace(" ","");
+    const RoleArr = setRoleArray.split(',');
+
+    const [role,setRole] = useState(false)
+     
+
 
     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false)
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
@@ -104,6 +117,9 @@ const CommonMaster = () => {
 
     useEffect(() => {
         fetchData();
+
+         RoleArr.includes('ROOT') ? setRole(false) : setRole(true);
+       
     }, [commomMasterState.page, commomMasterState.pageSize, commomMasterState.searchData.showDelete]);
 
     useEffect(() => {
@@ -168,7 +184,6 @@ const CommonMaster = () => {
             }
         }
     };
-
     const columns = [
         { field: 'commonMasterId', headerName: '', flex: 0.3, hide: true },
         {
@@ -215,9 +230,9 @@ const CommonMaster = () => {
                 );
             },
         },
-        { field: 'commonMasterName', headerName: 'Common Master Name', flex: 0.3 },
+       { field: 'commonMasterName', headerName: 'Common Master Name', flex: 0.3 ,   },
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
-        { field: 'forRoot', headerName: 'For Root', flex: 0.3 },
+      { field: 'forRoot', headerName: 'For Root', flex: 0.3, hide : role  },
 
 
         {

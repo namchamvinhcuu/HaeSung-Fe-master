@@ -11,13 +11,15 @@ import * as yup from 'yup'
 
 import { commonService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
+import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils'
+import * as ConfigConstants from '@constants/ConfigConstants';
 
 const ModifyCommonMasterDialog = (props) => {
 
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setModifyData } = props;
-    //console.log(initModal,'master111111');
+    console.log(props,'props');
 
     const clearParent = useRef(null);
 
@@ -26,7 +28,9 @@ const ModifyCommonMasterDialog = (props) => {
         ...initModal,
         isSubmit: false,
     })
-
+    const RoleUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
+    const setRole = RoleUser.RoleNameList.replace(" ","");
+    const RoleArr  = setRole.split(',');
   
 
     const schema = yup.object().shape({
@@ -94,7 +98,7 @@ const ModifyCommonMasterDialog = (props) => {
                    
                     <Grid item xs={12}>
                         <Grid container spacing={2}>
-                            <Grid item xs={9}>
+                        <Grid item xs={RoleArr.includes('ROOT') ? 9 : 12}>
                                 <TextField
                                     autoFocus
                                     fullWidth
@@ -109,6 +113,7 @@ const ModifyCommonMasterDialog = (props) => {
                                     helperText={errors?.commonMasterName ? errors.commonMasterName.message : null}
                                 />
                             </Grid>
+                            {RoleArr.includes('ROOT') &&
                             <Grid item xs={3}>
                                 <FormControlLabel
                                     control={
@@ -127,6 +132,8 @@ const ModifyCommonMasterDialog = (props) => {
                                     label='For Root'
                                 />
                             </Grid>
+                            }
+
                         </Grid>
                     </Grid>
                    

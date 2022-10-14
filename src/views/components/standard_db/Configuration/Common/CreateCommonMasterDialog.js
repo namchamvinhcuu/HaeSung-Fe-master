@@ -11,12 +11,13 @@ import * as yup from 'yup'
 
 import { commonService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
-
+import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils'
+import * as ConfigConstants from '@constants/ConfigConstants';
 
 const CreateCommonMasterDialog = (props) => {
     const intl = useIntl();
 
-    const { initModal, isOpen, onClose, setNewData  } = props;
+    const { initModal, isOpen, onClose, setNewData } = props;
 
     const dataModalRef = useRef({ ...initModal });
 
@@ -24,6 +25,8 @@ const CreateCommonMasterDialog = (props) => {
         ...initModal,
         isSubmit: false,
     })
+
+
 
 
     const schema = yup.object().shape({
@@ -59,7 +62,7 @@ const CreateCommonMasterDialog = (props) => {
         , isValid
     } = formik;
 
-    
+
     const handleCloseDialog = () => {
         setDialogState({
             ...dialogState
@@ -67,9 +70,10 @@ const CreateCommonMasterDialog = (props) => {
         formik.resetForm();
         onClose();
     }
+    const RoleUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
+    const setRole = RoleUser.RoleNameList.replace(" ","");
+    const RoleArr = setRole.split(',');
 
-
- 
     return (
         <MuiDialog
             maxWidth='sm'
@@ -83,7 +87,7 @@ const CreateCommonMasterDialog = (props) => {
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                     <Grid item xs={12}>
                         <Grid container spacing={2}>
-                            <Grid item xs={9}>
+                            <Grid item xs={RoleArr.includes('ROOT') ? 9 : 12}>
                                 <TextField
                                     autoFocus
                                     fullWidth
@@ -97,18 +101,20 @@ const CreateCommonMasterDialog = (props) => {
                                     helperText={touched.commonMasterName && errors.commonMasterName}
                                 />
                             </Grid>
-                            <Grid item xs={3}>
-                                <FormControlLabel
-                                    control={<Checkbox checked={values.forRoot} />}
-                                    label='For Root'
-                                    name="forRoot"
-                                    onChange={formik.handleChange}
-                                />
-                            </Grid>
+                            {RoleArr.includes('ROOT') &&
+                                <Grid item xs={3}>
+                                    <FormControlLabel
+                                        control={<Checkbox checked={values.forRoot} />}
+                                        label='For Root'
+                                        name="forRoot"
+                                        onChange={formik.handleChange}
+                                    />
+                                </Grid>
+                            }
                         </Grid>
                     </Grid>
                     <Grid item xs={12}>
-                        <Grid container   direction="row-reverse">
+                        <Grid container direction="row-reverse">
                             <MuiSubmitButton
                                 text="save"
                                 loading={dialogState.isSubmit}
