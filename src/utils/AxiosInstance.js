@@ -107,13 +107,13 @@ instance.interceptors.response.use(
         const { data } = response
         if (data.HttpResponseCode === 401 && data.ResponseMessage === 'login.lost_authorization') {
 
-            ErrorAlert(<FormattedMessage id="login.lost_authorization" />);
+            // ErrorAlert(<FormattedMessage id="login.lost_authorization" />);
             instance.Logout();
         }
 
-        if (data.ResponseMessage === 'general.unauthorized') {
-            instance.Logout(data.ResponseMessage);
-        }
+        // if (data.ResponseMessage === 'general.unauthorized') {
+        //     instance.Logout(data.ResponseMessage);
+        // }
 
         return response.data;
     },
