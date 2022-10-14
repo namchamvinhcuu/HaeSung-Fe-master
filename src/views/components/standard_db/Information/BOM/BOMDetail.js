@@ -13,6 +13,7 @@ import moment from 'moment';
 import BOMDetailDialog from './BOMDetailDialog'
 
 export default function BOMDetail({ BomId }) {
+  console.log(BomId)
   const intl = useIntl();
   const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
@@ -89,8 +90,7 @@ export default function BOMDetail({ BomId }) {
 
   //useEffect
   useEffect(() => {
-    if (BomId)
-      fetchData(BomId);
+    fetchData(BomId);
   }, [state.page, state.pageSize, BomId]);
 
   useEffect(() => {
@@ -126,7 +126,7 @@ export default function BOMDetail({ BomId }) {
         let res = await bomDetailService.deleteBomDetail({ BomDetailId: bomDetail.BomDetailId, row_version: bomDetail.row_version });
         if (res && res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }))
-          await fetchData(BomDetailId);
+          await fetchData(BomId);
         }
         else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))

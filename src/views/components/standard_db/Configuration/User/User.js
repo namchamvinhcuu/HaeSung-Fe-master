@@ -176,13 +176,14 @@ export default function User() {
             <Grid item xs={9}>
               <TextField
                 fullWidth
+                variant="standard"
                 size='small'
                 label={intl.formatMessage({ id: 'user.userName' })}
                 onChange={e => setSearch(e.target.value)}
               />
             </Grid>
             <Grid item xs={3}>
-              <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0, ml: 2 }} />
+              <MuiButton text="search" color='info' onClick={fetchData} sx={{ mt: 1, ml: 2 }} />
             </Grid>
           </Grid>
         </Grid>

@@ -88,7 +88,7 @@ const UserPasswordDialog = ({ isOpen, onClose, setNewData, rowData }) => {
                 label={intl.formatMessage({ id: 'user.newPassword' })}
                 {...register('newPassword')}
                 error={!!errors?.newPassword}
-                helperText={errors?.newPassword ? errors.newPassword.message : null}
+                helpertext={errors?.newPassword ? errors.newPassword.message : ''}
               />
               {errors?.newPassword && <FormHelperText error id="newPassword"> {errors?.newPassword.message} </FormHelperText>}
             </FormControl>

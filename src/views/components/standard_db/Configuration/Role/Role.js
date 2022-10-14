@@ -249,16 +249,21 @@ export default function Role() {
         direction="row"
         justifyContent="space-between"
         alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
-        <Grid item xs={6}>
+        <Grid item xs={9}>
           <MuiButton text="create" color='success' onClick={handleAdd} />
         </Grid>
         <Grid item>
-          <MuiSearchField
-            label='general.name'
-            name='keyWord'
-            onClick={fetchData}
+          <TextField
+            sx={{ width: 210 }}
+            fullWidth
+            variant="standard"
+            size='small'
+            label={intl.formatMessage({ id: "role.roleName" })}
             onChange={(e) => handleSearch(e, 'keyWord')}
           />
+        </Grid>
+        <Grid item>
+          <MuiButton text="search" color='info' onClick={fetchData} sx={{ mt: 1, ml: 2 }} />
         </Grid>
       </Grid>
 
