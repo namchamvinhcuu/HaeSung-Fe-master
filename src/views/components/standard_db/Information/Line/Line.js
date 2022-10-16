@@ -17,6 +17,8 @@ import { bindActionCreators } from 'redux'
 
 import { LineDto } from '@models'
 import { lineService } from '@services'
+import { ErrorAlert, SuccessAlert } from '@utils'
+
 
 import CreateLineDialog from './CreateLineDialog'
 import ModifyLineDialog from './ModifyLineDialog'
@@ -101,6 +103,9 @@ const Line = (props) => {
                 let res = await lineService.handleDelete(line);
                 if (res && res.HttpResponseCode === 200) {
                     await fetchData();
+                }
+                else {
+                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
                 }
             } catch (error) {
                 console.log(error)
