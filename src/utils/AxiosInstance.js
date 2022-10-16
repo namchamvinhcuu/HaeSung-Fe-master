@@ -171,21 +171,10 @@ instance.getNewAccessToken = async () => {
     }
 
     return await instance.post(API_URL + '/api/refreshtoken', postObj);
-
-    // if (res.HttpResponseCode === 200) {
-    //     return res.Data;
-    // }
-    // else
-    //     return false;
 }
 
 instance.Logout = async (e) => {
-    // RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
-    // RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
-    // RemoveLocalStorage(ConfigConstants.CURRENT_USER);
-    // firstLogin.isfirst = false;
-    // ErrorAlert(e)
-    // historyApp.push("/logout");
+
     try {
         await handleLogout()
     } catch (error) {
@@ -194,7 +183,6 @@ instance.Logout = async (e) => {
 }
 
 const handleLogout = async () => {
-
     const requestOptions = {
         withCredentials: false,
         method: 'POST',
