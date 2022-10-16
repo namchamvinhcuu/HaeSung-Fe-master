@@ -2,7 +2,12 @@ import { axios } from '@utils'
 
 export const handleLogin = async (userName, userPassword) => {
     try {
-        return await axios.post('/api/login/checklogin', { userName, userPassword });
+        return await axios.post('/api/login/checklogin',
+            {
+                userName: userName
+                , userPassword: userPassword
+                , isOnApp: false
+            });
 
     } catch (error) {
         console.log(`ERROR: ${error}`);

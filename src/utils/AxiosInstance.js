@@ -48,14 +48,12 @@ export const isSuccessStatusCode = (s) => {
 let refreshtokenRequest = null;
 
 instance.interceptors.request.use(async (request) => {
-
     if (
-        request.url.indexOf(`/api/login/checklogin`) >= 0
-        || request.url.indexOf(`/api/refreshtoken`) >= 0
+        request.url.indexOf(ConfigConstants.LOGIN_URL) >= 0
+        || request.url.indexOf(ConfigConstants.REFRESH_TOKEN_URL) >= 0
         // || request.url.indexOf(`/api/logout`) >= 0
-    ) {
-        return request;
-    }
+    ) return request;
+
     else {
         let token = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
         if (token) {
