@@ -52,7 +52,7 @@ instance.interceptors.request.use(async (request) => {
     if (
         request.url.indexOf(`/api/login/checklogin`) >= 0
         || request.url.indexOf(`/api/refreshtoken`) >= 0
-        || request.url.indexOf(`/api/logout`) >= 0
+        // || request.url.indexOf(`/api/logout`) >= 0
     ) {
         return request;
     }
@@ -196,6 +196,10 @@ const handleLogout = async () => {
     let token = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
     if (token) {
         requestOptions.headers.Authorization = `Bearer ${token}`;
+    }
+
+    else {
+        requestOptions.headers.Authorization = `Bearer logout_token`;
     }
 
     fetch(`${API_URL}/api/logout`, requestOptions)
