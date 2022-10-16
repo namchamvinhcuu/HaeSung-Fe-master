@@ -4,7 +4,7 @@ import Tab from '@mui/material/Tab';
 import CloseIcon from '@mui/icons-material/Close';
 import { withStyles } from '@mui/styles';
 import { historyDashboard, historyApp, calDateAgo, UserManager } from '@utils'
-import { api_get, api_post, api_push_notify, SuccessAlert, ErrorAlert } from "@utils";
+import { api_get, api_post, api_push_notify, SuccessAlert, ErrorAlert, RemoveLocalStorage } from "@utils";
 import * as ConfigConstants from "@constants/ConfigConstants";
 
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
@@ -19,6 +19,7 @@ import Button from "@mui/material/Button";
 import { withTranslation } from 'react-i18next';
 import NotifyUnread from './NotifyUnread'
 import { ChangeLanguage } from "@containers";
+import { loginService } from '@services'
 
 const styles = (theme) => ({
   tabs: {
@@ -79,11 +80,24 @@ class NavBar extends Component {
     historyDashboard.push(tab.router)
   }
 
-  signOut = (e) => {
+  signOut = async (e) => {
     e.preventDefault();
-    const { deleteAll } = this.props
-    deleteAll();
-    historyApp.push("/logout")
+    try {
+      const res = await loginService.handleLogout();
+      if (res.HttpResponseCode === 200 && res.ResponseMessage === 'general.success') {
+        RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
+        RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
+        RemoveLocalStorage(ConfigConstants.CURRENT_USER);
+        const { deleteAll } = this.props
+        deleteAll();
+        historyApp.push("/logout")
+      }
+      else {
+        ErrorAlert('System error')
+      }
+    } catch (error) {
+      console.log(`logout error: ${error}`)
+    }
     // window.location.reload(true);
   }
 
