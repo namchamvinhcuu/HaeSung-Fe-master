@@ -14,6 +14,7 @@ import MaterialDialog from './MaterialDialog'
 
 export default function Material() {
   const intl = useIntl();
+  let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
   const [state, setState] = useState({
@@ -107,6 +108,7 @@ export default function Material() {
 
   useEffect(() => {
     fetchData();
+    return () => { isRendered = false; }
   }, [state.page, state.pageSize, state.searchData.showDelete]);
 
   useEffect(() => {
@@ -189,7 +191,7 @@ export default function Material() {
 
     }
     const res = await materialService.getMaterialList(params);
-    if (res && res.Data)
+    if (res && res.Data && isRendered)
       setState({
         ...state
         , data: res.Data ?? []
