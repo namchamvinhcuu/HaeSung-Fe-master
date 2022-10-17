@@ -114,7 +114,7 @@ instance.interceptors.request.use(async (request) => {
 
 instance.interceptors.response.use(
     async (response) => {
-        console.log(currentExecutingRequests[response.request.responseURL])
+        console.log(response)
         if (currentExecutingRequests[response.request.responseURL]) {
             // here you clean the request
             delete currentExecutingRequests[response.request.responseURL];
@@ -123,14 +123,15 @@ instance.interceptors.response.use(
 
         // Thrown error for request with OK status code
         const { data } = response
-        if (data.HttpResponseCode === 401 && data.ResponseMessage === 'login.lost_authorization') {
-            await instance.Logout();
-        }
+        if (data)
+            if (data.HttpResponseCode === 401 && data.ResponseMessage === 'login.lost_authorization') {
+                await instance.Logout();
+            }
         return response.data;
     },
     (error) => {
         const { config, response } = error;
-        console.log(config)
+
         const originalRequest = config;
 
         if (axios.isCancel(error)) {
