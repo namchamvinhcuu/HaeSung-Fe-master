@@ -22,7 +22,7 @@ const ModifyQCDetailDialog = (props) => {
   
     const clearParent = useRef(null);
 
-    const [QCCodeArr, setQCCodeArr] = useState([initModal]);
+    const [QCCodeArr, setQCCodeArr] = useState([]);
 
     const dataModalRef = useRef({ ...initModal });
     const [dialogState, setDialogState] = useState({
@@ -128,7 +128,6 @@ const ModifyQCDetailDialog = (props) => {
                                         setFieldValue("QCCode", value?.QCCode || '');
                                         setFieldValue("QCId", value?.QCId || "");
                                     }}
-                                    // defaultValue={initModal && { QCId: initModal.QCId, QCCode: initModal.QCCode }}
                                     error={!!errors.QCId}
                                     helperText={errors?.QCId ? errors.QCId.message : null}
                                 />

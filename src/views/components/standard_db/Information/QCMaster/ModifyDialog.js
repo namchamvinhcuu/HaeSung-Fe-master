@@ -19,7 +19,7 @@ const ModifyDialog = (props) => {
     const { initModal, isOpen, onClose, setModifyData } = props;
 
     const clearParent = useRef(null);
-    const [productArr, setproducArr] = useState([initModal]);
+    const [productArr, setproducArr] = useState([]);
     const dataModalRef = useRef({ ...initModal });
     const [dialogState, setDialogState] = useState({
         ...initModal,

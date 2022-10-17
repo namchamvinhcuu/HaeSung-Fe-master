@@ -63,6 +63,7 @@ export default function QCDetail({ QCMasterId }) {
   useEffect(() => {
     getQC();
   }, [])
+
   const getQC = async () => {
     const res = await qcDetailService.getStandardQCActive();
     if (res.HttpResponseCode === 200 && res.Data) {
@@ -114,6 +115,7 @@ export default function QCDetail({ QCMasterId }) {
       page: qcDetailState.page,
       pageSize: qcDetailState.pageSize,
       QCMasterId: QCMasterId,
+      QCId: qcDetailState.searchData.QCId,
       showDelete: qcDetailState.searchData.showDelete
     }
     const res = await qcDetailService.getQcDetailList(params);
@@ -137,7 +139,8 @@ export default function QCDetail({ QCMasterId }) {
     }
   }
   const handleDelete = async (row) => {
-    if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
+    let message = qcDetailState.searchData.showDelete ? intl.formatMessage({ id: 'general.confirm_delete' }) : intl.formatMessage({ id: 'general.confirm_redo_deleted' })
+    if (window.confirm(message)) {
       try {
         let res = await qcDetailService.deleteQCDetail({ QCDetailId: row.QCDetailId, row_version: row.row_version });
         if (res && res.HttpResponseCode === 200) {
@@ -238,7 +241,7 @@ export default function QCDetail({ QCMasterId }) {
 
         </Grid>
         <Grid item>
-                <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 1 }} />
+                <MuiButton text="search" color='info' onClick={() => fetchData(QCMasterId)} sx={{ m: 1 }} />
             </Grid>
         <Grid item>
           <FormControlLabel
