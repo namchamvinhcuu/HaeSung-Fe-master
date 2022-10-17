@@ -29,6 +29,10 @@ const instance = axios.create({
     // withCredentials: true
 });
 
+// const controller = new AbortController();
+// const signal = controller.signal;
+const currentExecutingRequests = {};
+
 const createError = (httpStatusCode, statusCode, errorMessage, problems, errorCode = '') => {
     const error = new Error();
     error.httpStatusCode = httpStatusCode;
@@ -48,6 +52,19 @@ export const isSuccessStatusCode = (s) => {
 let refreshtokenRequest = null;
 
 instance.interceptors.request.use(async (request) => {
+    let originalRequest = request;
+
+    if (currentExecutingRequests[request.url]) {
+        const source = currentExecutingRequests[request.url];
+        delete currentExecutingRequests[request.url];
+        source.cancel();
+    }
+
+    const CancelToken = axios.CancelToken;
+    const source = CancelToken.source();
+    originalRequest.cancelToken = source.token;
+    currentExecutingRequests[request.url] = source;
+
     if (
         request.url.indexOf(ConfigConstants.LOGIN_URL) >= 0
         || request.url.indexOf(ConfigConstants.REFRESH_TOKEN_URL) >= 0
@@ -95,6 +112,10 @@ instance.interceptors.request.use(async (request) => {
 
 instance.interceptors.response.use(
     async (response) => {
+        if (currentExecutingRequests[response.request.responseURL]) {
+            // here you clean the request
+            delete currentExecutingRequests[response.request.responseURL];
+        }
         // Thrown error for request with OK status code
         const { data } = response
         if (data.HttpResponseCode === 401 && data.ResponseMessage === 'login.lost_authorization') {

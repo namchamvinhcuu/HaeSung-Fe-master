@@ -124,7 +124,12 @@ const Line = (props) => {
     };
 
     useEffect(() => {
-        fetchData();
+        let isCancelled = false;
+        if (!isCancelled)
+            fetchData();
+        return () => {
+            isCancelled = true;
+        }
     }, [lineState.page, lineState.pageSize, showActivedData]);
 
     useEffect(() => {
@@ -144,7 +149,7 @@ const Line = (props) => {
     useEffect(() => {
         if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, LineDto)) {
             let newArr = [...lineState.data]
-            const index = _.findIndex(newArr, function (o) { return o.SupplierId == selectedRow.SupplierId; });
+            const index = _.findIndex(newArr, (o) => { return o.SupplierId == selectedRow.SupplierId; });
             if (index !== -1) {
                 newArr[index] = selectedRow
             }

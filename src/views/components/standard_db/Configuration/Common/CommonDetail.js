@@ -13,7 +13,7 @@ import CreateCommonDetailDialog from './CreateCommonDetailDialog'
 import ModifyCommonDetailDialog from './ModifyCommonDetailDialog'
 
 const CommonDetail = ({ rowmaster }) => {
-
+    let isCancelled = false;
     const intl = useIntl();
     const initCommonDetailModel = {
         CommonDetailId: 0,
@@ -77,18 +77,25 @@ const CommonDetail = ({ rowmaster }) => {
             pageSize: menuState.pageSize
 
         }
+
         const res = await commonService.getCommonDetailList(params);
 
         setMenuState({
             ...menuState
-            , data: [...res.Data]
-            , totalRow: res.TotalRow
+            , data: res && res.Data ? [...res.Data] : []
+            , totalRow: res ? res.TotalRow : 0
             , isLoading: false
         });
     };
 
     useEffect(() => {
+
+        // if (!isCancelled)
         fetchData();
+
+        return () => {
+            isCancelled = true
+        }
     }, [rowmaster.commonMasterId, menuState.page, menuState.pageSize, rowmaster]);
 
     useEffect(() => {
@@ -215,11 +222,11 @@ const CommonDetail = ({ rowmaster }) => {
             </Grid>
             {menuState?.data &&
                 <MuiDataGrid
-                     getData={commonService.getCommonDetailList}
+                    // getData={commonService.getCommonDetailList}
                     showLoading={menuState.isLoading}
                     isPagingServer={true}
                     headerHeight={45}
-                 
+
                     gridHeight={345}
                     columns={columns}
                     rows={menuState.data}

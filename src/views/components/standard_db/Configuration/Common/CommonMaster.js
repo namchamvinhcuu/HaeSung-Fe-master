@@ -30,7 +30,7 @@ const CommonMaster = () => {
         commonMasterId: 0
         , commonMasterName: ''
         , forRoot: false
-        , RoleArr : []
+        , RoleArr: []
 
     }
     const [commomMasterState, setcommomMasterState] = useState({
@@ -46,29 +46,25 @@ const CommonMaster = () => {
     });
 
     const RoleUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
-    const setRoleArray = RoleUser.RoleNameList.replace(" ","");
+    const setRoleArray = RoleUser.RoleNameList.replace(" ", "");
     const RoleArr = setRoleArray.split(',');
 
-    const [role,setRole] = useState(false)
-     
-
+    const [role, setRole] = useState(false)
 
     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false)
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
 
-
     const changeSearchData = (e, inputName) => {
-
         let newSearchData = { ...commomMasterState.searchData };
         newSearchData[inputName] = e.target.value;
 
         setcommomMasterState({ ...commomMasterState, searchData: { ...newSearchData } })
-
-
     }
+
     const [selectedRow, setSelectedRow] = useState({
         ...initCommonMasterModel
     })
+
     const [newData, setNewData] = useState({ ...initCommonMasterModel })
 
     const toggleCreateCommonMSDialog = () => {
@@ -85,19 +81,21 @@ const CommonMaster = () => {
         const rowSelected = commomMasterState.data.filter(function (item) {
             return item.commonMasterId === arrIds[0]
         });
+
         if (rowSelected && rowSelected.length > 0) {
             setSelectedRow({ ...rowSelected[0] });
-
         }
         else {
             setSelectedRow({ ...initCommonMasterModel });
-
         }
     }
+
     const [rowmaster, setRowmaster] = useState(null);
+
     const master_row_click = (row) => {
         setRowmaster(row);
     }
+
     async function fetchData() {
         setcommomMasterState({
             ...commomMasterState
@@ -123,12 +121,12 @@ const CommonMaster = () => {
     useEffect(() => {
         fetchData();
 
-         RoleArr.includes('ROOT') ? setRole(false) : setRole(true);
-       
+        RoleArr.includes('ROOT') ? setRole(false) : setRole(true);
+
     }, [commomMasterState.page, commomMasterState.pageSize, commomMasterState.searchData.showDelete]);
 
     useEffect(() => {
-        if (!_.isEmpty(newData) && !_.isEqual(newData, initCommonMasterModel) ) {
+        if (!_.isEmpty(newData) && !_.isEqual(newData, initCommonMasterModel)) {
             const data = [newData, ...commomMasterState.data];
             if (data.length > commomMasterState.pageSize) {
                 data.pop();
@@ -140,11 +138,6 @@ const CommonMaster = () => {
             });
         }
     }, [newData]);
-
-
-    useEffect(() => {
-        console.log(commomMasterState.data)
-    }, [commomMasterState.data]);
 
     useEffect(() => {
         if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, initCommonMasterModel)) {
@@ -160,12 +153,11 @@ const CommonMaster = () => {
             });
         }
     }, [selectedRow]);
+
     const handleSearch = (e, inputName) => {
-        console.log('a', inputName)
         let newSearchData = { ...commomMasterState.searchData };
         newSearchData[inputName] = e;
         if (inputName == 'showDelete') {
-         
             setcommomMasterState({ ...commomMasterState, page: 1, searchData: { ...newSearchData } })
         }
         else {
@@ -173,22 +165,23 @@ const CommonMaster = () => {
             setcommomMasterState({ ...commomMasterState, searchData: { ...newSearchData } })
         }
     }
+
     const handleDeleteCommonMS = async (row) => {
         if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
             try {
-                let res = await commonService.deleteCommonMater({commonMasterId :row.commonMasterId,row_version: row.row_version });
+                let res = await commonService.deleteCommonMater({ commonMasterId: row.commonMasterId, row_version: row.row_version });
                 if (res && res.HttpResponseCode === 200) {
                     await fetchData();
                 }
-                if (res && res.HttpResponseCode === 300) {
+                else {
                     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-                   // await fetchData();
                 }
             } catch (error) {
 
             }
         }
     };
+
     const columns = [
         { field: 'commonMasterId', headerName: '', flex: 0.3, hide: true },
         {
@@ -235,11 +228,9 @@ const CommonMaster = () => {
                 );
             },
         },
-       { field: 'commonMasterName', headerName: 'Common Master Name', flex: 0.3 ,   },
+        { field: 'commonMasterName', headerName: 'Common Master Name', flex: 0.3, },
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
-      { field: 'forRoot', headerName: 'For Root', flex: 0.3, hide : role  },
-
-
+        { field: 'forRoot', headerName: 'For Root', flex: 0.3, hide: role },
         {
             field: 'createdDate', headerName: 'Created Date', flex: 0.3,
             valueFormatter: params => {
@@ -259,7 +250,7 @@ const CommonMaster = () => {
         },
 
         { field: 'modifiedBy', headerName: 'modifiedBy', flex: 0.3, hide: true },
-        { field: 'row_version', headerName: 'row_version', flex: 0.3, hide: true  },
+        { field: 'row_version', headerName: 'row_version', flex: 0.3, hide: true },
     ];
 
     return (
@@ -282,7 +273,7 @@ const CommonMaster = () => {
                         onChange={(e) => handleSearch(e.target.value, 'keyWord')}
                     />
                 </Grid>
-                 <Grid item>
+                <Grid item>
                     <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0 }} />
                 </Grid>
                 <Grid item>
@@ -292,35 +283,35 @@ const CommonMaster = () => {
                         label={commomMasterState.searchData.showDelete ? "Active Data" : "Delete Data"} />
                 </Grid>
             </Grid>
-                <MuiDataGrid
-                    showLoading={commomMasterState.isLoading}
-                    isPagingServer={true}
-                    headerHeight={45}
-                    gridHeight={345}
-                    columns={columns}
-                    rows={commomMasterState.data}
-                    page={commomMasterState.page - 1}
-                    pageSize={commomMasterState.pageSize}
-                    rowCount={commomMasterState.totalRow}
+            <MuiDataGrid
+                showLoading={commomMasterState.isLoading}
+                isPagingServer={true}
+                headerHeight={45}
+                gridHeight={345}
+                columns={columns}
+                rows={commomMasterState.data}
+                page={commomMasterState.page - 1}
+                pageSize={commomMasterState.pageSize}
+                rowCount={commomMasterState.totalRow}
 
-                    onRowClick={(params, event) => {
-                        master_row_click && master_row_click(params.row);
-                    }}
-                    rowsPerPageOptions={[5, 10, 20, 30]}
-                 
-                    onPageChange={(newPage) => setcommomMasterState({ ...commomMasterState, page: newPage + 1 })}
-                    onPageSizeChange={(newPageSize) => setcommomMasterState({ ...commomMasterState, pageSize: newPageSize, page: 1 })}
+                // onRowClick={(params, event) => {
+                //     master_row_click && master_row_click(params.row);
+                // }}
+                // rowsPerPageOptions={[5, 10, 20, 30]}
 
-                    getRowId={(rows) => rows.commonMasterId}
-                    onSelectionModelChange={(newSelectedRowId) => {
-                        handleRowSelection(newSelectedRowId)
-                    }}
-                    getRowClassName={(params) => {
-                        if (_.isEqual(params.row, newData)) {
-                            return `Mui-created`
-                        }
-                    }}
-                />
+                onPageChange={(newPage) => setcommomMasterState({ ...commomMasterState, page: newPage + 1 })}
+                // onPageSizeChange={(newPageSize) => setcommomMasterState({ ...commomMasterState, pageSize: newPageSize, page: 1 })}
+
+                getRowId={(rows) => rows.commonMasterId}
+                onSelectionModelChange={(newSelectedRowId) => {
+                    handleRowSelection(newSelectedRowId)
+                }}
+                getRowClassName={(params) => {
+                    if (_.isEqual(params.row, newData)) {
+                        return `Mui-created`
+                    }
+                }}
+            />
 
             <CreateCommonMasterDialog
                 initModal={initCommonMasterModel}
@@ -336,7 +327,7 @@ const CommonMaster = () => {
                 onClose={toggleModifyCommonMSDialog}
             />
             <Grid item sm={6} sx={{ margin: 1, background: "#fff" }}>
-                {rowmaster && <CommonDetail rowmaster={rowmaster} />}
+                {selectedRow && <CommonDetail rowmaster={selectedRow} />}
             </Grid>
         </React.Fragment>
     )
