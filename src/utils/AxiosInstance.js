@@ -120,7 +120,6 @@ instance.interceptors.response.use(
             delete currentExecutingRequests[response.request.responseURL];
         }
 
-
         // Thrown error for request with OK status code
         const { data } = response
         if (data)
@@ -129,7 +128,7 @@ instance.interceptors.response.use(
             }
         return response.data;
     },
-    (error) => {
+    async (error) => {
         const { config, response } = error;
 
         const originalRequest = config;
