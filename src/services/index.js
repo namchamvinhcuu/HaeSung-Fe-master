@@ -18,6 +18,7 @@ import * as standardQCService from './Standard/Information/StandardQCService'
 import * as bomService from './Standard/Information/BomService'
 import * as bomDetailService from './Standard/Information/BomDetailService'
 import * as qcMasterService from './Standard/Information/QCMaterService'
+import * as qcDetailService from './Standard/Information/qcDetailService'
 
 export {
     loginService,
@@ -40,4 +41,5 @@ export {
     bomService,
     bomDetailService,
     qcMasterService,
+    qcDetailService
 }

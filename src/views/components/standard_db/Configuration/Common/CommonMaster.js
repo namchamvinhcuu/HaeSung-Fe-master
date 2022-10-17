@@ -97,6 +97,7 @@ const CommonMaster = () => {
     const [rowmaster, setRowmaster] = useState(null);
     const master_row_click = (row) => {
         setRowmaster(row);
+        console.log(row,'row');
     }
     async function fetchData() {
         setcommomMasterState({

@@ -11,9 +11,16 @@ const getQcDetailList = async (params) => {
         console.log(`ERROR: ${error}`);
     }
 }
-const getProductActive = async () => {
+const getQCMasterActive = async () => {
     try {
-        return await axios.get(`${apiQCDetail}/get-product-active`);
+        return await axios.get(`${apiQCDetail}/get-qcMaster-active`);
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
+const getStandardQCActive = async () => {
+    try {
+        return await axios.get(`${apiQCDetail}/get-StandardQC-active`);
     } catch (error) {
         console.log(`ERROR: ${error}`);
     }
@@ -50,7 +57,8 @@ const deleteQCDetail = async (params) => {
 
 export {
     getQcDetailList,
-    getProductActive,
+    getQCMasterActive,
+    getStandardQCActive,
     create,
     modify,
     deleteQCDetail

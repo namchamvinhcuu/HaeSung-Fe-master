@@ -217,6 +217,7 @@
     },
     "qcDetail": {
         "QCDetailCode": "QC Detail Code",
-        "qcDetail_existed": "QC Detail có dữ liệu. Vui lòng xóa bảng chi tiết"
+        "qcDetail_existed": "QC Detail có dữ liệu. Vui lòng xóa bảng chi tiết",
+        "duplicated_code": "QC Code: Trùng mã QC "
     }
 }

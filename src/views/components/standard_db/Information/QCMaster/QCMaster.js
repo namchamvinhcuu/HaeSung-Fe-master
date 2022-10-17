@@ -21,6 +21,7 @@ import CreateDialog from './CreateDialog'
 import ModifyDialog from './ModifyDialog'
 import { qcMasterService } from '@services'
 import { QCMasterDto } from "@models"
+import QCDetail from "./QCDetail.js";
 
 const QCMaster = (props) => {
     const intl = useIntl();
@@ -33,7 +34,7 @@ const QCMaster = (props) => {
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 20,
+        pageSize: 8,
         searchData: {
             QCMasterCode: null,
             Description: null,
@@ -120,7 +121,7 @@ const QCMaster = (props) => {
         }
     }
     const handleSearch = (e, inputName) => {
-        console.log('a', inputName)
+        // console.log('a', inputName)
         let newSearchData = { ...qCMasterState.searchData };
         newSearchData[inputName] = e;
         if (inputName == 'showDelete') {
@@ -150,6 +151,10 @@ const QCMaster = (props) => {
                 console.log(error)
             }
         }
+    }
+    const [QCMasterId, setRowmaster] = useState(null);
+    const master_row_click = (QCMasterId) => {
+        setRowmaster(QCMasterId);
     }
     const columns = [
         { field: 'QCMasterId', headerName: '', flex: 0.3, hide:true },
@@ -197,7 +202,7 @@ const QCMaster = (props) => {
         },
         { field: 'QCMasterCode', headerName: intl.formatMessage({ id: "qcMaster.QCMasterCode" }), flex: 0.3 },
         { field: 'ProductId', headerName: "ProductId", flex: 0.3 , hide: true },
-        { field: 'product_code', headerName: intl.formatMessage({ id: "product.product_code" }), flex: 0.3 },
+        { field: 'ProductCode', headerName: intl.formatMessage({ id: "product.product_code" }), flex: 0.3 },
         { field: 'Description', headerName: intl.formatMessage({ id: "general.description" }), flex: 0.3 },
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
         { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.3 },
@@ -284,7 +289,7 @@ const QCMaster = (props) => {
                     return `Mui-created`
                 }
             }}
-            onRowClick={(rowData) => setBomId(rowData.row.QCMasterId)}
+            onRowClick={(rowData) => master_row_click(rowData.row.QCMasterId)}
         />
          <CreateDialog
             initModal={QCMasterDto}
@@ -298,7 +303,7 @@ const QCMaster = (props) => {
             isOpen={isOpenModifyDialog}
             onClose={toggleModifyDialog}
         /> 
-          <QCDetail QCMasterId={QCMasterId} />
+          {QCMasterId && <QCDetail QCMasterId={QCMasterId} />}
     </React.Fragment >
     )
 }
