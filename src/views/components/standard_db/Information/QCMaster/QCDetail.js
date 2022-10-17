@@ -21,7 +21,7 @@ export default function QCDetail({ QCMasterId }) {
   const { isShowing, toggle } = useModal();
 
   const [newData, setNewData] =
-   useState({...QCDetailDto} )
+    useState({ ...QCDetailDto })
 
 
   const [qcDetailState, setqcDetailState] = useState({
@@ -30,9 +30,13 @@ export default function QCDetail({ QCMasterId }) {
     totalRow: 0,
     page: 1,
     pageSize: 8,
-    QCMasterId: QCMasterId,
-    showDelete: true
+    searchData: {
+      QCMasterId: QCMasterId,
+      showDelete: true
+    }
+
   });
+  const [QCCodeArr, setQCCodeArr] = useState([]);
   const [selectedRow, setSelectedRow] = useState({
     ...QCDetailDto
   })
@@ -43,7 +47,7 @@ export default function QCDetail({ QCMasterId }) {
   }
   const toggleModifyDialog = () => {
     setIsOpenModifyDialog(!isOpenModifyDialog);
-}
+  }
   const handleRowSelection = (arrIds) => {
 
     const rowSelected = qcDetailState.data.filter(function (item) {
@@ -56,11 +60,23 @@ export default function QCDetail({ QCMasterId }) {
       setSelectedRow({ ...QCDetailDto });
     }
   }
-
+  useEffect(() => {
+    getQC();
+  }, [])
+  const getQC = async () => {
+    const res = await qcDetailService.getStandardQCActive();
+    if (res.HttpResponseCode === 200 && res.Data) {
+        setQCCodeArr([...res.Data])
+        console.log(res.Data);
+    }
+    else {
+        setQCCodeArr([])
+    }
+}
   //useEffect
   useEffect(() => {
     fetchData(QCMasterId);
-  }, [qcDetailState.page, qcDetailState.pageSize, QCMasterId]);
+  }, [qcDetailState.page, qcDetailState.pageSize, QCMasterId, qcDetailState.searchData.showDelete]);
 
   useEffect(() => {
     if (!_.isEmpty(newData) && !_.isEqual(newData, QCDetailDto)) {
@@ -98,7 +114,7 @@ export default function QCDetail({ QCMasterId }) {
       page: qcDetailState.page,
       pageSize: qcDetailState.pageSize,
       QCMasterId: QCMasterId,
-      showDelete: qcDetailState.showDelete
+      showDelete: qcDetailState.searchData.showDelete
     }
     const res = await qcDetailService.getQcDetailList(params);
     setqcDetailState({
@@ -108,25 +124,35 @@ export default function QCDetail({ QCMasterId }) {
       , isLoading: false
     });
   }
+  const handleSearch = (e, inputName) => {
+    let newSearchData = { ...qcDetailState.searchData };
+    newSearchData[inputName] = e;
+    if (inputName == 'showDelete') {
+      console.log(qcDetailState, inputName)
+      setqcDetailState({ ...qcDetailState, page: 1, searchData: { ...newSearchData } })
+    }
+    else {
 
+      setqcDetailState({ ...qcDetailState, searchData: { ...newSearchData } })
+    }
+  }
   const handleDelete = async (row) => {
     if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
-        try {
-            let res = await qcDetailService.deleteQCDetail({ QCDetailId: row.QCDetailId, row_version: row.row_version });
-            if (res && res.HttpResponseCode === 200) 
-            {
-                SuccessAlert(intl.formatMessage({ id: 'general.success' }))
-                await fetchData(QCMasterId);
-            }
-            if (res && res.HttpResponseCode === 300) {
-                ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-                return;
-            }
-        } catch (error) {
-            console.log(error)
+      try {
+        let res = await qcDetailService.deleteQCDetail({ QCDetailId: row.QCDetailId, row_version: row.row_version });
+        if (res && res.HttpResponseCode === 200) {
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }))
+          await fetchData(QCMasterId);
         }
+        if (res && res.HttpResponseCode === 300) {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+          return;
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
-}
+  }
   const columns = [
     {
       field: 'id', headerName: '', flex: 0.1, align: 'center',
@@ -166,7 +192,7 @@ export default function QCDetail({ QCMasterId }) {
                 sx={[{ '&:hover': { border: '1px solid orange', }, }]}
                 onClick={toggleModifyDialog}
               >
-                <EditIcon fontSize="inherit" />
+                {params.row.isActived ? <EditIcon fontSize="inherit" /> : ""}
               </IconButton>
             </Grid>
           </Grid>
@@ -198,6 +224,28 @@ export default function QCDetail({ QCMasterId }) {
           <MuiButton text="create" color='success' onClick={toggleCreateDialog} sx={{ mt: 1 }}
             disabled={QCMasterId ? false : true} />
         </Grid>
+        <Grid item>
+          <MuiSelectField
+         
+            label={intl.formatMessage({ id: 'standardQC.QCCode' })}
+            options={QCCodeArr}
+            displayLabel="QCCode"
+            displayValue="QCId"
+            onChange={(e, item) => handleSearch(item ? item.QCId ?? null : null, 'QCId')}
+            variant="standard"
+            sx={{ width: 210 }}
+          />
+
+        </Grid>
+        <Grid item>
+                <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 1 }} />
+            </Grid>
+        <Grid item>
+          <FormControlLabel
+            sx={{ mb: 0 }}
+            control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
+            label={qcDetailState.searchData.showDelete ? "Active Data" : "Delete Data"} />
+        </Grid>
       </Grid>
       <MuiDataGrid
         showLoading={qcDetailState.isLoading}
@@ -219,20 +267,20 @@ export default function QCDetail({ QCMasterId }) {
         }}
         onSelectionModelChange={(newSelectedRowId) => {
           handleRowSelection(newSelectedRowId)
-      }}
+        }}
       />
       <CreateQCDetailDialog
-        initModal={{...QCDetailDto,QCMasterId:QCMasterId} }
+        initModal={{ ...QCDetailDto, QCMasterId: QCMasterId }}
         setNewData={setNewData}
         isOpen={isOpenCreateDialog}
         onClose={toggleCreateDialog}
       />
-       <ModifyQCDetailDialog
-            initModal={selectedRow}
-            setModifyData={setSelectedRow}
-            isOpen={isOpenModifyDialog}
-            onClose={toggleModifyDialog}
-        /> 
+      <ModifyQCDetailDialog
+        initModal={selectedRow}
+        setModifyData={setSelectedRow}
+        isOpen={isOpenModifyDialog}
+        onClose={toggleModifyDialog}
+      />
     </>
   )
 }

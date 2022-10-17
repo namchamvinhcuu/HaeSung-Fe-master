@@ -19,7 +19,7 @@ const ModifyQCDetailDialog = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setModifyData } = props;
-    console.log(initModal);
+  
     const clearParent = useRef(null);
 
     const [QCCodeArr, setQCCodeArr] = useState([initModal]);
@@ -76,7 +76,6 @@ const ModifyQCDetailDialog = (props) => {
         initialValues: { ...initModal },
         enableReinitialize: true,
         onSubmit: async values => {
-           console.log(values)
             const res = await qcDetailService.modify(values);
             if (res.HttpResponseCode === 200) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -116,26 +115,10 @@ const ModifyQCDetailDialog = (props) => {
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                     <Grid item xs={12}>
                         <Grid container item spacing={2} marginBottom={2}>
-                            {/* <Grid item xs={6}>
-                                <MuiSelectField
-                                    // value={values.QCMasterId ? { QCMasterId: values.QCMasterId, QCMasterCode: values.QCMasterCode } : null}
-                                    disabled={dialogState.isSubmit}
-                                    label={intl.formatMessage({ id: 'qcMaster.QCMasterCode' })}
-                                    options={QCMasterCodeArr}
-                                    displayLabel="QCMasterCode"
-                                    displayValue="QCMasterId"
-                                    onChange={(e, value) => {
-                                        setFieldValue("QCMasterCode", value?.QCMasterCode || '');
-                                        setFieldValue("QCMasterId", value?.QCMasterId || "");
-                                    }}
-                                    defaultValue={initModal && { QCMasterId: initModal.QCMasterId, QCMasterCode: initModal.QCMasterCode }}
-                                    error={!!errors.QCMasterId}
-                                    helperText={errors?.QCMasterId ? errors.QCMasterId.message : null}
-                                />
-                            </Grid> */}
+                           
                             <Grid item xs={12}>
                                 <MuiSelectField
-                                    // value={values.QCId ? { QCId: values.QCId, QCCode: values.QCCode } : null}
+                                     value={values.QCId ? { QCId: values.QCId, QCCode: values.QCCode } : null}
                                     disabled={dialogState.isSubmit}
                                     label={intl.formatMessage({ id: 'standardQC.QCCode' })}
                                     options={QCCodeArr}
@@ -145,10 +128,9 @@ const ModifyQCDetailDialog = (props) => {
                                         setFieldValue("QCCode", value?.QCCode || '');
                                         setFieldValue("QCId", value?.QCId || "");
                                     }}
-                                    defaultValue={initModal && { QCId: initModal.QCId, QCCode: initModal.QCCode }}
+                                    // defaultValue={initModal && { QCId: initModal.QCId, QCCode: initModal.QCCode }}
                                     error={!!errors.QCId}
                                     helperText={errors?.QCId ? errors.QCId.message : null}
-
                                 />
 
                             </Grid>

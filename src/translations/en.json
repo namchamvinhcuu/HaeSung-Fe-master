@@ -218,6 +218,7 @@
     "qcDetail": {
         "QCDetailCode": "QC Detail Code",
         "qcDetail_existed": "QC Detail is existed. Please Delete Detail First",
-        "duplicated_code": "QC Code: Duplicated QC Code"
+        "duplicated_code": "QC Code: Duplicated QC Code",
+        "QCCode_required":"QC cannot be blank"
     }
 }

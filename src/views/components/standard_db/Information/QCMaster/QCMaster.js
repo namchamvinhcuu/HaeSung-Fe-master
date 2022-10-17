@@ -1,6 +1,6 @@
 import { Store } from '@appstate'
 import { User_Operations } from '@appstate/user'
-import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
+import { MuiButton, MuiDataGrid, MuiSearchField ,MuiSelectField } from '@controls'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import UndoIcon from '@mui/icons-material/Undo'
@@ -43,6 +43,7 @@ const QCMaster = (props) => {
         }
     });
 
+    const [productArr, setproducArr] = useState([]);
     const [selectedRow, setSelectedRow] = useState({
         ...QCMasterDto
     })
@@ -56,8 +57,13 @@ const QCMaster = (props) => {
     const toggleModifyDialog = () => {
         setIsOpenModifyDialog(!isOpenModifyDialog);
     }
+      //useEffect
+  useEffect(() => {
+    getProduct();
+  }, [])
     useEffect(() => {
         fetchData();
+
     }, [qCMasterState.page, qCMasterState.pageSize, qCMasterState.searchData.showDelete]);
 
 
@@ -96,6 +102,7 @@ const QCMaster = (props) => {
             page: qCMasterState.page,
             pageSize: qCMasterState.pageSize,
             QCMasterCode: qCMasterState.searchData.QCMasterCode,
+            ProductId: qCMasterState.searchData.ProductId,
             Description: qCMasterState.searchData.Description,
             showDelete: qCMasterState.searchData.showDelete
         }
@@ -120,8 +127,16 @@ const QCMaster = (props) => {
             setSelectedRow({ ...QCMasterDto });
         }
     }
+    const getProduct = async () => {
+        const res = await qcMasterService.getProductActive();
+        if (res.HttpResponseCode === 200 && res.Data) {
+            setproducArr([...res.Data])
+        }
+        else {
+            setproducArr([])
+        }
+    }
     const handleSearch = (e, inputName) => {
-        // console.log('a', inputName)
         let newSearchData = { ...qCMasterState.searchData };
         newSearchData[inputName] = e;
         if (inputName == 'showDelete') {
@@ -152,10 +167,7 @@ const QCMaster = (props) => {
             }
         }
     }
-    const [QCMasterId, setRowmaster] = useState(null);
-    const master_row_click = (QCMasterId) => {
-        setRowmaster(QCMasterId);
-    }
+
     const columns = [
         { field: 'QCMasterId', headerName: '', flex: 0.3, hide:true },
         {
@@ -227,7 +239,7 @@ const QCMaster = (props) => {
     return (
         <React.Fragment>
         <Grid container direction="row"  justifyContent="space-between" alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
-            <Grid item xs={6}>
+            <Grid item xs={5}>
                 <MuiButton
                     text="create"
                     color='success'
@@ -242,6 +254,18 @@ const QCMaster = (props) => {
                     size='small'
                     label={intl.formatMessage({ id: 'qcMaster.QCMasterCode' })}
                     onChange={(e) => handleSearch(e.target.value, 'QCMasterCode')}
+                />
+            </Grid>
+            <Grid item>
+                <MuiSelectField
+
+                    label={intl.formatMessage({ id: 'product.product_code' })}
+                    options={productArr}
+                    displayLabel="ProductCode"
+                    displayValue="ProductId"
+                    onChange={(e, item) => handleSearch(item ? item.ProductId ?? null : null, 'ProductId')}
+                    variant="standard"
+                    sx={{ width: 210 }}
                 />
             </Grid>
             <Grid item >
@@ -289,7 +313,7 @@ const QCMaster = (props) => {
                     return `Mui-created`
                 }
             }}
-            onRowClick={(rowData) => master_row_click(rowData.row.QCMasterId)}
+            // onRowClick={(rowData) => master_row_click(rowData.row.QCMasterId)}
         />
          <CreateDialog
             initModal={QCMasterDto}
@@ -303,7 +327,7 @@ const QCMaster = (props) => {
             isOpen={isOpenModifyDialog}
             onClose={toggleModifyDialog}
         /> 
-          {QCMasterId && <QCDetail QCMasterId={QCMasterId} />}
+          {selectedRow && <QCDetail QCMasterId={selectedRow.QCMasterId} />}
     </React.Fragment >
     )
 }
