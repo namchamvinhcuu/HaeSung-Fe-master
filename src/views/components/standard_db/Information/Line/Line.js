@@ -89,12 +89,13 @@ const Line = (props) => {
         }
         const res = await lineService.get(params);
 
-        setLineState({
-            ...lineState
-            , data: !res.Data ? [] : [...res.Data]
-            , totalRow: res.TotalRow
-            , isLoading: false
-        });
+        if (res)
+            setLineState({
+                ...lineState
+                , data: !res.Data ? [] : [...res.Data]
+                , totalRow: res.TotalRow
+                , isLoading: false
+            });
     }
 
     const handleDelete = async (line) => {
