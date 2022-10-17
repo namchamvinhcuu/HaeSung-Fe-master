@@ -109,22 +109,6 @@ const Menu = (props) => {
 
     useEffect(() => {
         isRendered = true;
-        // const params = {
-        //     page: menuState.page,
-        //     pageSize: menuState.pageSize
-        // }
-        // menuService.getMenuList(params)
-        //     .then(res => {
-        //         if (isRendered) {
-        //             setMenuState({
-        //                 ...menuState
-        //                 , data: [...res.Data]
-        //                 , totalRow: res.Data && res.Data.length > 0 ? res.Data[0].totalRow : 0
-        //             });
-        //         }
-        //         return null;
-        //     })
-        //     .catch(err => console.log(err));;
         if (isRendered)
             fetchData();
 
