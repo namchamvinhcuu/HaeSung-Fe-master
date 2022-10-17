@@ -26,6 +26,7 @@ import { ErrorAlert, SuccessAlert } from '@utils'
 
 
 const Staff = (props) => {
+    let isRendered = useRef(false);
     const intl = useIntl();
 
     // const initStaffModel = {
@@ -105,12 +106,14 @@ const Staff = (props) => {
         }
         const res = await staffService.getStaffList(params);
      
-        setstaffState({
-            ...staffState
-            , data: !res.Data ? [] : [...res.Data]
-            , totalRow: res.TotalRow
-            , isLoading: false
-        });
+
+         if (res && isRendered)
+            setstaffState({
+                ...staffState
+                , data: !res.Data ? [] : [...res.Data]
+                , totalRow: res.TotalRow
+                , isLoading: false
+            });
     }
 
     const handleDeleteStaff = async (staff) => {
@@ -147,7 +150,13 @@ const Staff = (props) => {
 
     useEffect(() => {
 
-        fetchData();
+        isRendered = true;
+        if (isRendered)
+            fetchData();
+
+        return () => {
+            isRendered = false
+        }
     }, [staffState.page, staffState.pageSize, showActivedData]); //
     useEffect(() => {
         if (!_.isEmpty(newData) && !_.isEqual(newData, StaffDto)) {
