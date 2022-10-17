@@ -5,15 +5,15 @@ import UndoIcon from '@mui/icons-material/Undo';
 import { FormControlLabel, Grid, IconButton, Switch, TextField } from '@mui/material'
 import { useIntl } from 'react-intl'
 import { MuiButton, MuiDataGrid, MuiSelectField } from '@controls'
-import { bomService } from '@services'
 import { useModal } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import moment from 'moment';
-import BOMDialog from './BOMDialog'
-import BOMDetail from './BOMDetail'
+//import QCDetailDialog from './QCDetailDialog
+import { qcDetailService } from '@services'
 
-export default function BOM() {
+export default function QCDetail({ QCMasterId }) {
+  console.log(QCMasterId)
   const intl = useIntl();
   const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
@@ -23,25 +23,21 @@ export default function BOM() {
     totalRow: 0,
     page: 1,
     pageSize: 8,
-    searchData: {
-      keyWord: '',
-      ProductId: null,
-      showDelete: true
-    }
+    QCMasterId: QCMasterId
   });
   const [newData, setNewData] = useState({})
   const [updateData, setUpdateData] = useState({})
   const [rowData, setRowData] = useState({});
-  const [ProductList, setProductList] = useState([]);
-  const [BomId, setBomId] = useState(null);
 
   const columns = [
     {
       field: 'id', headerName: '', flex: 0.1, align: 'center',
       filterable: false,
-      renderCell: (index) => (index.api.getRowIndex(index.row.BomId) + 1) + (state.page - 1) * state.pageSize,
+      renderCell: (index) => (index.api.getRowIndex(index.row.QCDetailId) + 1) + (state.page - 1) * state.pageSize,
     },
-    { field: 'BomId', hide: true },
+    { field: 'QCDetailId', hide: true },
+    { field: 'QCMasterId', hide: true },
+    { field: 'QCId', hide: true },
     { field: 'row_version', hide: true },
     {
       field: "action",
@@ -79,9 +75,8 @@ export default function BOM() {
         );
       },
     },
-    { field: 'BomCode', headerName: intl.formatMessage({ id: "bom.BomCode" }), flex: 0.5, },
-    { field: 'ProductCode', headerName: intl.formatMessage({ id: "bom.ProductId" }), flex: 0.5, },
-    { field: 'Remark', headerName: intl.formatMessage({ id: "bom.Remark" }), flex: 0.7, },
+    { field: 'QCCode', headerName: intl.formatMessage({ id: "qc.QCCode" }), flex: 0.5, },
+    { field: 'QCMasterCode', headerName: intl.formatMessage({ id: "qcMaster.QCMasterCode" }), flex: 0.5, },
     { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
     {
       field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.5,
@@ -96,12 +91,8 @@ export default function BOM() {
 
   //useEffect
   useEffect(() => {
-    getProduct();
-  }, [])
-
-  useEffect(() => {
-    fetchData();
-  }, [state.page, state.pageSize, state.searchData.showDelete]);
+    fetchData(QCMasterId);
+  }, [state.page, state.pageSize, QCMasterId]);
 
   useEffect(() => {
     if (!_.isEmpty(newData)) {
@@ -120,7 +111,7 @@ export default function BOM() {
   useEffect(() => {
     if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData)) {
       let newArr = [...state.data]
-      const index = _.findIndex(newArr, function (o) { return o.BomId == updateData.BomId; });
+      const index = _.findIndex(newArr, function (o) { return o.QCDetailId == updateData.QCDetailId; });
       if (index !== -1) {
         newArr[index] = updateData
       }
@@ -129,113 +120,33 @@ export default function BOM() {
     }
   }, [updateData]);
 
-  //handle
-  const handleDelete = async (bom) => {
-    if (window.confirm(intl.formatMessage({ id: bom.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
-      try {
-        let res = await bomService.deleteBom({ BomId: bom.BomId, row_version: bom.row_version });
-        if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: 'general.success' }))
-          await fetchData();
-        }
-        else {
-          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  }
 
-  const handleAdd = () => {
-    setMode(CREATE_ACTION);
-    setRowData();
-    toggle();
-  };
 
-  const handleUpdate = (row) => {
-    setMode(UPDATE_ACTION);
-    setRowData({ ...row });
-    toggle();
-  };
 
-  const handleSearch = (e, inputName) => {
-    let newSearchData = { ...state.searchData };
-    newSearchData[inputName] = e;
-    if (inputName == 'showDelete') {
-      setState({ ...state, page: 1, searchData: { ...newSearchData } })
-    }
-    else {
-      setState({ ...state, searchData: { ...newSearchData } })
-    }
-  }
-
-  async function fetchData() {
+  async function fetchData(BomId) {
     setState({ ...state, isLoading: true });
-    setBomId(null);
-
     const params = {
       page: state.page,
       pageSize: state.pageSize,
-      keyWord: state.searchData.keyWord,
-      ProductId: state.searchData.ProductId,
-      showDelete: state.searchData.showDelete
-
+      BomId: BomId
     }
-    const res = await bomService.getBomList(params);
+    const res = await bomDetailService.getBomDetailList(params);
     setState({
       ...state
-      , data: res.Data ?? []
+      , data: [...res.Data]
       , totalRow: res.TotalRow
       , isLoading: false
     });
   }
 
-  const getProduct = async () => {
-    const res = await bomService.getProduct();
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setProductList([...res.Data])
-    }
-  }
-
   return (
-    <React.Fragment>
+    <>
       <Grid container
         direction="row"
         justifyContent="space-between"
-        alignItems="width-end">
+        alignItems="width-end" sx={{ mb: 1 }} >
         <Grid item xs={6}>
-          <MuiButton text="create" color='success' onClick={handleAdd} sx={{ mt: 1 }} />
-        </Grid>
-        <Grid item>
-          <TextField
-            sx={{ width: 210 }}
-            fullWidth
-            variant="standard"
-            size='small'
-            label='Code'
-            onChange={(e) => handleSearch(e.target.value, 'keyWord')}
-          />
-        </Grid>
-        <Grid item>
-          <MuiSelectField
-            label={intl.formatMessage({ id: 'bom.ProductId' })}
-            options={ProductList}
-            displayLabel="ProductCode"
-            displayValue="ProductId"
-            onChange={(e, item) => handleSearch(item ? item.ProductId ?? null : null, 'ProductId')}
-            variant="standard"
-            sx={{ width: 210 }}
-          />
-        </Grid>
-        <Grid item>
-          <MuiButton text="search" color='info' onClick={fetchData} sx={{ mt: 1 }} />
-        </Grid>
-        <Grid item>
-          <FormControlLabel
-            sx={{ mt: 1 }}
-            control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
-            label={intl.formatMessage({ id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted' })} />
+          {/* <MuiButton text="create" color='success' onClick={handleAdd} sx={{ mt: 1 }} disabled={BomId ? false : true} /> */}
         </Grid>
       </Grid>
       <MuiDataGrid
@@ -248,28 +159,24 @@ export default function BOM() {
         page={state.page - 1}
         pageSize={state.pageSize}
         rowCount={state.totalRow}
-        //rowsPerPageOptions={[5, 8, 20]}
+        rowsPerPageOptions={[5, 8, 20]}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
-        //onPageSizeChange={(newPageSize) => setState({ ...state, pageSize: newPageSize, page: 1 })}
-        getRowId={(rows) => rows.BomId}
-        //onRowClick={(rowData) => setBomId(rowData.row.BomId)}
-        onSelectionModelChange={(newSelectedRowId) => setBomId(newSelectedRowId[0])}
+        onPageSizeChange={(newPageSize) => setState({ ...state, pageSize: newPageSize, page: 1 })}
+        getRowId={(rows) => rows.QCDetailId}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`
         }}
       />
 
-      <BOMDialog
-        valueOption={{ ProductList: ProductList }}
+      {/* <QCDetailDialog
+        BomId={BomId}
         setNewData={setNewData}
         setUpdateData={setUpdateData}
         initModal={rowData}
         isOpen={isShowing}
         onClose={toggle}
         mode={mode}
-      />
-      <BOMDetail BomId={BomId} />
-    </React.Fragment>
-
+      /> */}
+    </>
   )
 }

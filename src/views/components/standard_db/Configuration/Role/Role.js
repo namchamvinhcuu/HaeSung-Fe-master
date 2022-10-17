@@ -202,7 +202,7 @@ export default function Role() {
     const res = await roleService.getRoleList(params);
     setRoleState({
       ...roleState
-      , data: [...res.Data]
+      , data: res.Data ?? []
       , totalRow: res.TotalRow
       , isLoading: false
     });
@@ -212,7 +212,7 @@ export default function Role() {
     const permission = await roleService.GetPermissionByRole(Id, { page: permissionState.page, pageSize: permissionState.pageSize });
     setPermissionState({
       ...permissionState
-      , data: permission.Data
+      , data: permission.Data ?? []
       , totalRow: permission.TotalRow
     });
   }
@@ -221,7 +221,7 @@ export default function Role() {
     const menu = await roleService.GetMenuByRole(Id, { page: menuState.page, pageSize: menuState.pageSize });
     setMenuState({
       ...menuState
-      , data: menu.Data
+      , data: menu.Data ?? []
       , totalRow: menu.TotalRow
     });
   }
@@ -295,7 +295,8 @@ export default function Role() {
         //   setRoleState({ ...roleState, pageSize: newPageSize, page: 1 });
         // }}
         // onCellClick={handleCellClick}
-        onRowClick={(rowData) => handleRoleClick(rowData.row.roleId)}
+        //onRowClick={(rowData) => handleRoleClick(rowData.row.roleId)}
+        onSelectionModelChange={(newSelectedRowId) => handleRoleClick(newSelectedRowId[0])}
         getRowId={(rows) => rows.roleId}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) {
