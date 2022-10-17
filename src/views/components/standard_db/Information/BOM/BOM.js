@@ -183,12 +183,13 @@ export default function BOM() {
 
     }
     const res = await bomService.getBomList(params);
-    setState({
-      ...state
-      , data: res.Data ?? []
-      , totalRow: res.TotalRow
-      , isLoading: false
-    });
+    if (res && res.Data)
+      setState({
+        ...state
+        , data: res.Data ?? []
+        , totalRow: res.TotalRow
+        , isLoading: false
+      });
   }
 
   const getProduct = async () => {
