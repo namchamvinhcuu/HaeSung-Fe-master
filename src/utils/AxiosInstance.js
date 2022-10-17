@@ -114,7 +114,7 @@ instance.interceptors.request.use(async (request) => {
 
 instance.interceptors.response.use(
     async (response) => {
-        console.log(response)
+
         if (currentExecutingRequests[response.request.responseURL]) {
             // here you clean the request
             delete currentExecutingRequests[response.request.responseURL];
