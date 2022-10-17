@@ -1,8 +1,10 @@
 import { axios } from '@utils'
 
+const URL = `/api/line`;
+
 const get = async (params) => {
     try {
-        return await axios.get('/api/line', {
+        return await axios.get(URL, {
             params: {
                 ...params
             }
@@ -14,7 +16,7 @@ const get = async (params) => {
 
 const getActive = async () => {
     try {
-        return await axios.get('/api/line/get-active');
+        return await axios.get(`${URL}/get-active`);
     } catch (error) {
         console.log(`ERROR: ${error}`);
     }
@@ -22,7 +24,7 @@ const getActive = async () => {
 
 const create = async (params) => {
     try {
-        return await axios.post('/api/line/create-line', {
+        return await axios.post(`${URL}/create-line`, {
             ...params
         });
     } catch (error) {
@@ -32,7 +34,7 @@ const create = async (params) => {
 
 const modify = async (params) => {
     try {
-        return await axios.put('/api/line/modify-line', {
+        return await axios.put(`${URL}/modify-line`, {
             ...params
         });
     } catch (error) {
@@ -43,7 +45,7 @@ const modify = async (params) => {
 const handleDelete = async (params) => {
 
     try {
-        return await axios.put('/api/line/delete-reuse-line', {
+        return await axios.put(`${URL}/delete-reuse-line`, {
             ...params
         });
     } catch (error) {
