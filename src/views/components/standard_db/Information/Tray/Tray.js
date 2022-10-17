@@ -14,6 +14,7 @@ import TrayDialog from './TrayDialog'
 
 export default function Tray() {
   const intl = useIntl();
+  let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
   const [trayState, setTrayState] = useState({
@@ -98,6 +99,7 @@ export default function Tray() {
   //useEffect
   useEffect(() => {
     getTrayType();
+    return () => { isRendered = false; }
   }, [])
 
   useEffect(() => {
@@ -105,7 +107,7 @@ export default function Tray() {
   }, [trayState.page, trayState.pageSize, trayState.searchData.showDelete]);
 
   useEffect(() => {
-    if (!_.isEmpty(newData)) {
+    if (!_.isEmpty(newData) && isRendered) {
       const data = [newData, ...trayState.data];
       if (data.length > trayState.pageSize) {
         data.pop();
@@ -119,7 +121,7 @@ export default function Tray() {
   }, [newData]);
 
   useEffect(() => {
-    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData)) {
+    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData) && isRendered) {
       let newArr = [...trayState.data]
       const index = _.findIndex(newArr, function (o) { return o.TrayId == updateData.TrayId; });
       if (index !== -1) {
@@ -182,7 +184,7 @@ export default function Tray() {
 
     }
     const res = await trayService.getTrayList(params);
-    if (res && res.Data)
+    if (res && res.Data && isRendered)
       setTrayState({
         ...trayState
         , data: res.Data ?? []
@@ -193,7 +195,7 @@ export default function Tray() {
 
   const getTrayType = async () => {
     const res = await trayService.GetTrayType();
-    if (res.HttpResponseCode === 200 && res.Data) {
+    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
       setTrayTypeList([...res.Data])
     }
   }

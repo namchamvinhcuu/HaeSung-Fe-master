@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import { Badge, Grid, IconButton, TextField } from '@mui/material'
-import { createTheme, ThemeProvider } from "@mui/material"
 import { useIntl } from 'react-intl'
 import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
 import { userService, roleService } from '@services'
@@ -16,6 +15,7 @@ import RoleDialog from './RoleDialog'
 
 export default function Role() {
   const intl = useIntl();
+  let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
   const { isShowing2, toggle2 } = useModal2();
@@ -49,7 +49,6 @@ export default function Role() {
 
   const [newData, setNewData] = useState({})
   const [rowData, setRowData] = useState({});
-  const [search, setSearch] = useState("");
   const [roleId, setRoleId] = useState(0);
   const [selectMenu, setSelectMenu] = useState([]);
   const [selectPermission, setSelectPermission] = useState([]);
@@ -109,6 +108,7 @@ export default function Role() {
 
   useEffect(() => {
     fetchData();
+    return () => { isRendered = false; }
   }, [roleState.page, roleState.pageSize]);
 
   useEffect(() => {
@@ -200,7 +200,7 @@ export default function Role() {
       keyWord: roleState.searchData.keyWord
     }
     const res = await roleService.getRoleList(params);
-    if (res && res.Data)
+    if (res && res.Data && isRendered)
       setRoleState({
         ...roleState
         , data: res.Data ?? []
@@ -211,7 +211,7 @@ export default function Role() {
 
   async function fetchDataPermission(Id) {
     const permission = await roleService.GetPermissionByRole(Id, { page: permissionState.page, pageSize: permissionState.pageSize });
-    if (permission && permission.Data)
+    if (permission && permission.Data && isRendered)
       setPermissionState({
         ...permissionState
         , data: permission.Data ?? []
@@ -221,7 +221,7 @@ export default function Role() {
 
   async function fetchDataMenu(Id) {
     const menu = await roleService.GetMenuByRole(Id, { page: menuState.page, pageSize: menuState.pageSize });
-    if (menu && menu.Data)
+    if (menu && menu.Data && isRendered)
       setMenuState({
         ...menuState
         , data: menu.Data ?? []
@@ -237,7 +237,7 @@ export default function Role() {
   }
 
   useEffect(() => {
-    if (!_.isEmpty(newData)) {
+    if (!_.isEmpty(newData) && isRendered) {
       const data = [newData, ...roleState.data];
       if (data.length > roleState.pageSize) {
         data.pop();
@@ -251,7 +251,6 @@ export default function Role() {
   }, [newData]);
 
   // const handleCellClick = (param, event) => {
-  //   //disable click cell 
   //   event.defaultMuiPrevented = (param.field === "action");
   // };
 
@@ -278,10 +277,8 @@ export default function Role() {
           <MuiButton text="search" color='info' onClick={fetchData} sx={{ mt: 1, ml: 2 }} />
         </Grid>
       </Grid>
-
       <MuiDataGrid
         gridHeight={256}
-        // getData={userService.getUserList}
         showLoading={roleState.isLoading}
         isPagingServer={true}
         headerHeight={45}
@@ -290,23 +287,12 @@ export default function Role() {
         page={roleState.page - 1}
         pageSize={roleState.pageSize}
         rowCount={roleState.totalRow}
-        // rowsPerPageOptions={[5, 10, 20]}
-        onPageChange={(newPage) => {
-          setRoleState({ ...roleState, page: newPage + 1 });
-        }}
-        // onPageSizeChange={(newPageSize) => {
-        //   setRoleState({ ...roleState, pageSize: newPageSize, page: 1 });
-        // }}
-        // onCellClick={handleCellClick}
-        //onRowClick={(rowData) => handleRoleClick(rowData.row.roleId)}
+        onPageChange={(newPage) => setRoleState({ ...roleState, page: newPage + 1 })}
         onSelectionModelChange={(newSelectedRowId) => handleRoleClick(newSelectedRowId[0])}
         getRowId={(rows) => rows.roleId}
-        getRowClassName={(params) => {
-          if (_.isEqual(params.row, newData)) {
-            return `Mui-created`
-          }
-        }}
+        getRowClassName={(params) => { if (_.isEqual(params.row, newData)) return `Mui-created` }}
       />
+
       <Grid container sx={{ mt: 1 }} spacing={3}>
         <Grid item xs={6} style={{ paddingTop: 0 }}>
           <Grid container sx={{ mb: 1 }}>
@@ -316,7 +302,6 @@ export default function Role() {
             </Badge>
           </Grid>
           <MuiDataGrid
-            // getData={userService.getUserList}
             showLoading={permissionState.isLoading}
             isPagingServer={true}
             headerHeight={45}
@@ -325,23 +310,10 @@ export default function Role() {
             page={permissionState.page - 1}
             pageSize={permissionState.pageSize}
             rowCount={permissionState.totalRow}
-            rowsPerPageOptions={[5, 10, 20]}
-            onPageChange={(newPage) => {
-              setPermissionState({ ...permissionState, page: newPage + 1 });
-            }}
-            onPageSizeChange={(newPageSize) => {
-              setPermissionState({ ...permissionState, pageSize: newPageSize, page: 1 });
-            }}
+            onPageChange={(newPage) => setPermissionState({ ...permissionState, page: newPage + 1 })}
             checkboxSelection={true}
-            onSelectionModelChange={(ids) => {
-              setSelectPermission(ids)
-            }}
+            onSelectionModelChange={(ids) => { setSelectPermission(ids) }}
             getRowId={(rows) => rows.permissionId}
-            getRowClassName={(params) => {
-              if (_.isEqual(params.row, newData)) {
-                return `Mui-created`
-              }
-            }}
           />
         </Grid>
         <Grid item xs={6} style={{ paddingTop: 0 }}>
@@ -352,7 +324,6 @@ export default function Role() {
             </Badge>
           </Grid>
           <MuiDataGrid
-            // getData={userService.getUserList}
             showLoading={menuState.isLoading}
             isPagingServer={true}
             headerHeight={45}
@@ -361,23 +332,10 @@ export default function Role() {
             page={menuState.page - 1}
             pageSize={menuState.pageSize}
             rowCount={menuState.totalRow}
-            rowsPerPageOptions={[5, 10, 20]}
-            onPageChange={(newPage) => {
-              setMenuState({ ...menuState, page: newPage + 1 });
-            }}
-            onPageSizeChange={(newPageSize) => {
-              setMenuState({ ...menuState, pageSize: newPageSize, page: 1 });
-            }}
+            onPageChange={(newPage) => setMenuState({ ...menuState, page: newPage + 1 })}
             checkboxSelection={true}
-            onSelectionModelChange={(ids) => {
-              setSelectMenu(ids)
-            }}
+            onSelectionModelChange={(ids) => setSelectMenu(ids)}
             getRowId={(rows) => rows.menuId}
-            getRowClassName={(params) => {
-              if (_.isEqual(params.row, newData)) {
-                return `Mui-created`
-              }
-            }}
           />
         </Grid>
       </Grid>

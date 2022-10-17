@@ -31,6 +31,7 @@ const myTheme = createTheme({
 
 export default function User() {
   const intl = useIntl();
+  let isRendered = useRef(true);
   const { isShowing, toggle } = useModal();
   const { isShowing2, toggle2 } = useModal2();
   const { isShowing3, toggle3 } = useModal3();
@@ -105,6 +106,7 @@ export default function User() {
 
   useEffect(() => {
     fetchData();
+    return () => { isRendered = false; }
   }, [userState.page, userState.pageSize]);
 
   const handleDelete = async (user) => {
@@ -146,7 +148,7 @@ export default function User() {
       keyword: search
     }
     const res = await userService.getUserList(params);
-    if (res && res.Data)
+    if (res && res.Data && isRendered)
       setUserState({
         ...userState
         , data: res.Data ?? []
@@ -192,7 +194,6 @@ export default function User() {
           </Grid>
         </Grid>
         <MuiDataGrid
-          getData={userService.getUserList}
           showLoading={userState.isLoading}
           isPagingServer={true}
           headerHeight={45}
