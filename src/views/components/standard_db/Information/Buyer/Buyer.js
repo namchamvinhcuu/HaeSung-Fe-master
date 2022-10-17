@@ -99,7 +99,7 @@ const Buyer = (props) => {
             BuyerName: buyerState.searchData.BuyerName,
             isActived: showActivedData,
         }
-        console.log(params,'dsds');
+        //console.log(params,'dsds');
        const res = await buyerService.getBuyerList(params);
      
        if (res && isRendered)
