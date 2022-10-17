@@ -284,6 +284,7 @@ const QCMaster = (props) => {
                     return `Mui-created`
                 }
             }}
+            onRowClick={(rowData) => setBomId(rowData.row.QCMasterId)}
         />
          <CreateDialog
             initModal={QCMasterDto}
@@ -297,6 +298,7 @@ const QCMaster = (props) => {
             isOpen={isOpenModifyDialog}
             onClose={toggleModifyDialog}
         /> 
+          <QCDetail QCMasterId={QCMasterId} />
     </React.Fragment >
     )
 }
