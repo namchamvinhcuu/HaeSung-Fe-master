@@ -98,7 +98,7 @@ const Menu = (props) => {
             keyWord: menuState.searchData.keyWord
         }
         const res = await menuService.getMenuList(params);
-        if (res)
+        if (res && isRendered)
             setMenuState({
                 ...menuState
                 , data: !res.Data ? [] : [...res.Data]

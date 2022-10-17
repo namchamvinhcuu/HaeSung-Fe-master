@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton'
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS'
 import _ from 'lodash'
 import moment from "moment"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useIntl } from 'react-intl'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -91,12 +91,13 @@ const Supplier = (props) => {
         }
         const res = await supplierService.getSuppliers(params);
 
-        setSupplierState({
-            ...supplierState
-            , data: !res.Data ? [] : [...res.Data]
-            , totalRow: res.TotalRow
-            , isLoading: false
-        });
+        if (res && isRendered)
+            setSupplierState({
+                ...supplierState
+                , data: !res.Data ? [] : [...res.Data]
+                , totalRow: res.TotalRow
+                , isLoading: false
+            });
     }
 
     const handleDeleteSupplier = async (supplier) => {

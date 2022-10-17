@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton'
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS'
 import _ from 'lodash'
 import moment from "moment"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useIntl } from 'react-intl'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -90,7 +90,7 @@ const Line = (props) => {
         }
         const res = await lineService.get(params);
 
-        if (res)
+        if (res && isRendered)
             setLineState({
                 ...lineState
                 , data: !res.Data ? [] : [...res.Data]
