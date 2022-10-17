@@ -24,6 +24,7 @@ import CreateLineDialog from './CreateLineDialog'
 import ModifyLineDialog from './ModifyLineDialog'
 
 const Line = (props) => {
+    let isRendered = useRef(false);
     const intl = useIntl();
 
     const [lineState, setLineState] = useState({
@@ -125,12 +126,11 @@ const Line = (props) => {
     };
 
     useEffect(() => {
-        let isCancelled = false;
-        if (!isCancelled)
+        isRendered = true
+        if (isRendered)
             fetchData();
         return () => {
-            console.log(isCancelled)
-            isCancelled = true;
+            isRendered = false;
         }
     }, [lineState.page, lineState.pageSize, showActivedData]);
 
