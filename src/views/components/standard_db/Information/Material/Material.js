@@ -191,7 +191,7 @@ export default function Material() {
     const res = await materialService.getMaterialList(params);
     setState({
       ...state
-      , data: [...res.Data]
+      , data: res.Data ?? []
       , totalRow: res.TotalRow
       , isLoading: false
     });

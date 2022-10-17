@@ -184,7 +184,7 @@ export default function Tray() {
     const res = await trayService.getTrayList(params);
     setTrayState({
       ...trayState
-      , data: [...res.Data]
+      , data: res.Data ?? []
       , totalRow: res.TotalRow
       , isLoading: false
     });
