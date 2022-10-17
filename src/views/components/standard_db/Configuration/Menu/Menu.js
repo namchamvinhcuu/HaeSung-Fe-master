@@ -98,17 +98,17 @@ const Menu = (props) => {
             keyWord: menuState.searchData.keyWord
         }
         const res = await menuService.getMenuList(params);
-
-        setMenuState({
-            ...menuState
-            , data: !res.Data ? [] : [...res.Data]
-            , totalRow: res.TotalRow
-            , isLoading: false
-        });
+        if (res)
+            setMenuState({
+                ...menuState
+                , data: !res.Data ? [] : [...res.Data]
+                , totalRow: res.TotalRow
+                , isLoading: false
+            });
     }
 
     useEffect(() => {
-        // isRendered = true;
+        isRendered = true;
         // const params = {
         //     page: menuState.page,
         //     pageSize: menuState.pageSize
@@ -125,10 +125,13 @@ const Menu = (props) => {
         //         return null;
         //     })
         //     .catch(err => console.log(err));;
-        // return () => {
-        //     isRendered = false;
-        // };
-        fetchData();
+        if (isRendered)
+            fetchData();
+
+        return () => {
+            isRendered = false;
+        };
+
     }, [menuState.page, menuState.pageSize]);
 
     useEffect(() => {
@@ -143,6 +146,7 @@ const Menu = (props) => {
                 , totalRow: menuState.totalRow + 1
             });
         }
+
     }, [newData]);
 
     useEffect(() => {

@@ -129,6 +129,7 @@ const Line = (props) => {
         if (!isCancelled)
             fetchData();
         return () => {
+            console.log(isCancelled)
             isCancelled = true;
         }
     }, [lineState.page, lineState.pageSize, showActivedData]);
