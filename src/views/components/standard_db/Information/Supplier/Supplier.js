@@ -23,6 +23,7 @@ import CreateSupplierDialog from './CreateSupplierDialog'
 import ModifySupplierDialog from './ModifySupplierDialog'
 
 const Supplier = (props) => {
+    let isRendered = useRef(false);
     const intl = useIntl();
 
     const [supplierState, setSupplierState] = useState({
@@ -125,7 +126,13 @@ const Supplier = (props) => {
     };
 
     useEffect(() => {
-        fetchData();
+        isRendered = true;
+        if (isRendered)
+            fetchData();
+
+        return () => {
+            isRendered = false
+        }
     }, [supplierState.page, supplierState.pageSize, showActivedData]);
 
     useEffect(() => {
