@@ -14,6 +14,7 @@ import { ErrorAlert, SuccessAlert } from '@utils'
 
 const CreateMenuDialog = (props) => {
     const intl = useIntl();
+    let isRendered = useRef(true);
 
     const { initModal, isOpen, onClose, setNewData } = props;
 
@@ -79,12 +80,13 @@ const CreateMenuDialog = (props) => {
 
     const getParentMenus = async (menuLevel) => {
         const res = await menuService.getParentMenus(menuLevel);
-        if (res.HttpResponseCode === 200 && res.Data) {
-            setParentMenuArr([...res.Data])
-        }
-        else {
-            setParentMenuArr([])
-        }
+        if (res && isRendered)
+            if (res.HttpResponseCode === 200 && res.Data) {
+                setParentMenuArr([...res.Data])
+            }
+            else {
+                setParentMenuArr([])
+            }
     }
 
     const handleReset = () => {
@@ -112,22 +114,27 @@ const CreateMenuDialog = (props) => {
 
         const res = await menuService.createMenu(dataModalRef.current);
 
-        if (res.HttpResponseCode === 200 && res.Data) {
-            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-            setNewData({ ...res.Data });
-            setDialogState({ ...dialogState, isSubmit: false });
-            handleReset();
-            handleCloseDialog();
-        }
-        else {
-            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-        }
+        if (res && isRendered)
+            if (res.HttpResponseCode === 200 && res.Data) {
+                SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+                setNewData({ ...res.Data });
+                setDialogState({ ...dialogState, isSubmit: false });
+                handleReset();
+                handleCloseDialog();
+            }
+            else {
+                ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+            }
 
     };
 
     useEffect(() => {
         if (isOpen)
             getParentMenus(dialogState.menuLevel);
+
+        return () => {
+            isRendered = false;
+        }
     }, [isOpen, dialogState.menuLevel])
 
     return (

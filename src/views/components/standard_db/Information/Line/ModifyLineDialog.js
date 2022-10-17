@@ -1,7 +1,7 @@
 import { Grid, TextField } from '@mui/material'
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { useFormik } from 'formik'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 
@@ -11,6 +11,7 @@ import { lineService } from '@services'
 
 const ModifyLineDialog = (props) => {
     const intl = useIntl();
+    let isRendered = useRef(true);
 
     const { initModal, isOpen, onClose, setModifyData } = props;
 
@@ -27,17 +28,19 @@ const ModifyLineDialog = (props) => {
         initialValues: { ...initModal },
         enableReinitialize: true,
         onSubmit: async values => {
-            console.log(values)
+
             const res = await lineService.modify(values);
-            if (res.HttpResponseCode === 200 && res.Data) {
-                SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-                setModifyData({ ...res.Data });
-                setDialogState({ isSubmit: false });
-                handleCloseDialog();
-            }
-            else {
-                ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-            }
+
+            if (res && isRendered)
+                if (res.HttpResponseCode === 200 && res.Data) {
+                    SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                    setModifyData({ ...res.Data });
+                    setDialogState({ isSubmit: false });
+                    handleCloseDialog();
+                }
+                else {
+                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+                }
         }
     });
 
@@ -63,6 +66,10 @@ const ModifyLineDialog = (props) => {
 
     useEffect(() => {
         formik.initialValues = { ...initModal }
+
+        return () => {
+            isRendered = false;
+        }
     }, [initModal]);
 
     return (

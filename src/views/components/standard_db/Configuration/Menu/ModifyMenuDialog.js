@@ -14,6 +14,7 @@ import { ErrorAlert, SuccessAlert } from '@utils'
 const ModifyMenuDialog = (props) => {
 
     const intl = useIntl();
+    let isRendered = useRef(true);
 
     const { initModal, isOpen, onClose, setModifyData } = props;
 
@@ -81,21 +82,27 @@ const ModifyMenuDialog = (props) => {
         setDialogState({ ...dialogState, isSubmit: true });
 
         const res = await menuService.modifyMenu(dataModalRef.current);
-        if (res.HttpResponseCode === 200 && res.Data) {
-            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-            setModifyData({ ...res.Data });
+        if (res && isRendered) {
+            if (res.HttpResponseCode === 200 && res.Data) {
+                SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+                setModifyData({ ...res.Data });
 
-            handleCloseDialog();
-        }
-        else {
-            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-        }
+                handleCloseDialog();
+            }
+            else {
+                ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+            }
 
-        setDialogState({ ...dialogState, isSubmit: false });
+            setDialogState({ ...dialogState, isSubmit: false });
+        }
     };
 
     useEffect(() => {
         reset({ ...initModal });
+
+        return () => {
+            isRendered = false;
+        }
     }, [initModal]);
 
     return (

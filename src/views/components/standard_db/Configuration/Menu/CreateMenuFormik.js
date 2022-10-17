@@ -12,6 +12,7 @@ import { menuService } from '@services'
 
 const CreateMenuFormik = (props) => {
     const intl = useIntl();
+    let isRendered = useRef(true);
 
     const { initModal, isOpen, onClose, setNewData } = props;
 
@@ -24,12 +25,13 @@ const CreateMenuFormik = (props) => {
 
     const getParentMenus = async (menuLevel) => {
         const res = await menuService.getParentMenus(menuLevel);
-        if (res.HttpResponseCode === 200 && res.Data) {
-            setParentMenuArr([...res.Data])
-        }
-        else {
-            setParentMenuArr([])
-        }
+        if (res && isRendered)
+            if (res.HttpResponseCode === 200 && res.Data) {
+                setParentMenuArr([...res.Data])
+            }
+            else {
+                setParentMenuArr([])
+            }
     }
 
     const schema = yup.object().shape({
@@ -120,6 +122,10 @@ const CreateMenuFormik = (props) => {
     useEffect(() => {
         if (isOpen)
             getParentMenus(values.menuLevel);
+
+        return () => {
+            isRendered = false;
+        }
     }, [isOpen, values.menuLevel])
 
     return (
