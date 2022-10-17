@@ -17,6 +17,7 @@ import { bindActionCreators } from 'redux'
 
 import { SupplierDto } from '@models'
 import { supplierService } from '@services'
+import { ErrorAlert, SuccessAlert } from '@utils'
 
 import CreateSupplierDialog from './CreateSupplierDialog'
 import ModifySupplierDialog from './ModifySupplierDialog'
@@ -103,6 +104,9 @@ const Supplier = (props) => {
                 let res = await supplierService.handleDelete(supplier);
                 if (res && res.HttpResponseCode === 200) {
                     await fetchData();
+                }
+                else {
+                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
                 }
             } catch (error) {
                 console.log(error)

@@ -55,6 +55,8 @@ class DashBoard extends Component {
     //   this.newConnection.stop().then(() => console.log("websocket is disconnected"));
     //   this.newConnection = null;
     // }
+
+
   }
   componentDidMount() {
 
@@ -155,7 +157,11 @@ class DashBoard extends Component {
                 </Route> */}
 
               {<Route path="/"
-                render={(props) => { var isFromLogin = firstLogin.isfirst; firstLogin.isfirst = null; return isFromLogin ? <this.Component_Default  {...props} /> : null }}
+                render={(props) => {
+                  var isFromLogin = firstLogin.isfirst;
+                  firstLogin.isfirst = null;
+                  return isFromLogin ? <this.Component_Default  {...props} /> : null
+                }}
               />
 
               }

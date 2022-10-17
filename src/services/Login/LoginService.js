@@ -1,15 +1,20 @@
 import { axios } from '@utils'
 
-const handleLogin = async (userName, userPassword) => {
+export const handleLogin = async (userName, userPassword) => {
     try {
-        return await axios.post('/api/login/checklogin', { userName, userPassword });
+        return await axios.post('/api/login/checklogin',
+            {
+                userName: userName
+                , userPassword: userPassword
+                , isOnApp: false
+            });
 
     } catch (error) {
         console.log(`ERROR: ${error}`);
     }
 }
 
-const getUserInfo = async () => {
+export const getUserInfo = async () => {
     try {
         return await axios.get('/api/login/getUserInfo');
     } catch (error) {
@@ -18,7 +23,12 @@ const getUserInfo = async () => {
 
 }
 
-export {
-    handleLogin,
-    getUserInfo
+export const handleLogout = async () => {
+    return await axios.post('/api/logout', {});
 }
+
+// export {
+//     handleLogin,
+//     getUserInfo,
+//     handleLogout,
+// }

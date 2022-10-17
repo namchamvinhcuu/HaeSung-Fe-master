@@ -10,6 +10,8 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { firstLogin, login } from "@utils";
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { historyApp } from '@utils';
+import { loginService } from '@services'
+import store from '@states/store'
 
 // const API_URL = config.api.API_BASE_URL;
 const API_URL = ConfigConstants.BASE_URL;
@@ -22,6 +24,7 @@ const instance = axios.create({
     // timeout: 10 * 1000,
     headers: {
         'Content-Type': 'application/json',
+        'Authorization': '',
     },
     // withCredentials: true
 });
@@ -44,15 +47,13 @@ export const isSuccessStatusCode = (s) => {
 
 let refreshtokenRequest = null;
 
-instance.interceptors.request.use((request) => {
-
+instance.interceptors.request.use(async (request) => {
     if (
-        request.url.indexOf(`/api/login/checklogin`) >= 0
-        || request.url.indexOf(`/api/refreshtoken`) >= 0
-        || request.url.indexOf(`/api/logout`) >= 0
-    ) {
-        return request;
-    }
+        request.url.indexOf(ConfigConstants.LOGIN_URL) >= 0
+        || request.url.indexOf(ConfigConstants.REFRESH_TOKEN_URL) >= 0
+        // || request.url.indexOf(`/api/logout`) >= 0
+    ) return request;
+
     else {
         let token = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
         if (token) {
@@ -63,36 +64,27 @@ instance.interceptors.request.use((request) => {
                 return request;
             }
             else {
-
                 refreshtokenRequest = refreshtokenRequest
                     ? refreshtokenRequest
                     : instance.getNewAccessToken()
 
-                const response = refreshtokenRequest;
-
-                // const response = await axiosInstance.getNewAccessToken()
-
+                const response = await refreshtokenRequest;
                 refreshtokenRequest = null;
 
-                if (response && response !== '') {
-                    SetLocalStorage(ConfigConstants.TOKEN_ACCESS, response.Token);
-                    SetLocalStorage(ConfigConstants.TOKEN_REFRESH, response.RefreshToken);
-                    request.headers.Authorization = `Bearer ${response.Token}`;
+                if (response.HttpResponseCode === 200 && response.ResponseMessage === 'general.success') {
+                    SetLocalStorage(ConfigConstants.TOKEN_ACCESS, response.Data.accessToken);
+                    SetLocalStorage(ConfigConstants.TOKEN_REFRESH, response.Data.refreshToken);
+                    request.headers.Authorization = `Bearer ${response.Data.accessToken}`;
                     return request;
                 }
                 else {
-                    // ErrorAlert('You lost your authorization, please login again !');
-                    // ErrorAlert(<FormattedMessage id="login.lost_authorization" />);
-                    instance.Logout();
+                    await instance.Logout();
                     return request;
                 }
             }
-
         }
         else {
-            //     ErrorAlert(intl.formatMessage({ id: 'login.lost_authorization' }));
-            // ErrorAlert(<FormattedMessage id="login.lost_authorization" />);
-            instance.Logout();
+            await instance.Logout();
             return request;
         }
     }
@@ -102,19 +94,12 @@ instance.interceptors.request.use((request) => {
 });
 
 instance.interceptors.response.use(
-    (response) => {
+    async (response) => {
         // Thrown error for request with OK status code
         const { data } = response
         if (data.HttpResponseCode === 401 && data.ResponseMessage === 'login.lost_authorization') {
-
-            // ErrorAlert(<FormattedMessage id="login.lost_authorization" />);
-            instance.Logout();
+            await instance.Logout();
         }
-
-        // if (data.ResponseMessage === 'general.unauthorized') {
-        //     instance.Logout(data.ResponseMessage);
-        // }
-
         return response.data;
     },
     // (error) => {
@@ -184,25 +169,55 @@ instance.getNewAccessToken = async () => {
         refreshToken: refreshToken
     }
 
-    const res = await instance.post(API_URL + '/api/refreshtoken', postObj);
-
-    if (res.HttpResponseCode === 200) {
-        let newTokenObj = res.Data;
-        SetLocalStorage(ConfigConstants.TOKEN_ACCESS, newTokenObj.accessToken);
-        SetLocalStorage(ConfigConstants.TOKEN_REFRESH, newTokenObj.refreshToken);
-        return true;
-    }
-    else
-        return false;
+    return await instance.post(API_URL + '/api/refreshtoken', postObj);
 }
 
 instance.Logout = async (e) => {
-    RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
-    RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
-    RemoveLocalStorage(ConfigConstants.CURRENT_USER);
-    firstLogin.isfirst = false;
-    ErrorAlert(e)
-    historyApp.push("/logout");
+
+    try {
+        await handleLogout()
+    } catch (error) {
+        console.log(`logout error: ${error}`)
+    }
+}
+
+const handleLogout = async () => {
+    const requestOptions = {
+        withCredentials: false,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': ''
+        },
+    };
+
+    let token = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
+    if (token) {
+        requestOptions.headers.Authorization = `Bearer ${token}`;
+    }
+
+    else {
+        requestOptions.headers.Authorization = `Bearer logout_token`;
+    }
+
+    fetch(`${API_URL}/api/logout`, requestOptions)
+        .then(result => result.json())
+        .then(result => {
+            if (result.ResponseMessage === 'general.success') {
+
+                RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
+                RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
+                RemoveLocalStorage(ConfigConstants.CURRENT_USER);
+                store.dispatch({
+                    type: 'Dashboard/DELETE_ALL',
+                });
+                historyApp.push("/logout");
+
+            }
+            // else
+            // console.log('res', result.data)
+        });
+
 }
 
 export { instance };
