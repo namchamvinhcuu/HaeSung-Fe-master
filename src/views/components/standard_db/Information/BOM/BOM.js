@@ -15,6 +15,7 @@ import BOMDetail from './BOMDetail'
 
 export default function BOM() {
   const intl = useIntl();
+  let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
   const [state, setState] = useState({
@@ -101,10 +102,11 @@ export default function BOM() {
 
   useEffect(() => {
     fetchData();
+    return () => { isRendered = false; }
   }, [state.page, state.pageSize, state.searchData.showDelete]);
 
   useEffect(() => {
-    if (!_.isEmpty(newData)) {
+    if (!_.isEmpty(newData) && isRendered) {
       const data = [newData, ...state.data];
       if (data.length > state.pageSize) {
         data.pop();
@@ -118,7 +120,7 @@ export default function BOM() {
   }, [newData]);
 
   useEffect(() => {
-    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData)) {
+    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData) && isRendered) {
       let newArr = [...state.data]
       const index = _.findIndex(newArr, function (o) { return o.BomId == updateData.BomId; });
       if (index !== -1) {
@@ -183,7 +185,7 @@ export default function BOM() {
 
     }
     const res = await bomService.getBomList(params);
-    if (res && res.Data)
+    if (res && res.Data && isRendered)
       setState({
         ...state
         , data: res.Data ?? []

@@ -1,10 +1,9 @@
 import moment from "moment";
-const QCMaterDto= {
-    QCMasterId: 0
+const QCDetailDto= {
+    QCDetailId: 0
+    ,QCMasterId: 0
+    ,QCId: 0
     ,QCMasterCode: ''
-    ,Description: ''
-    ,ProductId: 0
-    ,ProductCode: null
     , isActived: true
     , createdBy: null
     , createdDate: moment.utc()
@@ -13,4 +12,4 @@ const QCMaterDto= {
     , row_version: null
 }
 
-export default QCMaterDto
+export default QCDetailDto

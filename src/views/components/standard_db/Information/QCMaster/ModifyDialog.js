@@ -8,7 +8,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
-
+import { useFormik } from 'formik'
 import { qcMasterService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
 
@@ -17,45 +17,68 @@ const ModifyDialog = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setModifyData } = props;
-   // console.log(initModal,'product111111');
 
     const clearParent = useRef(null);
-    const [productArr, setproducArr] = useState([initModal]);
+    const [productArr, setproducArr] = useState([]);
     const dataModalRef = useRef({ ...initModal });
     const [dialogState, setDialogState] = useState({
         ...initModal,
         isSubmit: false,
     })
 
-  
-
     const schema = yup.object().shape({
-      
-        ProductCode: yup.string().required(),
-
-
+        QCMasterCode: yup.string().required(),
+        ProductId:  yup.number().required()
     });
-    const { control, register, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
-        mode: 'onChange',
-        resolver: yupResolver(schema),
-        defaultValues: {
-            ...initModal,
-
-        },
+ 
+    const formik = useFormik({
+        validationSchema: schema,
+        initialValues: { ...initModal },
+        enableReinitialize: true,
+        onSubmit: async values => {
+          
+            const res = await qcMasterService.modify(values);
+            if (res.HttpResponseCode === 200) {
+                SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+                handleCloseDialog();
+                setModifyData({ ...res.Data });
+                setDialogState({ ...dialogState, isSubmit: false });
+                handleReset();
+            }
+            else {
+                ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+                handleCloseDialog();
+                setDialogState({ ...dialogState, isSubmit: false });
+                handleReset();
+            }
+        }
     });
+    const {
+        handleChange
+        , handleBlur
+        , handleSubmit
+        , values
+        , setFieldValue
+        , errors
+        , touched
+        , isValid
+        , resetForm
+    } = formik;
 
     useEffect(() => {
         if (isOpen)
          getProduct();
     }, [isOpen])
 
+ 
     useEffect(() => {
-        reset({ ...initModal });
-    }, [initModal]);
+       
+          formik.initialValues = initModal;
+        
+      }, [initModal])
 
     const handleCloseDialog = () => {
-        reset();
-        clearErrors();
+        resetForm();
         setDialogState({
             ...dialogState,
         })
@@ -66,7 +89,7 @@ const ModifyDialog = (props) => {
         const res = await qcMasterService.getProductActive();
         if (res.HttpResponseCode === 200 && res.Data) {
             setproducArr([...res.Data])
-            console.log(res.Data);
+        
         }
         else {
             setproducArr([])
@@ -74,30 +97,12 @@ const ModifyDialog = (props) => {
     }
    
     const handleReset = () => {
-        reset();
-        clearErrors();
+        resetForm();
         setDialogState({
             ...dialogState
         })
     }
-    const onSubmit = async (data) => {
-       
-        dataModalRef.current = { ...initModal, ...data };
-        setDialogState({ ...dialogState, isSubmit: true });
-
-        const res = await qcMasterService.modify(dataModalRef.current);
-        if (res.HttpResponseCode === 200 && res.Data) {
-            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-            setDialogState({ ...dialogState, isSubmit: false });
-            setModifyData({ ...res.Data });
-            handleReset();
-        }
-        else {
-            setDialogState({ ...dialogState, isSubmit: false });
-            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-        }
-        handleCloseDialog(); 
-    };
+  
 
 
 
@@ -110,65 +115,60 @@ const ModifyDialog = (props) => {
             disable_animate={300}
             onClose={handleCloseDialog}
         >
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit} >
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                    
                 <Grid item xs={12}>
                         <Grid container spacing={2}>
-                            <Grid item xs={6} >
+                        <Grid item xs={6} >
                                 <TextField
-                                    autoFocus
                                     fullWidth
+                                    type="text"
                                     size='small'
+                                    name='QCMasterCode'
+                                    disabled={dialogState.isSubmit}
+                                    value={values.QCMasterCode}
+                                    onChange={handleChange}
                                     label={intl.formatMessage({ id: 'qcMaster.QCMasterCode' })}
-
-                                    name="QCMasterCode"
-                                    {...register('QCMasterCode', {
-                                    })}
-                                    error={!!errors?.QCMasterCode}
-                                    helperText={errors?.QCMasterCode ? errors.QCMasterCode.message : null}
+                                    error={touched.Amount && Boolean(errors.Amount)}
+                                    helperText={touched.Amount && errors.Amount}
                                 />
                             </Grid>
-                            <Grid item xs={6} >
-                                <TextField
-
-                                    fullWidth
-                                    size='small'
-                                    label={intl.formatMessage({ id: 'general.description' })}
-
-                                    name="Description"
-                                    {...register('Description', {
-                                    })}
-                                    error={!!errors?.Description}
-                                    helperText={errors?.Description ? errors.Description.message : null}
+                            <Grid item xs={6}>
+                                <MuiSelectField
+                                    value={values.ProductId ? { ProductId: values.ProductId, ProductCode: values.ProductCode } : null}
+                                    disabled={dialogState.isSubmit}
+                                    label={intl.formatMessage({ id: 'product.product_code' })}
+                                    options={productArr}
+                                    displayLabel="ProductCode"
+                                    displayValue="ProductId"
+                                    onChange={(e, value) => {
+                                        setFieldValue("ProductCode", value?.ProductCode || '');
+                                        setFieldValue("ProductId", value?.ProductId || "");
+                                    }}
+                                    defaultValue={initModal && { ProductId: initModal.ProductId, ProductCode: initModal.ProductCode }}
+                                    error={!!errors.ProductId}
+                                    helperText={errors?.ProductId ? errors.ProductId.message : null}
                                 />
                             </Grid>
                         </Grid>
                     </Grid>
                     <Grid item xs={12}>
                         <Grid container item spacing={2} marginBottom={2}>
-                            <Grid item xs={6}>
-                                <Controller
-                                    control={control}
-                                    name="ProductId"
-                                    render={({ field: { onChange, value } }) => {
-                                        return (
-                                            <MuiSelectField
-                                                disabled={dialogState.isSubmit}
-                                                label={intl.formatMessage({ id: 'product.product_code' })}
-                                                options={productArr}
-                                                displayLabel="ProductCode"
-                                                displayValue="ProductId"
-                                                onChange={(e, item) => onChange(item ? item.ProductId ?? null : null)}
-                                                defaultValue={initModal && { ProductId: initModal.ProductId, ProductCode: initModal.ProductCode }}
-                                                error={!!errors.ProductId}
-                                                helperText={errors?.ProductId ? errors.ProductId.message : null}
-                                            />
-                                        );
-                                    }}
+                        <Grid item xs={12} >
+                            <TextField
+                                    fullWidth
+                                    type="text"
+                                    size='small'
+                                    name='Description'
+                                    disabled={dialogState.isSubmit}
+                                   value={values.Description}
+                                    onChange={handleChange}
+                                    label={intl.formatMessage({ id: 'general.description' })}
+                                    error={touched.Description && Boolean(errors.Description)}
+                                    helperText={touched.Description && errors.Description}
                                 />
                             </Grid>
-
                         </Grid>
                     </Grid>
                     <Grid item xs={12}>
@@ -180,7 +180,10 @@ const ModifyDialog = (props) => {
                                 text="save"
                                 loading={dialogState.isSubmit}
                             />
-                          
+                           <MuiResetButton
+                                onClick={handleReset}
+                                disabled={dialogState.isSubmit}
+                            />
                         </Grid>
                     </Grid>
                 </Grid>

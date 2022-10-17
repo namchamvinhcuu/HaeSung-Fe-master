@@ -1,6 +1,6 @@
 import { Store } from '@appstate'
 import { User_Operations } from '@appstate/user'
-import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
+import { MuiButton, MuiDataGrid, MuiSearchField ,MuiSelectField } from '@controls'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import UndoIcon from '@mui/icons-material/Undo'
@@ -21,6 +21,7 @@ import CreateDialog from './CreateDialog'
 import ModifyDialog from './ModifyDialog'
 import { qcMasterService } from '@services'
 import { QCMasterDto } from "@models"
+import QCDetail from "./QCDetail.js";
 
 const QCMaster = (props) => {
     const intl = useIntl();
@@ -33,7 +34,7 @@ const QCMaster = (props) => {
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 20,
+        pageSize: 8,
         searchData: {
             QCMasterCode: null,
             Description: null,
@@ -42,6 +43,7 @@ const QCMaster = (props) => {
         }
     });
 
+    const [productArr, setproducArr] = useState([]);
     const [selectedRow, setSelectedRow] = useState({
         ...QCMasterDto
     })
@@ -55,8 +57,13 @@ const QCMaster = (props) => {
     const toggleModifyDialog = () => {
         setIsOpenModifyDialog(!isOpenModifyDialog);
     }
+      //useEffect
+  useEffect(() => {
+    getProduct();
+  }, [])
     useEffect(() => {
         fetchData();
+
     }, [qCMasterState.page, qCMasterState.pageSize, qCMasterState.searchData.showDelete]);
 
 
@@ -95,6 +102,7 @@ const QCMaster = (props) => {
             page: qCMasterState.page,
             pageSize: qCMasterState.pageSize,
             QCMasterCode: qCMasterState.searchData.QCMasterCode,
+            ProductId: qCMasterState.searchData.ProductId,
             Description: qCMasterState.searchData.Description,
             showDelete: qCMasterState.searchData.showDelete
         }
@@ -119,8 +127,16 @@ const QCMaster = (props) => {
             setSelectedRow({ ...QCMasterDto });
         }
     }
+    const getProduct = async () => {
+        const res = await qcMasterService.getProductActive();
+        if (res.HttpResponseCode === 200 && res.Data) {
+            setproducArr([...res.Data])
+        }
+        else {
+            setproducArr([])
+        }
+    }
     const handleSearch = (e, inputName) => {
-        console.log('a', inputName)
         let newSearchData = { ...qCMasterState.searchData };
         newSearchData[inputName] = e;
         if (inputName == 'showDelete') {
@@ -151,6 +167,7 @@ const QCMaster = (props) => {
             }
         }
     }
+
     const columns = [
         { field: 'QCMasterId', headerName: '', flex: 0.3, hide:true },
         {
@@ -197,7 +214,7 @@ const QCMaster = (props) => {
         },
         { field: 'QCMasterCode', headerName: intl.formatMessage({ id: "qcMaster.QCMasterCode" }), flex: 0.3 },
         { field: 'ProductId', headerName: "ProductId", flex: 0.3 , hide: true },
-        { field: 'product_code', headerName: intl.formatMessage({ id: "product.product_code" }), flex: 0.3 },
+        { field: 'ProductCode', headerName: intl.formatMessage({ id: "product.product_code" }), flex: 0.3 },
         { field: 'Description', headerName: intl.formatMessage({ id: "general.description" }), flex: 0.3 },
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
         { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.3 },
@@ -222,7 +239,7 @@ const QCMaster = (props) => {
     return (
         <React.Fragment>
         <Grid container direction="row"  justifyContent="space-between" alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
-            <Grid item xs={6}>
+            <Grid item xs={5}>
                 <MuiButton
                     text="create"
                     color='success'
@@ -237,6 +254,18 @@ const QCMaster = (props) => {
                     size='small'
                     label={intl.formatMessage({ id: 'qcMaster.QCMasterCode' })}
                     onChange={(e) => handleSearch(e.target.value, 'QCMasterCode')}
+                />
+            </Grid>
+            <Grid item>
+                <MuiSelectField
+
+                    label={intl.formatMessage({ id: 'product.product_code' })}
+                    options={productArr}
+                    displayLabel="ProductCode"
+                    displayValue="ProductId"
+                    onChange={(e, item) => handleSearch(item ? item.ProductId ?? null : null, 'ProductId')}
+                    variant="standard"
+                    sx={{ width: 210 }}
                 />
             </Grid>
             <Grid item >
@@ -284,7 +313,7 @@ const QCMaster = (props) => {
                     return `Mui-created`
                 }
             }}
-            onRowClick={(rowData) => setBomId(rowData.row.QCMasterId)}
+            // onRowClick={(rowData) => master_row_click(rowData.row.QCMasterId)}
         />
          <CreateDialog
             initModal={QCMasterDto}
@@ -298,7 +327,7 @@ const QCMaster = (props) => {
             isOpen={isOpenModifyDialog}
             onClose={toggleModifyDialog}
         /> 
-          <QCDetail QCMasterId={QCMasterId} />
+          {selectedRow && <QCDetail QCMasterId={selectedRow.QCMasterId} />}
     </React.Fragment >
     )
 }

@@ -1,8 +1,10 @@
 import { axios } from '@utils'
 
+const URL = `/api/menu`;
+
 const getMenuList = async (params) => {
     try {
-        return await axios.get('/api/menu', {
+        return await axios.get(URL, {
             params: {
                 ...params
             }
@@ -15,7 +17,7 @@ const getMenuList = async (params) => {
 const getParentMenus = async (menuLevel) => {
 
     try {
-        return await axios.get('/api/menu/get-by-level', {
+        return await axios.get(`${URL}/get-by-level`, {
             params: {
                 menuLevel
             }
@@ -28,7 +30,7 @@ const getParentMenus = async (menuLevel) => {
 const createMenu = async (params) => {
 
     try {
-        return await axios.post('/api/menu/create-menu', {
+        return await axios.post(`${URL}/create-menu`, {
             ...params
         });
     } catch (error) {
@@ -39,7 +41,7 @@ const createMenu = async (params) => {
 const modifyMenu = async (params) => {
 
     try {
-        return await axios.put('/api/menu/modify-menu', {
+        return await axios.put(`${URL}/modify-menu`, {
             ...params
         });
     } catch (error) {
@@ -50,7 +52,7 @@ const modifyMenu = async (params) => {
 const deleteMenu = async (params) => {
 
     try {
-        return await axios.delete('/api/menu/delete-menu', {
+        return await axios.delete(`${URL}/delete-menu`, {
             data: {
                 ...params
             }

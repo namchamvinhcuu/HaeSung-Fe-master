@@ -1,8 +1,10 @@
 import { axios } from '@utils'
 
+const URL = `/api/supplier`;
+
 const getSuppliers = async (params) => {
     try {
-        return await axios.get('/api/supplier', {
+        return await axios.get(URL, {
             params: {
                 ...params
             }
@@ -14,7 +16,7 @@ const getSuppliers = async (params) => {
 
 const create = async (params) => {
     try {
-        return await axios.post('/api/supplier/create-supplier', {
+        return await axios.post(`${URL}/create-supplier`, {
             ...params
         });
     } catch (error) {
@@ -24,7 +26,7 @@ const create = async (params) => {
 
 const modify = async (params) => {
     try {
-        return await axios.put('/api/supplier/modify-supplier', {
+        return await axios.put(`${URL}/modify-supplier`, {
             ...params
         });
     } catch (error) {
@@ -35,7 +37,7 @@ const modify = async (params) => {
 const handleDelete = async (params) => {
 
     try {
-        return await axios.put('/api/supplier/delete-reuse-supplier', {
+        return await axios.put(`${URL}/delete-reuse-supplier`, {
             ...params
         });
     } catch (error) {

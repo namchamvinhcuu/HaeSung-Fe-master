@@ -1,7 +1,7 @@
 import { Grid, TextField } from '@mui/material'
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { useFormik } from 'formik'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 
@@ -11,6 +11,7 @@ import { supplierService } from '@services'
 
 const CreateSupplierDialog = (props) => {
     const intl = useIntl();
+    let isRendered = useRef(true);
 
     const { initModal, isOpen, onClose, setNewData } = props;
 
@@ -29,15 +30,17 @@ const CreateSupplierDialog = (props) => {
         initialValues: { ...initModal },
         onSubmit: async values => {
             const res = await supplierService.create(values);
-            if (res.HttpResponseCode === 200 && res.Data) {
-                SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-                setNewData({ ...res.Data });
-                setDialogState({ ...dialogState, isSubmit: false });
-                handleCloseDialog();
-            }
-            else {
-                ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-            }
+
+            if (res && isRendered)
+                if (res.HttpResponseCode === 200 && res.Data) {
+                    SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                    setNewData({ ...res.Data });
+                    setDialogState({ ...dialogState, isSubmit: false });
+                    handleCloseDialog();
+                }
+                else {
+                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+                }
         }
     });
 
@@ -60,6 +63,13 @@ const CreateSupplierDialog = (props) => {
         resetForm();
         onClose();
     }
+
+    useEffect(() => {
+
+        return () => {
+            isRendered = false;
+        }
+    })
 
     return (
         <MuiDialog

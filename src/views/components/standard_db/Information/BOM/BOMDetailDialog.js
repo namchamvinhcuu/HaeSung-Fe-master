@@ -10,10 +10,10 @@ import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION } from '@constants/ConfigConstants';
 import { useFormik } from 'formik'
 
-const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, BomId }) => {
+const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, BomId, MaterialList }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
-  const [MaterialList, setMaterialList] = useState([]);
+  //const [MaterialList, setMaterialList] = useState([]);
   const defaultValue = { BomId: BomId, MaterialId: null, MaterialCode: '', Amount: '', Remark: '' };
 
   const schema = yup.object().shape({
@@ -32,9 +32,9 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
 
 
   //useEffect
-  useEffect(() => {
-    getMaterial();
-  }, [])
+  // useEffect(() => {
+  //   getMaterial();
+  // }, [])
 
   useEffect(() => {
     if (mode == CREATE_ACTION) {
@@ -88,12 +88,12 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
     }
   };
 
-  const getMaterial = async () => {
-    const res = await bomDetailService.getMaterial();
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setMaterialList([...res.Data])
-    }
-  }
+  // const getMaterial = async () => {
+  //   const res = await bomDetailService.getMaterial();
+  //   if (res.HttpResponseCode === 200 && res.Data) {
+  //     setMaterialList([...res.Data])
+  //   }
+  // }
 
   return (
     <MuiDialog
