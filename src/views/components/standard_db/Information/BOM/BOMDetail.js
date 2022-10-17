@@ -13,8 +13,8 @@ import moment from 'moment';
 import BOMDetailDialog from './BOMDetailDialog'
 
 export default function BOMDetail({ BomId }) {
-  console.log(BomId)
   const intl = useIntl();
+  let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
   const [state, setState] = useState({
@@ -23,6 +23,7 @@ export default function BOMDetail({ BomId }) {
     totalRow: 0,
     page: 1,
     pageSize: 8,
+    searchData: { showDelete: true },
     BomId: BomId
   });
   const [newData, setNewData] = useState({})
@@ -91,7 +92,8 @@ export default function BOMDetail({ BomId }) {
   //useEffect
   useEffect(() => {
     fetchData(BomId);
-  }, [state.page, state.pageSize, BomId]);
+    return () => { isRendered = false; }
+  }, [state.page, state.pageSize, BomId, state.searchData.showDelete]);
 
   useEffect(() => {
     if (!_.isEmpty(newData)) {
@@ -154,10 +156,11 @@ export default function BOMDetail({ BomId }) {
     const params = {
       page: state.page,
       pageSize: state.pageSize,
+      showDelete: state.searchData.showDelete,
       BomId: BomId
     }
     const res = await bomDetailService.getBomDetailList(params);
-    if (res && res.Data)
+    if (res && res.Data && isRendered)
       setState({
         ...state
         , data: res.Data ?? []
@@ -166,14 +169,31 @@ export default function BOMDetail({ BomId }) {
       });
   }
 
+  const handleSearch = (e, inputName) => {
+    let newSearchData = { ...state.searchData };
+    newSearchData[inputName] = e;
+    if (inputName == 'showDelete') {
+      setState({ ...state, page: 1, searchData: { ...newSearchData } })
+    }
+    else {
+      setState({ ...state, searchData: { ...newSearchData } })
+    }
+  }
+
   return (
     <>
       <Grid container
         direction="row"
         justifyContent="space-between"
-        alignItems="width-end" sx={{ mb: 1 }} >
+        alignItems="width-end" sx={{ mb: 0 }} >
         <Grid item xs={6}>
           <MuiButton text="create" color='success' onClick={handleAdd} sx={{ mt: 1 }} disabled={BomId ? false : true} />
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            sx={{ mt: 1 }}
+            control={<Switch disabled={BomId ? false : true} defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
+            label={intl.formatMessage({ id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted' })} />
         </Grid>
       </Grid>
       <MuiDataGrid

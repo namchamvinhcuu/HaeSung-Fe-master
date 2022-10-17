@@ -13,10 +13,9 @@ import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import moment from 'moment';
 import MoldDialog from './MoldDialog'
 
-
-
 export default function Mold() {
   const intl = useIntl();
+  let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
   const [moldState, setMoldState] = useState({
@@ -122,6 +121,7 @@ export default function Mold() {
 
   useEffect(() => {
     fetchData();
+    return () => { isRendered = false; }
   }, [moldState.page, moldState.pageSize, moldState.searchData.showDelete]);
 
   useEffect(() => {
@@ -210,7 +210,7 @@ export default function Mold() {
 
     }
     const res = await moldService.getMoldList(params);
-    if (res && res.Data)
+    if (res && res.Data && isRendered)
       setMoldState({
         ...moldState
         , data: res.Data ?? []
@@ -221,21 +221,21 @@ export default function Mold() {
 
   const getProductModel = async () => {
     const res = await moldService.getProductModel();
-    if (res.HttpResponseCode === 200 && res.Data) {
+    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
       setPMList([...res.Data])
     }
   }
 
   const getProductType = async () => {
     const res = await moldService.getProductType();
-    if (res.HttpResponseCode === 200 && res.Data) {
+    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
       setPTList([...res.Data])
     }
   }
 
   const getMachineType = async () => {
     const res = await moldService.getMachineType();
-    if (res.HttpResponseCode === 200 && res.Data) {
+    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
       setMTList([...res.Data])
     }
   }
