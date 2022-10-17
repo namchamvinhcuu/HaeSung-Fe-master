@@ -157,12 +157,13 @@ export default function BOMDetail({ BomId }) {
       BomId: BomId
     }
     const res = await bomDetailService.getBomDetailList(params);
-    setState({
-      ...state
-      , data: [...res.Data]
-      , totalRow: res.TotalRow
-      , isLoading: false
-    });
+    if (res && res.Data)
+      setState({
+        ...state
+        , data: res.Data ?? []
+        , totalRow: res.TotalRow
+        , isLoading: false
+      });
   }
 
   return (

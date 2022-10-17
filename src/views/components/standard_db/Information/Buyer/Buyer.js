@@ -26,6 +26,7 @@ import { ErrorAlert, SuccessAlert } from '@utils'
 
 
 const Buyer = (props) => {
+    let isRendered = useRef(false);
     const intl = useIntl();
 
     
@@ -101,12 +102,13 @@ const Buyer = (props) => {
         console.log(params,'dsds');
        const res = await buyerService.getBuyerList(params);
      
+       if (res && isRendered)
         setbuyerState({
-            ...buyerState
-            , data: !res.Data ? [] : [...res.Data]
-            , totalRow: res.TotalRow
-            , isLoading: false
-        });
+           ...buyerState
+           , data: !res.Data ? [] : [...res.Data]
+           , totalRow: res.TotalRow
+           , isLoading: false
+       });
     }
 
     const handleDeleteBuyer = async (buyer) => {
@@ -137,8 +139,14 @@ const Buyer = (props) => {
     };
 
     useEffect(() => {
+        //fetchData();
+        isRendered = true;
+        if (isRendered)
+            fetchData();
 
-        fetchData();
+        return () => {
+            isRendered = false
+        }
     }, [buyerState.page, buyerState.pageSize,showActivedData]); //, 
 
     useEffect(() => {

@@ -29,6 +29,10 @@ const instance = axios.create({
     // withCredentials: true
 });
 
+// const controller = new AbortController();
+// const signal = controller.signal;
+const currentExecutingRequests = {};
+
 const createError = (httpStatusCode, statusCode, errorMessage, problems, errorCode = '') => {
     const error = new Error();
     error.httpStatusCode = httpStatusCode;
@@ -48,11 +52,24 @@ export const isSuccessStatusCode = (s) => {
 let refreshtokenRequest = null;
 
 instance.interceptors.request.use(async (request) => {
+    let originalRequest = request;
+
+    if (currentExecutingRequests[request.url]) {
+        const source = currentExecutingRequests[request.url];
+        delete currentExecutingRequests[request.url];
+        source.cancel();
+    }
+
+    const CancelToken = axios.CancelToken;
+    const source = CancelToken.source();
+    originalRequest.cancelToken = source.token;
+    currentExecutingRequests[request.url] = source;
+
     if (
-        request.url.indexOf(ConfigConstants.LOGIN_URL) >= 0
-        || request.url.indexOf(ConfigConstants.REFRESH_TOKEN_URL) >= 0
+        originalRequest.url.indexOf(ConfigConstants.LOGIN_URL) >= 0
+        || originalRequest.url.indexOf(ConfigConstants.REFRESH_TOKEN_URL) >= 0
         // || request.url.indexOf(`/api/logout`) >= 0
-    ) return request;
+    ) return originalRequest;
 
     else {
         let token = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
@@ -60,8 +77,8 @@ instance.interceptors.request.use(async (request) => {
             const tokenDecode = jwt_decode(token);
             const isExpired = dayjs.unix(tokenDecode.exp).diff(dayjs()) < 1;
             if (!isExpired) {
-                request.headers.Authorization = `Bearer ${token}`;
-                return request;
+                originalRequest.headers.Authorization = `Bearer ${token}`;
+                return originalRequest;
             }
             else {
                 refreshtokenRequest = refreshtokenRequest
@@ -74,19 +91,21 @@ instance.interceptors.request.use(async (request) => {
                 if (response.HttpResponseCode === 200 && response.ResponseMessage === 'general.success') {
                     SetLocalStorage(ConfigConstants.TOKEN_ACCESS, response.Data.accessToken);
                     SetLocalStorage(ConfigConstants.TOKEN_REFRESH, response.Data.refreshToken);
-                    request.headers.Authorization = `Bearer ${response.Data.accessToken}`;
-                    return request;
+                    originalRequest.headers.Authorization = `Bearer ${response.Data.accessToken}`;
+                    // return originalRequest;
                 }
                 else {
                     await instance.Logout();
-                    return request;
+                    // return originalRequest;
                 }
             }
         }
         else {
             await instance.Logout();
-            return request;
+            // return originalRequest;
         }
+
+        return originalRequest;
     }
 
 }, err => {
@@ -95,6 +114,13 @@ instance.interceptors.request.use(async (request) => {
 
 instance.interceptors.response.use(
     async (response) => {
+        console.log(currentExecutingRequests[response.request.responseURL])
+        if (currentExecutingRequests[response.request.responseURL]) {
+            // here you clean the request
+            delete currentExecutingRequests[response.request.responseURL];
+        }
+
+
         // Thrown error for request with OK status code
         const { data } = response
         if (data.HttpResponseCode === 401 && data.ResponseMessage === 'login.lost_authorization') {
@@ -102,6 +128,25 @@ instance.interceptors.response.use(
         }
         return response.data;
     },
+    (error) => {
+        const { config, response } = error;
+        console.log(config)
+        const originalRequest = config;
+
+        if (axios.isCancel(error)) {
+            // here you check if this is a cancelled request to drop it silently (without error)
+            return new Promise(() => { });
+        }
+
+        if (currentExecutingRequests[originalRequest.url]) {
+            // here you clean the request
+            delete currentExecutingRequests[originalRequest.url];
+        }
+
+        // here you could check expired token and refresh it if necessary
+
+        return Promise.reject(error);
+    }
     // (error) => {
     //     const { response } = error;
     //     if (response == null) {

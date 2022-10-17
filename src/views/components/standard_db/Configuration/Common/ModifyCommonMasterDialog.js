@@ -19,7 +19,6 @@ const ModifyCommonMasterDialog = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setModifyData } = props;
-    console.log(props,'props');
 
     const clearParent = useRef(null);
 
@@ -29,12 +28,12 @@ const ModifyCommonMasterDialog = (props) => {
         isSubmit: false,
     })
     const RoleUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
-    const setRole = RoleUser.RoleNameList.replace(" ","");
-    const RoleArr  = setRole.split(',');
-  
+    const setRole = RoleUser.RoleNameList.replace(" ", "");
+    const RoleArr = setRole.split(',');
+
 
     const schema = yup.object().shape({
-      
+
         commonMasterName: yup.string().required(),
         forRoot: yup.bool().required(),
 
@@ -64,7 +63,7 @@ const ModifyCommonMasterDialog = (props) => {
 
 
     const onSubmit = async (data) => {
-       
+
         dataModalRef.current = { ...initModal, ...data };
         setDialogState({ ...dialogState, isSubmit: true });
 
@@ -73,7 +72,7 @@ const ModifyCommonMasterDialog = (props) => {
             SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
             setModifyData({ ...res.Data });
 
-            handleCloseDialog(); 
+            handleCloseDialog();
         }
         else {
             ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -95,14 +94,14 @@ const ModifyCommonMasterDialog = (props) => {
         >
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                   
+
                     <Grid item xs={12}>
                         <Grid container spacing={2}>
-                        <Grid item xs={RoleArr.includes('ROOT') ? 9 : 12}>
+                            <Grid item xs={RoleArr.includes('ROOT') ? 9 : 12}>
                                 <TextField
                                     autoFocus
                                     fullWidth
-                                  
+
                                     size='small'
                                     label={intl.formatMessage({ id: 'general.name' })}
                                     {...register('commonMasterName', {
@@ -114,29 +113,29 @@ const ModifyCommonMasterDialog = (props) => {
                                 />
                             </Grid>
                             {RoleArr.includes('ROOT') &&
-                            <Grid item xs={3}>
-                                <FormControlLabel
-                                    control={
-                                        <Controller
-                                            name='forRoot'
-                                            control={control}
-                                            render={({ field: props }) => (
-                                                <Checkbox
-                                                    {...props}
-                                                    checked={props.value}
-                                                    onChange={(e) => props.onChange(e.target.checked)}
-                                                />
-                                            )}
-                                        />
-                                    }
-                                    label='For Root'
-                                />
-                            </Grid>
+                                <Grid item xs={3}>
+                                    <FormControlLabel
+                                        control={
+                                            <Controller
+                                                name='forRoot'
+                                                control={control}
+                                                render={({ field: props }) => (
+                                                    <Checkbox
+                                                        {...props}
+                                                        checked={props.value}
+                                                        onChange={(e) => props.onChange(e.target.checked)}
+                                                    />
+                                                )}
+                                            />
+                                        }
+                                        label='For Root'
+                                    />
+                                </Grid>
                             }
 
                         </Grid>
                     </Grid>
-                   
+
 
                     <Grid item xs={12}>
                         <Grid
@@ -147,7 +146,7 @@ const ModifyCommonMasterDialog = (props) => {
                                 text="save"
                                 loading={dialogState.isSubmit}
                             />
-                          
+
                         </Grid>
                     </Grid>
                 </Grid>

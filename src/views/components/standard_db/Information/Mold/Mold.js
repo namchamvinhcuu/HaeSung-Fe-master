@@ -210,12 +210,13 @@ export default function Mold() {
 
     }
     const res = await moldService.getMoldList(params);
-    setMoldState({
-      ...moldState
-      , data: [...res.Data]
-      , totalRow: res.TotalRow
-      , isLoading: false
-    });
+    if (res && res.Data)
+      setMoldState({
+        ...moldState
+        , data: res.Data ?? []
+        , totalRow: res.TotalRow
+        , isLoading: false
+      });
   }
 
   const getProductModel = async () => {

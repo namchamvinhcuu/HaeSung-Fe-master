@@ -189,12 +189,13 @@ export default function Material() {
 
     }
     const res = await materialService.getMaterialList(params);
-    setState({
-      ...state
-      , data: [...res.Data]
-      , totalRow: res.TotalRow
-      , isLoading: false
-    });
+    if (res && res.Data)
+      setState({
+        ...state
+        , data: res.Data ?? []
+        , totalRow: res.TotalRow
+        , isLoading: false
+      });
   }
 
   const getMaterialType = async () => {

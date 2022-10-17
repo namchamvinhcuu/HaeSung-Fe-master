@@ -1,18 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField } from '@controls'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { Grid, TextField } from '@mui/material'
-import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 import { moldService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION } from '@constants/ConfigConstants';
+import { useFormik } from 'formik'
 
 const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
   const intl = useIntl();
-  const [date, setDate] = useState(initModal?.ETADate);
-  const ETAStatus = [{ value: true, label: 'YES' }, { value: false, label: 'NO' }]
+  const ETAStatus = [{ ETAStatus: 'True', ETAStatusName: 'YES' }, { ETAStatus: 'False', ETAStatusName: 'NO' }]
   const [dialogState, setDialogState] = useState({ isSubmit: false })
 
   const schema = yup.object().shape({
@@ -24,37 +22,34 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
     Model: yup.number().nullable().required(intl.formatMessage({ id: 'mold.Model_required' })),
     MoldType: yup.number().nullable().required(intl.formatMessage({ id: 'mold.MoldType_required' })),
     MachineType: yup.number().nullable().required(intl.formatMessage({ id: 'mold.MachineType_required' })),
-    ETAStatus: yup.bool().nullable().required(intl.formatMessage({ id: 'mold.ETAStatus_required' })),
+    ETAStatus1: yup.string().nullable().required(intl.formatMessage({ id: 'mold.ETAStatus_required' })),
     ETADate: yup.date().nullable().required(intl.formatMessage({ id: 'mold.ETADate_required' }))
   });
 
-  const { control, register, setValue, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
-    mode: 'onChange',
-    resolver: yupResolver(schema),
-    defaultValues: initModal
+  const formik = useFormik({
+    validationSchema: schema,
+    initialValues: mode == CREATE_ACTION ? defaultValue : initModal,
+    enableReinitialize: true,
+    onSubmit: async values => onSubmit(values)
   });
+
+  const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
 
   useEffect(() => {
     if (mode == CREATE_ACTION) {
-      setDate();
-      reset({ Inch: null, Cabity: null, MachineTon: null });
+      formik.initialValues = defaultValue
     }
     else {
-      setDate(initModal?.ETADate);
-      reset(initModal);
+      formik.initialValues = initModal;
     }
   }, [initModal, mode])
 
   const handleReset = () => {
-    reset();
-    clearErrors();
-    setDialogState({ ...dialogState })
+    resetForm();
   }
 
   const handleCloseDialog = () => {
-    reset();
-    clearErrors();
-    setDialogState({ ...dialogState })
+    resetForm();
     onClose();
   }
 
@@ -100,143 +95,131 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
       disable_animate={300}
       onClose={handleCloseDialog}
     >
-      <form onSubmit={handleSubmit(onSubmit)} >
+      <form onSubmit={handleSubmit} >
         <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item container spacing={2}>
             <Grid item xs={6}>
               <TextField
-                disabled={dialogState.isSubmit}
                 autoFocus
                 fullWidth
                 size='small'
+                name='MoldSerial'
+                disabled={dialogState.isSubmit}
+                value={values.MoldSerial}
+                onChange={handleChange}
                 label={intl.formatMessage({ id: 'mold.MoldSerial' })}
-                {...register('MoldSerial')}
-                error={!!errors?.MoldSerial}
-                helperText={errors?.MoldSerial ? errors.MoldSerial.message : null}
+                error={touched.MoldSerial && Boolean(errors.MoldSerial)}
+                helperText={touched.MoldSerial && errors.MoldSerial}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
-                disabled={dialogState.isSubmit}
                 fullWidth
                 size='small'
+                name='MoldCode'
+                disabled={dialogState.isSubmit}
+                value={values.MoldCode}
+                onChange={handleChange}
                 label={intl.formatMessage({ id: 'mold.MoldCode' })}
-                {...register('MoldCode')}
-                error={!!errors?.MoldCode}
-                helperText={errors?.MoldCode ? errors.MoldCode.message : null}
+                error={touched.MoldCode && Boolean(errors.MoldCode)}
+                helperText={touched.MoldCode && errors.MoldCode}
               />
             </Grid>
           </Grid>
           <Grid item container spacing={2}>
             <Grid item xs={6}>
-              <Controller
-                control={control}
-                name="Model"
-                render={({ field: { onChange, value } }) => {
-                  return (
-                    <MuiSelectField
-                      disabled={dialogState.isSubmit}
-                      label={intl.formatMessage({ id: 'mold.Model' })}
-                      options={valueOption.PMList}
-                      displayLabel="commonDetailName"
-                      displayValue="commonDetailId"
-                      onChange={(e, item) => onChange(item ? item.commonDetailId ?? null : null)}
-                      defaultValue={initModal && { commonDetailId: initModal.Model, commonDetailName: initModal.ModelName }}
-                      error={!!errors.Model}
-                      helperText={errors?.Model ? errors.Model.message : null}
-                    />
-                  );
+              <MuiSelectField
+                value={values.Model ? { commonDetailId: values.Model, commonDetailName: values.ModelName } : null}
+                disabled={dialogState.isSubmit}
+                label={intl.formatMessage({ id: 'mold.Model' })}
+                options={valueOption.PMList}
+                displayLabel="commonDetailName"
+                displayValue="commonDetailId"
+                onChange={(e, value) => {
+                  setFieldValue("ModelName", value?.commonDetailName || '');
+                  setFieldValue("Model", value?.commonDetailId || '');
                 }}
+                defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.Model, commonDetailName: initModal.ModelName }}
+                error={touched.Model && Boolean(errors.Model)}
+                helperText={touched.Model && errors.Model}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
                 fullWidth
-                disabled={dialogState.isSubmit}
                 type='number'
                 size='small'
+                name='Inch'
+                inputProps={{ min: 0 }}
+                disabled={dialogState.isSubmit}
+                value={values.Inch}
+                onChange={handleChange}
                 label={intl.formatMessage({ id: 'mold.Inch' })}
-                {...register('Inch')}
-                error={!!errors?.Inch}
-                helperText={errors?.Inch ? errors.Inch.message : null}
+                error={touched.Inch && Boolean(errors.Inch)}
+                helperText={touched.Inch && errors.Inch}
               />
             </Grid>
           </Grid>
           <Grid item container spacing={2}>
             <Grid item xs={6}>
-              <Controller
-                control={control}
-                name="MoldType"
-                render={({ field: { onChange, value } }) => {
-                  return (
-                    <MuiSelectField
-                      disabled={dialogState.isSubmit}
-                      label={intl.formatMessage({ id: 'mold.MoldType' })}
-                      options={valueOption.PTList}
-                      displayLabel="commonDetailName"
-                      displayValue="commonDetailId"
-                      onChange={(e, item) => onChange(item ? item.commonDetailId ?? null : null)}
-                      defaultValue={initModal && { commonDetailId: initModal.MoldType, commonDetailName: initModal.MoldTypeName }}
-                      error={!!errors.MoldType}
-                      helperText={errors?.MoldType ? errors.MoldType.message : null}
-                    />
-                  );
+              <MuiSelectField
+                value={values.MoldType ? { commonDetailId: values.MoldType, commonDetailName: values.MoldTypeName } : null}
+                disabled={dialogState.isSubmit}
+                label={intl.formatMessage({ id: 'mold.MoldType' })}
+                options={valueOption.PTList}
+                displayLabel="commonDetailName"
+                displayValue="commonDetailId"
+                onChange={(e, value) => {
+                  setFieldValue("MoldTypeName", value?.commonDetailName || '');
+                  setFieldValue("MoldType", value?.commonDetailId || '');
                 }}
+                defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.MoldType, commonDetailName: initModal.MoldTypeName }}
+                error={touched.MoldType && Boolean(errors.MoldType)}
+                helperText={touched.MoldType && errors.MoldType}
               />
             </Grid>
             <Grid item xs={6}>
-              <Controller
-                control={control}
-                name="MachineType"
-                render={({ field: { onChange, value } }) => {
-                  return (
-                    <MuiSelectField
-                      disabled={dialogState.isSubmit}
-                      label={intl.formatMessage({ id: 'mold.MachineType' })}
-                      options={valueOption.MTList}
-                      displayLabel="commonDetailName"
-                      displayValue="commonDetailId"
-                      onChange={(e, item) => onChange(item ? item.commonDetailId ?? null : null)}
-                      defaultValue={initModal && { commonDetailId: initModal.MachineType, commonDetailName: initModal.MachineTypeName }}
-                      error={!!errors.MachineType}
-                      helperText={errors?.MachineType ? errors.MachineType.message : null}
-                    />
-                  );
+              <MuiSelectField
+                value={values.MachineType ? { commonDetailId: values.MachineType, commonDetailName: values.MachineTypeName } : null}
+                disabled={dialogState.isSubmit}
+                label={intl.formatMessage({ id: 'mold.MachineType' })}
+                options={valueOption.MTList}
+                displayLabel="commonDetailName"
+                displayValue="commonDetailId"
+                onChange={(e, value) => {
+                  setFieldValue("MachineTypeName", value?.commonDetailName || '');
+                  setFieldValue("MachineType", value?.commonDetailId || '');
                 }}
+                defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.MachineType, commonDetailName: initModal.MachineTypeName }}
+                error={touched.MachineType && Boolean(errors.MachineType)}
+                helperText={touched.MachineType && errors.MachineType}
               />
             </Grid>
           </Grid>
           <Grid item container spacing={2}>
             <Grid item xs={6}>
-              <Controller
-                control={control}
-                name="ETADate"
-                render={({ field: { onChange, value } }) => {
-                  return (
-                    <MuiDateField
-                      disabled={dialogState.isSubmit}
-                      label="ETA Date"
-                      value={date}
-                      onChange={(e) => {
-                        setDate(e);
-                        onChange(e ?? null);
-                      }}
-                      error={!!errors?.ETADate}
-                      helperText={errors?.ETADate ? errors.ETADate.message : null}
-                    />);
-                }}
+              <MuiDateField
+                disabled={dialogState.isSubmit}
+                label={intl.formatMessage({ id: 'mold.ETADate' })}
+                value={values.ETADate ?? null}
+                onChange={(e) => setFieldValue("ETADate", e)}
+                error={touched.ETADate && Boolean(errors.ETADate)}
+                helperText={touched.ETADate && errors.ETADate}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
                 fullWidth
-                disabled={dialogState.isSubmit}
                 type='number'
                 size='small'
+                name='MachineTon'
+                inputProps={{ min: 0 }}
+                disabled={dialogState.isSubmit}
+                value={values.MachineTon}
+                onChange={handleChange}
                 label={intl.formatMessage({ id: 'mold.MachineTon' })}
-                {...register('MachineTon')}
-                error={!!errors?.MachineTon}
-                helperText={errors?.MachineTon ? errors.MachineTon.message : null}
+                error={touched.MachineTon && Boolean(errors.MachineTon)}
+                helperText={touched.MachineTon && errors.MachineTon}
               />
             </Grid>
           </Grid>
@@ -244,46 +227,46 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
             <Grid item xs={6}>
               <TextField
                 fullWidth
-                disabled={dialogState.isSubmit}
-                size='small'
                 type='number'
+                size='small'
+                name='Cabity'
+                inputProps={{ min: 0 }}
+                disabled={dialogState.isSubmit}
+                value={values.Cabity}
+                onChange={handleChange}
                 label={intl.formatMessage({ id: 'mold.Cabity' })}
-                {...register('Cabity')}
-                error={!!errors?.Cabity}
-                helperText={errors?.Cabity ? errors.Cabity.message : null}
+                error={touched.Cabity && Boolean(errors.Cabity)}
+                helperText={touched.Cabity && errors.Cabity}
               />
             </Grid>
             <Grid item xs={6}>
-              <Controller
-                control={control}
-                name="ETAStatus"
-                render={({ field: { onChange, value } }) => {
-                  return (
-                    <MuiSelectField
-                      disabled={dialogState.isSubmit}
-                      label={intl.formatMessage({ id: 'mold.ETAStatus' })}
-                      options={ETAStatus}
-                      displayLabel="label"
-                      displayValue="value"
-                      onChange={(e, item) => onChange(item ? item.value ?? null : null)}
-                      defaultValue={mode == CREATE_ACTION ? null : initModal.ETAStatus ? { value: true, label: 'YES' } : { value: false, label: 'NO' }}
-                      error={!!errors.Model}
-                      helperText={errors?.Model ? errors.Model.message : null}
-                    />
-                  );
+
+              <MuiSelectField
+                value={values.ETAStatus1 != '' ? { ETAStatus: values.ETAStatus1, ETAStatusName: values.ETAStatusName } : null}
+                disabled={dialogState.isSubmit}
+                label={intl.formatMessage({ id: 'mold.ETAStatus' })}
+                options={ETAStatus}
+                displayLabel="ETAStatusName"
+                displayValue="ETAStatus"
+                onChange={(e, value) => {
+                  setFieldValue("ETAStatusName", value?.ETAStatusName || '');
+                  setFieldValue("ETAStatus1", value?.ETAStatus || null);
                 }}
+                //defaultValue={mode == CREATE_ACTION ? null : { ETAStatus: initModal.ETAStatus, ETAStatusName: initModal.ETAStatusName }}
+                error={touched.ETAStatus1 && Boolean(errors.ETAStatus1)}
+                helperText={touched.ETAStatus1 && errors.ETAStatus1}
               />
             </Grid>
           </Grid>
           <Grid item xs={12}>
             <TextField
-              disabled={dialogState.isSubmit}
               fullWidth
               size='small'
+              name='Remark'
+              disabled={dialogState.isSubmit}
+              value={values.Remark}
+              onChange={handleChange}
               label={intl.formatMessage({ id: 'mold.Remark' })}
-              {...register('Remark')}
-              error={!!errors?.Remark}
-              helperText={errors?.Remark ? errors.Remark.message : null}
             />
           </Grid>
           <Grid item xs={12}>
@@ -297,5 +280,24 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
     </MuiDialog >
   )
 }
+
+const defaultValue = {
+  MoldSerial: '',
+  MoldCode: '',
+  Model: null,
+  ModelName: '',
+  MoldType: null,
+  MoldTypeName: '',
+  Inch: '',
+  MachineType: null,
+  MachineTypeName: '',
+  MachineTon: '',
+  ETADate: '',
+  Cabity: '',
+  ETAStatus: null,
+  ETAStatus1: '',
+  ETAStatusName: '',
+  Remark: ''
+};
 
 export default MoldDialog

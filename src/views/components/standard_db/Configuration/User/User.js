@@ -146,12 +146,13 @@ export default function User() {
       keyword: search
     }
     const res = await userService.getUserList(params);
-    setUserState({
-      ...userState
-      , data: [...res.Data]
-      , totalRow: res.TotalRow
-      , isLoading: false
-    });
+    if (res && res.Data)
+      setUserState({
+        ...userState
+        , data: res.Data ?? []
+        , totalRow: res.TotalRow
+        , isLoading: false
+      });
   }
 
   useEffect(() => {

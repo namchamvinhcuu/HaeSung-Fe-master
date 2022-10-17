@@ -183,12 +183,13 @@ export default function BOM() {
 
     }
     const res = await bomService.getBomList(params);
-    setState({
-      ...state
-      , data: [...res.Data]
-      , totalRow: res.TotalRow
-      , isLoading: false
-    });
+    if (res && res.Data)
+      setState({
+        ...state
+        , data: res.Data ?? []
+        , totalRow: res.TotalRow
+        , isLoading: false
+      });
   }
 
   const getProduct = async () => {
@@ -248,11 +249,12 @@ export default function BOM() {
         page={state.page - 1}
         pageSize={state.pageSize}
         rowCount={state.totalRow}
-        rowsPerPageOptions={[5, 8, 20]}
+        //rowsPerPageOptions={[5, 8, 20]}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
-        onPageSizeChange={(newPageSize) => setState({ ...state, pageSize: newPageSize, page: 1 })}
+        //onPageSizeChange={(newPageSize) => setState({ ...state, pageSize: newPageSize, page: 1 })}
         getRowId={(rows) => rows.BomId}
-        onRowClick={(rowData) => setBomId(rowData.row.BomId)}
+        //onRowClick={(rowData) => setBomId(rowData.row.BomId)}
+        onSelectionModelChange={(newSelectedRowId) => setBomId(newSelectedRowId[0])}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`
         }}

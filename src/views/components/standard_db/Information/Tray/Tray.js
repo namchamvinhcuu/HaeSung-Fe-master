@@ -182,12 +182,13 @@ export default function Tray() {
 
     }
     const res = await trayService.getTrayList(params);
-    setTrayState({
-      ...trayState
-      , data: [...res.Data]
-      , totalRow: res.TotalRow
-      , isLoading: false
-    });
+    if (res && res.Data)
+      setTrayState({
+        ...trayState
+        , data: res.Data ?? []
+        , totalRow: res.TotalRow
+        , isLoading: false
+      });
   }
 
   const getTrayType = async () => {

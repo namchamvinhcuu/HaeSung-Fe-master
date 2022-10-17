@@ -98,37 +98,24 @@ const Menu = (props) => {
             keyWord: menuState.searchData.keyWord
         }
         const res = await menuService.getMenuList(params);
-
-        setMenuState({
-            ...menuState
-            , data: !res.Data ? [] : [...res.Data]
-            , totalRow: res.TotalRow
-            , isLoading: false
-        });
+        if (res && isRendered)
+            setMenuState({
+                ...menuState
+                , data: !res.Data ? [] : [...res.Data]
+                , totalRow: res.TotalRow
+                , isLoading: false
+            });
     }
 
     useEffect(() => {
-        // isRendered = true;
-        // const params = {
-        //     page: menuState.page,
-        //     pageSize: menuState.pageSize
-        // }
-        // menuService.getMenuList(params)
-        //     .then(res => {
-        //         if (isRendered) {
-        //             setMenuState({
-        //                 ...menuState
-        //                 , data: [...res.Data]
-        //                 , totalRow: res.Data && res.Data.length > 0 ? res.Data[0].totalRow : 0
-        //             });
-        //         }
-        //         return null;
-        //     })
-        //     .catch(err => console.log(err));;
-        // return () => {
-        //     isRendered = false;
-        // };
-        fetchData();
+        isRendered = true;
+        if (isRendered)
+            fetchData();
+
+        return () => {
+            isRendered = false;
+        };
+
     }, [menuState.page, menuState.pageSize]);
 
     useEffect(() => {
@@ -143,6 +130,7 @@ const Menu = (props) => {
                 , totalRow: menuState.totalRow + 1
             });
         }
+
     }, [newData]);
 
     useEffect(() => {

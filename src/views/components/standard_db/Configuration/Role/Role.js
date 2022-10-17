@@ -200,30 +200,33 @@ export default function Role() {
       keyWord: roleState.searchData.keyWord
     }
     const res = await roleService.getRoleList(params);
-    setRoleState({
-      ...roleState
-      , data: [...res.Data]
-      , totalRow: res.TotalRow
-      , isLoading: false
-    });
+    if (res && res.Data)
+      setRoleState({
+        ...roleState
+        , data: res.Data ?? []
+        , totalRow: res.TotalRow
+        , isLoading: false
+      });
   }
 
   async function fetchDataPermission(Id) {
     const permission = await roleService.GetPermissionByRole(Id, { page: permissionState.page, pageSize: permissionState.pageSize });
-    setPermissionState({
-      ...permissionState
-      , data: permission.Data
-      , totalRow: permission.TotalRow
-    });
+    if (permission && permission.Data)
+      setPermissionState({
+        ...permissionState
+        , data: permission.Data ?? []
+        , totalRow: permission.TotalRow
+      });
   }
 
   async function fetchDataMenu(Id) {
     const menu = await roleService.GetMenuByRole(Id, { page: menuState.page, pageSize: menuState.pageSize });
-    setMenuState({
-      ...menuState
-      , data: menu.Data
-      , totalRow: menu.TotalRow
-    });
+    if (menu && menu.Data)
+      setMenuState({
+        ...menuState
+        , data: menu.Data ?? []
+        , totalRow: menu.TotalRow
+      });
   }
 
   const handleSearch = (e, inputName) => {
@@ -295,7 +298,8 @@ export default function Role() {
         //   setRoleState({ ...roleState, pageSize: newPageSize, page: 1 });
         // }}
         // onCellClick={handleCellClick}
-        onRowClick={(rowData) => handleRoleClick(rowData.row.roleId)}
+        //onRowClick={(rowData) => handleRoleClick(rowData.row.roleId)}
+        onSelectionModelChange={(newSelectedRowId) => handleRoleClick(newSelectedRowId[0])}
         getRowId={(rows) => rows.roleId}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) {

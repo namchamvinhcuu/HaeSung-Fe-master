@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton'
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS'
 import _ from 'lodash'
 import moment from "moment"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useIntl } from 'react-intl'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -24,6 +24,7 @@ import CreateLineDialog from './CreateLineDialog'
 import ModifyLineDialog from './ModifyLineDialog'
 
 const Line = (props) => {
+    let isRendered = useRef(false);
     const intl = useIntl();
 
     const [lineState, setLineState] = useState({
@@ -89,12 +90,13 @@ const Line = (props) => {
         }
         const res = await lineService.get(params);
 
-        setLineState({
-            ...lineState
-            , data: !res.Data ? [] : [...res.Data]
-            , totalRow: res.TotalRow
-            , isLoading: false
-        });
+        if (res && isRendered)
+            setLineState({
+                ...lineState
+                , data: !res.Data ? [] : [...res.Data]
+                , totalRow: res.TotalRow
+                , isLoading: false
+            });
     }
 
     const handleDelete = async (line) => {
@@ -124,7 +126,12 @@ const Line = (props) => {
     };
 
     useEffect(() => {
-        fetchData();
+        isRendered = true
+        if (isRendered)
+            fetchData();
+        return () => {
+            isRendered = false;
+        }
     }, [lineState.page, lineState.pageSize, showActivedData]);
 
     useEffect(() => {
@@ -144,7 +151,7 @@ const Line = (props) => {
     useEffect(() => {
         if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, LineDto)) {
             let newArr = [...lineState.data]
-            const index = _.findIndex(newArr, function (o) { return o.SupplierId == selectedRow.SupplierId; });
+            const index = _.findIndex(newArr, (o) => { return o.SupplierId == selectedRow.SupplierId; });
             if (index !== -1) {
                 newArr[index] = selectedRow
             }
