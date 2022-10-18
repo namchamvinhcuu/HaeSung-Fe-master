@@ -11,9 +11,19 @@ const getQcMasterList = async (params) => {
         console.log(`ERROR: ${error}`);
     }
 }
-const getProductActive = async () => {
+const getMaterialForSelect = async (qcType) => {
+   
     try {
-        return await axios.get(`${apiQCMaster}/get-product-active`);
+        return await axios.get(`${apiQCMaster}/get-material-active` , {params: qcType });
+    }
+
+     catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
+const getQCTypeForSelect = async () => {
+    try {
+        return await axios.get(`${apiQCMaster}/get-qc-type`);
     } catch (error) {
         console.log(`ERROR: ${error}`);
     }
@@ -50,7 +60,8 @@ const deleteQCMaster = async (params) => {
 
 export {
     getQcMasterList,
-    getProductActive,
+    getMaterialForSelect ,
+    getQCTypeForSelect,
     create,
     modify,
     deleteQCMaster

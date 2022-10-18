@@ -221,7 +221,8 @@
         "Remark": "Remark"
     },
     "qcMaster": {
-        "QCMasterCode": "QC Master Code"
+        "QCMasterCode": "QC Master Code",
+        "qcType": "QC Type"
     },
     "qcDetail": {
         "QCDetailCode": "QC Detail Code",
