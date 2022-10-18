@@ -85,7 +85,7 @@ const ModifyStaffDialog = (props) => {
                             fullWidth
                             size='small'
                             disabled={dialogState.isSubmit}
-                            label={intl.formatMessage({ id: 'staff.StaffCode' })}
+                            label={intl.formatMessage({ id: 'staff.StaffCode' }) + ' *'}
                             name='StaffCode'
                             value={values.StaffCode}
                             onChange={handleChange}
@@ -98,7 +98,7 @@ const ModifyStaffDialog = (props) => {
                             fullWidth
                             size='small'
                             disabled={dialogState.isSubmit}
-                            label={intl.formatMessage({ id: 'staff.StaffName' })}
+                            label={intl.formatMessage({ id: 'staff.StaffName' }) + ' *'}
                             name='StaffName'
                             value={values.StaffName}
                             onChange={handleChange}

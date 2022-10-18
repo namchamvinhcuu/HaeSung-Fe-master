@@ -85,7 +85,7 @@ const ModifyBuyerDialog = (props) => {
                             fullWidth
                             size='small'
                             disabled={dialogState.isSubmit}
-                            label={intl.formatMessage({ id: 'buyer.BuyerCode' })}
+                            label={intl.formatMessage({ id: 'buyer.BuyerCode' }) + ' *'}
                             name='BuyerCode'
                             value={values.BuyerCode}
                             onChange={handleChange}
@@ -98,7 +98,7 @@ const ModifyBuyerDialog = (props) => {
                             fullWidth
                             size='small'
                             disabled={dialogState.isSubmit}
-                            label={intl.formatMessage({ id: 'buyer.BuyerName' })}
+                            label={intl.formatMessage({ id: 'buyer.BuyerName' }) + ' *'}
                             name='BuyerName'
                             value={values.BuyerName}
                             onChange={handleChange}
