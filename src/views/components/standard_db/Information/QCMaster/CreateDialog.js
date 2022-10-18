@@ -35,7 +35,7 @@ const CreateDialog = (props) => {
         validationSchema: schema,
         initialValues: { ...initModal },
         onSubmit: async values => {
-            console.log(values, 'values')
+           
             const res = await qcMasterService.create(values);
             if (res.HttpResponseCode === 200) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))

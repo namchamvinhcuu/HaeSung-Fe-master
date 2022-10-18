@@ -124,7 +124,11 @@
         "Inch": "Inch",
         "Model": "Model",
         "Description": "Mô tả",
-        "duplicated_name": "Product Code: Sản phẩm đã được tạo"
+        "duplicated_name": "Product Code: Sản phẩm đã được tạo",
+        "InchFormatError" : "Inch: Lỗi định dạng. Vui lòng nhập lại bằng định dạng thích hợp. (9,3)",
+        "productCode_required": "Product Code: không được để trống",
+        "model_required": "Model: không được để trống",
+        "ProductType_required": "Product Type: không được để trống"
     },
     "supplier": {
         "SupplierContact": "Liên hệ",
@@ -187,6 +191,7 @@
         "Description": "Description",
         "BuyerCode_required": "Buyer Code không được để trống",
         "BuyerName_required": "Buyer Name không được để trống"
+        
     },
     "material": {
         "MaterialCode": "Material Code",
