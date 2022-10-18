@@ -165,16 +165,16 @@ const Location = (props) => {
 //     toggle();
 //   };
 
-//   const handleSearch = (e, inputName) => {
-//     let newSearchData = { ...locationState.searchData };
-//     newSearchData[inputName] = e;
-//     if (inputName == 'showDelete') {
-//         setLocationState({ ...locationState, page: 1, searchData: { ...newSearchData } })
-//     }
-//     else {
-//         setLocationState({ ...locationState, searchData: { ...newSearchData } })
-//     }
-//   }
+  const handleSearch = (e, inputName) => {
+    let newSearchData = { ...locationState.searchData };
+    newSearchData[inputName] = e;
+    if (inputName == 'showDelete') {
+        setLocationState({ ...locationState, page: 1, searchData: { ...newSearchData } })
+    }
+    else {
+        setLocationState({ ...locationState, searchData: { ...newSearchData } })
+    }
+  }
 
   async function fetchData() {
     setLocationState({ ...locationState, isLoading: true });
@@ -199,7 +199,7 @@ const Location = (props) => {
   const getArea = async () => {
     const res = await locationService.getLocationList();
     if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-        setLocationState([...res.Data])
+        setAreaList([...res.Data])
     }
   }
 
@@ -221,7 +221,7 @@ const Location = (props) => {
             variant="standard"
             size='small'
             label='Code'
-            //onChange={(e) => handleSearch(e.target.value, 'keyWord')}
+            onChange={(e) => handleSearch(e.target.value, 'keyWord')}
           />
         </Grid>
         <Grid item>
@@ -230,7 +230,7 @@ const Location = (props) => {
             options={AreaList}
             displayLabel="commonDetailName"
             displayValue="commonDetailId"
-            //onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'AreaId')}
+            onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'AreaId')}
             variant="standard"
             sx={{ width: 220 }}
           />
@@ -239,7 +239,7 @@ const Location = (props) => {
           <MuiButton 
             text="search" 
             color='info' 
-            //onClick={fetchData} sx={{ mt: 1 }} 
+            onClick={fetchData} sx={{ mt: 1 }} 
             />
         </Grid>
         {/* <Grid item>
@@ -272,9 +272,9 @@ const Location = (props) => {
                 //     setLocationState({ ...locationState, pageSize: newPageSize, page: 1 });
                 // }}
                 getRowId={(rows) => rows.LocationId}
-                onSelectionModelChange={(newSelectedRowId) => {
-                    handleRowSelection(newSelectedRowId)
-                }}
+                // onSelectionModelChange={(newSelectedRowId) => {
+                //     handleRowSelection(newSelectedRowId)
+                // }}
 
                 getRowClassName={(params) => {
                     if (_.isEqual(params.row, newData)) {
@@ -282,7 +282,7 @@ const Location = (props) => {
                     }
                 }}
             />
-
+        
       {/* <LocationDialog
         valueOption={{ AreaList: AreaList }}
         setNewData={setNewData}
