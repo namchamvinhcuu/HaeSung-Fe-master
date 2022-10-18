@@ -17,7 +17,10 @@ const CreateDialog = (props) => {
     const intl = useIntl();
     const { initModal, isOpen, onClose, setNewData } = props;
 
-    const [productArr, setproducArr] = useState([initModal]);
+    const [materialArr, setmaterialArr] = useState([initModal]);
+    const [qcArr, setqcArr] = useState([]);
+
+    const [qcType, setqcType] = useState([""]);
 
     const dataModalRef = useRef({ ...initModal });
     const [dialogState, setDialogState] = useState({
@@ -26,7 +29,8 @@ const CreateDialog = (props) => {
     const schema = yup.object().shape({
 
         QCMasterCode: yup.string().trim().required(intl.formatMessage({ id: 'general.field_required' })),
-        ProductId: yup.number().required(),
+        MaterialId: yup.number().required(),
+        QCType: yup.number().required(),
         Description: yup.string().trim()
 
     });
@@ -66,20 +70,36 @@ const CreateDialog = (props) => {
 
     useEffect(() => {
         if (isOpen)
-            getProduct();
+           getQC();
     }, [isOpen])
 
-    const getProduct = async () => {
-        const res = await qcMasterService.getProductActive();
+
+    useEffect(() => {
+        getMaterial(qcType);
+    }, [qcType])
+
+
+    const getMaterial = async (qcType) => {
+    
+        const res = await qcMasterService.getMaterialForSelect({qcType : qcType});
         if (res.HttpResponseCode === 200 && res.Data) {
-            setproducArr([...res.Data])
-            console.log(res.Data);
+            setmaterialArr([...res.Data])
+          
         }
         else {
-            setproducArr([])
+            setmaterialArr([])
         }
     }
-
+    const getQC = async () => {
+        const res = await qcMasterService.getQCTypeForSelect();
+        if (res.HttpResponseCode === 200 && res.Data) {
+            setqcArr([...res.Data])
+            
+        }
+        else {
+            setqcArr([])
+        }
+    }
     useEffect(() => {
         resetForm({ ...initModal });
     }, [initModal]);
@@ -111,7 +131,7 @@ const CreateDialog = (props) => {
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                     <Grid item xs={12}>
                         <Grid container spacing={2}>
-                            <Grid item xs={6} >
+                            <Grid item xs={12} >
                                 <TextField
                                     fullWidth
                                     type="text"
@@ -125,27 +145,48 @@ const CreateDialog = (props) => {
                                     helperText={touched.Amount && errors.Amount}
                                 />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={12}>
                                 <MuiSelectField
-                                    value={values.ProductId ? { ProductId: values.ProductId, ProductCode: values.ProductCode } : null}
+                                    value={values.QCType ? { commonDetailId: values.QCType, commonDetailName: values.QCTypeName } : null}
                                     disabled={dialogState.isSubmit}
-                                    label={intl.formatMessage({ id: 'product.product_code' })}
-                                    options={productArr}
-                                    displayLabel="ProductCode"
-                                    displayValue="ProductId"
+                                    label={intl.formatMessage({ id: 'qcMaster.qcType' })}
+                                    options={qcArr}
+                                    displayLabel="commonDetailName"
+                                    displayValue="commonDetailId"
                                     onChange={(e, value) => {
-                                        setFieldValue("ProductCode", value?.ProductCode || '');
-                                        setFieldValue("ProductId", value?.ProductId || "");
+                                        setFieldValue("MaterialCode", "");
+                                        setFieldValue("MaterialId",  0);
+                                        setqcType(value?.commonDetailName || "");
+                                        
+                                        setFieldValue("QCTypeName", value?.commonDetailName || '');
+                                        setFieldValue("QCType", value?.commonDetailId || "");
+                                        
                                     }}
-                                    defaultValue={initModal && { ProductId: initModal.ProductId, ProductCode: initModal.ProductCode }}
-                                    error={!!errors.ProductId}
-                                    helperText={errors?.ProductId ? errors.ProductId.message : null}
+                                    error={!!errors.QCType}
+                                    helperText={errors?.QCType ? errors.QCType.message : null}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <MuiSelectField
+                                    value={values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null}
+                                    disabled={dialogState.isSubmit}
+                                    label={intl.formatMessage({ id: 'material.MaterialCode' })}
+                                    options={materialArr}
+                                    displayLabel="MaterialCode"
+                                    displayValue="MaterialId"
+                                    onChange={(e, value) => {
+                                        setFieldValue("MaterialCode", value?.MaterialCode || '');
+                                        setFieldValue("MaterialId", value?.MaterialId || "");
+                                      
+                                    }}
+                                    error={!!errors.MaterialId}
+                                    helperText={errors?.MaterialId ? errors.MaterialId.message : null}
                                 />
                             </Grid>
                         </Grid>
                     </Grid>
                     <Grid item xs={12}>
-                        <Grid container item spacing={2} marginBottom={2}>
+                        <Grid container item spacing={2}>
                             <Grid item xs={12} >
                             <TextField
                                     fullWidth

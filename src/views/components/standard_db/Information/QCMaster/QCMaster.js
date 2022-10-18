@@ -38,7 +38,7 @@ const QCMaster = (props) => {
         searchData: {
             QCMasterCode: null,
             Description: null,
-            ProductId: 0,
+            MaterialId: 0,
             showDelete: true
         }
     });
@@ -58,9 +58,9 @@ const QCMaster = (props) => {
         setIsOpenModifyDialog(!isOpenModifyDialog);
     }
       //useEffect
-  useEffect(() => {
-    getProduct();
-  }, [])
+//   useEffect(() => {
+//     getProduct();
+//   }, [])
     useEffect(() => {
         fetchData();
 
@@ -102,7 +102,7 @@ const QCMaster = (props) => {
             page: qCMasterState.page,
             pageSize: qCMasterState.pageSize,
             QCMasterCode: qCMasterState.searchData.QCMasterCode,
-            ProductId: qCMasterState.searchData.ProductId,
+            MaterialId: qCMasterState.searchData.MaterialId,
             Description: qCMasterState.searchData.Description,
             showDelete: qCMasterState.searchData.showDelete
         }
@@ -213,8 +213,10 @@ const QCMaster = (props) => {
             },
         },
         { field: 'QCMasterCode', headerName: intl.formatMessage({ id: "qcMaster.QCMasterCode" }), flex: 0.3 },
-        { field: 'ProductId', headerName: "ProductId", flex: 0.3 , hide: true },
-        { field: 'ProductCode', headerName: intl.formatMessage({ id: "product.product_code" }), flex: 0.3 },
+        { field: 'MaterialId', headerName: "MaterialId", flex: 0.3 , hide: true },
+        { field: 'MaterialCode', headerName: intl.formatMessage({ id: "material.MaterialCode" }), flex: 0.3 },
+        { field: 'QCType', headerName: "QCType", flex: 0.3 , hide: true },
+        { field: 'QCTypeName', headerName: intl.formatMessage({ id: "qcMaster.qcType" }), flex: 0.3 },
         { field: 'Description', headerName: intl.formatMessage({ id: "general.description" }), flex: 0.3 },
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
         { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.3 },
@@ -261,9 +263,9 @@ const QCMaster = (props) => {
 
                     label={intl.formatMessage({ id: 'product.product_code' })}
                     options={productArr}
-                    displayLabel="ProductCode"
-                    displayValue="ProductId"
-                    onChange={(e, item) => handleSearch(item ? item.ProductId ?? null : null, 'ProductId')}
+                    displayLabel="MaterialCode"
+                    displayValue="MaterialId"
+                    onChange={(e, item) => handleSearch(item ? item.MaterialId ?? null : null, 'MaterialId')}
                     variant="standard"
                     sx={{ width: 210 }}
                 />
