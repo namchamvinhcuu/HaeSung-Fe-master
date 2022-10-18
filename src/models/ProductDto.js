@@ -3,10 +3,10 @@ const ProductDto= {
     ProductId: 0
     ,ProductCode: ''
     ,Description: ''
-    ,Model :''
-    ,ProductType : ''
+    ,Model:0
+    ,ProductType: 0
     ,Inch : ''
-    ,ModelName : ''
+    ,ModelName: ''
     ,ProductTypeName: ''
     , isActived: true
     , createdBy: null
