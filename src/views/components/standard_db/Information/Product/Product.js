@@ -41,7 +41,7 @@ const Product = () => {
         pageSize: 20,
         searchData: {
             Model: null,
-            ProductCode: null,
+            MaterialCode: null,
             ProductType: null,
             Description: null,
             showDelete: true
@@ -92,7 +92,7 @@ const Product = () => {
     useEffect(() => {
         if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, ProductDto)) {
             let newArr = [...productState.data]
-            const index = _.findIndex(newArr, function (o) { return o.ProductId == selectedRow.ProductId; });
+            const index = _.findIndex(newArr, function (o) { return o.MaterialId == selectedRow.MaterialId; });
             if (index !== -1) {
                 newArr[index] = selectedRow
             }
@@ -128,13 +128,13 @@ const Product = () => {
             page: productState.page,
             pageSize: productState.pageSize,
             Model: productState.searchData.Model,
-            ProductCode: productState.searchData.ProductCode,
+            MaterialCode: productState.searchData.MaterialCode,
             ProductType: productState.searchData.ProductType,
             Description: productState.searchData.Description,
             showDelete: productState.searchData.showDelete
         }
-        const res = await productService.getProductList(params);
-
+        const res = await productService.getProductList(params)
+       
         setproductState({
             ...productState
             , data: [...res.Data]
@@ -146,7 +146,7 @@ const Product = () => {
     const handleRowSelection = (arrIds) => {
 
         const rowSelected = productState.data.filter(function (item) {
-            return item.ProductId === arrIds[0]
+            return item.MaterialId === arrIds[0]
         });
         if (rowSelected && rowSelected.length > 0) {
             setSelectedRow({ ...rowSelected[0] });
@@ -158,10 +158,10 @@ const Product = () => {
         }
     }
     const handleDelete = async (row) => {
-
-        if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
+        let message = productState.searchData.showDelete ? intl.formatMessage({ id: 'general.confirm_delete' }) : intl.formatMessage({ id: 'general.confirm_redo_deleted' })
+        if (window.confirm(message)) {
             try {
-                let res = await productService.deleteProduct({ ProductId: row.ProductId, row_version: row.row_version });
+                let res = await productService.deleteProduct({ MaterialId: row.MaterialId, row_version: row.row_version });
                 if (res && res.HttpResponseCode === 200) {
 
                     SuccessAlert(intl.formatMessage({ id: 'general.success' }))
@@ -188,11 +188,11 @@ const Product = () => {
     }
 
     const columns = [
-        { field: 'ProductId', headerName: '', flex: 0.3, hide: true },
+        { field: 'MaterialId', headerName: '', flex: 0.3, hide: true },
         {
             field: 'id', headerName: '', flex: 0.1,
             filterable: false,
-            renderCell: (index) => index.api.getRowIndex(index.row.ProductId) + 1 + (productState.page - 1) * productState.pageSize,
+            renderCell: (index) => index.api.getRowIndex(index.row.MaterialId) + 1 + (productState.page - 1) * productState.pageSize,
         },
         {
             field: "action",
@@ -233,11 +233,12 @@ const Product = () => {
         },
         { field: 'ModelName', headerName: intl.formatMessage({ id: "product.Model" }), flex: 0.3 },
         { field: 'Model', headerName: 'Model', flex: 0.3, hide: true },
-        { field: 'ProductCode', headerName: 'Product Code', flex: 0.3 },
+        { field: 'MaterialCode', headerName: 'Product Code', flex: 0.3 },
         { field: 'ProductType', headerName: 'Product Type', flex: 0.3, hide: true },
         { field: 'ProductTypeName', headerName: intl.formatMessage({ id: "product.product_type" }), flex: 0.3 },
         { field: 'Description', headerName: intl.formatMessage({ id: "product.Description" }), flex: 0.3 },
         { field: 'Inch', headerName: intl.formatMessage({ id: "product.Inch" }), flex: 0.3 },
+        { field: 'UnitName', headerName: intl.formatMessage({ id: "product.Unit" }), flex: 0.3 },
 
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
         {
@@ -296,7 +297,7 @@ const Product = () => {
                         variant="standard"
                         size='small'
                         label='Product Code'
-                        onChange={(e) => handleSearch(e.target.value, 'ProductCode')}
+                        onChange={(e) => handleSearch(e.target.value, 'MaterialCode')}
                     />
                 </Grid>
                 <Grid item>
@@ -353,7 +354,7 @@ const Product = () => {
                 onSelectionModelChange={(newSelectedRowId) => {
                     handleRowSelection(newSelectedRowId)
                 }}
-                getRowId={(rows) => rows.ProductId}
+                getRowId={(rows) => rows.MaterialId}
                 getRowClassName={(params) => {
                     if (_.isEqual(params.row, newData)) {
                         return `Mui-created`

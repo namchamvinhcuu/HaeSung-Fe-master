@@ -1,7 +1,7 @@
 import moment from "moment";
 const ProductDto= {
-    ProductId: 0
-    ,ProductCode: ''
+    MaterialId: 0
+    ,MaterialCode: ''
     ,Description: ''
     ,Model:0
     ,ProductType: 0

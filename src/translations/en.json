@@ -128,7 +128,8 @@
         "InchFormatError" : "Inch: Format error. Please re-enter using the proper format. (9.3)",
         "productCode_required": "Product Code is required",
         "model_required": "Model is required",
-        "ProductType_required": "Product Type is required"
+        "ProductType_required": "Product Type is required",
+        "Unit": "Unit"
     },
     "supplier": {
         "SupplierContact": "Contact",

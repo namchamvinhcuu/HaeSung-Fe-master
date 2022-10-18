@@ -28,7 +28,7 @@ const ModifyProductDialog = (props) => {
 
     const schema = yup.object().shape({
 
-        ProductCode: yup.string().trim().required(intl.formatMessage({ id: 'general.field_required' })),
+        MaterialCode: yup.string().trim().required(intl.formatMessage({ id: 'general.field_required' })),
         ProductType: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
         Model: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
         Description: yup.string().trim(),
@@ -139,13 +139,13 @@ const ModifyProductDialog = (props) => {
                                     fullWidth
                                     type="text"
                                     size='small'
-                                    name='ProductCode'
+                                    name='MaterialCode'
                                     disabled={dialogState.isSubmit}
-                                    value={values.ProductCode}
+                                    value={values.MaterialCode}
                                     onChange={handleChange}
                                     label={intl.formatMessage({ id: 'general.code' })}
-                                    error={touched.ProductCode && Boolean(errors.ProductCode)}
-                                    helperText={touched.ProductCode && errors.ProductCode}
+                                    error={touched.MaterialCode && Boolean(errors.MaterialCode)}
+                                    helperText={touched.MaterialCode && errors.MaterialCode}
                                 />
                                 
                             </Grid>
@@ -213,7 +213,7 @@ const ModifyProductDialog = (props) => {
                                         value={values.Description}
                                         onChange={handleChange}
                                         label={intl.formatMessage({ id: 'general.description' })}
-                                        error={touched.Description && Boolean(errors.ProductCode)}
+                                        error={touched.Description && Boolean(errors.MaterialCode)}
                                         helperText={touched.Description && errors.Description}
                                     />
                                 </Grid>

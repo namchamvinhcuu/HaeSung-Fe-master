@@ -16,7 +16,7 @@ import { useFormik } from 'formik'
 const CreateDialog = (props) => {
     const intl = useIntl();
     const { initModal, isOpen, onClose, setNewData } = props;
-console.log(initModal);
+
     const [modelArr, setModelArr] = useState([]);
     const [productTypeArr, setproductTypeArr] = useState([]);
 
@@ -26,7 +26,7 @@ console.log(initModal);
     })
     const schema = yup.object().shape({
 
-        ProductCode: yup.string().trim().required(intl.formatMessage({ id: 'general.field_required' })),
+        MaterialCode: yup.string().trim().required(intl.formatMessage({ id: 'general.field_required' })),
         ProductType: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
         Model: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
         Description: yup.string().trim(),
@@ -45,17 +45,17 @@ console.log(initModal);
            
             const res = await productService.createProduct(values);
             if (res.HttpResponseCode === 200) {
+                debugger;
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-                handleCloseDialog();
                 setNewData({ ...res.Data });
                 setDialogState({ ...dialogState, isSubmit: false });
-                handleReset();
+                setDialogState({
+                    ...dialogState
+                })
             }
             else {
                 ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-                handleCloseDialog();
                 setDialogState({ ...dialogState, isSubmit: false });
-                handleReset();
             }
         }
     });
@@ -131,13 +131,13 @@ console.log(initModal);
                                     fullWidth
                                     type="text"
                                     size='small'
-                                    name='ProductCode'
+                                    name='MaterialCode'
                                     disabled={dialogState.isSubmit}
-                                    value={values.ProductCode}
+                                    value={values.MaterialCode}
                                     onChange={handleChange}
                                     label={intl.formatMessage({ id: 'general.code' })}
-                                    error={touched.ProductCode && Boolean(errors.ProductCode)}
-                                    helperText={touched.ProductCode && errors.ProductCode}
+                                    error={touched.MaterialCode && Boolean(errors.MaterialCode)}
+                                    helperText={touched.MaterialCode && errors.MaterialCode}
                                 />
                             </Grid>
                           
