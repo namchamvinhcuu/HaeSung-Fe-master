@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import UndoIcon from '@mui/icons-material/Undo';
-import { FormControlLabel, Grid, IconButton, Switch, TextField } from '@mui/material'
+import { FormControlLabel, Grid, IconButton, Switch, TextField, Tooltip, Typography } from '@mui/material'
 import { useIntl } from 'react-intl'
 import { MuiButton, MuiDataGrid, MuiSelectField } from '@controls'
 import { materialService } from '@services'
@@ -85,7 +85,15 @@ export default function Material() {
     { field: 'MaterialCode', headerName: intl.formatMessage({ id: "material.MaterialCode" }), flex: 0.5, },
     { field: 'MaterialTypeName', headerName: intl.formatMessage({ id: "material.MaterialType" }), flex: 0.5, },
     { field: 'UnitName', headerName: intl.formatMessage({ id: "material.Unit" }), flex: 0.5, },
-    { field: 'SupplierName', headerName: intl.formatMessage({ id: "material.SupplierId" }), flex: 0.5, },
+    {
+      field: 'SupplierNames', headerName: intl.formatMessage({ id: "material.SupplierId" }), flex: 0.7, renderCell: (params) => {
+        return (
+          <Tooltip title={params.row.SupplierNames}>
+            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.SupplierNames}</Typography>
+          </Tooltip>
+        )
+      }
+    },
     { field: 'Description', headerName: intl.formatMessage({ id: "material.Description" }), flex: 0.7, },
     { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
     {
@@ -161,9 +169,13 @@ export default function Material() {
     toggle();
   };
 
-  const handleUpdate = (row) => {
+  const handleUpdate = async (row) => {
     setMode(UPDATE_ACTION);
-    setRowData({ ...row });
+    setRowData({ ...row, Suppliers: [] });
+    const res = await materialService.getSupplierById(row.MaterialId);
+    if (res.HttpResponseCode === 200 && res.Data) {
+      setRowData({ ...row, Suppliers: res.Data })
+    }
     toggle();
   };
 

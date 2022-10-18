@@ -196,7 +196,7 @@
         "MaterialCode": "Material Code",
         "MaterialType": "Material Type",
         "Unit": "Unit",
-        "SupplierId": "Supplier",
+        "SupplierId": "Suppliers",
         "Description": "Description",
         "MaterialCode_required": "Material Code is required",
         "MaterialType_required": "Material Type is required",
@@ -207,8 +207,10 @@
         "QCCode" : "QC Code"
     },
     "bom": {
+        "CheckBomLv1": "Bom Product",
         "BomCode": "Bom Code",
         "ProductId": "Product Code",
+        "ParentId": "Parent Code",
         "Remark": "Remark"
     },
     "bomDetail": {
