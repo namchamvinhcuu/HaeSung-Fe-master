@@ -227,5 +227,11 @@
         "qcDetail_existed": "QC Detail is existed. Please Delete Detail First",
         "duplicated_code": "QC Code: Duplicated QC Code",
         "QCCode_required":"QC cannot be blank"
+    },
+    "location": {
+        "LocationCode": "Location Code",
+        "AreaId": "Area",
+        "LocationCode_required": "Location Code is required",
+        "Area_required": "Area is required"
     }
 }
