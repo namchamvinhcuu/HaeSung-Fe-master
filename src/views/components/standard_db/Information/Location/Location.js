@@ -36,7 +36,7 @@ const Location = (props) => {
 
   const columns = [
     {
-      field: 'id', headerName: '', flex: 0.1, align: 'center',
+      field: 'id', headerName: '', flex: 0.01, align: 'center',
       filterable: false,
       renderCell: (index) => (index.api.getRowIndex(index.row.LocationId) + 1) + (locationState.page - 1) * locationState.pageSize,
     },
@@ -45,24 +45,14 @@ const Location = (props) => {
     {
       field: "action",
       headerName: "",
-      flex: 0.3,
+      width: 80,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
           <Grid container spacing={1} alignItems="center" justifyContent="center">
-            <Grid item xs={6} style={{ textAlign: "center" }}>
-              <IconButton
-                aria-label="delete"
-                color="error"
-                size="small"
-                sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                //onClick={() => handleDelete(params.row)}
-              >
-                {/* {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />} */}
-              </IconButton>
-            </Grid>
+            
             <Grid item xs={6} style={{ textAlign: "center" }}>
               <IconButton
                 aria-label="edit"
@@ -74,21 +64,38 @@ const Location = (props) => {
                 <EditIcon fontSize="inherit" />
               </IconButton>
             </Grid>
+            <Grid item xs={6} style={{ textAlign: "center" }}>
+              <IconButton
+                aria-label="delete"
+                color="error"
+                size="small"
+                sx={[{ '&:hover': { border: '1px solid red', }, }]}
+                //onClick={() => handleDelete(params.row)}
+              >
+                {/* {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />} */}
+              </IconButton>
+            </Grid>
           </Grid>
         );
       },
     },
     { field: 'LocationCode', headerName: intl.formatMessage({ id: "location.LocationCode" }), flex: 0.5, },
     { field: 'AreaName', headerName: intl.formatMessage({ id: "location.AreaId" }), flex: 0.5, },
-    { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
+    { field: 'createdName', headerName: 'User Create', width: 150, },
     {
-      field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.5,
-      valueFormatter: params => params?.value ? moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss") : null
+        field: 'createdDate', headerName: intl.formatMessage({ id: "general.created_date" }), width: 150, valueFormatter: params => {
+            if (params.value !== null) {
+                return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
+            }
+        },
     },
-    { field: 'modifiedName', headerName: intl.formatMessage({ id: "general.modifiedName" }), flex: 0.5, },
+    { field: 'modifiedName', headerName: 'User Update', width: 150, },
     {
-      field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modifiedDate" }), flex: 0.5,
-      valueFormatter: params => params?.value ? moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss") : null
+        field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modified_date" }), width: 150, valueFormatter: params => {
+            if (params.value !== null) {
+                return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
+            }
+        },
     },
   ];
 
@@ -190,7 +197,7 @@ const Location = (props) => {
   }
 
   const getArea = async () => {
-    const res = await locationService.GetArea();
+    const res = await locationService.getLocationList();
     if (res.HttpResponseCode === 200 && res.Data && isRendered) {
         setLocationState([...res.Data])
     }
@@ -259,10 +266,10 @@ const Location = (props) => {
                 disableGrid={locationState.isLoading}
 
                 onPageChange={(newPage) => {
-                    setlocationState({ ...locationState, page: newPage + 1 });
+                    setLocationState({ ...locationState, page: newPage + 1 });
                 }}
                 // onPageSizeChange={(newPageSize) => {
-                //     setlocationState({ ...locationState, pageSize: newPageSize, page: 1 });
+                //     setLocationState({ ...locationState, pageSize: newPageSize, page: 1 });
                 // }}
                 getRowId={(rows) => rows.LocationId}
                 onSelectionModelChange={(newSelectedRowId) => {
