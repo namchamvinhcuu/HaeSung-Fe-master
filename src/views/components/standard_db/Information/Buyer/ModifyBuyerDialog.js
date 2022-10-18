@@ -69,7 +69,7 @@ const ModifyBuyerDialog = (props) => {
 
     return (
         <MuiDialog
-            maxWidth='md'
+            maxWidth='sm'
             title={intl.formatMessage({ id: 'general.modify' })}
             isOpen={isOpen}
             disabledCloseBtn={dialogState.isSubmit}
