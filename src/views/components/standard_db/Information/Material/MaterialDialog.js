@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField } from '@controls'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
+import { Autocomplete, Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
@@ -18,7 +18,11 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     MaterialCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
     MaterialType: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
     Unit: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    SupplierId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+    Suppliers: yup.array().nullable()
+      .when("MaterialTypeName", (MaterialTypeName) => {
+        if (MaterialTypeName !== "BARE MATERIAL")
+          return yup.array().nullable().min(1, intl.formatMessage({ id: 'general.field_required' }))
+      }),
   });
 
   const formik = useFormik({
@@ -115,6 +119,8 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               displayLabel="commonDetailName"
               displayValue="commonDetailId"
               onChange={(e, value) => {
+                if (value?.commonDetailName == "BARE MATERIAL")
+                  setFieldValue("Suppliers", []);
                 setFieldValue("MaterialTypeName", value?.commonDetailName || '');
                 setFieldValue("MaterialType", value?.commonDetailId || '');
               }}
@@ -140,23 +146,32 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               helperText={touched.Unit && errors.Unit}
             />
           </Grid>
-          <Grid item xs={12}>
-            <MuiSelectField
-              value={values.SupplierId ? { SupplierId: values.SupplierId, SupplierName: values.SupplierName } : null}
-              disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: 'material.SupplierId' })}
-              options={valueOption.SupplierList}
-              displayLabel="SupplierName"
-              displayValue="SupplierId"
-              onChange={(e, value) => {
-                setFieldValue("SupplierName", value?.SupplierName || '');
-                setFieldValue("SupplierId", value?.SupplierId || '');
-              }}
-              defaultValue={mode == CREATE_ACTION ? null : { SupplierId: initModal.SupplierId, SupplierName: initModal.SupplierName }}
-              error={touched.SupplierId && Boolean(errors.SupplierId)}
-              helperText={touched.SupplierId && errors.SupplierId}
-            />
-          </Grid>
+          {values.MaterialTypeName != "BARE MATERIAL" &&
+            <Grid Grid item xs={12}>
+              <Autocomplete
+                multiple
+                fullWidth
+                size='small'
+                options={valueOption.SupplierList}
+                disabled={dialogState.isSubmit}
+                autoHighlight
+                openOnFocus
+                value={values.Suppliers}
+                getOptionLabel={option => option.SupplierName}
+                onChange={(e, item) => {
+                  setFieldValue("Suppliers", item ?? []);
+                }}
+                disableCloseOnSelect
+                renderInput={(params) => {
+                  return <TextField
+                    {...params}
+                    label={intl.formatMessage({ id: 'material.SupplierId' })}
+                    error={touched.Suppliers && Boolean(errors.Suppliers)}
+                    helperText={touched.Suppliers && errors.Suppliers}
+                  />
+                }}
+              />
+            </Grid>}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -176,11 +191,12 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           </Grid>
         </Grid>
       </form>
-    </MuiDialog>
+    </MuiDialog >
   )
 }
 
 const defaultValue = {
+  MaterialId: null,
   MaterialCode: '',
   MaterialType: null,
   MaterialTypeName: '',
@@ -189,6 +205,7 @@ const defaultValue = {
   SupplierId: null,
   SupplierName: '',
   Description: '',
+  Suppliers: [],
 };
 
 export default MaterialDialog

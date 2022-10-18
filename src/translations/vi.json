@@ -198,7 +198,7 @@
         "MaterialCode": "Material Code",
         "MaterialType": "Material Type",
         "Unit": "Unit",
-        "SupplierId": "Supplier",
+        "SupplierId": "Suppliers",
         "Description": "Description",
         "MaterialCode_required": "Material Code không được để trống",
         "MaterialType_required": "Material Type không được để trống",
@@ -209,8 +209,10 @@
         "QCCode" : "QC Code"
     },
     "bom": {
+        "CheckBomLv1": "Bom Product",
         "BomCode": "Bom Code",
         "ProductId": "Product Code",
+        "ParentId": "Parent Code",
         "Remark": "Remark"
     },
     "bomDetail": {

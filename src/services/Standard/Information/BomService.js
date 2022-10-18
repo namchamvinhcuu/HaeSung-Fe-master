@@ -47,10 +47,30 @@ const getProduct = async () => {
   }
 }
 
+const getMaterial = async () => {
+  try {
+    return await axios.get(`${apiName}/get-material`);
+  }
+  catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+}
+
+const getParent = async () => {
+  try {
+    return await axios.get(`${apiName}/get-parent`);
+  }
+  catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+}
+
 export {
   getBomList,
   createBom,
   modifyBom,
   deleteBom,
-  getProduct
+  getProduct,
+  getMaterial,
+  getParent,
 }

@@ -2,9 +2,9 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import { Autocomplete } from '@mui/material';
 
-export default function MuiSelectField({ value, options, displayLabel, displayValue, onChange, defaultValue, sx, margin, disabled, label, error, helperText, variant }) {
+export default function MuiSelectField({ value, options, displayLabel, displayValue, displayGroup, onChange, defaultValue, sx, margin, disabled, label, error, helperText, variant }) {
   return (
-    <Autocomplete
+    !displayGroup ? <Autocomplete
       fullWidth
       disabled={disabled}
       size='small'
@@ -28,6 +28,44 @@ export default function MuiSelectField({ value, options, displayLabel, displayVa
         />
       }}
     />
+      :
+      <Autocomplete
+        fullWidth
+        disabled={disabled}
+        size='small'
+        margin={margin}
+        options={options}
+        value={value}
+        autoHighlight
+        openOnFocus
+        groupBy={(option) => option[displayGroup]}
+        getOptionLabel={option => option[displayLabel]}
+        isOptionEqualToValue={(option, value) => option[displayValue] === value[displayValue]}
+        defaultValue={defaultValue ?? null}
+        onChange={onChange}
+        renderInput={(params) => {
+          return <TextField
+            {...params}
+            sx={sx}
+            variant={variant}
+            label={label}
+            error={error}
+            helperText={helperText}
+          />
+        }}
+        renderGroup={(params) => {
+          return (
+            <div key={"group" + params.key}>
+              <div style={{ textIndent: '10px', marginBottom: 10, background: '#0288d1' }}>
+                <span style={{ fontSize: 14, color: 'white' }} >{params.group}</span>
+              </div>
+              <div style={{ textIndent: '15px', marginBottom: 10 }}>
+                {params.children}
+              </div>
+            </div>
+          )
+        }}
+      />
   );
 }
 

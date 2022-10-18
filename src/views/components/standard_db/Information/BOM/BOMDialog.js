@@ -10,12 +10,24 @@ import { useFormik } from 'formik'
 
 const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
   const intl = useIntl();
+  const [checkLV, setCheckLV] = useState(true);
   const [dialogState, setDialogState] = useState({ isSubmit: false });
-  const defaultValue = { BomCode: '', ProductId: null, ProductCode: '', Remark: '' };
+  const [ParentList, setParentList] = useState([]);
+  const [MaterialList, setMaterialList] = useState([]);
 
   const schema = yup.object().shape({
     BomCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    ProductId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+    // ProductId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+
+    // ProductId: yup.number().nullable()
+    // .when("menuLevel", (menuLevel) => {
+    //     if (parseInt(menuLevel) === 3) {
+    //         return yup.string()
+    //             .required(intl.formatMessage({ id: 'menu.navigateUrl_required' }))
+    //     }
+    // }),
+
+
   });
 
   const formik = useFormik({
@@ -26,6 +38,11 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
   });
 
   const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
+
+  useEffect(() => {
+    getParent();
+    getMaterial();
+  }, [])
 
   useEffect(() => {
     if (mode == CREATE_ACTION) {
@@ -78,6 +95,20 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
     }
   };
 
+  const getParent = async () => {
+    const res = await bomService.getParent();
+    if (res.HttpResponseCode === 200 && res.Data) {
+      setParentList([...res.Data])
+    }
+  }
+
+  const getMaterial = async () => {
+    const res = await bomService.getMaterial();
+    if (res.HttpResponseCode === 200 && res.Data) {
+      setMaterialList([...res.Data])
+    }
+  }
+
   return (
     <MuiDialog
       maxWidth='sm'
@@ -89,6 +120,9 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
     >
       <form onSubmit={handleSubmit} >
         <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={12}>
+            <FormControlLabel sx={{ m: 0 }} control={<Checkbox defaultChecked={checkLV} value={checkLV} onChange={() => setCheckLV(!checkLV)} />} label={intl.formatMessage({ id: 'bom.CheckBomLv1' })} />
+          </Grid>
           <Grid item xs={12}>
             <TextField
               autoFocus
@@ -103,7 +137,7 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
               helperText={touched.BomCode && errors.BomCode}
             />
           </Grid>
-          <Grid item xs={12}>
+          {checkLV ? <Grid item xs={12}>
             <MuiSelectField
               value={values.ProductId ? { ProductId: values.ProductId, ProductCode: values.ProductCode } : null}
               disabled={dialogState.isSubmit}
@@ -119,7 +153,45 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
               error={touched.ProductId && Boolean(errors.ProductId)}
               helperText={touched.ProductId && errors.ProductId}
             />
-          </Grid>
+          </Grid> :
+            <>
+              <Grid item xs={12}>
+                <MuiSelectField
+                  value={values.ParentId ? { BomId: values.ParentId, BomCode: values.ParentCode } : null}
+                  disabled={dialogState.isSubmit}
+                  label={intl.formatMessage({ id: 'bom.ParentId' })}
+                  options={ParentList}
+                  displayLabel="BomCode"
+                  displayValue="BomId"
+                  displayGroup="BomLevelGroup"
+                  onChange={(e, value) => {
+                    setFieldValue("ParentCode", value?.BomCode || '');
+                    setFieldValue("ParentId", value?.BomId || "");
+                  }}
+                  //defaultValue={mode == CREATE_ACTION ? null : { ProductId: initModal.ProductId, ProductCode: initModal.ProductCode }}
+                  error={touched.ParentId && Boolean(errors.ParentId)}
+                  helperText={touched.ParentId && errors.ParentId}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <MuiSelectField
+                  value={values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null}
+                  disabled={dialogState.isSubmit}
+                  label={intl.formatMessage({ id: 'bomDetail.MaterialId' })}
+                  options={MaterialList}
+                  displayLabel="MaterialCode"
+                  displayValue="MaterialId"
+                  onChange={(e, value) => {
+                    setFieldValue("MaterialCode", value?.MaterialCode || '');
+                    setFieldValue("MaterialId", value?.MaterialId || "");
+                  }}
+                  //defaultValue={mode == CREATE_ACTION ? null : { MaterialId: initModal.MaterialId, MaterialCode: initModal.MaterialCode }}
+                  error={touched.MaterialId && Boolean(errors.MaterialId)}
+                  helperText={touched.MaterialId && errors.MaterialId}
+                />
+              </Grid>
+            </>
+          }
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -142,5 +214,16 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
     </MuiDialog>
   )
 }
+
+const defaultValue = {
+  BomCode: '',
+  ProductId: null,
+  ProductCode: '',
+  ParentId: null,
+  ParentCode: '',
+  MaterialId: null,
+  MaterialCode: '',
+  Remark: ''
+};
 
 export default BOMDialog

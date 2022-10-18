@@ -65,6 +65,15 @@ const getSupplier = async () => {
   }
 }
 
+const getSupplierById = async (id) => {
+  try {
+    return await axios.get(`${apiName}/get-supplier-by-id/${id}`);
+  }
+  catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+}
+
 export {
   getMaterialList,
   createMaterial,
@@ -73,5 +82,6 @@ export {
 
   getMaterialType,
   getUnit,
-  getSupplier
+  getSupplier,
+  getSupplierById
 }

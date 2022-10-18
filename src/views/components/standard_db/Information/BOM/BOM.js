@@ -23,7 +23,7 @@ export default function BOM() {
     data: [],
     totalRow: 0,
     page: 1,
-    pageSize: 8,
+    pageSize: 20,
     searchData: {
       keyWord: '',
       ProductId: null,
@@ -271,7 +271,7 @@ export default function BOM() {
         onClose={toggle}
         mode={mode}
       />
-      <BOMDetail BomId={BomId} />
+      {/* <BOMDetail BomId={BomId} /> */}
     </React.Fragment>
 
   )

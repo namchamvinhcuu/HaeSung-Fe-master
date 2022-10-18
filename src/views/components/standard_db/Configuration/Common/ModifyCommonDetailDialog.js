@@ -14,7 +14,7 @@ import { ErrorAlert, SuccessAlert } from '@utils'
 
 const ModifyCommonMasterDialog = (props) => {
 
-    
+
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setModifyData } = props;
@@ -30,10 +30,10 @@ const ModifyCommonMasterDialog = (props) => {
     useEffect(() => {
         reset({ ...initModal });
     }, [initModal]);
-  
+
 
     const schema = yup.object().shape({
-      
+
         commonDetailName: yup.string().required(),
 
 
@@ -61,7 +61,7 @@ const ModifyCommonMasterDialog = (props) => {
 
 
     const onSubmit = async (data) => {
-       
+
         dataModalRef.current = { ...initModal, ...data };
         setDialogState({ ...dialogState, isSubmit: true });
 
@@ -74,7 +74,7 @@ const ModifyCommonMasterDialog = (props) => {
         }
         else {
             ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-            
+
         }
 
         setDialogState({ ...dialogState, isSubmit: false });
@@ -93,27 +93,22 @@ const ModifyCommonMasterDialog = (props) => {
         >
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                   
+
                     <Grid item xs={12}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoFocus
-                                    fullWidth
-                                  
-                                    size='small'
-                                    label={intl.formatMessage({ id: 'general.name' })}
-                                    {...register('commonDetailName', {
-                                        // onChange: (e) => handleInputChange(e)
-                                    })}
-                                    error={!!errors?.commonDetailName}
-                                    helperText={errors?.commonDetailName ? errors.commonDetailName.message : null}
-                                />
-                            </Grid>
-                           
-                        </Grid>
+                        <TextField
+                            autoFocus
+                            fullWidth
+
+                            size='small'
+                            label={intl.formatMessage({ id: 'general.name' })}
+                            {...register('commonDetailName', {
+                                // onChange: (e) => handleInputChange(e)
+                            })}
+                            error={!!errors?.commonDetailName}
+                            helperText={errors?.commonDetailName ? errors.commonDetailName.message : null}
+                        />
                     </Grid>
-                   
+
 
                     <Grid item xs={12}>
                         <Grid
@@ -124,7 +119,7 @@ const ModifyCommonMasterDialog = (props) => {
                                 text="save"
                                 loading={dialogState.isSubmit}
                             />
-                          
+
                         </Grid>
                     </Grid>
                 </Grid>
