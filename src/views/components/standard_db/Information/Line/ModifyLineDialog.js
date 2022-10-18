@@ -90,7 +90,7 @@ const ModifyLineDialog = (props) => {
                             fullWidth
                             size='small'
                             disabled={dialogState.isSubmit}
-                            label={intl.formatMessage({ id: 'line.LineName' })}
+                            label={intl.formatMessage({ id: 'line.LineName' }) + ' *'}
                             name='LineName'
                             value={values.LineName}
                             onChange={handleChange}

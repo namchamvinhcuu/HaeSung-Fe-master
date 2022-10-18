@@ -92,7 +92,7 @@ const ModifySupplierDialog = (props) => {
                             fullWidth
                             size='small'
                             disabled={dialogState.isSubmit}
-                            label={intl.formatMessage({ id: 'supplier.SupplierCode' })}
+                            label={intl.formatMessage({ id: 'supplier.SupplierCode' }) + ' *'}
                             name='SupplierCode'
                             value={values.SupplierCode}
                             onChange={handleChange}
@@ -105,7 +105,7 @@ const ModifySupplierDialog = (props) => {
                             fullWidth
                             size='small'
                             disabled={dialogState.isSubmit}
-                            label={intl.formatMessage({ id: 'supplier.SupplierName' })}
+                            label={intl.formatMessage({ id: 'supplier.SupplierName' }) + ' *'}
                             name='SupplierName'
                             value={values.SupplierName}
                             onChange={handleChange}
@@ -134,6 +134,7 @@ const ModifySupplierDialog = (props) => {
                             <MuiSubmitButton
                                 text="save"
                                 loading={dialogState.isSubmit}
+                                disabled={!isValid}
                             />
                             <MuiResetButton
                                 onClick={resetForm}

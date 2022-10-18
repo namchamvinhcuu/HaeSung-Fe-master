@@ -36,13 +36,15 @@ const CreateSupplierDialog = (props) => {
                     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
                     setNewData({ ...res.Data });
                     setDialogState({ ...dialogState, isSubmit: false });
-                    handleCloseDialog();
+                    // handleCloseDialog();
                 }
                 else {
                     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
                 }
         }
     });
+
+
 
     const {
         handleChange
@@ -89,12 +91,12 @@ const CreateSupplierDialog = (props) => {
                             fullWidth
                             size='small'
                             disabled={dialogState.isSubmit}
-                            label={intl.formatMessage({ id: 'supplier.SupplierCode' })}
+                            label={intl.formatMessage({ id: 'supplier.SupplierCode' }) + ' *'}
                             name='SupplierCode'
                             value={values.SupplierCode}
                             onChange={handleChange}
                             error={touched.SupplierCode && Boolean(errors.SupplierCode)}
-                            helperText={touched.SupplierCode && errors.SupplierCode}
+                            helperText={touched.SupplierName && errors.SupplierCode}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -102,7 +104,7 @@ const CreateSupplierDialog = (props) => {
                             fullWidth
                             size='small'
                             disabled={dialogState.isSubmit}
-                            label={intl.formatMessage({ id: 'supplier.SupplierName' })}
+                            label={intl.formatMessage({ id: 'supplier.SupplierName' }) + ' *'}
                             name='SupplierName'
                             value={values.SupplierName}
                             onChange={handleChange}
@@ -131,6 +133,7 @@ const CreateSupplierDialog = (props) => {
                             <MuiSubmitButton
                                 text="save"
                                 loading={dialogState.isSubmit}
+                                disabled={!isValid}
                             />
                             <MuiResetButton
                                 onClick={resetForm}

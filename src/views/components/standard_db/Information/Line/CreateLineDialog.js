@@ -35,7 +35,7 @@ const CreateLineDialog = (props) => {
                     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
                     setNewData({ ...res.Data });
                     setDialogState({ ...dialogState, isSubmit: false });
-                    handleCloseDialog();
+                    // handleCloseDialog();
                 }
                 else {
                     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -87,10 +87,11 @@ const CreateLineDialog = (props) => {
                             fullWidth
                             size='small'
                             disabled={dialogState.isSubmit}
-                            label={intl.formatMessage({ id: 'line.LineName' })}
+                            label={intl.formatMessage({ id: 'line.LineName' }) + ' *'}
                             name='LineName'
                             value={values.LineName}
                             onChange={handleChange}
+                            onBlur={handleBlur}
                             error={touched.LineName && Boolean(errors.LineName)}
                             helperText={touched.LineName && errors.LineName}
                         />
