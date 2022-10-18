@@ -26,14 +26,14 @@ export default function BOM() {
     pageSize: 20,
     searchData: {
       keyWord: '',
-      ProductId: null,
+      MaterialId: null,
       showDelete: true
     }
   });
   const [newData, setNewData] = useState({})
   const [updateData, setUpdateData] = useState({})
   const [rowData, setRowData] = useState({});
-  const [ProductList, setProductList] = useState([]);
+  const [MaterialList, setMaterialList] = useState([]);
   const [BomId, setBomId] = useState(null);
 
   const columns = [
@@ -81,7 +81,7 @@ export default function BOM() {
       },
     },
     { field: 'BomCode', headerName: intl.formatMessage({ id: "bom.BomCode" }), flex: 0.5, },
-    { field: 'ProductCode', headerName: intl.formatMessage({ id: "bom.ProductId" }), flex: 0.5, },
+    { field: 'MaterialCode', headerName: intl.formatMessage({ id: "bom.MaterialId" }), flex: 0.5, },
     { field: 'Remark', headerName: intl.formatMessage({ id: "bom.Remark" }), flex: 0.7, },
     { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
     {
@@ -97,7 +97,7 @@ export default function BOM() {
 
   //useEffect
   useEffect(() => {
-    getProduct();
+    getMaterial();
   }, [])
 
   useEffect(() => {
@@ -180,7 +180,7 @@ export default function BOM() {
       page: state.page,
       pageSize: state.pageSize,
       keyWord: state.searchData.keyWord,
-      ProductId: state.searchData.ProductId,
+      MaterialId: state.searchData.MaterialId,
       showDelete: state.searchData.showDelete
 
     }
@@ -194,10 +194,10 @@ export default function BOM() {
       });
   }
 
-  const getProduct = async () => {
-    const res = await bomService.getProduct();
+  const getMaterial = async () => {
+    const res = await bomService.getMaterial(0);
     if (res.HttpResponseCode === 200 && res.Data) {
-      setProductList([...res.Data])
+      setMaterialList([...res.Data])
     }
   }
 
@@ -222,11 +222,11 @@ export default function BOM() {
         </Grid>
         <Grid item>
           <MuiSelectField
-            label={intl.formatMessage({ id: 'bom.ProductId' })}
-            options={ProductList}
-            displayLabel="ProductCode"
-            displayValue="ProductId"
-            onChange={(e, item) => handleSearch(item ? item.ProductId ?? null : null, 'ProductId')}
+            label={intl.formatMessage({ id: 'bom.MaterialId' })}
+            options={MaterialList}
+            displayLabel="MaterialCode"
+            displayValue="MaterialId"
+            onChange={(e, item) => handleSearch(item ? item.MaterialId ?? null : null, 'MaterialId')}
             variant="standard"
             sx={{ width: 210 }}
           />
@@ -263,7 +263,7 @@ export default function BOM() {
       />
 
       <BOMDialog
-        valueOption={{ ProductList: ProductList }}
+        valueOption={{ MaterialList: MaterialList }}
         setNewData={setNewData}
         setUpdateData={setUpdateData}
         initModal={rowData}

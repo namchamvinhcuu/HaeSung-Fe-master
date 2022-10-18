@@ -47,9 +47,9 @@ const getProduct = async () => {
   }
 }
 
-const getMaterial = async () => {
+const getMaterial = async (bomlv) => {
   try {
-    return await axios.get(`${apiName}/get-material`);
+    return await axios.get(`${apiName}/get-material/${bomlv}`);
   }
   catch (error) {
     console.log(`ERROR: ${error}`);

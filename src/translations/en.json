@@ -208,9 +208,9 @@
         "QCCode" : "QC Code"
     },
     "bom": {
-        "CheckBomLv1": "Bom Product",
+        "CheckBomLv1": "Bom Finish Good",
         "BomCode": "Bom Code",
-        "ProductId": "Product Code",
+        "MaterialId": "Material Code",
         "ParentId": "Parent Code",
         "Remark": "Remark"
     },
