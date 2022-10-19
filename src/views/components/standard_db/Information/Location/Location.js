@@ -9,14 +9,18 @@ import { locationService } from '@services'
 import { useModal } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
 import moment from 'moment';
+import { LocationDto } from "@models"
+import CreateLocationDialog from './CreateLocationDialog'
+import ModifyLocationDialog from './ModifyLocationDialog'
 
 
 
 const Location = (props) => {
     const intl = useIntl();
+
   let isRendered = useRef(true);
   //const [mode, setMode] = useState(CREATE_ACTION);
-  const { isShowing, toggle } = useModal();
+  //const { isShowing, toggle } = useModal();
   const [locationState, setLocationState] = useState({
     isLoading: false,
     data: [],
@@ -29,10 +33,25 @@ const Location = (props) => {
       showDelete: true
     }
   });
-  const [newData, setNewData] = useState({})
-  const [updateData, setUpdateData] = useState({})
-  const [rowData, setRowData] = useState({});
-  const [AreaList, setAreaList] = useState([]);
+
+  const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
+  const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false)
+
+  const [selectedRow, setSelectedRow] = useState({
+    ...LocationDto
+  })
+  const [newData, setNewData] = useState({ ...LocationDto })
+  // const [updateData, setUpdateData] = useState({})
+  // const [rowData, setRowData] = useState({});
+   const [AreaList, setAreaList] = useState([]); //Area
+
+  const toggleCreateDialog = () => {
+
+    setIsOpenCreateDialog(!isOpenCreateDialog);
+  }
+  const toggleModifyDialog = () => {
+    setIsOpenModifyDialog(!isOpenModifyDialog);
+  }
 
   const columns = [
     {
@@ -59,7 +78,7 @@ const Location = (props) => {
                 color="warning"
                 size="small"
                 sx={[{ '&:hover': { border: '1px solid orange', }, }]}
-                //onClick={() => handleUpdate(params.row)}
+                onClick={toggleModifyDialog}
               >
                 <EditIcon fontSize="inherit" />
               </IconButton>
@@ -70,9 +89,9 @@ const Location = (props) => {
                 color="error"
                 size="small"
                 sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                //onClick={() => handleDelete(params.row)}
+                onClick={() => handleDelete(params.row)}
               >
-                {/* {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />} */}
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
           </Grid>
@@ -110,7 +129,7 @@ const Location = (props) => {
   }, [locationState.page, locationState.pageSize, locationState.searchData.showDelete]);
 
   useEffect(() => {
-    if (!_.isEmpty(newData) && isRendered) {
+    if (!_.isEmpty(newData) && isRendered && !_.isEqual(newData, LocationDto)) {
       const data = [newData, ...locationState.data];
       if (data.length > locationState.pageSize) {
         data.pop();
@@ -124,46 +143,49 @@ const Location = (props) => {
   }, [newData]);
 
   useEffect(() => {
-    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData) && isRendered) {
+    if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, LocationDto) && isRendered) {
       let newArr = [...locationState.data]
-      const index = _.findIndex(newArr, function (o) { return o.LocationId == updateData.LocationId; });
+      const index = _.findIndex(newArr, function (o) { return o.LocationId == selectedRow.LocationId; });
       if (index !== -1) {
-        newArr[index] = updateData
+        newArr[index] = selectedRow
       }
 
       setLocationState({ ...locationState, data: [...newArr] });
     }
-  }, [updateData]);
+  }, [selectedRow]);
 
   //handle
-//   const handleDelete = async (location) => {
-//     if (window.confirm(intl.formatMessage({ id: location.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
-//       try {
-//         let res = await locationService.deleteLocation({ LocationId: location.LocationId, row_version: location.row_version });
-//         if (res && res.HttpResponseCode === 200) {
-//           SuccessAlert(intl.formatMessage({ id: 'general.success' }))
-//           await fetchData();
-//         }
-//         else {
-//           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-//         }
-//       } catch (error) {
-//         console.log(error)
-//       }
-//     }
-//   }
+  const handleDelete = async (location) => {
+    if (window.confirm(intl.formatMessage({ id: location.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
+      try {
+        let res = await locationService.deleteLocation({ LocationId: location.LocationId, row_version: location.row_version });
+        if (res && res.HttpResponseCode === 200) {
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }))
+          await fetchData();
+        }
+        else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
 
-//   const handleAdd = () => {
-//     setMode(CREATE_ACTION);
-//     setRowData();
-//     toggle();
-//   };
+  const handleRowSelection = (arrIds) => {
 
-//   const handleUpdate = (row) => {
-//     setMode(UPDATE_ACTION);
-//     setRowData({ ...row });
-//     toggle();
-//   };
+    const rowSelected = locationState.data.filter(function (item) {
+        return item.LocationId === arrIds[0]
+    });
+    if (rowSelected && rowSelected.length > 0) {
+        setSelectedRow({ ...rowSelected[0] });
+
+    }
+    else {
+        setSelectedRow({ ...LocationDto });
+
+    }
+  }
 
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...locationState.searchData };
@@ -211,7 +233,7 @@ const Location = (props) => {
         alignItems="width-end">
         <Grid item xs={6}>
           <MuiButton text="create" color='success' 
-            //onClick={handleAdd} sx={{ mt: 1 }} 
+          onClick={toggleCreateDialog}
         />
         </Grid>
         <Grid item>
@@ -242,13 +264,13 @@ const Location = (props) => {
             onClick={fetchData} sx={{ mt: 1 }} 
             />
         </Grid>
-        {/* <Grid item>
+        <Grid item>
           <FormControlLabel
             sx={{ mt: 1 }}
             control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
             label={intl.formatMessage({ id: locationState.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted' })} 
             />
-        </Grid> */}
+        </Grid>
       </Grid>
       <MuiDataGrid
                 getData={locationService.getLocationList}
@@ -272,9 +294,9 @@ const Location = (props) => {
                 //     setLocationState({ ...locationState, pageSize: newPageSize, page: 1 });
                 // }}
                 getRowId={(rows) => rows.LocationId}
-                // onSelectionModelChange={(newSelectedRowId) => {
-                //     handleRowSelection(newSelectedRowId)
-                // }}
+                onSelectionModelChange={(newSelectedRowId) => {
+                    handleRowSelection(newSelectedRowId)
+                }}
 
                 getRowClassName={(params) => {
                     if (_.isEqual(params.row, newData)) {
@@ -282,16 +304,21 @@ const Location = (props) => {
                     }
                 }}
             />
-        
-      {/* <LocationDialog
-        valueOption={{ AreaList: AreaList }}
+      
+      <CreateLocationDialog
+        //valueOption={{ AreaList: AreaList }}
+        initModal={LocationDto}
         setNewData={setNewData}
-        setUpdateData={setUpdateData}
-        initModal={rowData}
-        isOpen={isShowing}
-        onClose={toggle}
-        mode={mode}
-      /> */}
+        isOpen={isOpenCreateDialog}
+        onClose={toggleCreateDialog}
+      />
+
+      <ModifyLocationDialog
+          initModal={selectedRow}
+          setModifyData={setSelectedRow}
+          isOpen={isOpenModifyDialog}
+          onClose={toggleModifyDialog}
+      />
     </React.Fragment>
 
   )
