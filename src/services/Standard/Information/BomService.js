@@ -47,18 +47,18 @@ const getProduct = async () => {
   }
 }
 
-const getMaterial = async (bomlv) => {
+const getMaterial = async (bomlv, BomId) => {
   try {
-    return await axios.get(`${apiName}/get-material/${bomlv}`);
+    return await axios.get(`${apiName}/get-material/${bomlv}`, { params: { BomId: BomId } });
   }
   catch (error) {
     console.log(`ERROR: ${error}`);
   }
 }
 
-const getParent = async () => {
+const getParent = async (BomId) => {
   try {
-    return await axios.get(`${apiName}/get-parent`);
+    return await axios.get(`${apiName}/get-parent`, { params: { BomId: BomId } });
   }
   catch (error) {
     console.log(`ERROR: ${error}`);

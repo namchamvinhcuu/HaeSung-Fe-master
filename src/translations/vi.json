@@ -209,7 +209,10 @@
         "QCCode" : "QC Code"
     },
     "bom": {
-        "CheckBomLv1": "Bom Finish Good",
+        "CreateLv1": "Tạo - Bom Finish Good",
+        "CreateLv2": "Tạo - Bom Child - ",
+        "BomLevel": "Level",
+        "Amount": "Amount",
         "BomCode": "Bom Code",
         "MaterialId": "Material Code",
         "ParentId": "Parent Code",

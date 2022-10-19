@@ -5,14 +5,14 @@ import UndoIcon from '@mui/icons-material/Undo';
 import { FormControlLabel, Grid, IconButton, Switch, TextField } from '@mui/material'
 import { useIntl } from 'react-intl'
 import { MuiButton, MuiDataGrid, MuiSelectField } from '@controls'
-import { bomDetailService } from '@services'
+import { bomDetailService, bomService } from '@services'
 import { useModal } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import moment from 'moment';
 import BOMDetailDialog from './BOMDetailDialog'
 
-export default function BOMDetail({ BomId }) {
+export default function BOMDetail({ BomId, newDataChild, BomCode }) {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
@@ -35,9 +35,11 @@ export default function BOMDetail({ BomId }) {
     {
       field: 'id', headerName: '', flex: 0.1, align: 'center',
       filterable: false,
-      renderCell: (index) => (index.api.getRowIndex(index.row.BomDetailId) + 1) + (state.page - 1) * state.pageSize,
+      renderCell: (index) => (index.api.getRowIndex(index.row.BomId) + 1) + (state.page - 1) * state.pageSize,
     },
-    { field: 'BomDetailId', hide: true },
+    { field: 'BomId', hide: true },
+    { field: 'ParentId', hide: true },
+    { field: 'ParentCode', hide: true },
     { field: 'row_version', hide: true },
     {
       field: "action",
@@ -75,9 +77,11 @@ export default function BOMDetail({ BomId }) {
         );
       },
     },
-    { field: 'MaterialCode', headerName: intl.formatMessage({ id: "bomDetail.MaterialId" }), flex: 0.5, },
-    { field: 'Amount', headerName: intl.formatMessage({ id: "bomDetail.Amount" }), flex: 0.5, },
-    { field: 'Remark', headerName: intl.formatMessage({ id: "bomDetail.Remark" }), flex: 0.7, },
+    { field: 'BomCode', headerName: intl.formatMessage({ id: "bom.BomCode" }), flex: 0.5, },
+    { field: 'MaterialCode', headerName: intl.formatMessage({ id: "bom.MaterialId" }), flex: 0.5, },
+    { field: 'BomLevel', headerName: intl.formatMessage({ id: "bom.BomLevel" }), flex: 0.5, },
+    { field: 'Amount', headerName: intl.formatMessage({ id: "bom.Amount" }), flex: 0.5, },
+    { field: 'Remark', headerName: intl.formatMessage({ id: "bom.Remark" }), flex: 0.7, },
     { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
     {
       field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.5,
@@ -115,9 +119,23 @@ export default function BOMDetail({ BomId }) {
   }, [newData]);
 
   useEffect(() => {
+    if (!_.isEmpty(newDataChild)) {
+      const data = [newDataChild, ...state.data];
+      if (data.length > state.pageSize) {
+        data.pop();
+      }
+      setState({
+        ...state
+        , data: [...data]
+        , totalRow: state.totalRow + 1
+      });
+    }
+  }, [newDataChild]);
+
+  useEffect(() => {
     if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData)) {
       let newArr = [...state.data]
-      const index = _.findIndex(newArr, function (o) { return o.BomDetailId == updateData.BomDetailId; });
+      const index = _.findIndex(newArr, function (o) { return o.BomId == updateData.BomId; });
       if (index !== -1) {
         newArr[index] = updateData
       }
@@ -130,7 +148,7 @@ export default function BOMDetail({ BomId }) {
   const handleDelete = async (bomDetail) => {
     if (window.confirm(intl.formatMessage({ id: bomDetail.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
       try {
-        let res = await bomDetailService.deleteBomDetail({ BomDetailId: bomDetail.BomDetailId, row_version: bomDetail.row_version });
+        let res = await bomDetailService.deleteBomDetail({ BomDetailId: bomDetail.BomId, row_version: bomDetail.row_version });
         if (res && res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }))
           await fetchData(BomId);
@@ -187,7 +205,7 @@ export default function BOMDetail({ BomId }) {
   }
 
   const getMaterial = async () => {
-    const res = await bomDetailService.getMaterial();
+    const res = await bomService.getMaterial(-2);
     if (res.HttpResponseCode === 200 && res.Data) {
       setMaterialList([...res.Data])
     }
@@ -235,15 +253,16 @@ export default function BOMDetail({ BomId }) {
         pageSize={state.pageSize}
         rowCount={state.totalRow}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
-        getRowId={(rows) => rows.BomDetailId}
+        getRowId={(rows) => rows.BomId}
         getRowClassName={(params) => {
-          if (_.isEqual(params.row, newData)) return `Mui-created`
+          if (_.isEqual(params.row, newData) || _.isEqual(params.row, newDataChild)) return `Mui-created`
         }}
       />
 
       <BOMDetailDialog
         MaterialList={MaterialList}
         BomId={BomId}
+        BomCode={BomCode}
         setNewData={setNewData}
         setUpdateData={setUpdateData}
         initModal={rowData}

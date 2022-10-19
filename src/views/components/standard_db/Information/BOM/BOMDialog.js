@@ -8,28 +8,25 @@ import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import { useFormik } from 'formik'
 
-const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
+const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, setUpdateData, mode, valueOption, setBomId }) => {
   const intl = useIntl();
+  let bomId = null;
   const [checkLV, setCheckLV] = useState(true);
   const [hidecheckLV, setHideCheckLV] = useState(true);
+  const [BomCode, setBomCode] = useState("");
   const [MaterialType, setMaterialType] = useState("");
+  const [MaterialTypeChild, setMaterialTypeChild] = useState("");
   const [dialogState, setDialogState] = useState({ isSubmit: false });
   const [ParentList, setParentList] = useState([]);
   const [MaterialList, setMaterialList] = useState([]);
 
   const schema = yup.object().shape({
     //BomCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    // MaterialId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-
-    // MaterialId: yup.number().nullable()
-    // .when("menuLevel", (menuLevel) => {
-    //     if (parseInt(menuLevel) === 3) {
-    //         return yup.string()
-    //             .required(intl.formatMessage({ id: 'menu.navigateUrl_required' }))
-    //     }
-    // }),
-
-
+    MaterialId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+    Amount: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+    ParentId: yup.number().nullable().when('parentId', () => {
+      if (!checkLV) return yup.string().required(intl.formatMessage({ id: 'general.field_required' }))
+    }),
   });
 
   const formik = useFormik({
@@ -39,20 +36,18 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
     onSubmit: async values => onSubmit(values)
   });
 
-  const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
+  const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm, setValues } = formik;
 
   useEffect(() => {
-    getParent();
-    getMaterial(1);
+    getParent(0);
+    getMaterial(0);
   }, [])
 
   useEffect(() => {
-    console.log(MaterialType)
     if (MaterialType == "BARE MATERIAL")
-      getMaterial(2);
+      getMaterial(2, bomId);
     else
-      getMaterial(1);
-
+      getMaterial(1, bomId);
   }, [MaterialType])
 
   useEffect(() => {
@@ -71,7 +66,9 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
   const handleCloseDialog = () => {
     setCheckLV(true);
     setHideCheckLV(true);
+    getMaterial(0);
     resetForm();
+    setBomCode("");
     onClose();
   }
 
@@ -82,23 +79,31 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
       const res = await bomService.createBom(data);
       if (res.HttpResponseCode === 200 && res.Data) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-        setNewData(res.Data);
-
+        bomId = res.Data.BomId;
         if (hidecheckLV) {
           handleReset();
-          setFieldValue("ParentCode", res.Data.MaterialType);
-          setFieldValue("ParentId", res.Data.BomId);
+          setFieldValue("ParentCode", res.Data.MaterialType, true);
+          setFieldValue("ParentId", res.Data.BomId, true);
+          setFieldValue("Amount", '', true);
+          setBomId(res.Data.BomId);
+          setBomCode(res.Data.BomCode);
+          setNewData(res.Data);
         }
         else {
-          setFieldValue("Remark", "");
-          setFieldValue("MaterialId", null);
-          setFieldValue("MaterialCode", "");
+          setFieldValue("Remark", "", true);
+          setFieldValue("Amount", "", true);
+          setFieldValue("MaterialCode", "", true);
+          setFieldValue("MaterialId", null, true);
+          setNewDataChild(res.Data);
         }
-
+        if (MaterialType == "BARE MATERIAL")
+          getMaterial(2, bomId);
+        else
+          getMaterial(1, bomId);
         setDialogState({ ...dialogState, isSubmit: false });
         setCheckLV(false);
         setHideCheckLV(false);
-        getParent();
+        getParent(res.Data.BomId);
       }
       else {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -121,15 +126,15 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
     }
   };
 
-  const getParent = async () => {
-    const res = await bomService.getParent();
+  const getParent = async (BomId) => {
+    const res = await bomService.getParent(BomId);
     if (res.Data) {
       setParentList([...res.Data])
     }
   }
 
-  const getMaterial = async (id) => {
-    const res = await bomService.getMaterial(id);
+  const getMaterial = async (id, BomId) => {
+    const res = await bomService.getMaterial(id, BomId);
     if (res.Data) {
       setMaterialList([...res.Data])
     }
@@ -138,7 +143,7 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
   return (
     <MuiDialog
       maxWidth='sm'
-      title={intl.formatMessage({ id: mode == CREATE_ACTION ? 'general.create' : 'general.modify' })}
+      title={intl.formatMessage({ id: mode == CREATE_ACTION ? checkLV ? 'bom.CreateLv1' : 'bom.CreateLv2' : 'general.modify' }) + BomCode}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
       disable_animate={300}
@@ -146,29 +151,35 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
     >
       <form onSubmit={handleSubmit} >
         <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          {hidecheckLV && <Grid item xs={12}>
-            <FormControlLabel sx={{ m: 0 }} control={<Checkbox disabled={mode == UPDATE_ACTION ? true : false} defaultChecked={checkLV} value={checkLV} onChange={() => setCheckLV(!checkLV)} />} label={intl.formatMessage({ id: 'bom.CheckBomLv1' })} />
-          </Grid>}
           {checkLV ? <Grid item xs={12}>
-            <MuiSelectField
+
+            {mode == CREATE_ACTION ? <MuiSelectField
               value={values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null}
               disabled={mode == UPDATE_ACTION ? true : dialogState.isSubmit}
               label={intl.formatMessage({ id: 'bom.MaterialId' })}
-              options={valueOption.MaterialList}
+              options={MaterialList}
               displayLabel="MaterialCode"
               displayValue="MaterialId"
               onChange={(e, value) => {
-                setFieldValue("MaterialCode", value?.MaterialCode || '');
-                setFieldValue("MaterialId", value?.MaterialId || "");
+                setFieldValue("MaterialCode", value?.MaterialCode || '', true);
+                setFieldValue("MaterialId", value?.MaterialId || "", true);
               }}
               defaultValue={mode == CREATE_ACTION ? null : { MaterialId: initModal.MaterialId, MaterialCode: initModal.MaterialCode }}
               error={touched.MaterialId && Boolean(errors.MaterialId)}
               helperText={touched.MaterialId && errors.MaterialId}
-            />
+            /> : <TextField
+              fullWidth
+              size='small'
+              disabled
+              value={values.MaterialCode}
+              label={intl.formatMessage({ id: 'bom.MaterialId' })}
+            />}
+
           </Grid> :
             <>
               <Grid item xs={12}>
                 <MuiSelectField
+                  name="ParentId"
                   value={values.ParentId ? { BomId: values.ParentId, BomCode: values.ParentCode } : null}
                   disabled={mode == UPDATE_ACTION ? true : dialogState.isSubmit}
                   label={intl.formatMessage({ id: 'bom.ParentId' })}
@@ -178,10 +189,10 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
                   displayGroup="BomLevelGroup"
                   onChange={(e, value) => {
                     setMaterialType(value?.MaterialType);
-                    setFieldValue("MaterialCode", '');
-                    setFieldValue("MaterialId", null);
-                    setFieldValue("ParentCode", value?.BomCode || '');
-                    setFieldValue("ParentId", value?.BomId || "");
+                    setFieldValue("MaterialCode", '', true);
+                    setFieldValue("MaterialId", null, true);
+                    setFieldValue("ParentCode", value?.BomCode || '', true);
+                    setFieldValue("ParentId", value?.BomId || "", true);
                   }}
                   error={touched.ParentId && Boolean(errors.ParentId)}
                   helperText={touched.ParentId && errors.ParentId}
@@ -197,8 +208,13 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
                   displayValue="MaterialId"
                   displayGroup="GroupMaterial"
                   onChange={(e, value) => {
-                    setFieldValue("MaterialCode", value?.MaterialCode || '');
-                    setFieldValue("MaterialId", value?.MaterialId || "");
+                    setMaterialTypeChild(value?.GroupMaterial);
+                    setFieldValue("MaterialCode", value?.MaterialCode || '', true);
+                    setFieldValue("MaterialId", value?.MaterialId || "", true);
+                    if (value?.GroupMaterial == "BARE MATERIAL" || value?.GroupMaterial == "FINISH GOOD")
+                      setFieldValue("Amount", '1', true);
+                    else
+                      setFieldValue("Amount", '', true);
                   }}
                   error={touched.MaterialId && Boolean(errors.MaterialId)}
                   helperText={touched.MaterialId && errors.MaterialId}
@@ -206,6 +222,21 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode
               </Grid>
             </>
           }
+          {!checkLV && <Grid item xs={12}>
+            <TextField
+              fullWidth
+              type="number"
+              size='small'
+              name='Amount'
+              inputProps={{ min: 0 }}
+              disabled={MaterialTypeChild == "BARE MATERIAL" ? true : dialogState.isSubmit}
+              value={values.Amount}
+              onChange={handleChange}
+              label={intl.formatMessage({ id: 'bomDetail.Amount' })}
+              error={touched.Amount && Boolean(errors.Amount)}
+              helperText={touched.Amount && errors.Amount}
+            />
+          </Grid>}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -235,6 +266,7 @@ const defaultValue = {
   MaterialCode: '',
   ParentId: null,
   ParentCode: '',
+  Amount: 1,
   // MaterialId: null,
   // MaterialCode: '',
   Remark: ''
