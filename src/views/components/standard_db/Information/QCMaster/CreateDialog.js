@@ -43,16 +43,16 @@ const CreateDialog = (props) => {
             const res = await qcMasterService.create(values);
             if (res.HttpResponseCode === 200) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-                handleCloseDialog();
+               // handleCloseDialog();
                 setNewData({ ...res.Data });
                 setDialogState({ ...dialogState, isSubmit: false });
-                handleReset();
+              // handleReset();
             }
             else {
                 ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-                handleCloseDialog();
+             //   handleCloseDialog();
                 setDialogState({ ...dialogState, isSubmit: false });
-                handleReset();
+               // handleReset();
             }
         }
     });

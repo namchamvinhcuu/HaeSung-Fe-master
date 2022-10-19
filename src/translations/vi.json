@@ -223,7 +223,8 @@
     "qcMaster": {
         "QCMasterCode": "QC Master Code",
         "qcType": "QC Type",
-        "MaterialTypeName": "Material Type"
+        "MaterialTypeName": "Material Type",
+        "duplicated_Materialcode":  "Material Code:  Bị trùng"
     },
     "qcDetail": {
         "QCDetailCode": "QC Detail Code",

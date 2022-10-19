@@ -1,6 +1,6 @@
 import { Store } from '@appstate'
 import { User_Operations } from '@appstate/user'
-import { MuiButton, MuiDataGrid, MuiSearchField ,MuiSelectField } from '@controls'
+import { MuiButton, MuiDataGrid, MuiSearchField, MuiSelectField } from '@controls'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import UndoIcon from '@mui/icons-material/Undo'
@@ -39,11 +39,16 @@ const QCMaster = (props) => {
             QCMasterCode: null,
             Description: null,
             MaterialId: 0,
+            QCType: 0,
             showDelete: true
         }
     });
 
-    const [productArr, setproducArr] = useState([]);
+    const [materialArr, setmaterialArr] = useState([]);
+    const [qcArr, setqcArr] = useState([]);
+    const [qcType, setqcType] = useState([""]);
+
+
     const [selectedRow, setSelectedRow] = useState({
         ...QCMasterDto
     })
@@ -57,10 +62,11 @@ const QCMaster = (props) => {
     const toggleModifyDialog = () => {
         setIsOpenModifyDialog(!isOpenModifyDialog);
     }
-      //useEffect
-//   useEffect(() => {
-//     getProduct();
-//   }, [])
+    
+      useEffect(() => {
+        getQC();
+      }, [])
+
     useEffect(() => {
         fetchData();
 
@@ -103,6 +109,7 @@ const QCMaster = (props) => {
             pageSize: qCMasterState.pageSize,
             QCMasterCode: qCMasterState.searchData.QCMasterCode,
             MaterialId: qCMasterState.searchData.MaterialId,
+            QCType: qCMasterState.searchData.QCType,
             Description: qCMasterState.searchData.Description,
             showDelete: qCMasterState.searchData.showDelete
         }
@@ -125,15 +132,6 @@ const QCMaster = (props) => {
         }
         else {
             setSelectedRow({ ...QCMasterDto });
-        }
-    }
-    const getProduct = async () => {
-        const res = await qcMasterService.getProductActive();
-        if (res.HttpResponseCode === 200 && res.Data) {
-            setproducArr([...res.Data])
-        }
-        else {
-            setproducArr([])
         }
     }
     const handleSearch = (e, inputName) => {
@@ -167,11 +165,37 @@ const QCMaster = (props) => {
             }
         }
     }
+
+    useEffect(() => {
+        getMaterial(qcType);
+    }, [qcType])
+
+
+    const getMaterial = async (qcType) => {
     
+        const res = await qcMasterService.getMaterialForSelect({qcType : qcType});
+        if (res.HttpResponseCode === 200 && res.Data) {
+            setmaterialArr([...res.Data])
+          
+        }
+        else {
+            setmaterialArr([])
+        }
+    }
+    const getQC = async () => {
+        const res = await qcMasterService.getQCTypeForSelect();
+        if (res.HttpResponseCode === 200 && res.Data) {
+            setqcArr([...res.Data])
+            
+        }
+        else {
+            setqcArr([])
+        }
+    }
     const columns = [
-        { field: 'QCMasterId', headerName: '', flex: 0.3, hide:true },
-        { field: 'QCType', headerName: "QCType", flex: 0.3 , hide: true },
-        { field: 'MaterialId', headerName: "MaterialId", flex: 0.3 , hide: true },
+        { field: 'QCMasterId', headerName: '', flex: 0.3, hide: true },
+        { field: 'QCType', headerName: "QCType", flex: 0.3, hide: true },
+        { field: 'MaterialId', headerName: "MaterialId", flex: 0.3, hide: true },
         {
             field: 'id', headerName: '', flex: 0.1,
             filterable: false,
@@ -241,97 +265,112 @@ const QCMaster = (props) => {
     ];
     return (
         <React.Fragment>
-        <Grid container direction="row"  justifyContent="space-between" alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
-            <Grid item xs={5}>
-                <MuiButton
-                    text="create"
-                    color='success'
-                    onClick={toggleCreateDialog}
-                />
-            </Grid>
-            <Grid item>
-                <TextField
-                    sx={{ width: 200 }}
-                    fullWidth
-                    variant="standard"
-                    size='small'
-                    label={intl.formatMessage({ id: 'qcMaster.QCMasterCode' })}
-                    onChange={(e) => handleSearch(e.target.value, 'QCMasterCode')}
-                />
-            </Grid>
-            <Grid item>
-                <MuiSelectField
+            <Grid container direction="row" justifyContent="space-between" alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+                <Grid item xs={3}>
+                    <MuiButton
+                        text="create"
+                        color='success'
+                        onClick={toggleCreateDialog}
+                    />
+                </Grid>
+                <Grid item>
+                    <TextField
+                        sx={{ width: 200 }}
+                        fullWidth
+                        variant="standard"
+                        size='small'
+                        label={intl.formatMessage({ id: 'qcMaster.QCMasterCode' })}
+                        onChange={(e) => handleSearch(e.target.value, 'QCMasterCode')}
+                    />
+                </Grid>
+                <Grid item>
+                    <MuiSelectField
+                        label={intl.formatMessage({ id: 'qcMaster.qcType' })}
+                        options={qcArr}
+                        displayLabel="commonDetailName"
+                        displayValue="commonDetailId"
+                        sx={{ width: 210 }}
+                        variant="standard"
+                        onChange={(e, item) => {
+                            handleSearch(item ? item.commonDetailId ?? null : null, 'QCType');
+                            setqcType(item?.commonDetailName || "");
+                        }}
+                    />
+                </Grid>
+                <Grid item>
+                    <MuiSelectField
 
-                    label={intl.formatMessage({ id: 'product.product_code' })}
-                    options={productArr}
-                    displayLabel="MaterialCode"
-                    displayValue="MaterialId"
-                    onChange={(e, item) => handleSearch(item ? item.MaterialId ?? null : null, 'MaterialId')}
-                    variant="standard"
-                    sx={{ width: 210 }}
-                />
-            </Grid>
-            <Grid item >
-                <TextField
-                    sx={{ width: 200 }}
-                    fullWidth
-                    variant="standard"
-                    size='small'
-                    label={intl.formatMessage({ id: 'general.description' })}
-                    onChange={(e) => handleSearch(e.target.value, 'Description')}
-                />
-            </Grid>
-           
-            <Grid item>
-                <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0 }} />
-            </Grid>
-            <Grid item>
-                <FormControlLabel
-                    sx={{ mb: 0 }}
-                    control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
-                    label={qCMasterState.searchData.showDelete ? "Active Data" : "Delete Data"} />
-            </Grid>
-        </Grid>
-        <MuiDataGrid
-            showLoading={qCMasterState.isLoading}
-            isPagingServer={true}
-            headerHeight={45}
-            columns={columns}
-            gridHeight={736}
-            rows={qCMasterState.data}
-            page={qCMasterState.page - 1}
-            pageSize={qCMasterState.pageSize}
-            rowCount={qCMasterState.totalRow}
+                        label={intl.formatMessage({ id: 'material.MaterialCode' })}
+                        options={materialArr}
+                        displayLabel="MaterialCode"
+                        displayValue="MaterialId"
+                        displayGroup="GroupMaterial"
+                        sx={{ width: 210 }}
+                        variant="standard"
+                        onChange={(e, item) => handleSearch(item ? item.MaterialId ?? null : null, 'MaterialId')}
+                    />
+                </Grid>
+                <Grid item >
+                    <TextField
+                        sx={{ width: 200 }}
+                        fullWidth
+                        variant="standard"
+                        size='small'
+                        label={intl.formatMessage({ id: 'general.description' })}
+                        onChange={(e) => handleSearch(e.target.value, 'Description')}
+                    />
+                </Grid>
 
-            rowsPerPageOptions={[5, 10, 20]}
-            onPageChange={(newPage) => setqCMasterState({ ...qCMasterState, page: newPage + 1 })}
-            onPageSizeChange={(newPageSize) => setqCMasterState({ ...qCMasterState, pageSize: newPageSize, page: 1 })}
+                <Grid item>
+                    <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0 }} />
+                </Grid>
+                <Grid item>
+                    <FormControlLabel
+                        sx={{ mb: 0 }}
+                        control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
+                        label={qCMasterState.searchData.showDelete ? "Active Data" : "Delete Data"} />
+                </Grid>
+            </Grid>
+            <MuiDataGrid
+                showLoading={qCMasterState.isLoading}
+                isPagingServer={true}
+                headerHeight={45}
+                columns={columns}
+                gridHeight={736}
+                rows={qCMasterState.data}
+                page={qCMasterState.page - 1}
+                pageSize={qCMasterState.pageSize}
+                rowCount={qCMasterState.totalRow}
 
-            onSelectionModelChange={(newSelectedRowId) => {
-                handleRowSelection(newSelectedRowId)
-            }}
-            getRowId={(rows) => rows.QCMasterId}
-            getRowClassName={(params) => {
-                if (_.isEqual(params.row, newData)) {
-                    return `Mui-created`
-                }
-            }}
+                rowsPerPageOptions={[5, 10, 20]}
+                onPageChange={(newPage) => setqCMasterState({ ...qCMasterState, page: newPage + 1 })}
+                onPageSizeChange={(newPageSize) => setqCMasterState({ ...qCMasterState, pageSize: newPageSize, page: 1 })}
+
+                onSelectionModelChange={(newSelectedRowId) => {
+                    handleRowSelection(newSelectedRowId)
+                }}
+                getRowId={(rows) => rows.QCMasterId}
+                getRowClassName={(params) => {
+                    if (_.isEqual(params.row, newData)) {
+                        return `Mui-created`
+                    }
+                }}
             // onRowClick={(rowData) => master_row_click(rowData.row.QCMasterId)}
-        />
-         <CreateDialog
-            initModal={QCMasterDto}
-            setNewData={setNewData}
-            isOpen={isOpenCreateDialog}
-            onClose={toggleCreateDialog}
-        />
-        <ModifyDialog
-            initModal={selectedRow}
-            setModifyData={setSelectedRow}
-            isOpen={isOpenModifyDialog}
-            onClose={toggleModifyDialog}
-        /> 
-          {selectedRow && <QCDetail QCMasterId={selectedRow.QCMasterId} />}
-    </React.Fragment >
+            />
+            <CreateDialog
+                initModal={QCMasterDto}
+                setNewData={setNewData}
+                isOpen={isOpenCreateDialog}
+                onClose={toggleCreateDialog}
+            />
+            <ModifyDialog
+                initModal={selectedRow}
+                setModifyData={setSelectedRow}
+                isOpen={isOpenModifyDialog}
+                onClose={toggleModifyDialog}
+            />
+            {selectedRow && <QCDetail QCMasterId={selectedRow.QCMasterId} />}
+        </React.Fragment >
     )
 }
 

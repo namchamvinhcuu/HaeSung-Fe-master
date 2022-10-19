@@ -47,7 +47,7 @@ const ModifyDialog = (props) => {
             const res = await qcMasterService.modify(values);
             if (res.HttpResponseCode === 200) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-                handleCloseDialog();
+               // handleCloseDialog();
                 setModifyData({ ...res.Data });
                 setDialogState({ ...dialogState, isSubmit: false });
                 handleReset();
