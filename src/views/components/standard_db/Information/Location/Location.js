@@ -197,7 +197,7 @@ const Location = (props) => {
   }
 
   const getArea = async () => {
-    const res = await locationService.getLocationList();
+    const res = await locationService.GetArea();
     if (res.HttpResponseCode === 200 && res.Data && isRendered) {
         setAreaList([...res.Data])
     }
