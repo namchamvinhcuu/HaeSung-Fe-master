@@ -19,8 +19,6 @@ const Location = (props) => {
     const intl = useIntl();
 
   let isRendered = useRef(true);
-  //const [mode, setMode] = useState(CREATE_ACTION);
-  //const { isShowing, toggle } = useModal();
   const [locationState, setLocationState] = useState({
     isLoading: false,
     data: [],
@@ -41,8 +39,6 @@ const Location = (props) => {
     ...LocationDto
   })
   const [newData, setNewData] = useState({ ...LocationDto })
-  // const [updateData, setUpdateData] = useState({})
-  // const [rowData, setRowData] = useState({});
    const [AreaList, setAreaList] = useState([]); //Area
 
   const toggleCreateDialog = () => {
@@ -118,7 +114,6 @@ const Location = (props) => {
     },
   ];
 
-  //useEffect
   useEffect(() => {
     getArea();
     return () => { isRendered = false; }
@@ -149,7 +144,6 @@ const Location = (props) => {
       if (index !== -1) {
         newArr[index] = selectedRow
       }
-
       setLocationState({ ...locationState, data: [...newArr] });
     }
   }, [selectedRow]);
@@ -179,11 +173,9 @@ const Location = (props) => {
     });
     if (rowSelected && rowSelected.length > 0) {
         setSelectedRow({ ...rowSelected[0] });
-
     }
     else {
         setSelectedRow({ ...LocationDto });
-
     }
   }
 
@@ -268,7 +260,7 @@ const Location = (props) => {
           <FormControlLabel
             sx={{ mt: 1 }}
             control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
-            label={intl.formatMessage({ id: locationState.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted' })} 
+            label={intl.formatMessage({ id: locationState.searchData.showDelete ? 'location.data_actived' : 'location.data_deleted' })} 
             />
         </Grid>
       </Grid>
@@ -283,7 +275,6 @@ const Location = (props) => {
                 page={locationState.page - 1}
                 pageSize={locationState.pageSize}
                 rowCount={locationState.totalRow}
-
                 //rowsPerPageOptions={[5, 10, 20, 30]}
                 disableGrid={locationState.isLoading}
 
@@ -306,7 +297,6 @@ const Location = (props) => {
             />
       
       <CreateLocationDialog
-        //valueOption={{ AreaList: AreaList }}
         initModal={LocationDto}
         setNewData={setNewData}
         isOpen={isOpenCreateDialog}

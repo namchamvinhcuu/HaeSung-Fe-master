@@ -235,6 +235,8 @@
         "LocationCode": "Location Code",
         "AreaId": "Area",
         "LocationCode_required": "Location Code is required",
-        "Area_required": "Area is required"
+        "Area_required": "Area is required",
+        "data_actived": "Actived Data",
+        "data_deleted": "Deleted Data"
     }
 }
