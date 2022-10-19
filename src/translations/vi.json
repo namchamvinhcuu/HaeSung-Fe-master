@@ -51,8 +51,8 @@
         "modifiedDate": "Ngày sửa",
         "duplicated_code": "Trùng mã",
         "duplicated_name": "Trùng tên",
-        "data_actived":"Actived data",
-        "data_deleted":"Deleted data"
+        "data_actived": "Actived data",
+        "data_deleted": "Deleted data"
     },
     "login": {
         "account_password_invalid": "Tài khoản/Mật khẩu không hợp lệ",
@@ -125,7 +125,7 @@
         "Model": "Model",
         "Description": "Mô tả",
         "duplicated_name": "Product Code: Sản phẩm đã được tạo",
-        "InchFormatError" : "Inch: Lỗi định dạng. Vui lòng nhập lại bằng định dạng thích hợp. (9,3)",
+        "InchFormatError": "Inch: Lỗi định dạng. Vui lòng nhập lại bằng định dạng thích hợp. (9,3)",
         "productCode_required": "Product Code: không được để trống",
         "model_required": "Model: không được để trống",
         "ProductType_required": "Product Type: không được để trống",
@@ -192,7 +192,6 @@
         "Description": "Description",
         "BuyerCode_required": "Buyer Code không được để trống",
         "BuyerName_required": "Buyer Name không được để trống"
-        
     },
     "material": {
         "MaterialCode": "Material Code",
@@ -205,8 +204,8 @@
         "Unit_required": "Unit không được để trống",
         "SupplierId_required": "Supplier không được để trống"
     },
-    "standardQC":{
-        "QCCode" : "QC Code"
+    "standardQC": {
+        "QCCode": "QC Code"
     },
     "bom": {
         "CreateLv1": "Tạo - Bom Finish Good",
@@ -214,6 +213,7 @@
         "BomLevel": "Level",
         "Amount": "Amount",
         "BomCode": "Bom Code",
+        "ParentCode": "Parent Code",
         "MaterialId": "Material Code",
         "ParentId": "Parent Code",
         "Remark": "Remark"
@@ -227,13 +227,13 @@
         "QCMasterCode": "QC Master Code",
         "qcType": "QC Type",
         "MaterialTypeName": "Material Type",
-        "duplicated_Materialcode":  "Material Code:  Bị trùng"
+        "duplicated_Materialcode": "Material Code:  Bị trùng"
     },
     "qcDetail": {
         "QCDetailCode": "QC Detail Code",
         "qcDetail_existed": "QC Detail có dữ liệu. Vui lòng xóa bảng chi tiết",
         "duplicated_code": "QC Code: Trùng mã QC ",
-        "QCCode_required":"QC không được để trống"
+        "QCCode_required": "QC không được để trống"
     },
     "location": {
         "LocationCode": "Mã địa điểm",

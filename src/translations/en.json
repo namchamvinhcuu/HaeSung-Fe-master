@@ -51,8 +51,8 @@
         "modifiedDate": "Update date",
         "duplicated_code": "Duplicated code",
         "duplicated_name": "Duplicated name",
-        "data_actived":"Actived data",
-        "data_deleted":"Deleted data"
+        "data_actived": "Actived data",
+        "data_deleted": "Deleted data"
     },
     "login": {
         "account_password_invalid": "Account/Password is invalid",
@@ -125,7 +125,7 @@
         "Model": "Model",
         "Description": "Description",
         "duplicated_name": "Product Code: duplicated name",
-        "InchFormatError" : "Inch: Format error. Please re-enter using the proper format. (9.3)",
+        "InchFormatError": "Inch: Format error. Please re-enter using the proper format. (9.3)",
         "productCode_required": "Product Code is required",
         "model_required": "Model is required",
         "ProductType_required": "Product Type is required",
@@ -204,8 +204,8 @@
         "Unit_required": "Unit is required",
         "SupplierId_required": "Supplier is required"
     },
-    "standardQC":{
-        "QCCode" : "QC Code"
+    "standardQC": {
+        "QCCode": "QC Code"
     },
     "bom": {
         "CreateLv1": "Create - Bom Finish Good",
@@ -213,6 +213,7 @@
         "BomLevel": "Level",
         "Amount": "Amount",
         "BomCode": "Bom Code",
+        "ParentCode": "Parent Code",
         "MaterialId": "Material Code",
         "ParentId": "Parent Code",
         "Remark": "Remark"
@@ -226,13 +227,13 @@
         "QCMasterCode": "QC Master Code",
         "qcType": "QC Type",
         "MaterialTypeName": "Material Type",
-        "duplicated_Materialcode":  "Material Code duplicated Code"
+        "duplicated_Materialcode": "Material Code duplicated Code"
     },
     "qcDetail": {
         "QCDetailCode": "QC Detail Code",
         "qcDetail_existed": "QC Detail is existed. Please Delete Detail First",
         "duplicated_code": "QC Code: Duplicated QC Code",
-        "QCCode_required":"QC cannot be blank"
+        "QCCode_required": "QC cannot be blank"
     },
     "location": {
         "LocationCode": "Location Code",

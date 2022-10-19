@@ -39,7 +39,7 @@ export default function BOMDetail({ BomId, newDataChild, BomCode }) {
     },
     { field: 'BomId', hide: true },
     { field: 'ParentId', hide: true },
-    { field: 'ParentCode', hide: true },
+    // { field: 'ParentCode', hide: true },
     { field: 'row_version', hide: true },
     {
       field: "action",
@@ -78,6 +78,7 @@ export default function BOMDetail({ BomId, newDataChild, BomCode }) {
       },
     },
     { field: 'BomCode', headerName: intl.formatMessage({ id: "bom.BomCode" }), flex: 0.5, },
+    { field: 'ParentCode', headerName: intl.formatMessage({ id: "bom.ParentCode" }), flex: 0.5, },
     { field: 'MaterialCode', headerName: intl.formatMessage({ id: "bom.MaterialId" }), flex: 0.5, },
     { field: 'BomLevel', headerName: intl.formatMessage({ id: "bom.BomLevel" }), flex: 0.5, },
     { field: 'Amount', headerName: intl.formatMessage({ id: "bom.Amount" }), flex: 0.5, },
