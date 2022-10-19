@@ -89,9 +89,9 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
         setFieldValue("MaterialId", null);
         setFieldValue("MaterialCode", "");
         if (MaterialType == "BARE MATERIAL")
-          getMaterial(2, bomId);
+          getMaterial(2, BomId);
         else
-          getMaterial(1, bomId);
+          getMaterial(1, BomId);
         //handleReset();
         //handleCloseDialog();
       }
