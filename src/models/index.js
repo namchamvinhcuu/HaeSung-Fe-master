@@ -7,6 +7,7 @@ import BuyerDto from './BuyerDto';
 import StandardQCDto from './StandardQCDto';
 import QCMasterDto from './QCMasterDto';
 import QCDetailDto from './QCDetailDto';
+import LocationDto from "./LocationDto";
 
 export {
     SupplierDto,
@@ -17,5 +18,6 @@ export {
     BuyerDto,
     StandardQCDto,
     QCMasterDto,
-    QCDetailDto
+    QCDetailDto,
+    LocationDto
 }
