@@ -202,8 +202,15 @@ export default function QCDetail({ QCMasterId }) {
         );
       },
     },
-    { field: 'QCCode', headerName: intl.formatMessage({ id: "standardQC.QCCode" }), flex: 0.5, },
     { field: 'QCMasterCode', headerName: intl.formatMessage({ id: "qcMaster.QCMasterCode" }), flex: 0.5, },
+    { field: 'QCCode', headerName: intl.formatMessage({ id: "standardQC.QCCode" }), flex: 0.5,
+      renderCell: (params) => (
+        <div>
+          {params.row.Description == null || params.row.Description == "" ? params.row.QCCode : params.row.QCCode + ' - '+ params.row.Description}
+      </div>
+      ),
+    },
+    { field: 'Description', headerName: intl.formatMessage({ id: "general.description" }), flex: 0.5,hide:true },
     { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
     {
       field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.5,

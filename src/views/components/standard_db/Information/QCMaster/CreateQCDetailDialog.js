@@ -36,7 +36,7 @@ const CreateQCDetailDialog = (props) => {
         enableReinitialize: true,
 
         onSubmit: async values => {
-       console.log(values);
+     
             const res = await qcDetailService.create(values);
             if (res.HttpResponseCode === 200) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))

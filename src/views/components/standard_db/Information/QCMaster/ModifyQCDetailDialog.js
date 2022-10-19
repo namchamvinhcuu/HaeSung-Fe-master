@@ -19,7 +19,7 @@ const ModifyQCDetailDialog = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setModifyData } = props;
-  
+console.log(initModal);
     const clearParent = useRef(null);
 
     const [QCCodeArr, setQCCodeArr] = useState([]);
@@ -75,12 +75,13 @@ const ModifyQCDetailDialog = (props) => {
     const formik = useFormik({
         validationSchema: schema,
         initialValues: { ...initModal },
+ 
         enableReinitialize: true,
         onSubmit: async values => {
             const res = await qcDetailService.modify(values);
             if (res.HttpResponseCode === 200) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-                setModifyData({ ...res.Data });
+                setModifyData({ ...res.Data   });
                 setDialogState({ isSubmit: false });
                 handleCloseDialog();
             }
@@ -119,13 +120,17 @@ const ModifyQCDetailDialog = (props) => {
                            
                             <Grid item xs={12}>
                                 <MuiSelectField
-                                     value={values.QCId ? { QCId: values.QCId, QCCode: values.QCCode } : null}
+                                     value={values.QCId ? { QCId: values.QCId,
+                                         QCCode: values.Description == null || values.Description == "" ?
+                                          values.QCCode : values.QCCode + ' - '+ values.Description  } : null}
+                                   // value={values.QCId ? { QCId: values.QCId, QCCode: values.QCCode  } : null}
                                     disabled={dialogState.isSubmit}
                                     label={intl.formatMessage({ id: 'standardQC.QCCode' })}
                                     options={QCCodeArr}
                                     displayLabel="QCCode"
                                     displayValue="QCId"
                                     onChange={(e, value) => {
+                                        setFieldValue("Description",  "");
                                         setFieldValue("QCCode", value?.QCCode || '');
                                         setFieldValue("QCId", value?.QCId || "");
                                     }}
