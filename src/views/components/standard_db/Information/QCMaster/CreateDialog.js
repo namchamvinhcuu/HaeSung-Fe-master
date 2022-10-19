@@ -101,10 +101,12 @@ const CreateDialog = (props) => {
         }
     }
     useEffect(() => {
+        setqcType("");
         resetForm({ ...initModal });
     }, [initModal]);
 
     const handleReset = () => {
+        setqcType("");
         resetForm();
         setDialogState({
             ...dialogState
@@ -112,6 +114,7 @@ const CreateDialog = (props) => {
     }
 
     const handleCloseDialog = () => {
+        setqcType("");
         resetForm();
         setDialogState({
             ...dialogState
@@ -153,6 +156,7 @@ const CreateDialog = (props) => {
                                     options={qcArr}
                                     displayLabel="commonDetailName"
                                     displayValue="commonDetailId"
+                               
                                     onChange={(e, value) => {
                                         setFieldValue("MaterialCode", "");
                                         setFieldValue("MaterialId",  0);
@@ -174,6 +178,7 @@ const CreateDialog = (props) => {
                                     options={materialArr}
                                     displayLabel="MaterialCode"
                                     displayValue="MaterialId"
+                                    displayGroup="GroupMaterial"
                                     onChange={(e, value) => {
                                         setFieldValue("MaterialCode", value?.MaterialCode || '');
                                         setFieldValue("MaterialId", value?.MaterialId || "");

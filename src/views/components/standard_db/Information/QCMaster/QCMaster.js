@@ -167,9 +167,11 @@ const QCMaster = (props) => {
             }
         }
     }
-
+    
     const columns = [
         { field: 'QCMasterId', headerName: '', flex: 0.3, hide:true },
+        { field: 'QCType', headerName: "QCType", flex: 0.3 , hide: true },
+        { field: 'MaterialId', headerName: "MaterialId", flex: 0.3 , hide: true },
         {
             field: 'id', headerName: '', flex: 0.1,
             filterable: false,
@@ -212,11 +214,10 @@ const QCMaster = (props) => {
                 );
             },
         },
-        { field: 'QCMasterCode', headerName: intl.formatMessage({ id: "qcMaster.QCMasterCode" }), flex: 0.3 },
-        { field: 'MaterialId', headerName: "MaterialId", flex: 0.3 , hide: true },
-        { field: 'MaterialCode', headerName: intl.formatMessage({ id: "material.MaterialCode" }), flex: 0.3 },
-        { field: 'QCType', headerName: "QCType", flex: 0.3 , hide: true },
+        { field: 'QCMasterCode', headerName: intl.formatMessage({ id: "qcMaster.QCMasterCode" }), flex: 0.4 },
         { field: 'QCTypeName', headerName: intl.formatMessage({ id: "qcMaster.qcType" }), flex: 0.3 },
+        { field: 'MaterialTypeName', headerName: intl.formatMessage({ id: "qcMaster.MaterialTypeName" }), flex: 0.3 },
+        { field: 'MaterialCode', headerName: intl.formatMessage({ id: "material.MaterialCode" }), flex: 0.3 },
         { field: 'Description', headerName: intl.formatMessage({ id: "general.description" }), flex: 0.3 },
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
         { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.3 },

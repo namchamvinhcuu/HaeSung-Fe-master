@@ -16,11 +16,11 @@ import { QCDetailDto } from "@models"
 
 const CreateQCDetailDialog = (props) => {
     const intl = useIntl();
-    const { initModal, isOpen, onClose, setNewData } = props;
+    const { initModal, isOpen, onClose, setNewData } = props;2
+
+console.log(initModal);
+
     const [QCCodeArr, setQCCodeArr] = useState([initModal]);
-
-    const dataModalRef = useRef({ ...initModal });
-
     const [dialogState, setDialogState] = useState({
         ...initModal,
         isSubmit: false,
@@ -35,8 +35,10 @@ const CreateQCDetailDialog = (props) => {
     const formik = useFormik({
         validationSchema: schema,
         initialValues: { ...initModal },
+        enableReinitialize: true,
+        
         onSubmit: async values => {
-       
+       console.log(values);
             const res = await qcDetailService.create(values);
             if (res.HttpResponseCode === 200) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -94,9 +96,10 @@ const CreateQCDetailDialog = (props) => {
 
     useEffect(() => {
         formik.resetForm();
-        formik.initialValues = QCDetailDto
+        formik.initialValues = initModal
     }, [initModal])
 
+  
     const handleReset = () => {
         resetForm();
     }

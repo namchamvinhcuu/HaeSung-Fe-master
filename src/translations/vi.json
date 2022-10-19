@@ -222,7 +222,8 @@
     },
     "qcMaster": {
         "QCMasterCode": "QC Master Code",
-        "qcType": "QC Type"
+        "qcType": "QC Type",
+        "MaterialTypeName": "Material Type"
     },
     "qcDetail": {
         "QCDetailCode": "QC Detail Code",
