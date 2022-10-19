@@ -33,8 +33,8 @@ const ModifyDialog = (props) => {
 
     const schema = yup.object().shape({
         QCMasterCode: yup.string().trim().required(intl.formatMessage({ id: 'general.field_required' })),
-        MaterialId: yup.number().required(),
-        QCType: yup.number().required(),
+        MaterialId: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
+        QCType: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
         Description: yup.string().trim()
     });
  
@@ -150,8 +150,8 @@ const ModifyDialog = (props) => {
                                     value={values.QCMasterCode}
                                     onChange={handleChange}
                                     label={intl.formatMessage({ id: 'qcMaster.QCMasterCode' })}
-                                    error={touched.Amount && Boolean(errors.Amount)}
-                                    helperText={touched.Amount && errors.Amount}
+                                    error={touched.QCMasterCode && Boolean(errors.QCMasterCode)}
+                                    helperText={touched.QCMasterCode && errors.QCMasterCode}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -172,8 +172,8 @@ const ModifyDialog = (props) => {
                                         setFieldValue("QCType", value?.commonDetailId || "");
                                         
                                     }}
-                                    error={!!errors.QCType}
-                                    helperText={errors?.QCType ? errors.QCType.message : null}
+                                    error={touched.QCType && Boolean(errors.QCType)}
+                                    helperText={touched.QCType && errors.QCType}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -190,8 +190,8 @@ const ModifyDialog = (props) => {
                                         setFieldValue("MaterialId", value?.MaterialId || "");
                                       
                                     }}
-                                    error={!!errors.MaterialId}
-                                    helperText={errors?.MaterialId ? errors.MaterialId.message : null}
+                                    error={touched.MaterialId && Boolean(errors.MaterialId)}
+                                    helperText={touched.MaterialId && errors.MaterialId}
                                 />
                             </Grid>
                         </Grid>

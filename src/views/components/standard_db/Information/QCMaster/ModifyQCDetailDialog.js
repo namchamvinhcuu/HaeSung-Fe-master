@@ -32,7 +32,8 @@ const ModifyQCDetailDialog = (props) => {
     const schema = yup.object().shape({
       
         QCMasterId: yup.number().required(),
-        QCId: yup.number().required()
+        QCId: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
+
 
     });
     
@@ -128,8 +129,8 @@ const ModifyQCDetailDialog = (props) => {
                                         setFieldValue("QCCode", value?.QCCode || '');
                                         setFieldValue("QCId", value?.QCId || "");
                                     }}
-                                    error={!!errors.QCId}
-                                    helperText={errors?.QCId ? errors.QCId.message : null}
+                                    error={touched.QCId && Boolean(errors.QCId)}
+                                    helperText={touched.QCId && errors.QCId}
                                 />
 
                             </Grid>

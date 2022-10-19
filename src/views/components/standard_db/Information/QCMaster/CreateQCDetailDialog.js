@@ -18,8 +18,6 @@ const CreateQCDetailDialog = (props) => {
     const intl = useIntl();
     const { initModal, isOpen, onClose, setNewData } = props;2
 
-console.log(initModal);
-
     const [QCCodeArr, setQCCodeArr] = useState([initModal]);
     const [dialogState, setDialogState] = useState({
         ...initModal,
@@ -28,7 +26,7 @@ console.log(initModal);
     const schema = yup.object().shape({
 
         QCMasterId: yup.number().required(),
-        QCId: yup.number().required()
+        QCId: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
 
     });
 
@@ -137,8 +135,8 @@ console.log(initModal);
                                         setFieldValue("QCId", value?.QCId || "");
                                     }}
                                     defaultValue={initModal && { QCId: initModal.QCId, QCCode: initModal.QCCode }}
-                                    error={!!errors.QCId}
-                                    helperText={errors?.QCId ? errors.QCId.message : null}
+                                    error={touched.QCId && Boolean(errors.QCId)}
+                                    helperText={touched.QCId && errors.QCId}
                                 />
 
                             </Grid>
