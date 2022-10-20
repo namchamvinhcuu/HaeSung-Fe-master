@@ -208,7 +208,7 @@
         "QCCode": "QC Code"
     },
     "bom": {
-        "CreateLv1": "Tạo - Bom Finish Good",
+        "CreateLv1": "Tạo - Bom",
         "CreateLv2": "Tạo - Bom Child - ",
         "BomLevel": "Level",
         "Amount": "Amount",

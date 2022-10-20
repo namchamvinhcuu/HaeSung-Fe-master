@@ -160,7 +160,9 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
               options={MaterialList}
               displayLabel="MaterialCode"
               displayValue="MaterialId"
+              displayGroup="GroupMaterial"
               onChange={(e, value) => {
+                setMaterialType(value?.GroupMaterial);
                 setFieldValue("MaterialCode", value?.MaterialCode || '', true);
                 setFieldValue("MaterialId", value?.MaterialId || "", true);
               }}
