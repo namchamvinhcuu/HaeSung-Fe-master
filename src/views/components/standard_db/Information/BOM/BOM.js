@@ -23,7 +23,7 @@ export default function BOM() {
     data: [],
     totalRow: 0,
     page: 1,
-    pageSize: 20,
+    pageSize: 8,
     searchData: {
       keyWord: '',
       MaterialId: null,
@@ -31,10 +31,12 @@ export default function BOM() {
     }
   });
   const [newData, setNewData] = useState({})
+  const [newDataChild, setNewDataChild] = useState({})
   const [updateData, setUpdateData] = useState({})
   const [rowData, setRowData] = useState({});
   const [MaterialList, setMaterialList] = useState([]);
   const [BomId, setBomId] = useState(null);
+  const [BomCode, setBomCode] = useState("");
 
   const columns = [
     {
@@ -195,7 +197,7 @@ export default function BOM() {
   }
 
   const getMaterial = async () => {
-    const res = await bomService.getMaterial(0);
+    const res = await bomService.getMaterial(-1);
     if (res.HttpResponseCode === 200 && res.Data) {
       setMaterialList([...res.Data])
     }
@@ -207,18 +209,8 @@ export default function BOM() {
         direction="row"
         justifyContent="space-between"
         alignItems="width-end">
-        <Grid item xs={6}>
+        <Grid item xs={8}>
           <MuiButton text="create" color='success' onClick={handleAdd} sx={{ mt: 1 }} />
-        </Grid>
-        <Grid item>
-          <TextField
-            sx={{ width: 210 }}
-            fullWidth
-            variant="standard"
-            size='small'
-            label='Code'
-            onChange={(e) => handleSearch(e.target.value, 'keyWord')}
-          />
         </Grid>
         <Grid item>
           <MuiSelectField
@@ -251,11 +243,8 @@ export default function BOM() {
         page={state.page - 1}
         pageSize={state.pageSize}
         rowCount={state.totalRow}
-        //rowsPerPageOptions={[5, 8, 20]}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
-        //onPageSizeChange={(newPageSize) => setState({ ...state, pageSize: newPageSize, page: 1 })}
         getRowId={(rows) => rows.BomId}
-        //onRowClick={(rowData) => setBomId(rowData.row.BomId)}
         onSelectionModelChange={(newSelectedRowId) => setBomId(newSelectedRowId[0])}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`
@@ -265,13 +254,17 @@ export default function BOM() {
       <BOMDialog
         valueOption={{ MaterialList: MaterialList }}
         setNewData={setNewData}
+        setBomId={setBomId}
+        BomCode={BomCode}
+        setBomCode={setBomCode}
+        setNewDataChild={setNewDataChild}
         setUpdateData={setUpdateData}
         initModal={rowData}
         isOpen={isShowing}
         onClose={toggle}
         mode={mode}
       />
-      {/* <BOMDetail BomId={BomId} /> */}
+      <BOMDetail BomId={BomId} newDataChild={newDataChild} BomCode={BomCode} />
     </React.Fragment>
 
   )

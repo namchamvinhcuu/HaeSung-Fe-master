@@ -5,20 +5,24 @@ import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
-import { bomDetailService } from '@services'
+import { bomDetailService, bomService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION } from '@constants/ConfigConstants';
 import { useFormik } from 'formik'
 
-const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, BomId, MaterialList }) => {
+const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, BomId, BomCode }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
-  //const [MaterialList, setMaterialList] = useState([]);
-  const defaultValue = { BomId: BomId, MaterialId: null, MaterialCode: '', Amount: '', Remark: '' };
+  const [MaterialList, setMaterialList] = useState([]);
+  const [ParentList, setParentList] = useState([]);
+  const [MaterialType, setMaterialType] = useState("");
+  const [MaterialTypeChild, setMaterialTypeChild] = useState("");
+  const defaultValue = { BomId: BomId, MaterialId: null, MaterialCode: '', Amount: '', Remark: '', ParentId: null, ParentCode: '' };
 
   const schema = yup.object().shape({
+    ParentId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+    MaterialId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
     Amount: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    MaterialId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
   });
 
   const formik = useFormik({
@@ -33,8 +37,22 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
 
   //useEffect
   // useEffect(() => {
-  //   getMaterial();
-  // }, [])
+  //   getParent(BomId);
+  // }, [BomId])
+
+  useEffect(() => {
+    if (BomId != null && isOpen) {
+      getParent(BomId);
+      getMaterial(1, BomId);
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    if (MaterialType == "BARE MATERIAL")
+      getMaterial(2, BomId);
+    else
+      getMaterial(1, BomId);
+  }, [MaterialType])
 
   useEffect(() => {
     if (mode == CREATE_ACTION) {
@@ -47,10 +65,12 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
 
   //handle
   const handleReset = () => {
+    setMaterialTypeChild("");
     resetForm();
   }
 
   const handleCloseDialog = () => {
+    setMaterialTypeChild("");
     resetForm();
     onClose();
   }
@@ -59,13 +79,21 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
     setDialogState({ ...dialogState, isSubmit: true });
 
     if (mode == CREATE_ACTION) {
-      const res = await bomDetailService.createBomDetail(data);
+      const res = await bomService.createBom(data);
       if (res.HttpResponseCode === 200 && res.Data) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
         setNewData(res.Data);
         setDialogState({ ...dialogState, isSubmit: false });
-        handleReset();
-        handleCloseDialog();
+        getParent(BomId);
+        setFieldValue("Remark", "");
+        setFieldValue("MaterialId", null);
+        setFieldValue("MaterialCode", "");
+        if (MaterialType == "BARE MATERIAL")
+          getMaterial(2, BomId);
+        else
+          getMaterial(1, BomId);
+        //handleReset();
+        //handleCloseDialog();
       }
       else {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -73,10 +101,11 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
       }
     }
     else {
-      const res = await bomDetailService.modifyBomDetail(data);
+      const res = await bomService.modifyBom(data);
       if (res.HttpResponseCode === 200) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
         setUpdateData(res.Data);
+        console.log(res.Data)
         setDialogState({ ...dialogState, isSubmit: false });
         handleReset();
         handleCloseDialog();
@@ -88,12 +117,19 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
     }
   };
 
-  // const getMaterial = async () => {
-  //   const res = await bomDetailService.getMaterial();
-  //   if (res.HttpResponseCode === 200 && res.Data) {
-  //     setMaterialList([...res.Data])
-  //   }
-  // }
+  const getMaterial = async (id, BomId) => {
+    const res = await bomService.getMaterial(id, BomId);
+    if (res.Data) {
+      setMaterialList([...res.Data])
+    }
+  }
+
+  const getParent = async (BomId) => {
+    const res = await bomService.getParent(BomId);
+    if (res.Data) {
+      setParentList([...res.Data])
+    }
+  }
 
   return (
     <MuiDialog
@@ -107,6 +143,33 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
       <form onSubmit={handleSubmit} >
         <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12}>
+
+            {mode == CREATE_ACTION ? <MuiSelectField
+              value={values.ParentId ? { BomId: values.ParentId, BomCode: values.ParentCode } : null}
+              disabled={dialogState.isSubmit}
+              label={intl.formatMessage({ id: 'bom.ParentId' })}
+              options={ParentList}
+              displayLabel="BomCode"
+              displayValue="BomId"
+              displayGroup="BomLevelGroup"
+              onChange={(e, value) => {
+                setMaterialType(value?.MaterialType);
+                setFieldValue("MaterialCode", '');
+                setFieldValue("MaterialId", null);
+                setFieldValue("ParentCode", value?.BomCode || '');
+                setFieldValue("ParentId", value?.BomId || "");
+              }}
+              error={touched.ParentId && Boolean(errors.ParentId)}
+              helperText={touched.ParentId && errors.ParentId}
+            /> : <TextField
+              fullWidth
+              size='small'
+              disabled
+              value={values.ParentCode}
+              label={intl.formatMessage({ id: 'bom.ParentId' })}
+            />}
+          </Grid>
+          <Grid item xs={12}>
             <MuiSelectField
               value={values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null}
               disabled={dialogState.isSubmit}
@@ -114,11 +177,16 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
               options={MaterialList}
               displayLabel="MaterialCode"
               displayValue="MaterialId"
+              displayGroup="GroupMaterial"
               onChange={(e, value) => {
-                setFieldValue("MaterialCode", value?.MaterialCode || '');
-                setFieldValue("MaterialId", value?.MaterialId || "");
+                setMaterialTypeChild(value?.GroupMaterial);
+                if (value?.GroupMaterial == "BARE MATERIAL" || value?.GroupMaterial == "FINISH GOOD")
+                  setFieldValue("Amount", '1', true);
+                else
+                  setFieldValue("Amount", '', true);
+                setFieldValue("MaterialCode", value?.MaterialCode || '', true);
+                setFieldValue("MaterialId", value?.MaterialId || "", true);
               }}
-              defaultValue={mode == CREATE_ACTION ? null : { MaterialId: initModal.MaterialId, MaterialCode: initModal.MaterialCode }}
               error={touched.MaterialId && Boolean(errors.MaterialId)}
               helperText={touched.MaterialId && errors.MaterialId}
             />
@@ -129,7 +197,8 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
               type="number"
               size='small'
               name='Amount'
-              disabled={dialogState.isSubmit}
+              inputProps={{ min: 0 }}
+              disabled={MaterialTypeChild == "BARE MATERIAL" ? true : dialogState.isSubmit}
               value={values.Amount}
               onChange={handleChange}
               label={intl.formatMessage({ id: 'bomDetail.Amount' })}
