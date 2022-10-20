@@ -25,8 +25,10 @@ import ModifySupplierDialog from './ModifySupplierDialog'
 import { dateToTicks } from '@utils'
 
 const Supplier = (props) => {
-    let isRendered = useRef(false);
+    let isRendered = useRef(true);
     const intl = useIntl();
+
+    console.log(dateToTicks(new Date()))
 
     const [supplierState, setSupplierState] = useState({
         isLoading: false,
@@ -129,7 +131,6 @@ const Supplier = (props) => {
     };
 
     useEffect(() => {
-        isRendered = true;
         if (isRendered)
             fetchData();
 

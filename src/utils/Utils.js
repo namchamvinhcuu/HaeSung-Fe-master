@@ -62,7 +62,6 @@ function dateToTicks(date) {
   return ticks / 10000;
 }
 
-
 export {
   calDateAgo,
   toCamel,
