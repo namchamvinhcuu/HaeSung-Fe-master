@@ -216,7 +216,8 @@
         "ParentCode": "Parent Code",
         "MaterialId": "Material Code",
         "ParentId": "Parent Code",
-        "Remark": "Remark"
+        "Remark": "Remark",
+        "min_value":"Value greater than 0"
     },
     "bomDetail": {
         "MaterialId": "Material Code",

@@ -102,6 +102,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               fullWidth
               size='small'
               name='MaterialCode'
+              inputProps={{ maxLength: 11 }}
               disabled={dialogState.isSubmit}
               value={values.MaterialCode}
               onChange={handleChange}

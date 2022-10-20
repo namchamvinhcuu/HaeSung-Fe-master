@@ -22,7 +22,7 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
   const schema = yup.object().shape({
     ParentId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
     MaterialId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    Amount: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+    Amount: yup.number().nullable().min(0, intl.formatMessage({ id: 'bom.min_value' })).required(intl.formatMessage({ id: 'general.field_required' })),
   });
 
   const formik = useFormik({
@@ -197,7 +197,6 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
               type="number"
               size='small'
               name='Amount'
-              inputProps={{ min: 0 }}
               disabled={MaterialTypeChild == "BARE MATERIAL" ? true : dialogState.isSubmit}
               value={values.Amount}
               onChange={handleChange}
