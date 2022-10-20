@@ -22,6 +22,8 @@ import { ErrorAlert, SuccessAlert } from '@utils'
 import CreateSupplierDialog from './CreateSupplierDialog'
 import ModifySupplierDialog from './ModifySupplierDialog'
 
+import { dateToTicks } from '@utils'
+
 const Supplier = (props) => {
     let isRendered = useRef(false);
     const intl = useIntl();
