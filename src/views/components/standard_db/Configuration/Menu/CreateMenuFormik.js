@@ -270,6 +270,13 @@ const CreateMenuFormik = (props) => {
                                     control={<Checkbox />}
                                     label="For Root"
                                 />
+
+                                <FormControlLabel
+                                    checked={values.forApp}
+                                    onChange={() => setFieldValue("forApp", !values.forApp)}
+                                    control={<Checkbox />}
+                                    label="For App"
+                                />
                             </Grid>
                         </Grid>
                     </Grid>

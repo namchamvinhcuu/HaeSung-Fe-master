@@ -9,6 +9,7 @@ const MenuDto = {
     , menuComponent: ''
     , navigateUrl: ''
     , forRoot: false
+    , forApp: false
     , isActived: true
     , createdDate: null
     , createdBy: 0

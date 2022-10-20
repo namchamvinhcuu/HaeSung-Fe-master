@@ -224,6 +224,7 @@ const Menu = (props) => {
         { field: 'menuComponent', headerName: intl.formatMessage({ id: "general.component" }), flex: 0.7, },
         { field: 'navigateUrl', headerName: intl.formatMessage({ id: "general.url" }), flex: 0.6, },
         { field: 'forRoot', headerName: intl.formatMessage({ id: "general.root_only" }), flex: 0.5, },
+        { field: 'forApp', headerName: 'For App', flex: 0.5, },
     ];
 
     return (

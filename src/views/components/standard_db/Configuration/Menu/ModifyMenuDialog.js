@@ -242,6 +242,22 @@ const ModifyMenuDialog = (props) => {
                                     }
                                     label='For Root'
                                 />
+                                <FormControlLabel
+                                    control={
+                                        <Controller
+                                            name='forApp'
+                                            control={control}
+                                            render={({ field: props }) => (
+                                                <Checkbox
+                                                    {...props}
+                                                    checked={props.value}
+                                                    onChange={(e) => props.onChange(e.target.checked)}
+                                                />
+                                            )}
+                                        />
+                                    }
+                                    label='For App'
+                                />
                             </Grid>
                         </Grid>
                     </Grid>
