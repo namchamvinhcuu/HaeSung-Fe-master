@@ -6,11 +6,12 @@ import { FormControlLabel, Grid, IconButton, Switch, TextField } from '@mui/mate
 import { useIntl } from 'react-intl'
 import { MuiButton, MuiDataGrid, MuiSelectField } from '@controls'
 import { bomService } from '@services'
-import { useModal } from "@basesShared"
+import { useModal, useModal2 } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import moment from 'moment';
 import BOMDialog from './BOMDialog'
+import BOMCopyDialog from './BOMCopyDialog'
 import BOMDetail from './BOMDetail'
 
 export default function BOM() {
@@ -18,6 +19,7 @@ export default function BOM() {
   let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
+  const { isShowing2, toggle2 } = useModal2();
   const [state, setState] = useState({
     isLoading: false,
     data: [],
@@ -85,6 +87,7 @@ export default function BOM() {
     { field: 'BomCode', headerName: intl.formatMessage({ id: "bom.BomCode" }), flex: 0.5, },
     { field: 'MaterialCode', headerName: intl.formatMessage({ id: "bom.MaterialId" }), flex: 0.5, },
     { field: 'Remark', headerName: intl.formatMessage({ id: "bom.Remark" }), flex: 0.7, },
+    { field: 'Version', headerName: intl.formatMessage({ id: "bom.Version" }), flex: 0.5 },
     { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
     {
       field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.5,
@@ -211,16 +214,19 @@ export default function BOM() {
         alignItems="width-end">
         <Grid item xs={8}>
           <MuiButton text="create" color='success' onClick={handleAdd} sx={{ mt: 1 }} />
+          <MuiButton text="copy" color='secondary' onClick={() => toggle2()} sx={{ mt: 1 }} disabled={BomId == null ? true : false} />
         </Grid>
+
         <Grid item>
           <MuiSelectField
             label={intl.formatMessage({ id: 'bom.MaterialId' })}
             options={MaterialList}
             displayLabel="MaterialCode"
             displayValue="MaterialId"
+            displayGroup="GroupMaterial"
             onChange={(e, item) => handleSearch(item ? item.MaterialId ?? null : null, 'MaterialId')}
             variant="standard"
-            sx={{ width: 210 }}
+            sx={{ width: 250 }}
           />
         </Grid>
         <Grid item>
@@ -252,7 +258,6 @@ export default function BOM() {
       />
 
       <BOMDialog
-        valueOption={{ MaterialList: MaterialList }}
         setNewData={setNewData}
         setBomId={setBomId}
         BomCode={BomCode}
@@ -264,6 +269,22 @@ export default function BOM() {
         onClose={toggle}
         mode={mode}
       />
+
+      <BOMCopyDialog
+        valueOption={{ MaterialList: MaterialList }}
+        setNewData={setNewData}
+        setBomId={setBomId}
+        BomCode={BomCode}
+        setBomCode={setBomCode}
+        setNewDataChild={setNewDataChild}
+        setUpdateData={setUpdateData}
+        initModal={rowData}
+        isOpen={isShowing2}
+        onClose={toggle2}
+        mode={mode}
+        BomId={BomId}
+      />
+
       <BOMDetail BomId={BomId} newDataChild={newDataChild} BomCode={BomCode} />
     </React.Fragment>
 

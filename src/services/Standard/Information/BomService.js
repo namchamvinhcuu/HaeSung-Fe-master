@@ -11,6 +11,15 @@ const getBomList = async (params) => {
   }
 }
 
+const getBomForCopy = async (params) => {
+  try {
+    return await axios.get(`${apiName}/get-for-copy`, { params: { ...params } });
+  }
+  catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+}
+
 const createBom = async (params) => {
   try {
     return await axios.post(`${apiName}/create`, params);
@@ -23,6 +32,15 @@ const createBom = async (params) => {
 const modifyBom = async (params) => {
   try {
     return await axios.put(`${apiName}/update`, params);
+  }
+  catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+}
+
+const copyBom = async (BomID, Version, data) => {
+  try {
+    return await axios.post(`${apiName}/copy/${BomID}/${Version}`, data);
   }
   catch (error) {
     console.log(`ERROR: ${error}`);
@@ -67,8 +85,10 @@ const getParent = async (BomId) => {
 
 export {
   getBomList,
+  getBomForCopy,
   createBom,
   modifyBom,
+  copyBom,
   deleteBom,
   getProduct,
   getMaterial,

@@ -227,10 +227,11 @@ export default function BOMDetail({ BomId, newDataChild, BomCode }) {
             options={MaterialList}
             displayLabel="MaterialCode"
             displayValue="MaterialId"
+            displayGroup="GroupMaterial"
             onChange={(e, item) => handleSearch(item ? item.MaterialId ?? null : null, 'MaterialId')}
             variant="standard"
             disabled={BomId ? false : true}
-            sx={{ width: 210 }}
+            sx={{ width: 250 }}
           />
         </Grid>
         <Grid item>
