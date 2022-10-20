@@ -1,4 +1,4 @@
-import { MuiDialog, MuiResetButton, MuiSubmitButton ,MuiSelectField} from '@controls'
+import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiSelectField } from '@controls'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
     Autocomplete,
@@ -19,7 +19,7 @@ const ModifyQCDetailDialog = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setModifyData } = props;
-console.log(initModal);
+    console.log(initModal);
     const clearParent = useRef(null);
 
     const [QCCodeArr, setQCCodeArr] = useState([]);
@@ -30,21 +30,21 @@ console.log(initModal);
         isSubmit: false,
     })
     const schema = yup.object().shape({
-      
+
         QCMasterId: yup.number().required(),
-        QCId: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
+        QCId: yup.number().min(1, intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
 
 
     });
-    
+
 
     useEffect(() => {
         if (isOpen)
-         
-        getQC();
+
+            getQC();
     }, [isOpen])
 
- 
+
     const getQC = async () => {
         const res = await qcDetailService.getStandardQCActive();
         if (res.HttpResponseCode === 200 && res.Data) {
@@ -55,7 +55,7 @@ console.log(initModal);
             setQCCodeArr([])
         }
     }
-   
+
     useEffect(() => {
         formik.initialValues = QCDetailDto
     }, [initModal])
@@ -75,13 +75,13 @@ console.log(initModal);
     const formik = useFormik({
         validationSchema: schema,
         initialValues: { ...initModal },
- 
+
         enableReinitialize: true,
         onSubmit: async values => {
             const res = await qcDetailService.modify(values);
             if (res.HttpResponseCode === 200) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-                setModifyData({ ...res.Data   });
+                setModifyData({ ...res.Data });
                 setDialogState({ isSubmit: false });
                 handleCloseDialog();
             }
@@ -99,7 +99,7 @@ console.log(initModal);
         , errors
         , touched
         , isValid
-        ,resetForm 
+        , resetForm
     } = formik;
 
 
@@ -113,24 +113,26 @@ console.log(initModal);
             disable_animate={300}
             onClose={handleCloseDialog}
         >
-           <form onSubmit={handleSubmit} >
+            <form onSubmit={handleSubmit} >
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                     <Grid item xs={12}>
                         <Grid container item spacing={2} marginBottom={2}>
-                           
+
                             <Grid item xs={12}>
                                 <MuiSelectField
-                                     value={values.QCId ? { QCId: values.QCId,
-                                         QCCode: values.Description == null || values.Description == "" ?
-                                          values.QCCode : values.QCCode + ' - '+ values.Description  } : null}
-                                   // value={values.QCId ? { QCId: values.QCId, QCCode: values.QCCode  } : null}
+                                    value={values.QCId ? {
+                                        QCId: values.QCId,
+                                        QCCode: values.Description == null || values.Description == "" ?
+                                            values.QCCode : values.QCCode + ' - ' + values.Description
+                                    } : null}
+                                    // value={values.QCId ? { QCId: values.QCId, QCCode: values.QCCode  } : null}
                                     disabled={dialogState.isSubmit}
                                     label={intl.formatMessage({ id: 'standardQC.QCCode' })}
                                     options={QCCodeArr}
                                     displayLabel="QCCode"
                                     displayValue="QCId"
                                     onChange={(e, value) => {
-                                        setFieldValue("Description",  "");
+                                        setFieldValue("Description", "");
                                         setFieldValue("QCCode", value?.QCCode || '');
                                         setFieldValue("QCId", value?.QCId || "");
                                     }}
