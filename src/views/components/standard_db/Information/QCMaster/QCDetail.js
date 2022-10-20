@@ -29,7 +29,7 @@ export default function QCDetail({ QCMasterId }) {
     data: [],
     totalRow: 0,
     page: 1,
-    pageSize: 8,
+    pageSize: 7,
     searchData: {
       QCMasterId: QCMasterId,
       showDelete: true
@@ -67,13 +67,13 @@ export default function QCDetail({ QCMasterId }) {
   const getQC = async () => {
     const res = await qcDetailService.getStandardQCActive();
     if (res.HttpResponseCode === 200 && res.Data) {
-        setQCCodeArr([...res.Data])
-        console.log(res.Data);
+      setQCCodeArr([...res.Data])
+      console.log(res.Data);
     }
     else {
-        setQCCodeArr([])
+      setQCCodeArr([])
     }
-}
+  }
   //useEffect
   useEffect(() => {
     fetchData(QCMasterId);
@@ -203,14 +203,15 @@ export default function QCDetail({ QCMasterId }) {
       },
     },
     { field: 'QCMasterCode', headerName: intl.formatMessage({ id: "qcMaster.QCMasterCode" }), flex: 0.5, },
-    { field: 'QCCode', headerName: intl.formatMessage({ id: "standardQC.QCCode" }), flex: 0.5,
+    {
+      field: 'QCCode', headerName: intl.formatMessage({ id: "standardQC.QCCode" }), flex: 0.5,
       renderCell: (params) => (
         <div>
-          {params.row.Description == null || params.row.Description == "" ? params.row.QCCode : params.row.QCCode + ' - '+ params.row.Description}
-      </div>
+          {params.row.Description == null || params.row.Description == "" ? params.row.QCCode : params.row.QCCode + ' - ' + params.row.Description}
+        </div>
       ),
     },
-    { field: 'Description', headerName: intl.formatMessage({ id: "general.description" }), flex: 0.5,hide:true },
+    { field: 'Description', headerName: intl.formatMessage({ id: "general.description" }), flex: 0.5, hide: true },
     { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
     {
       field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.5,
@@ -236,7 +237,7 @@ export default function QCDetail({ QCMasterId }) {
         </Grid>
         <Grid item>
           <MuiSelectField
-         
+
             label={intl.formatMessage({ id: 'standardQC.QCCode' })}
             options={QCCodeArr}
             displayLabel="QCCode"
@@ -248,8 +249,8 @@ export default function QCDetail({ QCMasterId }) {
 
         </Grid>
         <Grid item>
-                <MuiButton text="search" color='info' onClick={() => fetchData(QCMasterId)} sx={{ m: 1 }} />
-            </Grid>
+          <MuiButton text="search" color='info' onClick={() => fetchData(QCMasterId)} sx={{ m: 1 }} />
+        </Grid>
         <Grid item>
           <FormControlLabel
             sx={{ mb: 0 }}

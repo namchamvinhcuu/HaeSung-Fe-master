@@ -34,7 +34,7 @@ const QCMaster = (props) => {
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 8,
+        pageSize: 7,
         searchData: {
             QCMasterCode: null,
             Description: null,
@@ -62,10 +62,10 @@ const QCMaster = (props) => {
     const toggleModifyDialog = () => {
         setIsOpenModifyDialog(!isOpenModifyDialog);
     }
-    
-      useEffect(() => {
+
+    useEffect(() => {
         getQC();
-      }, [])
+    }, [])
 
     useEffect(() => {
         fetchData();
@@ -172,11 +172,11 @@ const QCMaster = (props) => {
 
 
     const getMaterial = async (qcType) => {
-    
-        const res = await qcMasterService.getMaterialForSelect({qcType : qcType});
+
+        const res = await qcMasterService.getMaterialForSelect({ qcType: qcType });
         if (res.HttpResponseCode === 200 && res.Data) {
             setmaterialArr([...res.Data])
-          
+
         }
         else {
             setmaterialArr([])
@@ -186,7 +186,7 @@ const QCMaster = (props) => {
         const res = await qcMasterService.getQCTypeForSelect();
         if (res.HttpResponseCode === 200 && res.Data) {
             setqcArr([...res.Data])
-            
+
         }
         else {
             setqcArr([])
