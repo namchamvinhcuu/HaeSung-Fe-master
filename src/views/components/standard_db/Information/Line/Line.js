@@ -151,11 +151,10 @@ const Line = (props) => {
     useEffect(() => {
         if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, LineDto)) {
             let newArr = [...lineState.data]
-            const index = _.findIndex(newArr, (o) => { return o.SupplierId == selectedRow.SupplierId; });
+            const index = _.findIndex(newArr, (o) => { return o.LineId == selectedRow.LineId; });
             if (index !== -1) {
                 newArr[index] = selectedRow
             }
-
             setLineState({
                 ...lineState
                 , data: [...newArr]

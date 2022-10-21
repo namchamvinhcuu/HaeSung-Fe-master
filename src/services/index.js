@@ -20,6 +20,7 @@ import * as bomDetailService from './Standard/Information/BomDetailService'
 import * as qcMasterService from './Standard/Information/QCMaterService'
 import * as qcDetailService from './Standard/Information/qcDetailService'
 import * as locationService from './Standard/Information/LocationService'
+import * as versionAppService from './Standard/Configuration/VersionAppService'
 export {
     loginService,
     menuService,
@@ -42,5 +43,6 @@ export {
     bomDetailService,
     qcMasterService,
     qcDetailService,
-    locationService
+    locationService,
+    versionAppService
 }

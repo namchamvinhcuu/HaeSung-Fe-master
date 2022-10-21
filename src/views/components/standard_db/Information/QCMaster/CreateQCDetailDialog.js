@@ -16,7 +16,7 @@ import { QCDetailDto } from "@models"
 
 const CreateQCDetailDialog = (props) => {
     const intl = useIntl();
-    const { initModal, isOpen, onClose, setNewData } = props;2
+    const { initModal, isOpen, onClose, setNewData } = props; 2
 
     const [QCCodeArr, setQCCodeArr] = useState([initModal]);
     const [dialogState, setDialogState] = useState({
@@ -26,7 +26,7 @@ const CreateQCDetailDialog = (props) => {
     const schema = yup.object().shape({
 
         QCMasterId: yup.number().required(),
-        QCId: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
+        QCId: yup.number().min(1, intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
 
     });
 
@@ -36,20 +36,20 @@ const CreateQCDetailDialog = (props) => {
         enableReinitialize: true,
 
         onSubmit: async values => {
-     
+
             const res = await qcDetailService.create(values);
             if (res.HttpResponseCode === 200) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-               // handleCloseDialog();
+                // handleCloseDialog();
                 setNewData({ ...res.Data });
                 setDialogState({ ...dialogState, isSubmit: false });
-               // handleReset();
+                // handleReset();
             }
             else {
                 ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-               // handleCloseDialog();
+                // handleCloseDialog();
                 setDialogState({ ...dialogState, isSubmit: false });
-               // handleReset();
+                // handleReset();
             }
         }
     });
@@ -75,7 +75,7 @@ const CreateQCDetailDialog = (props) => {
         const res = await qcDetailService.getQCMasterActive();
         if (res.HttpResponseCode === 200 && res.Data) {
             setQCMasterCodeArr([...res.Data])
-          
+
         }
         else {
             setQCMasterCodeArr([])
@@ -85,7 +85,7 @@ const CreateQCDetailDialog = (props) => {
         const res = await qcDetailService.getStandardQCActive();
         if (res.HttpResponseCode === 200 && res.Data) {
             setQCCodeArr([...res.Data])
-        
+
         }
         else {
             setQCCodeArr([])
@@ -97,7 +97,7 @@ const CreateQCDetailDialog = (props) => {
         formik.initialValues = initModal
     }, [initModal])
 
-  
+
     const handleReset = () => {
         resetForm();
     }

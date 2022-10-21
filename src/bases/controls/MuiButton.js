@@ -34,6 +34,7 @@ const MuiButton = React.forwardRef((props, ref) => {
                 return <EditIcon />
             case 'search':
                 return <SearchIcon />
+            case 'cancel':
             default:
                 return <DeleteIcon />;
         }

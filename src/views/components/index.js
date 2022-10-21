@@ -68,6 +68,10 @@ import ForecastPO from "./PO/ForecastPO/ForecastPO";
 import UserList from "./account_manager/User/UserList";
 import RoleList from "./account_manager/Role/RoleList"
 
+//Apk app
+import VersionApp from "./standard_db/Configuration/VersionApp/VersionApp";
+
+
 export {
   //SYSTEM
   TabListContent,
@@ -86,6 +90,7 @@ export {
   User,
   Common,
   Role,
+  VersionApp,
   //STANDARD - Information
   BOM,
   Location,
@@ -133,4 +138,6 @@ export {
   //ACCOUNT MANAGER
   UserList,
   RoleList,
+
+
 };

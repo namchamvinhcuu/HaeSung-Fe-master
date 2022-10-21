@@ -2,7 +2,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
-import { createTheme, ThemeProvider } from "@mui/material"
+import { createTheme, ThemeProvider, TextField } from "@mui/material"
 import React, { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
@@ -165,28 +165,37 @@ const Permission = () => {
 
     return (
         <React.Fragment>
-            <Grid
-                container
-                direction="row"
+            <Grid container direction="row"
                 justifyContent="space-between"
-                alignItems="flex-end"
-            >
-                <Grid item xs={6}>
+                alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+                <Grid item xs={8}>
                     <MuiButton
                         text="create"
                         color='success'
                         onClick={toggleCreatePermissionDialog}
                     />
                 </Grid>
-                <Grid item xs>
+                {/* <Grid item xs>
                     <MuiSearchField
                         label='permission.permissionName'
                         name='keyWord'
                         onClick={fetchData}
                         onChange={(e) => changeSearchData(e.target.value, 'keyWord')}
                     />
+                </Grid> */}
+                <Grid item>
+                    <TextField
+                        sx={{ width: 300 }}
+                        fullWidth
+                        variant="standard"
+                        size='small'
+                        label={intl.formatMessage({ id: 'permission.permissionName' })}
+                        onChange={(e) => changeSearchData(e.target.value, 'keyWord')}
+                    />
                 </Grid>
-
+                <Grid item>
+                    <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0 }} />
+                </Grid>
             </Grid>
             <MuiDataGrid
                 showLoading={menuState.isLoading}
