@@ -57,7 +57,6 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
         setNewData({ ...res.Data });
         setDialogState({ ...dialogState, isSubmit: false });
         handleReset();
-        handleCloseDialog();
       }
       else {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
