@@ -30,7 +30,7 @@ const CreateDialog = (props) => {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
                 setNewData({ ...res.Data });
                 setDialogState({ ...dialogState, isSubmit: false });
-                handleCloseDialog();
+                //handleCloseDialog();
             }
             else {
                 ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -60,7 +60,7 @@ const CreateDialog = (props) => {
 
     return (
         <MuiDialog
-            maxWidth='md'
+            maxWidth='sm'
             title={intl.formatMessage({ id: 'general.create' })}
             isOpen={isOpen}
             disabledCloseBtn={dialogState.isSubmit}
@@ -71,35 +71,31 @@ const CreateDialog = (props) => {
             <form onSubmit={handleSubmit}>
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                     <Grid item xs={12}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoFocus
-                                    fullWidth
-                                    size='small'
-                                    disabled={dialogState.isSubmit}
-                                    label={intl.formatMessage({ id: 'standardQC.QCCode' })}
-                                    name='QCCode'
-                                    value={values.QCCode}
-                                    onChange={handleChange}
-                                    error={touched.QCCode && Boolean(errors.QCCode)}
-                                    helperText={touched.QCCode && errors.QCCode}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    fullWidth
-                                    size='small'
-                                    disabled={dialogState.isSubmit}
-                                    label={intl.formatMessage({ id: 'general.description' })}
-                                    name='Description'
-                                    value={values.Description}
-                                    onChange={handleChange}
-                                    error={touched.Description && Boolean(errors.Description)}
-                                    helperText={touched.Description && errors.Description}
-                                />
-                            </Grid>
-                        </Grid>
+                        <TextField
+                            autoFocus
+                            fullWidth
+                            size='small'
+                            disabled={dialogState.isSubmit}
+                            label={intl.formatMessage({ id: 'standardQC.QCCode' })}
+                            name='QCCode'
+                            value={values.QCCode}
+                            onChange={handleChange}
+                            error={touched.QCCode && Boolean(errors.QCCode)}
+                            helperText={touched.QCCode && errors.QCCode}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            size='small'
+                            disabled={dialogState.isSubmit}
+                            label={intl.formatMessage({ id: 'general.description' })}
+                            name='Description'
+                            value={values.Description}
+                            onChange={handleChange}
+                            error={touched.Description && Boolean(errors.Description)}
+                            helperText={touched.Description && errors.Description}
+                        />
                     </Grid>
                     <Grid item xs={12}>
                         <Grid

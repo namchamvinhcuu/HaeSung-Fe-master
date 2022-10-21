@@ -1,4 +1,4 @@
-import { MuiDialog, MuiResetButton, MuiSubmitButton ,MuiSelectField} from '@controls'
+import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiSelectField } from '@controls'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
     Autocomplete,
@@ -33,21 +33,21 @@ const ModifyDialog = (props) => {
 
     const schema = yup.object().shape({
         QCMasterCode: yup.string().trim().required(intl.formatMessage({ id: 'general.field_required' })),
-        MaterialId: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
-        QCType: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
+        MaterialId: yup.number().min(1, intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
+        QCType: yup.number().min(1, intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
         Description: yup.string().trim()
     });
- 
+
     const formik = useFormik({
         validationSchema: schema,
         initialValues: { ...initModal },
         enableReinitialize: true,
         onSubmit: async values => {
-          
+
             const res = await qcMasterService.modify(values);
             if (res.HttpResponseCode === 200) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-               // handleCloseDialog();
+                handleCloseDialog();
                 setModifyData({ ...res.Data });
                 setDialogState({ ...dialogState, isSubmit: false });
                 handleReset();
@@ -75,19 +75,19 @@ const ModifyDialog = (props) => {
 
     useEffect(() => {
         if (isOpen)
-           getQC();
+            getQC();
     }, [isOpen])
 
 
     useEffect(() => {
         getMaterial(qcType);
     }, [qcType])
- 
+
     useEffect(() => {
-       
-          formik.initialValues = initModal;
-        
-      }, [initModal])
+
+        formik.initialValues = initModal;
+
+    }, [initModal])
 
     const handleCloseDialog = () => {
         setqcType("");
@@ -99,11 +99,11 @@ const ModifyDialog = (props) => {
     }
 
     const getMaterial = async (qcType) => {
-    
-        const res = await qcMasterService.getMaterialForSelect({qcType : qcType});
+
+        const res = await qcMasterService.getMaterialForSelect({ qcType: qcType });
         if (res.HttpResponseCode === 200 && res.Data) {
             setmaterialArr([...res.Data])
-          
+
         }
         else {
             setmaterialArr([])
@@ -113,7 +113,7 @@ const ModifyDialog = (props) => {
         const res = await qcMasterService.getQCTypeForSelect();
         if (res.HttpResponseCode === 200 && res.Data) {
             setqcArr([...res.Data])
-            
+
         }
         else {
             setqcArr([])
@@ -137,10 +137,10 @@ const ModifyDialog = (props) => {
         >
             <form onSubmit={handleSubmit} >
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                   
-                <Grid item xs={12}>
+
+                    <Grid item xs={12}>
                         <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                            <Grid item xs={12}>
                                 <TextField
                                     fullWidth
                                     type="text"
@@ -155,22 +155,22 @@ const ModifyDialog = (props) => {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                            <MuiSelectField
+                                <MuiSelectField
                                     value={values.QCType ? { commonDetailId: values.QCType, commonDetailName: values.QCTypeName } : null}
                                     disabled={dialogState.isSubmit}
                                     label={intl.formatMessage({ id: 'qcMaster.qcType' })}
                                     options={qcArr}
                                     displayLabel="commonDetailName"
                                     displayValue="commonDetailId"
-                               
+
                                     onChange={(e, value) => {
                                         setFieldValue("MaterialCode", "");
-                                        setFieldValue("MaterialId",  0);
+                                        setFieldValue("MaterialId", 0);
                                         setqcType(value?.commonDetailName || "");
-                                        
+
                                         setFieldValue("QCTypeName", value?.commonDetailName || "");
                                         setFieldValue("QCType", value?.commonDetailId || "");
-                                        
+
                                     }}
                                     error={touched.QCType && Boolean(errors.QCType)}
                                     helperText={touched.QCType && errors.QCType}
@@ -188,7 +188,7 @@ const ModifyDialog = (props) => {
                                     onChange={(e, value) => {
                                         setFieldValue("MaterialCode", value?.MaterialCode || "");
                                         setFieldValue("MaterialId", value?.MaterialId || "");
-                                      
+
                                     }}
                                     error={touched.MaterialId && Boolean(errors.MaterialId)}
                                     helperText={touched.MaterialId && errors.MaterialId}
@@ -198,14 +198,14 @@ const ModifyDialog = (props) => {
                     </Grid>
                     <Grid item xs={12}>
                         <Grid container item spacing={2} marginBottom={2}>
-                        <Grid item xs={12} >
-                            <TextField
+                            <Grid item xs={12} >
+                                <TextField
                                     fullWidth
                                     type="text"
                                     size='small'
                                     name='Description'
                                     disabled={dialogState.isSubmit}
-                                   value={values.Description}
+                                    value={values.Description}
                                     onChange={handleChange}
                                     label={intl.formatMessage({ id: 'general.description' })}
                                     error={touched.Description && Boolean(errors.Description)}
@@ -223,7 +223,7 @@ const ModifyDialog = (props) => {
                                 text="save"
                                 loading={dialogState.isSubmit}
                             />
-                           <MuiResetButton
+                            <MuiResetButton
                                 onClick={handleReset}
                                 disabled={dialogState.isSubmit}
                             />

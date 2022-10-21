@@ -68,7 +68,7 @@ export default function QCDetail({ QCMasterId }) {
     const res = await qcDetailService.getStandardQCActive();
     if (res.HttpResponseCode === 200 && res.Data) {
       setQCCodeArr([...res.Data])
-      console.log(res.Data);
+      //console.log(res.Data);
     }
     else {
       setQCCodeArr([])
@@ -130,7 +130,7 @@ export default function QCDetail({ QCMasterId }) {
     let newSearchData = { ...qcDetailState.searchData };
     newSearchData[inputName] = e;
     if (inputName == 'showDelete') {
-      console.log(qcDetailState, inputName)
+      // console.log(qcDetailState, inputName)
       setqcDetailState({ ...qcDetailState, page: 1, searchData: { ...newSearchData } })
     }
     else {
@@ -152,7 +152,7 @@ export default function QCDetail({ QCMasterId }) {
           return;
         }
       } catch (error) {
-        console.log(error)
+        // console.log(error)
       }
     }
   }
@@ -169,7 +169,7 @@ export default function QCDetail({ QCMasterId }) {
     {
       field: "action",
       headerName: "",
-      flex: 0.3,
+      flex: 0.2,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
@@ -231,13 +231,12 @@ export default function QCDetail({ QCMasterId }) {
         direction="row"
         justifyContent="space-between"
         alignItems="width-end" sx={{ mb: 1 }} >
-        <Grid item xs={6}>
+        <Grid item xs={8}>
           <MuiButton text="create" color='success' onClick={toggleCreateDialog} sx={{ mt: 1 }}
             disabled={QCMasterId ? false : true} />
         </Grid>
         <Grid item>
           <MuiSelectField
-
             label={intl.formatMessage({ id: 'standardQC.QCCode' })}
             options={QCCodeArr}
             displayLabel="QCCode"

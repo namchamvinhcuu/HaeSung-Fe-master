@@ -17,7 +17,7 @@ const ModifyDialog = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setModifyData } = props;
-   // console.log(initModal,'product111111');
+    // console.log(initModal,'product111111');
 
     const clearParent = useRef(null);
 
@@ -27,7 +27,7 @@ const ModifyDialog = (props) => {
         isSubmit: false,
     })
 
-  
+
 
     const schema = yup.object().shape({
         QCCode: yup.string().required(),
@@ -62,7 +62,7 @@ const ModifyDialog = (props) => {
         })
     }
     const onSubmit = async (data) => {
-       
+
         dataModalRef.current = { ...initModal, ...data };
         setDialogState({ ...dialogState, isSubmit: true });
 
@@ -77,7 +77,7 @@ const ModifyDialog = (props) => {
             setDialogState({ ...dialogState, isSubmit: false });
             ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
         }
-        handleCloseDialog(); 
+        handleCloseDialog();
     };
 
 
@@ -94,33 +94,29 @@ const ModifyDialog = (props) => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                     <Grid item xs={12}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                                <TextField
-                                    autoFocus
-                                    fullWidth
-                                    size='small'
-                                    label={intl.formatMessage({ id: 'general.code' })}
-                                    {...register('QCCode', {
-                                        // onChange: (e) => handleInputChange(e)
-                                    })}
-                                    error={!!errors?.ProductCode}
-                                    helperText={errors?.ProductCode ? errors.ProductCode.message : null}
-                                />
-                            </Grid>
-                            <Grid item xs={6}  marginBottom= {2}>
-                                <TextField
-                                    fullWidth
-                                    size='small'
-                                    label={intl.formatMessage({ id: 'general.description' })}
-                                    name="Description"
-                                    {...register('Description', {
-                                    })}
-                                    error={!!errors?.Description}
-                                    helperText={errors?.Description ? errors.Description.message : null}
-                                />
-                            </Grid>
-                        </Grid>
+                        <TextField
+                            autoFocus
+                            fullWidth
+                            size='small'
+                            label={intl.formatMessage({ id: 'general.code' })}
+                            {...register('QCCode', {
+                                // onChange: (e) => handleInputChange(e)
+                            })}
+                            error={!!errors?.ProductCode}
+                            helperText={errors?.ProductCode ? errors.ProductCode.message : null}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            size='small'
+                            label={intl.formatMessage({ id: 'general.description' })}
+                            name="Description"
+                            {...register('Description', {
+                            })}
+                            error={!!errors?.Description}
+                            helperText={errors?.Description ? errors.Description.message : null}
+                        />
                     </Grid>
                     <Grid item xs={12}>
                         <Grid
@@ -131,7 +127,7 @@ const ModifyDialog = (props) => {
                                 text="save"
                                 loading={dialogState.isSubmit}
                             />
-                          
+
                         </Grid>
                     </Grid>
                 </Grid>
