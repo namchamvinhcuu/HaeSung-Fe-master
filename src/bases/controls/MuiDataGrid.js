@@ -216,9 +216,6 @@ const MuiDataGrid = (props) => {
 
     const intl = useIntl();
 
-    console.log(showLoading, 'lo');
-    console.log(showLoading, 'pa');
-
     const CustomPagination = () => {
         const apiRef = useGridApiContext();
         const page = useGridSelector(apiRef, gridPageSelector);

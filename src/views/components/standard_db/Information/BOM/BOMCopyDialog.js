@@ -4,35 +4,29 @@ import { Checkbox, FormControlLabel, Grid, IconButton, TextField } from '@mui/ma
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 import { bomDetailService, bomService } from '@services'
-import { ErrorAlert, SuccessAlert } from '@utils'
+import { ErrorAlert, SuccessAlert, dateToTicks } from '@utils'
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import { useFormik } from 'formik'
 import { useModal, useModal2 } from "@basesShared"
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
-import UndoIcon from '@mui/icons-material/Undo';
-import { da } from 'date-fns/locale'
 
-const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChild, setBomId, BomId }) => {
+const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, setBomId, BomId }) => {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
   const [version, setVersion] = useState("");
   const [versionError, setVersionError] = useState("");
   const [MaterialList, setMaterialList] = useState([]);
-  const { isShowing, toggle } = useModal();
+
   const [state, setState] = useState({
     isLoading: false,
-    data: [],
+    data: null,
     totalRow: 0,
     page: 1,
     pageSize: 7,
-    searchData: { showDelete: true, MaterialId: null },
     BomId: BomId
   });
-  const [newData, setNewData] = useState({})
-  const [updateData, setUpdateData] = useState({})
-  const [rowData, setRowData] = useState({});
   const [dialogState, setDialogState] = useState({ isSubmit: false });
   const [ParentList, setParentList] = useState([]);
   const [MaterialType, setMaterialType] = useState("");
@@ -57,7 +51,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
       renderCell: (params) => {
         return (
           <Grid Grid container spacing={1} alignItems="center" justifyContent="center" >
-            {params.row.BomLevel != 0 ?
+            {params.row.BomLevel != 0 &&
               <>
                 <Grid item xs={6} style={{ textAlign: "center" }}>
                   <IconButton
@@ -67,7 +61,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
                     sx={[{ '&:hover': { border: '1px solid red', }, }]}
                     onClick={() => handleDelete(params.row.BomId)}
                   >
-                    {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
+                    <DeleteIcon fontSize="inherit" />
                   </IconButton>
                 </Grid>
                 <Grid item xs={6} style={{ textAlign: "center" }}>
@@ -81,7 +75,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
                     <EditIcon fontSize="inherit" />
                   </IconButton>
                 </Grid>
-              </> : null}
+              </>}
           </Grid >
         );
       },
@@ -94,7 +88,6 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
     { field: 'Remark', headerName: intl.formatMessage({ id: "bom.Remark" }), flex: 0.6, },
   ];
 
-
   const schema = yup.object().shape({
     ParentId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
     MaterialId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
@@ -103,27 +96,21 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
 
   const formik = useFormik({
     validationSchema: schema,
-    initialValues: mode == CREATE_ACTION ? defaultValue : initModal,
+    initialValues: defaultValue,
     enableReinitialize: true,
     onSubmit: async values => onSubmit(values)
   });
 
   const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
 
-  //useEffect
-  // useEffect(() => {
-  //   getParent(BomId);
-  //   getMaterial();
-  // }, [])
-
   useEffect(() => {
     if (isOpen) {
-      getParent(BomId);
       fetchData(BomId);
+      getParent(BomId);
       getMaterial(1, BomId);
     }
     return () => { isRendered = false; }
-  }, [state.page, state.pageSize, BomId, isOpen]);
+  }, [isOpen]);
 
   useEffect(() => {
     if (MaterialType == "BARE MATERIAL")
@@ -131,46 +118,6 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
     else
       getMaterial(1, BomId);
   }, [MaterialType])
-
-  useEffect(() => {
-    if (!_.isEmpty(newData)) {
-      const data = [newData, ...state.data];
-      if (data.length > state.pageSize) {
-        data.pop();
-      }
-      setState({
-        ...state
-        , data: [...data]
-        , totalRow: state.totalRow + 1
-      });
-    }
-  }, [newData]);
-
-  useEffect(() => {
-    if (!_.isEmpty(newDataChild)) {
-      const data = [newDataChild, ...state.data];
-      if (data.length > state.pageSize) {
-        data.pop();
-      }
-      setState({
-        ...state
-        , data: [...data]
-        , totalRow: state.totalRow + 1
-      });
-    }
-  }, [newDataChild]);
-
-  useEffect(() => {
-    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData)) {
-      let newArr = [...state.data]
-      const index = _.findIndex(newArr, function (o) { return o.BomId == updateData.BomId; });
-      if (index !== -1) {
-        newArr[index] = updateData
-      }
-
-      setState({ ...state, data: [...newArr] });
-    }
-  }, [updateData]);
 
   //handle
   const handleDelete = async (BomId) => {
@@ -181,23 +128,23 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
     }
   }
 
-  const handleAdd = () => {
-    setMode(CREATE_ACTION);
-    setRowData();
-    toggle();
-  };
-
   const handleUpdate = (row) => {
     setMode(UPDATE_ACTION);
-    setRowData({ ...row });
-    toggle();
+    setFieldValue("BomId", row.BomId);
+    setFieldValue("BomLevel", row.BomLevel);
+    setFieldValue("ParentCode", row.ParentCode);
+    setFieldValue("Remark", row.Remark);
+    setFieldValue("Amount", row.Amount);
+    setFieldValue("MaterialCode", row.MaterialCode);
+    setFieldValue("MaterialId", row.MaterialId);
+    setFieldValue("ParentId", row.ParentId);
   };
 
   async function fetchData(BomId) {
     setState({ ...state, isLoading: true });
     const params = {
-      page: 1,
-      pageSize: -1,
+      page: state.page,
+      pageSize: state.pageSize,
       BomId: BomId
     }
     const res = await bomService.getBomForCopy(params);
@@ -210,41 +157,31 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
       });
   }
 
-  const handleSearch = (e, inputName) => {
-    let newSearchData = { ...state.searchData };
-    newSearchData[inputName] = e;
-    if (inputName == 'showDelete') {
-      setState({ ...state, page: 1, searchData: { ...newSearchData } })
-    }
-    else {
-      setState({ ...state, searchData: { ...newSearchData } })
-    }
-  }
-
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
-    console.log(data)
+    data.BomCode = state.data[0].BomCode;
     if (mode == CREATE_ACTION) {
-
+      data.BomId = dateToTicks(new Date());
+      data.ParentCode = (data.ParentCode.split(" - "))[0];
+      data.ParentId = data.MaterialParentId;
       const newData = [...state.data, data];
       setState({ ...state, data: newData });
-      ErrorAlert(intl.formatMessage({ id: "general.success" }))
+      SuccessAlert(intl.formatMessage({ id: "general.success" }))
       setDialogState({ ...dialogState, isSubmit: false });
       resetForm();
+      handleAddParent(data);
     }
     else {
-      const res = await bomService.modifyBom(data);
-      if (res.HttpResponseCode === 200) {
-        SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-        setUpdateData(res.Data);
-        setDialogState({ ...dialogState, isSubmit: false });
-        handleReset();
-        handleCloseDialog();
+      let newArr = [...state.data]
+      const index = _.findIndex(newArr, function (o) { return o.BomId == data.BomId; });
+      console.log(data, index, newArr)
+      if (index !== -1) {
+        newArr[index] = data
       }
-      else {
-        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-        setDialogState({ ...dialogState, isSubmit: false });
-      }
+      setState({ ...state, data: [...newArr] });
+      SuccessAlert(intl.formatMessage({ id: "general.success" }))
+      setDialogState({ ...dialogState, isSubmit: false });
+      resetForm();
     }
   };
 
@@ -259,11 +196,13 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
     if (version != '' && version != null) {
       setDialogState({ ...dialogState, isSubmit: true });
       const res = await bomService.copyBom(BomId, version, state.data);
-
-      if (res.HttpResponseCode === 200 && res.Data) {
+      if (res.HttpResponseCode === 200) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
         setDialogState({ ...dialogState, isSubmit: false });
-        onClose();
+        handleReset();
+        handleCloseDialog();
+        resetData();
+        setBomId(null);
       }
       else {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -275,10 +214,30 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
     }
   }
 
+  const handleAddParent = (data) => {
+    var option = {
+      BomId: data.BomId,
+      BomCode: data.MaterialCode + ' - ' + data.MaterialType,
+      BomLevelGroup: data.BomLevel == 0 ? "FINISH GOOD" : "Level " + data.BomLevel,
+      MaterialId: data.MaterialId,
+      MaterialType: data.MaterialType,
+      BomLevel: data.BomLevel
+    }
+    var newArr = [...ParentList, option];
+    newArr = newArr.sort(x => x.BomLevelGroup);
+    setParentList(newArr);
+  }
+
   const handleCloseDialog = () => {
+    resetForm(defaultValue);
+    setMode(CREATE_ACTION);
     onClose();
   }
 
+  const handleReset = () => {
+    setMode(CREATE_ACTION);
+    resetForm();
+  }
 
   const getParent = async (BomId) => {
     const res = await bomService.getParent(BomId);
@@ -286,6 +245,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
       setParentList([...res.Data])
     }
   }
+
   return (
     <MuiDialog
       maxWidth='xl'
@@ -311,6 +271,8 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
                   setMaterialType(value?.MaterialType);
                   setFieldValue("MaterialCode", '');
                   setFieldValue("MaterialId", null);
+                  setFieldValue("BomLevel", value?.BomLevel + 1);
+                  setFieldValue("MaterialParentId", value?.MaterialId || "");
                   setFieldValue("ParentCode", value?.BomCode || '');
                   setFieldValue("ParentId", value?.BomId || "");
                 }}
@@ -320,7 +282,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
                 fullWidth
                 size='small'
                 disabled
-                value={values.ParentCode}
+                value={values?.ParentCode || ''}
                 label={intl.formatMessage({ id: 'bom.ParentId' })}
               />}
             </Grid>
@@ -335,12 +297,12 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
                 displayGroup="GroupMaterial"
                 onChange={(e, value) => {
                   setMaterialTypeChild(value?.GroupMaterial);
-                  if (value?.GroupMaterial == "BARE MATERIAL" || value?.GroupMaterial == "FINISH GOOD")
+                  if (value?.GroupMaterial == "FINISH GOOD")
                     setFieldValue("Amount", '1', true);
                   else
                     setFieldValue("Amount", '', true);
-                  setFieldValue("BomId", 5454684, true);
                   setFieldValue("MaterialCode", value?.MaterialCode || '', true);
+                  setFieldValue("MaterialType", value?.GroupMaterial || '', true);
                   setFieldValue("MaterialId", value?.MaterialId || "", true);
                 }}
                 error={touched.MaterialId && Boolean(errors.MaterialId)}
@@ -353,8 +315,8 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
                 type="number"
                 size='small'
                 name='Amount'
-                disabled={MaterialTypeChild == "BARE MATERIAL" ? true : dialogState.isSubmit}
-                value={values.Amount}
+                disabled={MaterialTypeChild == "FINISH GOOD" ? true : dialogState.isSubmit}
+                value={values.Amount || ''}
                 onChange={handleChange}
                 label={intl.formatMessage({ id: 'bomDetail.Amount' })}
                 error={touched.Amount && Boolean(errors.Amount)}
@@ -367,13 +329,20 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
                 size='small'
                 name='Remark'
                 disabled={dialogState.isSubmit}
-                value={values.Remark}
+                value={values.Remark || ''}
                 onChange={handleChange}
                 label={intl.formatMessage({ id: 'bomDetail.Remark' })}
               />
             </Grid>
+
             <Grid item xs={12} sx={{ mb: 3 }}>
-              <MuiButton text="create" type='submit' color='success' loading={dialogState.isSubmit} sx={{ width: '100%', m: 0 }} />
+              {mode == CREATE_ACTION ?
+                <MuiButton text="create" type='submit' color='success' disabled={dialogState.isSubmit} sx={{ width: '100%', m: 0 }} /> :
+                <>
+                  <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} sx={{ width: '47%', m: 0, mr: 1 }} />
+                  <MuiButton text="edit" type='submit' color='warning' disabled={dialogState.isSubmit} sx={{ width: '48%', m: 0, ml: 1 }} />
+                </>
+              }
             </Grid>
           </Grid>
           <Grid item xs={9}>
@@ -387,11 +356,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
               page={state.page - 1}
               pageSize={state.pageSize}
               rowCount={state.totalRow}
-              onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
               getRowId={(rows) => rows.BomId}
-              getRowClassName={(params) => {
-                if (_.isEqual(params.row, newData) || _.isEqual(params.row, newDataChild)) return `Mui-created`
-              }}
             />
           </Grid>
         </Grid>
@@ -405,7 +370,10 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, setNewDataChild, newDataChi
             fullWidth
             size='small'
             disabled={state.isLoading}
-            onChange={(e) => setVersion(e.target.value)}
+            onChange={(e) => {
+              setVersion(e.target.value);
+              setVersionError(e.target.value ? "" : intl.formatMessage({ id: "general.field_required" }));
+            }}
             label={intl.formatMessage({ id: 'bom.Version' })}
             error={Boolean(versionError)}
             helperText={versionError}
@@ -421,12 +389,13 @@ const defaultValue = {
   BomCode: '',
   MaterialId: null,
   MaterialCode: '',
+  MaterialType: '',
   ParentId: null,
   ParentCode: '',
   Amount: '',
-  // MaterialId: null,
-  // MaterialCode: '',
-  Remark: ''
+  MaterialParentId: null,
+  Remark: '',
+  Remark1: ''
 };
 
 export default BOMCopyDialog

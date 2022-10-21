@@ -85,9 +85,9 @@ export default function BOM() {
       },
     },
     { field: 'BomCode', headerName: intl.formatMessage({ id: "bom.BomCode" }), flex: 0.5, },
+    { field: 'Version', headerName: intl.formatMessage({ id: "bom.Version" }), flex: 0.3 },
     { field: 'MaterialCode', headerName: intl.formatMessage({ id: "bom.MaterialId" }), flex: 0.5, },
     { field: 'Remark', headerName: intl.formatMessage({ id: "bom.Remark" }), flex: 0.7, },
-    { field: 'Version', headerName: intl.formatMessage({ id: "bom.Version" }), flex: 0.5 },
     { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
     {
       field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.5,
@@ -283,6 +283,7 @@ export default function BOM() {
         onClose={toggle2}
         mode={mode}
         BomId={BomId}
+        resetData={fetchData}
       />
 
       <BOMDetail BomId={BomId} newDataChild={newDataChild} BomCode={BomCode} />

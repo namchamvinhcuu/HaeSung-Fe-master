@@ -216,7 +216,7 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
                     setMaterialTypeChild(value?.GroupMaterial);
                     setFieldValue("MaterialCode", value?.MaterialCode || '', true);
                     setFieldValue("MaterialId", value?.MaterialId || "", true);
-                    if (value?.GroupMaterial == "BARE MATERIAL" || value?.GroupMaterial == "FINISH GOOD")
+                    if (value?.GroupMaterial == "FINISH GOOD")
                       setFieldValue("Amount", '1', true);
                     else
                       setFieldValue("Amount", '', true);
@@ -233,7 +233,7 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
               type="number"
               size='small'
               name='Amount'
-              disabled={MaterialTypeChild == "BARE MATERIAL" ? true : dialogState.isSubmit}
+              disabled={MaterialTypeChild == "FINISH GOOD" ? true : dialogState.isSubmit}
               value={values.Amount}
               onChange={handleChange}
               label={intl.formatMessage({ id: 'bomDetail.Amount' })}
@@ -246,6 +246,7 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
                 fullWidth
                 size='small'
                 name='Version'
+                inputProps={{ maxLength: 8 }}
                 disabled={mode == UPDATE_ACTION ? true : dialogState.isSubmit}
                 value={values.Version}
                 onChange={handleChange}
