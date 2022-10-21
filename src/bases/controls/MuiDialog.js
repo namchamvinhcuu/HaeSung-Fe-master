@@ -44,7 +44,8 @@ export const MuiDialog = ({ isOpen, onClose, title, disable_animate, maxWidth, d
 
     const handleClose = (event, reason) => {
         if (reason === "backdropClick" || reason === 'escapeKeyDown') {
-            console.log(reason);
+            //console.log(reason);
+            return;
         } else {
             onClose();
         }

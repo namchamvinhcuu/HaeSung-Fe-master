@@ -3,7 +3,9 @@ import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import SaveIcon from '@mui/icons-material/Save'
 import SearchIcon from '@mui/icons-material/Search';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { styled } from "@mui/material/styles"
 import { FormattedMessage } from 'react-intl'
 
@@ -15,7 +17,7 @@ const StyledButton = styled(Button)(({ theme, color }) => ({
 
 const MuiButton = React.forwardRef((props, ref) => {
 
-    const { text, variant, color, onClick, ...others } = props;
+    const { text, variant, color, onClick, disabled, type, ...others } = props;
     const str = `general.${text.toLowerCase()}`;
     const renderIcon = (text) => {
         switch (text.toLowerCase()) {
@@ -24,6 +26,10 @@ const MuiButton = React.forwardRef((props, ref) => {
                 return <AddIcon />
             case 'modify':
             case 'update':
+            case 'save':
+                return <SaveIcon />
+            case 'copy':
+                return <ContentCopyIcon />
             case 'edit':
                 return <EditIcon />
             case 'search':
@@ -42,7 +48,9 @@ const MuiButton = React.forwardRef((props, ref) => {
             startIcon={renderIcon(text)}
             variant={variant ?? "contained"}
             color={color ?? "primary"}
+            disabled={disabled}
             onClick={onClick}
+            type={type}
             {...others}
         >
             <FormattedMessage id={str} />

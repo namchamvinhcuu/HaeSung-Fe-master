@@ -23,9 +23,12 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
   const schema = yup.object().shape({
     //BomCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
     MaterialId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    Amount: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+    Amount: yup.number().nullable().min(0, intl.formatMessage({ id: 'bom.min_value' })).required(intl.formatMessage({ id: 'general.field_required' })),
     ParentId: yup.number().nullable().when('parentId', () => {
       if (!checkLV) return yup.string().required(intl.formatMessage({ id: 'general.field_required' }))
+    }),
+    Version: yup.string().nullable().when('version', () => {
+      if (checkLV) return yup.string().required(intl.formatMessage({ id: 'general.field_required' }))
     }),
   });
 
@@ -224,13 +227,12 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
               </Grid>
             </>
           }
-          {!checkLV && <Grid item xs={12}>
+          {!checkLV ? <Grid item xs={12}>
             <TextField
               fullWidth
               type="number"
               size='small'
               name='Amount'
-              inputProps={{ min: 0 }}
               disabled={MaterialTypeChild == "BARE MATERIAL" ? true : dialogState.isSubmit}
               value={values.Amount}
               onChange={handleChange}
@@ -238,7 +240,20 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
               error={touched.Amount && Boolean(errors.Amount)}
               helperText={touched.Amount && errors.Amount}
             />
-          </Grid>}
+          </Grid> :
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                size='small'
+                name='Version'
+                disabled={mode == UPDATE_ACTION ? true : dialogState.isSubmit}
+                value={values.Version}
+                onChange={handleChange}
+                label={intl.formatMessage({ id: 'bom.Version' })}
+                error={touched.Version && Boolean(errors.Version)}
+                helperText={touched.Version && errors.Version}
+              />
+            </Grid>}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -269,8 +284,7 @@ const defaultValue = {
   ParentId: null,
   ParentCode: '',
   Amount: 1,
-  // MaterialId: null,
-  // MaterialCode: '',
+  Version: '',
   Remark: ''
 };
 

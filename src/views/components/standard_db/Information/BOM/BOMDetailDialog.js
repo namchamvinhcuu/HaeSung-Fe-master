@@ -105,7 +105,6 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
       if (res.HttpResponseCode === 200) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
         setUpdateData(res.Data);
-        console.log(res.Data)
         setDialogState({ ...dialogState, isSubmit: false });
         handleReset();
         handleCloseDialog();

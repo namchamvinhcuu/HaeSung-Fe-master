@@ -39,7 +39,7 @@ const CreateStaffDialog = (props) => {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
                 setNewData({ ...res.Data });
                 setDialogState({ ...dialogState, isSubmit: false });
-                handleCloseDialog();
+                //handleCloseDialog();
             }
             else {
                 ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))

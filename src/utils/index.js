@@ -8,7 +8,7 @@ import eventBus from './EventBus'
 import { api_post_prevent_doubleclick, api_get_prevent_doubleclick } from './callApi_preventDoubleClick'
 
 import { historyApp, historyDashboard } from './history'
-import { calDateAgo, toCamel } from './Utils'
+import { calDateAgo, toCamel, dateToTicks } from './Utils'
 import {
     GetLocalStorage,
     SetLocalStorage,
@@ -40,6 +40,7 @@ export {
     calDateAgo,
     UserManager,
     toCamel,
+    dateToTicks,
     GetLocalStorage,
     SetLocalStorage,
     RemoveLocalStorage,

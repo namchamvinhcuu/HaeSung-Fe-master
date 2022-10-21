@@ -53,7 +53,17 @@ function toCamel(o) {
   return newO
 }
 
+function dateToTicks(date) {
+  const epochOffset = 621355968000000000;
+  const ticksPerMillisecond = 10000;
+
+  const ticks = epochOffset + date.getTime() * ticksPerMillisecond
+
+  return ticks / 10000;
+}
 
 export {
-  calDateAgo, toCamel
+  calDateAgo,
+  toCamel,
+  dateToTicks
 };

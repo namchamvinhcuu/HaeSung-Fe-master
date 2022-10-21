@@ -41,7 +41,7 @@ const ModifyLocationDialog = (props) => {
 
     const schema = yup.object().shape({
         LocationCode: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
-        AreaId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+        AreaId: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
     });
 
     const formik = useFormik({
@@ -108,7 +108,7 @@ const ModifyLocationDialog = (props) => {
                                     name='LocationCode'
                                     value={values.LocationCode}
                                     onChange={handleChange}
-                                    error={touched.LocationCode && Boolean(errors.StafLocationCodefCode)}
+                                    error={touched.LocationCode && Boolean(errors.LocationCode)}
                                     helperText={touched.LocationCode && errors.LocationCode}
                                 />
                             </Grid>
