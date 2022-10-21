@@ -88,7 +88,7 @@ export default function Material() {
     {
       field: 'SupplierNames', headerName: intl.formatMessage({ id: "material.SupplierId" }), flex: 0.7, renderCell: (params) => {
         return (
-          <Tooltip title={params.row.SupplierNames}  className="col-text-elip">
+          <Tooltip title={params.row.SupplierNames ?? ""} className="col-text-elip">
             <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.SupplierNames}</Typography>
           </Tooltip>
         )

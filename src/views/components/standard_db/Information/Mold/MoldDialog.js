@@ -16,8 +16,8 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
   const schema = yup.object().shape({
     MoldSerial: yup.string().required(intl.formatMessage({ id: 'mold.MoldSerial_required' })),
     MoldCode: yup.string().required(intl.formatMessage({ id: 'mold.MoldCode_required' })),
-    Inch: yup.string().nullable().required(intl.formatMessage({ id: 'mold.Inch_required' })),
-    MachineTon: yup.string().nullable().required(intl.formatMessage({ id: 'mold.MachineTon_required' })),
+    Inch: yup.number().nullable().required(intl.formatMessage({ id: 'mold.Inch_required' })).min(0, intl.formatMessage({ id: 'bom.min_value' })),
+    MachineTon: yup.number().nullable().required(intl.formatMessage({ id: 'mold.MachineTon_required' })).min(0, intl.formatMessage({ id: 'bom.min_value' })),
     Cabity: yup.string().nullable().required(intl.formatMessage({ id: 'mold.Cabity_required' })),
     Model: yup.number().nullable().required(intl.formatMessage({ id: 'mold.Model_required' })),
     MoldType: yup.number().nullable().required(intl.formatMessage({ id: 'mold.MoldType_required' })),
@@ -63,7 +63,6 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
         setNewData({ ...res.Data });
         setDialogState({ ...dialogState, isSubmit: false });
         handleReset();
-        handleCloseDialog();
       }
       else {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -150,7 +149,6 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
                 type='number'
                 size='small'
                 name='Inch'
-                inputProps={{ min: 0 }}
                 disabled={dialogState.isSubmit}
                 value={values.Inch}
                 onChange={handleChange}
@@ -213,7 +211,6 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
                 type='number'
                 size='small'
                 name='MachineTon'
-                inputProps={{ min: 0 }}
                 disabled={dialogState.isSubmit}
                 value={values.MachineTon}
                 onChange={handleChange}
