@@ -14,7 +14,6 @@ import axios from 'axios';
 import { useIntl } from 'react-intl'
 import { versionAppService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
-import fileDownload from 'js-file-download';
 
 export default function VersionApp({ t }) {
     const intl = useIntl();
