@@ -4,7 +4,7 @@ import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import UndoIcon from '@mui/icons-material/Undo'
-import { Autocomplete, createTheme, ThemeProvider, TextField, Switch } from "@mui/material"
+import { Autocomplete, createTheme, ThemeProvider, TextField, Switch, Tooltip, Typography } from "@mui/material"
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS'
@@ -141,14 +141,14 @@ const StandardQC = (props) => {
                     SuccessAlert(intl.formatMessage({ id: 'general.success' }))
                     await fetchData();
                 }
-                
+
             } catch (error) {
                 console.log(error)
             }
         }
     }
     const columns = [
-        { field: 'QCId', headerName: '', flex: 0.3, hide:true },
+        { field: 'QCId', headerName: '', flex: 0.3, hide: true },
         {
             field: 'id', headerName: '', flex: 0.1,
             filterable: false,
@@ -192,7 +192,15 @@ const StandardQC = (props) => {
             },
         },
         { field: 'QCCode', headerName: intl.formatMessage({ id: "standardQC.QCCode" }), flex: 0.3 },
-        { field: 'Description', headerName: intl.formatMessage({ id: "general.description" }), flex: 0.3 },
+        {
+            field: 'Description', headerName: intl.formatMessage({ id: "general.description" }), flex: 0.3, renderCell: (params) => {
+                return (
+                    <Tooltip title={params.row.Description} className="col-text-elip">
+                        <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.Description}</Typography>
+                    </Tooltip>
+                )
+            }
+        },
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
         { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.3 },
         {
@@ -215,7 +223,7 @@ const StandardQC = (props) => {
     ];
     return (
         <React.Fragment>
-            <Grid container direction="row"  justifyContent="space-between" alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+            <Grid container direction="row" justifyContent="space-between" alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
                 <Grid item xs={6}>
                     <MuiButton
                         text="create"
@@ -243,7 +251,7 @@ const StandardQC = (props) => {
                         onChange={(e) => handleSearch(e.target.value, 'Description')}
                     />
                 </Grid>
-               
+
                 <Grid item>
                     <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0 }} />
                 </Grid>

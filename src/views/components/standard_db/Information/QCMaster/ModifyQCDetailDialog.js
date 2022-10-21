@@ -19,7 +19,7 @@ const ModifyQCDetailDialog = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setModifyData } = props;
-    console.log(initModal);
+    //  console.log(initModal);
     const clearParent = useRef(null);
 
     const [QCCodeArr, setQCCodeArr] = useState([]);
@@ -49,7 +49,7 @@ const ModifyQCDetailDialog = (props) => {
         const res = await qcDetailService.getStandardQCActive();
         if (res.HttpResponseCode === 200 && res.Data) {
             setQCCodeArr([...res.Data])
-            console.log(res.Data);
+            // console.log(res.Data);
         }
         else {
             setQCCodeArr([])

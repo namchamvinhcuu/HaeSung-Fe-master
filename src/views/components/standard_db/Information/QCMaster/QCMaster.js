@@ -4,7 +4,7 @@ import { MuiButton, MuiDataGrid, MuiSearchField, MuiSelectField } from '@control
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import UndoIcon from '@mui/icons-material/Undo'
-import { Autocomplete, createTheme, ThemeProvider, TextField, Switch } from "@mui/material"
+import { Autocomplete, createTheme, ThemeProvider, TextField, Switch, Tooltip, Typography } from "@mui/material"
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS'
@@ -242,7 +242,15 @@ const QCMaster = (props) => {
         { field: 'QCTypeName', headerName: intl.formatMessage({ id: "qcMaster.qcType" }), flex: 0.3 },
         { field: 'MaterialTypeName', headerName: intl.formatMessage({ id: "qcMaster.MaterialTypeName" }), flex: 0.3 },
         { field: 'MaterialCode', headerName: intl.formatMessage({ id: "material.MaterialCode" }), flex: 0.3 },
-        { field: 'Description', headerName: intl.formatMessage({ id: "general.description" }), flex: 0.3 },
+        {
+            field: 'Description', headerName: intl.formatMessage({ id: "general.description" }), flex: 0.3, renderCell: (params) => {
+                return (
+                    <Tooltip title={params.row.Description} className="col-text-elip">
+                        <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.Description}</Typography>
+                    </Tooltip>
+                )
+            }
+        },
         { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
         { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.3 },
         {

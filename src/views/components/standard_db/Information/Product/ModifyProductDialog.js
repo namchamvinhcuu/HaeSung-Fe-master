@@ -1,4 +1,4 @@
-import { MuiDialog, MuiResetButton, MuiSubmitButton ,MuiSelectField} from '@controls'
+import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiSelectField } from '@controls'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
     Autocomplete,
@@ -29,14 +29,14 @@ const ModifyProductDialog = (props) => {
     const schema = yup.object().shape({
 
         MaterialCode: yup.string().trim().required(intl.formatMessage({ id: 'general.field_required' })),
-        ProductType: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
-        Model: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
+        ProductType: yup.number().min(1, intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
+        Model: yup.number().min(1, intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
         Description: yup.string().trim(),
         Inch: yup.number().test(
             'is-decimal',
             'invalid decimal',
             value => (value + "").match(/^\d*\.{1}\d*$/),
-          ),
+        ),
 
     });
     const formik = useFormik({
@@ -134,7 +134,7 @@ const ModifyProductDialog = (props) => {
 
                     <Grid item xs={12}>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
+                            <Grid item xs={12}>
                                 <TextField
                                     fullWidth
                                     type="text"
@@ -147,9 +147,9 @@ const ModifyProductDialog = (props) => {
                                     error={touched.MaterialCode && Boolean(errors.MaterialCode)}
                                     helperText={touched.MaterialCode && errors.MaterialCode}
                                 />
-                                
+
                             </Grid>
-                            <Grid item xs={6} marginBottom={2}>
+                            <Grid item xs={12} >
                                 <TextField
                                     fullWidth
                                     type="text"
@@ -166,7 +166,7 @@ const ModifyProductDialog = (props) => {
                             </Grid>
                         </Grid>
                         <Grid item xs={12}>
-                            <Grid container item spacing={2} marginBottom={2}>
+                            <Grid container item spacing={2} >
                                 <Grid item xs={6} >
                                     <MuiSelectField
                                         value={values.Model ? { commonDetailId: values.Model, commonDetailName: values.ModelName } : null}
@@ -229,7 +229,7 @@ const ModifyProductDialog = (props) => {
                                 text="save"
                                 loading={dialogState.isSubmit}
                             />
-                             <MuiResetButton
+                            <MuiResetButton
                                 onClick={handleReset}
                                 disabled={dialogState.isSubmit}
                             />

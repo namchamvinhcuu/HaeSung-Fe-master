@@ -21,7 +21,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
 
   const [state, setState] = useState({
     isLoading: false,
-    data: null,
+    data: [],
     totalRow: 0,
     page: 1,
     pageSize: 7,
@@ -352,6 +352,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
               headerHeight={45}
               columns={columns}
               rows={state.data}
+              row={[]}
               gridHeight={736}
               page={state.page - 1}
               pageSize={state.pageSize}

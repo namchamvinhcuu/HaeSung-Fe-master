@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS'
 import { User_Operations } from '@appstate/user'
 import { Store } from '@appstate'
-import { Autocomplete, createTheme, ThemeProvider, TextField, Switch } from "@mui/material"
+import { Autocomplete, createTheme, ThemeProvider, TextField, Switch, Tooltip, Typography } from "@mui/material"
 import { productService } from '@services'
 import { useIntl } from 'react-intl'
 import React, { useEffect, useRef, useState } from 'react'
@@ -134,7 +134,7 @@ const Product = () => {
             showDelete: productState.searchData.showDelete
         }
         const res = await productService.getProductList(params)
-       
+
         setproductState({
             ...productState
             , data: [...res.Data]
@@ -167,7 +167,7 @@ const Product = () => {
                     SuccessAlert(intl.formatMessage({ id: 'general.success' }))
                     await fetchData();
                 }
-               
+
             } catch (error) {
                 console.log(error)
             }
@@ -236,7 +236,15 @@ const Product = () => {
         { field: 'MaterialCode', headerName: 'Product Code', flex: 0.3 },
         { field: 'ProductType', headerName: 'Product Type', flex: 0.3, hide: true },
         { field: 'ProductTypeName', headerName: intl.formatMessage({ id: "product.product_type" }), flex: 0.3 },
-        { field: 'Description', headerName: intl.formatMessage({ id: "product.Description" }), flex: 0.3 },
+        {
+            field: 'Description', headerName: intl.formatMessage({ id: "product.Description" }), flex: 0.3, renderCell: (params) => {
+                return (
+                    <Tooltip title={params.row.Description} className="col-text-elip">
+                        <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.Description}</Typography>
+                    </Tooltip>
+                )
+            }
+        },
         { field: 'Inch', headerName: intl.formatMessage({ id: "product.Inch" }), flex: 0.3 },
         { field: 'UnitName', headerName: intl.formatMessage({ id: "product.Unit" }), flex: 0.3 },
 
