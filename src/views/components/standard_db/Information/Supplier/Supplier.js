@@ -33,8 +33,8 @@ const Supplier = (props) => {
         page: 1,
         pageSize: 20,
         searchData: {
-            SupplierCode: null,
-            SupplierName: null
+            SupplierCode: '',
+            SupplierName: ''
         }
     });
 
@@ -85,8 +85,8 @@ const Supplier = (props) => {
         const params = {
             page: supplierState.page,
             pageSize: supplierState.pageSize,
-            SupplierCode: supplierState.searchData.SupplierCode,
-            SupplierName: supplierState.searchData.SupplierName,
+            SupplierCode: supplierState.searchData.SupplierCode.trim(),
+            SupplierName: supplierState.searchData.SupplierName.trim(),
             isActived: showActivedData,
         }
         const res = await supplierService.getSuppliers(params);

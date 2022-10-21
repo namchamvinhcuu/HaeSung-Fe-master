@@ -34,7 +34,7 @@ const Line = (props) => {
         page: 1,
         pageSize: 20,
         searchData: {
-            LineName: null
+            LineName: ''
         }
     });
 
@@ -85,7 +85,7 @@ const Line = (props) => {
         const params = {
             page: lineState.page,
             pageSize: lineState.pageSize,
-            LineName: lineState.searchData.LineName,
+            LineName: lineState.searchData.LineName.trim(),
             isActived: showActivedData,
         }
         const res = await lineService.get(params);
