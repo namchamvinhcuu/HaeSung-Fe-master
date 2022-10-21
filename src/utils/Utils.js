@@ -59,7 +59,7 @@ function dateToTicks(date) {
 
   const ticks = epochOffset + date.getTime() * ticksPerMillisecond
 
-  return ticks / 10000;
+  return Math.floor(ticks / 10000);
 }
 
 export {

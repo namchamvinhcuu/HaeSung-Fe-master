@@ -13,6 +13,7 @@
         "close": "Close",
         "save": "Save",
         "copy": "Copy",
+        "cancel":"cancel",
         "changepassword": "Change password",
         "refresh": "Refresh",
         "accept": "Accept",
