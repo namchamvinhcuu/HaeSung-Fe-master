@@ -21,6 +21,8 @@ import * as qcMasterService from './Standard/Information/QCMaterService'
 import * as qcDetailService from './Standard/Information/qcDetailService'
 import * as locationService from './Standard/Information/LocationService'
 import * as versionAppService from './Standard/Configuration/VersionAppService'
+import * as documentService from './Standard/Configuration/DocumentService'
+
 export {
     loginService,
     menuService,
@@ -44,5 +46,6 @@ export {
     qcMasterService,
     qcDetailService,
     locationService,
-    versionAppService
+    versionAppService,
+    documentService,
 }

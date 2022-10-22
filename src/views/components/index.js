@@ -17,7 +17,7 @@ import Menu from "./standard_db/Configuration/Menu/Menu";
 import Permission from "./standard_db/Configuration/Permission/Permission";
 import User from "./standard_db/Configuration/User/User";
 import Role from "./standard_db/Configuration/Role/Role";
-
+import Document from "./standard_db/Configuration/Document/Document";
 import Common from "./standard_db/Configuration/Common/CommonMaster";
 
 //STANDARD - Information
@@ -91,6 +91,7 @@ export {
   Common,
   Role,
   VersionApp,
+  Document,
   //STANDARD - Information
   BOM,
   Location,

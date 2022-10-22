@@ -118,9 +118,36 @@ class NavBar extends Component {
     e.preventDefault();
     const { HistoryElementTabs, index_tab_active_array } = this.props
     var tab = HistoryElementTabs[index_tab_active_array];
+    console.log(tab);
     var funcRefreshChange = tab?.ref?.componentRefreshChange;
     funcRefreshChange && funcRefreshChange();
 
+  }
+
+  handleGuide(e) {
+    e.preventDefault();
+    const { HistoryElementTabs, index_tab_active_array } = this.props
+    var tab = HistoryElementTabs[index_tab_active_array];
+    console.log(tab);
+    //language
+    // var curlang = window?.i18n.language;
+    // var guid_lang = "";
+    // if (curlang == 'vi') {
+    //   guid_lang = "vietnam"
+    // } else if (curlang == 'en') {
+    //   guid_lang = "english"
+    // } else if (curlang == 'zh') {
+    //   guid_lang = "china"
+    // }
+    // api_get("EquipmentManagerApi/get-document_by_code/" + tab.code + "/" + guid_lang).then(res => {
+
+    //   if (res) {
+    //     var url_file = ConfigConstants.BASE_URL + "document/" + res.url_file
+    //     this.setState({ isShowing: true, pdfURL: url_file, title_guide: res.title });
+    //   } else {
+    //     ErrorAlert("Chưa có hướng dẫn cho màn này")
+    //   }
+    // });
   }
 
   // handleLang(e, code) {
@@ -283,7 +310,17 @@ class NavBar extends Component {
                 <i className="fa fa-question"></i>
               </a>
             </li> */}
-
+            <li className="nav-item">
+              <a
+                className="nav-link"
+                onClick={this.handleGuide.bind(this)}
+                href="#"
+                role="button"
+                title="help"
+              >
+                <i className="fa fa-question"></i>
+              </a>
+            </li>
             <li className="nav-item">
               <span
                 className="nav-link"
