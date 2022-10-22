@@ -14,7 +14,7 @@ import ModifyPermissionDialog from './ModifyPermissionDialog'
 
 const Permission = () => {
     const intl = useIntl();
-    let isRendered = useRef(false);
+    let isRendered = useRef(true);
     const initPermissionModel = {
         permissionId: 0
         , permissionName: ''
@@ -75,17 +75,21 @@ const Permission = () => {
             keyWord: menuState.searchData.keyWord,
         }
         const res = await permissionService.getPermissionList(params);
-
-        setMenuState({
-            ...menuState
-            , data: [...res.Data]
-            , totalRow: res.TotalRow
-            , isLoading: false
-        });
+        if (res && isRendered)
+            setMenuState({
+                ...menuState
+                , data: [...res.Data]
+                , totalRow: res.TotalRow
+                , isLoading: false
+            });
     }
 
     useEffect(() => {
         fetchData();
+
+        return () => {
+            isRendered = false;
+        }
     }, [menuState.page, menuState.pageSize]);
 
     useEffect(() => {
@@ -115,7 +119,6 @@ const Permission = () => {
     }, [selectedRow]);
 
     const changeSearchData = (e, inputName) => {
-        console.log('a', inputName)
         let newSearchData = { ...menuState.searchData };
         newSearchData[inputName] = e;
         setMenuState({ ...menuState, searchData: { ...newSearchData } })

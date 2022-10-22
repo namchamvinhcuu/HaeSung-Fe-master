@@ -15,9 +15,9 @@ import { ErrorAlert, SuccessAlert } from '@utils'
 const ModifyPermissionDialog = (props) => {
 
     const intl = useIntl();
+    let isRendered = useRef(true);
 
     const { initModal, isOpen, onClose, setModifyData } = props;
-    console.log(initModal,'permission' );
 
     const clearParent = useRef(null);
 
@@ -27,10 +27,10 @@ const ModifyPermissionDialog = (props) => {
         isSubmit: false,
     })
 
-  
+
 
     const schema = yup.object().shape({
-      
+
         forRoot: yup.bool().required(),
         permissionName: yup.string().required(),
 
@@ -50,32 +50,41 @@ const ModifyPermissionDialog = (props) => {
     const handleCloseDialog = () => {
         reset();
         clearErrors();
-        setDialogState({
-            ...dialogState,
-        })
+        if (isRendered)
+            setDialogState({
+                ...dialogState,
+            })
         onClose();
     }
 
 
 
     const onSubmit = async (data) => {
-       
+
         dataModalRef.current = { ...initModal, ...data };
         setDialogState({ ...dialogState, isSubmit: true });
 
         const res = await permissionService.modify(dataModalRef.current);
-        if (res.HttpResponseCode === 200 && res.Data) {
-            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-            setModifyData({ ...res.Data });
+        if (res)
+            if (res.HttpResponseCode === 200 && res.Data) {
+                SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+                if (isRendered)
+                    setModifyData({ ...res.Data });
 
-            handleCloseDialog();
-        }
-        else {
-            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-        }
-
-        setDialogState({ ...dialogState, isSubmit: false });
+                handleCloseDialog();
+            }
+            else {
+                ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+            }
+        if (isRendered)
+            setDialogState({ ...dialogState, isSubmit: false });
     };
+
+    useEffect(() => {
+        return () => {
+            isRendered = false
+        }
+    })
 
 
 
@@ -90,7 +99,7 @@ const ModifyPermissionDialog = (props) => {
         >
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                   
+
                     <Grid item xs={12}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
@@ -125,7 +134,7 @@ const ModifyPermissionDialog = (props) => {
                     </Grid>
                     <Grid item xs={12}>
                         <Grid container spacing={2}>
-                          
+
                             <Grid item xs={6}>
                                 <FormControlLabel
                                     control={
@@ -156,7 +165,7 @@ const ModifyPermissionDialog = (props) => {
                                 text="save"
                                 loading={dialogState.isSubmit}
                             />
-                          
+
                         </Grid>
                     </Grid>
                 </Grid>

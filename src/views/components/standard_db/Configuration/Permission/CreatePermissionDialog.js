@@ -11,7 +11,7 @@ import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 
 const CreatePermissionDialog = (props) => {
-
+    let isRendered = useRef(true);
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, refreshGrid } = props;
@@ -39,17 +39,23 @@ const CreatePermissionDialog = (props) => {
 
     const getPermissionTypeArr = async () => {
         const res = await permissionService.getPermissionTypeArr();
-        if (res.HttpResponseCode === 200 && res.Data) {
-            setPermissionTypeArr([...res.Data])
-        }
-        else {
-            setPermissionTypeArr([])
-        }
+        if (res && isRendered)
+            if (res.HttpResponseCode === 200 && res.Data) {
+
+                setPermissionTypeArr([...res.Data])
+            }
+            else {
+                setPermissionTypeArr([])
+            }
     }
 
     useEffect(() => {
         if (isOpen)
             getPermissionTypeArr();
+
+        return () => {
+            isRendered = false;
+        }
     }, [isOpen, dialogState]);
 
     const formik = useFormik({

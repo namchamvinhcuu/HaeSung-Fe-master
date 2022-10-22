@@ -25,6 +25,9 @@ const instance = axios.create({
     headers: {
         'Content-Type': 'application/json',
         'Authorization': '',
+        // "Access-Control-Allow-Headers": "*",
+        // "Access-Control-Allow-Origin": "*",
+        // "Access-Control-Allow-Methods": "*"
     },
     // withCredentials: true
 });
