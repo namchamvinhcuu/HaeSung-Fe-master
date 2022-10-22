@@ -20,7 +20,7 @@ import moment from "moment";
 import CreateBuyerDialog from './CreateBuyerDialog'
 import ModifyBuyerDialog from './ModifyBuyerDialog'
 import _ from 'lodash'
-import { FormControlLabel, Switch } from "@mui/material"
+import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material"
 import UndoIcon from '@mui/icons-material/Undo'
 import { ErrorAlert, SuccessAlert } from '@utils'
 
@@ -225,9 +225,22 @@ const Buyer = (props) => {
             },
         },
         { field: 'BuyerCode', headerName: intl.formatMessage({ id: "buyer.BuyerCode" }), /*flex: 0.7,*/  width: 150, },
-        { field: 'BuyerName', headerName: intl.formatMessage({ id: "buyer.BuyerName" }), flex: 1, },
-        { field: 'Contact', headerName: intl.formatMessage({ id: "buyer.Contact" }), flex: 1, },
-        { field: 'Description', headerName: intl.formatMessage({ id: "buyer.Description" }), flex: 1, },
+        { field: 'BuyerName', headerName: intl.formatMessage({ id: "buyer.BuyerName" }), flex: 1 },
+        { field: 'Contact', headerName: intl.formatMessage({ id: "buyer.Contact" }), flex: 1, renderCell: (params) => {
+            return (
+              <Tooltip title={params.row.Contact ?? ""} className="col-text-elip">
+                <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.Contact}</Typography>
+              </Tooltip>
+            )
+          }
+        },
+        { field: 'Description', headerName: intl.formatMessage({ id: "buyer.Description" }), flex: 1, renderCell: (params) => {
+            return (
+              <Tooltip title={params.row.Description ?? ""} className="col-text-elip">
+                <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.Description}</Typography>
+              </Tooltip>
+            )
+          }},
         { field: 'createdName', headerName: 'User Create', width: 150, },
         {
             field: 'createdDate', headerName: intl.formatMessage({ id: "general.created_date" }), width: 150, valueFormatter: params => {

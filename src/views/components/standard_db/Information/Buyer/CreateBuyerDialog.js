@@ -115,6 +115,7 @@ const CreateBuyerDialog = (props) => {
                                 fullWidth
                                 size='small'
                                 multiline={true}
+                                rows={2}
                                 disabled={dialogState.isSubmit}
                                 label={intl.formatMessage({ id: 'buyer.Description' })}
                                 name='Description'

@@ -94,7 +94,13 @@ export default function Material() {
         )
       }
     },
-    { field: 'Description', headerName: intl.formatMessage({ id: "material.Description" }), flex: 0.7, },
+    { field: 'Description', headerName: intl.formatMessage({ id: "material.Description" }), flex: 0.7, renderCell: (params) => {
+      return (
+        <Tooltip title={params.row.Description ?? ""} className="col-text-elip">
+          <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.Description}</Typography>
+        </Tooltip>
+      )
+    }},
     { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
     {
       field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.5,

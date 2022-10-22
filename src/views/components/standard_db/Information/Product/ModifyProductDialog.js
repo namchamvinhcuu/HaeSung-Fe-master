@@ -133,8 +133,8 @@ const ModifyProductDialog = (props) => {
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
 
                     <Grid item xs={12}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
+                        <Grid container spacing={2} marginBottom={3}>
+                            <Grid item xs={6}>
                                 <TextField
                                     fullWidth
                                     type="text"
@@ -149,7 +149,7 @@ const ModifyProductDialog = (props) => {
                                 />
 
                             </Grid>
-                            <Grid item xs={12} >
+                            <Grid item xs={6} >
                                 <TextField
                                     fullWidth
                                     type="text"
@@ -166,7 +166,7 @@ const ModifyProductDialog = (props) => {
                             </Grid>
                         </Grid>
                         <Grid item xs={12}>
-                            <Grid container item spacing={2} >
+                            <Grid container item spacing={2} marginBottom={3}>
                                 <Grid item xs={6} >
                                     <MuiSelectField
                                         value={values.Model ? { commonDetailId: values.Model, commonDetailName: values.ModelName } : null}
