@@ -30,7 +30,7 @@ const ModifyDialog = (props) => {
 
 
     const schema = yup.object().shape({
-        QCCode: yup.string().required(),
+        QCCode: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
     });
     const { control, register, formState: { errors }, handleSubmit, clearErrors, reset } = useForm({
         mode: 'onChange',
@@ -98,12 +98,12 @@ const ModifyDialog = (props) => {
                             autoFocus
                             fullWidth
                             size='small'
-                            label={intl.formatMessage({ id: 'general.code' })}
+                            label={intl.formatMessage({ id: 'standardQC.QCCode' }) + ' *'}
                             {...register('QCCode', {
                                 // onChange: (e) => handleInputChange(e)
                             })}
-                            error={!!errors?.ProductCode}
-                            helperText={errors?.ProductCode ? errors.ProductCode.message : null}
+                            error={!!errors?.QCCode}
+                            helperText={errors?.QCCode ? errors.QCCode.message : null}
                         />
                     </Grid>
                     <Grid item xs={12}>

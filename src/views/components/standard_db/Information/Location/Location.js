@@ -60,7 +60,7 @@ const Location = (props) => {
     {
       field: "action",
       headerName: "",
-      width: 80,
+      width: 100,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,

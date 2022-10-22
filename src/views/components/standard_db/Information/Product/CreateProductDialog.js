@@ -32,7 +32,7 @@ const CreateDialog = (props) => {
         Description: yup.string().trim(),
         Inch: yup.number().test(
             'is-decimal',
-            'invalid decimal',
+            'Invalid decimal',
             value => (value + "").match(/^\d*\.{1}\d*$/),
           ),
 
@@ -135,7 +135,7 @@ const CreateDialog = (props) => {
                                     disabled={dialogState.isSubmit}
                                     value={values.MaterialCode}
                                     onChange={handleChange}
-                                    label={intl.formatMessage({ id: 'general.code' })}
+                                    label={intl.formatMessage({ id: 'general.code' }) + ' *'}
                                     error={touched.MaterialCode && Boolean(errors.MaterialCode)}
                                     helperText={touched.MaterialCode && errors.MaterialCode}
                                 />
@@ -147,7 +147,7 @@ const CreateDialog = (props) => {
                                     type="text"
                                     size='small'
                                     name='Inch'
-                                    label={intl.formatMessage({ id: 'product.Inch' })}
+                                    label={intl.formatMessage({ id: 'product.Inch' }) + ' *'}
                                     disabled={dialogState.isSubmit}
                                     value={values.Inch}
                                     onChange={handleChange}
@@ -164,7 +164,7 @@ const CreateDialog = (props) => {
                                 <MuiSelectField
                                     value={values.Model ? { commonDetailId: values.Model, commonDetailName: values.ModelName } : null}
                                     disabled={dialogState.isSubmit}
-                                    label={intl.formatMessage({ id: 'product.Model' })}
+                                    label={intl.formatMessage({ id: 'product.Model' }) + ' *'}
                                     options={modelArr}
                                     displayLabel="commonDetailName"
                                     displayValue="commonDetailId"
@@ -180,7 +180,7 @@ const CreateDialog = (props) => {
                             <MuiSelectField
                                 value={values.ProductType ? { commonDetailId: values.ProductType, commonDetailName: values.ProductTypeName } : null}
                                 disabled={dialogState.isSubmit}
-                                label={intl.formatMessage({ id: 'product.product_type' })}
+                                label={intl.formatMessage({ id: 'product.product_type' }) + ' *'}
                                 options={productTypeArr}
                                 displayLabel="commonDetailName"
                                 displayValue="commonDetailId"

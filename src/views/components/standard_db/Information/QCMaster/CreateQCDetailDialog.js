@@ -126,7 +126,7 @@ const CreateQCDetailDialog = (props) => {
                                 <MuiSelectField
                                     value={values.QCId ? { QCId: values.QCId, QCCode: values.QCCode } : null}
                                     disabled={dialogState.isSubmit}
-                                    label={intl.formatMessage({ id: 'standardQC.QCCode' })}
+                                    label={intl.formatMessage({ id: 'standardQC.QCCode' }) + ' *'}
                                     options={QCCodeArr}
                                     displayLabel="QCCode"
                                     displayValue="QCId"

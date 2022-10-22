@@ -189,7 +189,7 @@ const Buyer = (props) => {
         {
             field: "action",
             headerName: "",
-            width: 80,
+            width: 100,
             // headerAlign: 'center',
             disableClickEventBubbling: true,
             sortable: false,

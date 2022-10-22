@@ -150,14 +150,14 @@ const StandardQC = (props) => {
     const columns = [
         { field: 'QCId', headerName: '', flex: 0.3, hide: true },
         {
-            field: 'id', headerName: '', flex: 0.1,
+            field: 'id', headerName: '', flex: 0.01,
             filterable: false,
             renderCell: (index) => index.api.getRowIndex(index.row.QCId) + 1 + (standardQCState.page - 1) * standardQCState.pageSize,
         },
         {
             field: "action",
             headerName: "",
-            flex: 0.2,
+            width: 100,
             // headerAlign: 'center',
             disableClickEventBubbling: true,
             sortable: false,

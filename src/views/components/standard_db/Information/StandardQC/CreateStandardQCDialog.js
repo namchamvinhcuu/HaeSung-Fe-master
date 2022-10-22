@@ -76,7 +76,7 @@ const CreateDialog = (props) => {
                             fullWidth
                             size='small'
                             disabled={dialogState.isSubmit}
-                            label={intl.formatMessage({ id: 'standardQC.QCCode' })}
+                            label={intl.formatMessage({ id: 'standardQC.QCCode' }) + ' *'}
                             name='QCCode'
                             value={values.QCCode}
                             onChange={handleChange}

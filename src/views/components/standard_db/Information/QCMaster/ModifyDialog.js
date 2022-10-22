@@ -149,7 +149,7 @@ const ModifyDialog = (props) => {
                                     disabled={dialogState.isSubmit}
                                     value={values.QCMasterCode}
                                     onChange={handleChange}
-                                    label={intl.formatMessage({ id: 'qcMaster.QCMasterCode' })}
+                                    label={intl.formatMessage({ id: 'qcMaster.QCMasterCode' }) + ' *'}
                                     error={touched.QCMasterCode && Boolean(errors.QCMasterCode)}
                                     helperText={touched.QCMasterCode && errors.QCMasterCode}
                                 />
@@ -158,7 +158,7 @@ const ModifyDialog = (props) => {
                                 <MuiSelectField
                                     value={values.QCType ? { commonDetailId: values.QCType, commonDetailName: values.QCTypeName } : null}
                                     disabled={dialogState.isSubmit}
-                                    label={intl.formatMessage({ id: 'qcMaster.qcType' })}
+                                    label={intl.formatMessage({ id: 'qcMaster.qcType' }) + ' *'}
                                     options={qcArr}
                                     displayLabel="commonDetailName"
                                     displayValue="commonDetailId"
@@ -180,7 +180,7 @@ const ModifyDialog = (props) => {
                                 <MuiSelectField
                                     value={values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null}
                                     disabled={dialogState.isSubmit}
-                                    label={intl.formatMessage({ id: 'material.MaterialCode' })}
+                                    label={intl.formatMessage({ id: 'material.MaterialCode' }) + ' *'}
                                     options={materialArr}
                                     displayLabel="MaterialCode"
                                     displayValue="MaterialId"
