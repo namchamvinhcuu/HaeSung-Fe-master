@@ -97,6 +97,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
         <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12}>
             <TextField
+              required
               autoFocus
               fullWidth
               size='small'
@@ -112,6 +113,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           </Grid>
           <Grid item xs={12}>
             <MuiSelectField
+              required
               value={values.MaterialType ? { commonDetailId: values.MaterialType, commonDetailName: values.MaterialTypeName } : null}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'material.MaterialType' })}
@@ -131,6 +133,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           </Grid>
           <Grid item xs={12}>
             <MuiSelectField
+              required
               value={values.Unit ? { commonDetailId: values.Unit, commonDetailName: values.UnitName } : null}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'material.Unit' })}
@@ -165,7 +168,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                 renderInput={(params) => {
                   return <TextField
                     {...params}
-                    label={intl.formatMessage({ id: 'material.SupplierId' })}
+                    label={intl.formatMessage({ id: 'material.SupplierId' }) + ' *'}
                     error={touched.Suppliers && Boolean(errors.Suppliers)}
                     helperText={touched.Suppliers && errors.Suppliers}
                   />

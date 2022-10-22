@@ -30,7 +30,6 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
   const [dialogState, setDialogState] = useState({ isSubmit: false });
   const [ParentList, setParentList] = useState([]);
   const [MaterialType, setMaterialType] = useState("");
-  const [MaterialTypeChild, setMaterialTypeChild] = useState("");
 
   const columns = [
     {
@@ -91,7 +90,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
   const schema = yup.object().shape({
     ParentId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
     MaterialId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    Amount: yup.number().nullable().min(0, intl.formatMessage({ id: 'bom.min_value' })).required(intl.formatMessage({ id: 'general.field_required' })),
+    Amount: yup.number().nullable().moreThan(0, intl.formatMessage({ id: 'bom.min_value' })).required(intl.formatMessage({ id: 'general.field_required' })),
   });
 
   const formik = useFormik({
@@ -129,6 +128,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
   }
 
   const handleUpdate = (row) => {
+    handleReset();
     setMode(UPDATE_ACTION);
     setFieldValue("BomId", row.BomId);
     setFieldValue("BomLevel", row.BomLevel);
@@ -181,6 +181,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
       setState({ ...state, data: [...newArr] });
       SuccessAlert(intl.formatMessage({ id: "general.success" }))
       setDialogState({ ...dialogState, isSubmit: false });
+      setMode(CREATE_ACTION);
       resetForm();
     }
   };
@@ -230,12 +231,13 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
 
   const handleCloseDialog = () => {
     resetForm(defaultValue);
-    setMode(CREATE_ACTION);
+    handleReset();
     onClose();
   }
 
   const handleReset = () => {
     setMode(CREATE_ACTION);
+    setDialogState({ ...dialogState, isSubmit: false });
     resetForm();
   }
 
@@ -260,6 +262,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
           <Grid item xs={3}>
             <Grid item xs={12} sx={{ mb: 3 }}>
               {mode == CREATE_ACTION ? <MuiSelectField
+                required
                 value={values.ParentId ? { BomId: values.ParentId, BomCode: values.ParentCode } : null}
                 disabled={dialogState.isSubmit}
                 label={intl.formatMessage({ id: 'bom.ParentId' })}
@@ -272,9 +275,9 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
                   setFieldValue("MaterialCode", '');
                   setFieldValue("MaterialId", null);
                   setFieldValue("BomLevel", value?.BomLevel + 1);
-                  setFieldValue("MaterialParentId", value?.MaterialId || "");
-                  setFieldValue("ParentCode", value?.BomCode || '');
-                  setFieldValue("ParentId", value?.BomId || "");
+                  setFieldValue("MaterialParentId", value?.MaterialId);
+                  setFieldValue("ParentCode", value?.BomCode);
+                  setFieldValue("ParentId", value?.BomId);
                 }}
                 error={touched.ParentId && Boolean(errors.ParentId)}
                 helperText={touched.ParentId && errors.ParentId}
@@ -282,12 +285,13 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
                 fullWidth
                 size='small'
                 disabled
-                value={values?.ParentCode || ''}
+                value={values?.ParentCode}
                 label={intl.formatMessage({ id: 'bom.ParentId' })}
               />}
             </Grid>
             <Grid item xs={12} sx={{ mb: 3 }}>
               <MuiSelectField
+                required
                 value={values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null}
                 disabled={dialogState.isSubmit}
                 label={intl.formatMessage({ id: 'bomDetail.MaterialId' })}
@@ -296,14 +300,9 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
                 displayValue="MaterialId"
                 displayGroup="GroupMaterial"
                 onChange={(e, value) => {
-                  setMaterialTypeChild(value?.GroupMaterial);
-                  if (value?.GroupMaterial == "FINISH GOOD")
-                    setFieldValue("Amount", '1', true);
-                  else
-                    setFieldValue("Amount", '', true);
-                  setFieldValue("MaterialCode", value?.MaterialCode || '', true);
-                  setFieldValue("MaterialType", value?.GroupMaterial || '', true);
-                  setFieldValue("MaterialId", value?.MaterialId || "", true);
+                  setFieldValue("MaterialCode", value?.MaterialCode, true);
+                  setFieldValue("MaterialType", value?.GroupMaterial, true);
+                  setFieldValue("MaterialId", value?.MaterialId, true);
                 }}
                 error={touched.MaterialId && Boolean(errors.MaterialId)}
                 helperText={touched.MaterialId && errors.MaterialId}
@@ -311,12 +310,13 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
             </Grid>
             <Grid item xs={12} sx={{ mb: 3 }}>
               <TextField
+                required
                 fullWidth
                 type="number"
                 size='small'
                 name='Amount'
-                disabled={MaterialTypeChild == "FINISH GOOD" ? true : dialogState.isSubmit}
-                value={values.Amount || ''}
+                disabled={dialogState.isSubmit}
+                value={values.Amount}
                 onChange={handleChange}
                 label={intl.formatMessage({ id: 'bomDetail.Amount' })}
                 error={touched.Amount && Boolean(errors.Amount)}
@@ -329,7 +329,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
                 size='small'
                 name='Remark'
                 disabled={dialogState.isSubmit}
-                value={values.Remark || ''}
+                value={values.Remark}
                 onChange={handleChange}
                 label={intl.formatMessage({ id: 'bomDetail.Remark' })}
               />
@@ -353,7 +353,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
               columns={columns}
               rows={state.data}
               row={[]}
-              gridHeight={736}
+              gridHeight={310}
               page={state.page - 1}
               pageSize={state.pageSize}
               rowCount={state.totalRow}
@@ -367,6 +367,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
         <Grid container direction="row-reverse">
           <MuiButton text="save" color='primary' onClick={handleSave} />
           <TextField
+            required
             sx={{ width: 300, marginTop: '3px', mr: 1 }}
             fullWidth
             size='small'
@@ -395,8 +396,7 @@ const defaultValue = {
   ParentCode: '',
   Amount: '',
   MaterialParentId: null,
-  Remark: '',
-  Remark1: ''
+  Remark: ''
 };
 
 export default BOMCopyDialog

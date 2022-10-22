@@ -16,8 +16,8 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
   const schema = yup.object().shape({
     MoldSerial: yup.string().required(intl.formatMessage({ id: 'mold.MoldSerial_required' })),
     MoldCode: yup.string().required(intl.formatMessage({ id: 'mold.MoldCode_required' })),
-    Inch: yup.number().nullable().required(intl.formatMessage({ id: 'mold.Inch_required' })).min(0, intl.formatMessage({ id: 'bom.min_value' })),
-    MachineTon: yup.number().nullable().required(intl.formatMessage({ id: 'mold.MachineTon_required' })).min(0, intl.formatMessage({ id: 'bom.min_value' })),
+    Inch: yup.number().nullable().required(intl.formatMessage({ id: 'mold.Inch_required' })).moreThan(0, intl.formatMessage({ id: 'bom.min_value' })),
+    MachineTon: yup.number().nullable().required(intl.formatMessage({ id: 'mold.MachineTon_required' })).moreThan(0, intl.formatMessage({ id: 'bom.min_value' })),
     Cabity: yup.string().nullable().required(intl.formatMessage({ id: 'mold.Cabity_required' })),
     Model: yup.number().nullable().required(intl.formatMessage({ id: 'mold.Model_required' })),
     MoldType: yup.number().nullable().required(intl.formatMessage({ id: 'mold.MoldType_required' })),
@@ -99,6 +99,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
           <Grid item container spacing={2}>
             <Grid item xs={6}>
               <TextField
+                required
                 autoFocus
                 fullWidth
                 size='small'
@@ -113,6 +114,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
             </Grid>
             <Grid item xs={6}>
               <TextField
+                required
                 fullWidth
                 size='small'
                 name='MoldCode'
@@ -128,6 +130,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
           <Grid item container spacing={2}>
             <Grid item xs={6}>
               <MuiSelectField
+                required
                 value={values.Model ? { commonDetailId: values.Model, commonDetailName: values.ModelName } : null}
                 disabled={dialogState.isSubmit}
                 label={intl.formatMessage({ id: 'mold.Model' })}
@@ -138,13 +141,13 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
                   setFieldValue("ModelName", value?.commonDetailName || '');
                   setFieldValue("Model", value?.commonDetailId || '');
                 }}
-                defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.Model, commonDetailName: initModal.ModelName }}
                 error={touched.Model && Boolean(errors.Model)}
                 helperText={touched.Model && errors.Model}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
+                required
                 fullWidth
                 type='number'
                 size='small'
@@ -161,6 +164,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
           <Grid item container spacing={2}>
             <Grid item xs={6}>
               <MuiSelectField
+                required
                 value={values.MoldType ? { commonDetailId: values.MoldType, commonDetailName: values.MoldTypeName } : null}
                 disabled={dialogState.isSubmit}
                 label={intl.formatMessage({ id: 'mold.MoldType' })}
@@ -171,13 +175,13 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
                   setFieldValue("MoldTypeName", value?.commonDetailName || '');
                   setFieldValue("MoldType", value?.commonDetailId || '');
                 }}
-                defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.MoldType, commonDetailName: initModal.MoldTypeName }}
                 error={touched.MoldType && Boolean(errors.MoldType)}
                 helperText={touched.MoldType && errors.MoldType}
               />
             </Grid>
             <Grid item xs={6}>
               <MuiSelectField
+                required
                 value={values.MachineType ? { commonDetailId: values.MachineType, commonDetailName: values.MachineTypeName } : null}
                 disabled={dialogState.isSubmit}
                 label={intl.formatMessage({ id: 'mold.MachineType' })}
@@ -188,7 +192,6 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
                   setFieldValue("MachineTypeName", value?.commonDetailName || '');
                   setFieldValue("MachineType", value?.commonDetailId || '');
                 }}
-                defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.MachineType, commonDetailName: initModal.MachineTypeName }}
                 error={touched.MachineType && Boolean(errors.MachineType)}
                 helperText={touched.MachineType && errors.MachineType}
               />
@@ -197,6 +200,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
           <Grid item container spacing={2}>
             <Grid item xs={6}>
               <MuiDateField
+                required
                 disabled={dialogState.isSubmit}
                 label={intl.formatMessage({ id: 'mold.ETADate' })}
                 value={values.ETADate ?? null}
@@ -207,6 +211,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
             </Grid>
             <Grid item xs={6}>
               <TextField
+                required
                 fullWidth
                 type='number'
                 size='small'
@@ -223,6 +228,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
           <Grid item container spacing={2}>
             <Grid item xs={6}>
               <TextField
+                required
                 fullWidth
                 type='number'
                 size='small'
@@ -239,6 +245,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
             <Grid item xs={6}>
 
               <MuiSelectField
+                required
                 value={values.ETAStatus1 != '' ? { ETAStatus: values.ETAStatus1, ETAStatusName: values.ETAStatusName } : null}
                 disabled={dialogState.isSubmit}
                 label={intl.formatMessage({ id: 'mold.ETAStatus' })}
@@ -249,7 +256,6 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
                   setFieldValue("ETAStatusName", value?.ETAStatusName || '');
                   setFieldValue("ETAStatus1", value?.ETAStatus || null);
                 }}
-                //defaultValue={mode == CREATE_ACTION ? null : { ETAStatus: initModal.ETAStatus, ETAStatusName: initModal.ETAStatusName }}
                 error={touched.ETAStatus1 && Boolean(errors.ETAStatus1)}
                 helperText={touched.ETAStatus1 && errors.ETAStatus1}
               />

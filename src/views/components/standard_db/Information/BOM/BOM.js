@@ -38,7 +38,6 @@ export default function BOM() {
   const [rowData, setRowData] = useState({});
   const [MaterialList, setMaterialList] = useState([]);
   const [BomId, setBomId] = useState(null);
-  const [BomCode, setBomCode] = useState("");
 
   const columns = [
     {
@@ -258,24 +257,19 @@ export default function BOM() {
       />
 
       <BOMDialog
-        setNewData={setNewData}
-        setBomId={setBomId}
-        BomCode={BomCode}
-        setBomCode={setBomCode}
-        setNewDataChild={setNewDataChild}
-        setUpdateData={setUpdateData}
         initModal={rowData}
         isOpen={isShowing}
         onClose={toggle}
+        setNewData={setNewData}
+        setNewDataChild={setNewDataChild}
+        setUpdateData={setUpdateData}
+        setBomId={setBomId}
         mode={mode}
       />
 
       <BOMCopyDialog
-        valueOption={{ MaterialList: MaterialList }}
         setNewData={setNewData}
         setBomId={setBomId}
-        BomCode={BomCode}
-        setBomCode={setBomCode}
         setNewDataChild={setNewDataChild}
         setUpdateData={setUpdateData}
         initModal={rowData}
@@ -286,7 +280,10 @@ export default function BOM() {
         resetData={fetchData}
       />
 
-      <BOMDetail BomId={BomId} newDataChild={newDataChild} BomCode={BomCode} />
+      <BOMDetail
+        BomId={BomId}
+        newDataChild={newDataChild}
+      />
     </React.Fragment>
 
   )

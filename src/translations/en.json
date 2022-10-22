@@ -53,6 +53,7 @@
         "modifiedDate": "Update date",
         "duplicated_code": "Duplicated code",
         "duplicated_name": "Duplicated name",
+        "duplicated_version": "Duplicated version",
         "data_actived": "Actived data",
         "data_deleted": "Deleted data"
     },

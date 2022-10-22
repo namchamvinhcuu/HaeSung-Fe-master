@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField } from '@controls'
-import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
+import { Grid, TextField } from '@mui/material'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 import { bomService } from '@services'
@@ -8,22 +8,20 @@ import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import { useFormik } from 'formik'
 
-const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, setUpdateData, mode, valueOption, setBomId }) => {
+const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, setUpdateData, setBomId, mode }) => {
   const intl = useIntl();
   let bomId = null;
   const [checkLV, setCheckLV] = useState(true);
   const [hidecheckLV, setHideCheckLV] = useState(true);
   const [BomCode, setBomCode] = useState("");
   const [MaterialType, setMaterialType] = useState("");
-  const [MaterialTypeChild, setMaterialTypeChild] = useState("");
   const [dialogState, setDialogState] = useState({ isSubmit: false });
   const [ParentList, setParentList] = useState([]);
   const [MaterialList, setMaterialList] = useState([]);
 
   const schema = yup.object().shape({
-    //BomCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
     MaterialId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    Amount: yup.number().nullable().min(0, intl.formatMessage({ id: 'bom.min_value' })).required(intl.formatMessage({ id: 'general.field_required' })),
+    Amount: yup.number().nullable().moreThan(0, intl.formatMessage({ id: 'bom.min_value' })).required(intl.formatMessage({ id: 'general.field_required' })),
     ParentId: yup.number().nullable().when('parentId', () => {
       if (!checkLV) return yup.string().required(intl.formatMessage({ id: 'general.field_required' }))
     }),
@@ -155,8 +153,8 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
       <form onSubmit={handleSubmit} >
         <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           {checkLV ? <Grid item xs={12}>
-
             {mode == CREATE_ACTION ? <MuiSelectField
+              required
               value={values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null}
               disabled={mode == UPDATE_ACTION ? true : dialogState.isSubmit}
               label={intl.formatMessage({ id: 'bom.MaterialId' })}
@@ -184,6 +182,7 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
             <>
               <Grid item xs={12}>
                 <MuiSelectField
+                  required
                   name="ParentId"
                   value={values.ParentId ? { BomId: values.ParentId, BomCode: values.ParentCode } : null}
                   disabled={mode == UPDATE_ACTION ? true : dialogState.isSubmit}
@@ -205,6 +204,7 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
               </Grid>
               <Grid item xs={12}>
                 <MuiSelectField
+                  required
                   value={values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null}
                   disabled={dialogState.isSubmit}
                   label={intl.formatMessage({ id: 'bomDetail.MaterialId' })}
@@ -213,7 +213,6 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
                   displayValue="MaterialId"
                   displayGroup="GroupMaterial"
                   onChange={(e, value) => {
-                    setMaterialTypeChild(value?.GroupMaterial);
                     setFieldValue("MaterialCode", value?.MaterialCode || '', true);
                     setFieldValue("MaterialId", value?.MaterialId || "", true);
                     if (value?.GroupMaterial == "FINISH GOOD")
@@ -229,11 +228,12 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
           }
           {!checkLV ? <Grid item xs={12}>
             <TextField
+              required
               fullWidth
               type="number"
               size='small'
               name='Amount'
-              disabled={MaterialTypeChild == "FINISH GOOD" ? true : dialogState.isSubmit}
+              disabled={dialogState.isSubmit}
               value={values.Amount}
               onChange={handleChange}
               label={intl.formatMessage({ id: 'bomDetail.Amount' })}
@@ -243,6 +243,7 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
           </Grid> :
             <Grid item xs={12}>
               <TextField
+                required
                 fullWidth
                 size='small'
                 name='Version'

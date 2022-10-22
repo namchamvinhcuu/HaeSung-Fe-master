@@ -12,7 +12,7 @@ import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import moment from 'moment';
 import BOMDetailDialog from './BOMDetailDialog'
 
-export default function BOMDetail({ BomId, newDataChild, BomCode }) {
+export default function BOMDetail({ BomId, newDataChild }) {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
@@ -39,7 +39,6 @@ export default function BOMDetail({ BomId, newDataChild, BomCode }) {
     },
     { field: 'BomId', hide: true },
     { field: 'ParentId', hide: true },
-    // { field: 'ParentCode', hide: true },
     { field: 'row_version', hide: true },
     {
       field: "action",
@@ -262,15 +261,13 @@ export default function BOMDetail({ BomId, newDataChild, BomCode }) {
       />
 
       <BOMDetailDialog
-        MaterialList={MaterialList}
-        BomId={BomId}
-        BomCode={BomCode}
-        setNewData={setNewData}
-        setUpdateData={setUpdateData}
         initModal={rowData}
         isOpen={isShowing}
         onClose={toggle}
+        setNewData={setNewData}
+        setUpdateData={setUpdateData}
         mode={mode}
+        BomId={BomId}
       />
     </>
   )

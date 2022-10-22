@@ -53,6 +53,7 @@
         "modifiedDate": "Ngày sửa",
         "duplicated_code": "Trùng mã",
         "duplicated_name": "Trùng tên",
+        "duplicated_version": "Trùng phiên bản",
         "data_actived": "Actived data",
         "data_deleted": "Deleted data"
     },
