@@ -4,7 +4,7 @@ import {
 
 
 const initializeState = {
-    language: 'VI',
+    language: 'EN',
 };
 
 const reducer = (state = initializeState, action) => {
@@ -13,7 +13,6 @@ const reducer = (state = initializeState, action) => {
     switch (action.type) {
 
         case CHANGE_LANGUAGE:
-            console.log('CHANGE_LANGUAGE action')
             newState.language = action.data
             break;
 

@@ -37,9 +37,7 @@ const VersionApp = ({ t, ...props }) => {
 
     useEffect(() => {
 
-        if (window.i18n) {
-            window.i18n.changeLanguage(language.toString().toLowerCase());
-        }
+        window.i18n.changeLanguage(language.toString().toLowerCase());
 
         getListApkApp();
 
