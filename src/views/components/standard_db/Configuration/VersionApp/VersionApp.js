@@ -1,21 +1,23 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Box, TextField, FormControl, Button, Grid, FormControlLabel, Checkbox, Switch, Tooltip, Typography, CardContent, Card, IconButton, CardActions, Collapse, Divider } from "@mui/material";
-import { useModal, SelectBox, ButtonAsync, DataTable, DateField, ImgField, DraggableDialog } from "@basesShared";
-import moment from "moment";
-import ImageUploading from "react-images-uploading";
-import * as ConfigConstants from '@constants/ConfigConstants';
+import { useModal } from "@basesShared";
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS'
+import { User_Operations } from '@appstate/user'
+import { Store } from '@appstate'
 import AndroidIcon from '@mui/icons-material/Android';
 import DownloadIcon from '@mui/icons-material/Download';
-import { ExpandMore } from "@mui/icons-material";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import SettingsIcon from '@mui/icons-material/Settings';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import axios from 'axios';
-import { useIntl } from 'react-intl'
-import { versionAppService } from '@services'
-import { ErrorAlert, SuccessAlert } from '@utils'
+import SettingsIcon from '@mui/icons-material/Settings';
+import { Box, Button, Card, CardActions, Collapse, Divider, IconButton, TextField } from "@mui/material";
+import { versionAppService } from '@services';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import React, { useEffect, useRef, useState } from "react";
+import { useIntl } from 'react-intl';
 
-export default function VersionApp({ t }) {
+const VersionApp = ({ t, ...props }) => {
+    const { language } = props;
+
+    let isRendered = useRef(true);
     const intl = useIntl();
     const { isShowing, toggle } = useModal();
 
@@ -26,60 +28,51 @@ export default function VersionApp({ t }) {
     const [data, setData] = useState([versionAppDto]);
     const [error, setError] = useState({});
     const [selectedFile, setSelectedFile] = useState();
-    const gridRef = useRef();
 
     const versionAppDto = {
-
         id_app: 0
         , version: 0
         , file: ''
-
     }
+
     useEffect(() => {
+
+        if (window.i18n) {
+            window.i18n.changeLanguage(language.toString().toLowerCase());
+        }
+
         getListApkApp();
 
-    }, [])
-
-    useEffect(() => {
-    }, [info])
-
-
+        return () => {
+            isRendered = false;
+        }
+    }, [language])
 
     const getListApkApp = async () => {
         const res = await versionAppService.getListApkApp();
-        if (res.HttpResponseCode === 200 && res.Data) {
-            setInfo({ ...res.Data });
-        }
-        else {
-            setInfo([])
-        }
+        if (res && isRendered)
+            if (res.HttpResponseCode === 200 && res.Data) {
+                setInfo({ ...res.Data });
+            }
+            else {
+                setInfo({})
+            }
     }
+
     const changeHandler = (event) => {
         setSelectedFile(event.target.files[0]);
     };
+
     const handleDownload = async (e) => {
         try {
 
-            const res = await versionAppService.downloadApp();
-
-            // axios.get('https://localhost:44301/api/VersionApp/download-versionApp', {
-            //     responseType: 'blob', // important
-            // }).then(response => {
-            //     const url = window.URL.createObjectURL(new Blob([response.data]));
-            //     const link = document.createElement('a');
-            //     link.href = url;
-            //     link.setAttribute('download', 'app.apk'); //or any other extension
-            //     document.body.appendChild(link);
-            //     link.click();
-            // });;
+            await versionAppService.downloadApp();
 
         } catch (error) {
-            alert("fe");
             console.log(`ERROR: ${error}`);
         }
-
-
     }
+
     const handleUpload = async () => {
         if (!selectedFile) {
             return ErrorAlert("Chưa chọn file update")
@@ -100,27 +93,6 @@ export default function VersionApp({ t }) {
                 ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
             }
 
-            // const formData = new FormData();
-            // formData.append("file", selectedFile);
-            // formData.append("id_app", info.id_app);
-            // formData.append("version", data.version);
-            // try {
-            //     let res = await axios({
-            //         method: "post",
-            //         url: "/api/VersionApp/update-versionApp",
-            //         data: formData,
-            //         headers: { "Content-Type": "multipart/form-data" },
-            //     })
-
-            //     if (res.status == 200) {
-            //         setInfo({ ...res.data.Data });
-            //         SuccessAlert("Update files success");
-            //     }
-            // } catch (error) {
-
-            // }
-
-
         }
         else {
             setError({ ...error, Version: (data.version == undefined || data.version == '' ? 'This field is required.' : '') });
@@ -137,7 +109,7 @@ export default function VersionApp({ t }) {
                             <p style={{ fontWeight: 600, fontSize: '28px' }}> {info.name_file}</p>
                             <p>Version: {info.version}</p>
                             <p>Date: {info.change_date}</p>
-                            <Button variant="outlined" sx={{ m: 1 }} startIcon={<DownloadIcon />} onClick={() => handleDownload()}>{t("Down load")}</Button></>
+                            <Button variant="outlined" sx={{ m: 1 }} startIcon={<DownloadIcon />} onClick={() => handleDownload()}>{t("Download")}</Button></>
                             : null}
                         <CardActions disableSpacing>
                             <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggle} sx={{ mr: 2 }}>
@@ -164,7 +136,7 @@ export default function VersionApp({ t }) {
                             <div style={{ marginBottom: '20px' }}>
                                 <Button variant="outlined" sx={{ mt: 3, width: '100%', height: "56px" }}
                                     startIcon={<FileUploadIcon />} onClick={() => handleUpload()}>
-                                    {t("Update new Vesion")}</Button>
+                                    {t("Upload")}</Button>
                             </div>
                         </Collapse>
                     </Card>
@@ -173,6 +145,32 @@ export default function VersionApp({ t }) {
         </>
     )
 }
+
+User_Operations.toString = function () {
+    return 'User_Operations';
+}
+
+const mapStateToProps = state => {
+
+    const { User_Reducer: { language } } = CombineStateToProps(state.AppReducer, [
+        [Store.User_Reducer]
+    ]);
+
+    return { language };
+
+};
+
+const mapDispatchToProps = dispatch => {
+
+    const { User_Operations: { changeLanguage } } = CombineDispatchToProps(dispatch, bindActionCreators, [
+        [User_Operations]
+    ]);
+
+    return { changeLanguage }
+
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(VersionApp)
 
 
 

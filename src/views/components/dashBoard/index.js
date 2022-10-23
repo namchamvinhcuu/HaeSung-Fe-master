@@ -18,12 +18,10 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { zhCN, enUS } from '@mui/material/locale';
 import store from '@states/store';
 
-import Menu from "../standard_db/Configuration/Menu/Menu";
-
 class DashBoard extends Component {
   constructor(props) {
     super(props);
-    this.state = { showAlert: false, tab: 0 };
+    this.state = { showAlert: false, tab: 0, language: this.props.language };
     var res = GetMenus_LoginUser();
 
     this.html = res[1];
@@ -34,20 +32,22 @@ class DashBoard extends Component {
     this.user = JSON.parse(localStorage.getItem(ConfigConstants.CURRENT_USER));
     this.access_token = localStorage.getItem(ConfigConstants.TOKEN_ACCESS);
 
-    let current_lang = this.props.language;
+    // let current_lang = this.props.language;
+    // console.log('eee', props)
 
-    this.theme = ({});
+    // this.theme = ({});
 
-    if (current_lang) {
-      if (window.i18n) {
-        window.i18n.changeLanguage(current_lang.toString().toLowerCase());
-      }
+    // if (current_lang) {
+    //   if (window.i18n) {
 
-      if (current_lang === "VI")
-        this.theme = createTheme({}, zhCN)
-      else
-        this.theme = createTheme({}, enUS)
-    }
+    //     window.i18n.changeLanguage(current_lang.toString().toLowerCase());
+    //   }
+
+    //   if (current_lang === "VI")
+    //     this.theme = createTheme({}, zhCN)
+    //   else
+    //     this.theme = createTheme({}, enUS)
+    // }
   }
 
   componentWillUnmount() {
@@ -119,6 +119,8 @@ class DashBoard extends Component {
       // });
 
     })();
+
+
   }
 
   onTabChange(value) {

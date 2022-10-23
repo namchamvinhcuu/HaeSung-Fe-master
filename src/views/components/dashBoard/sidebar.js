@@ -7,8 +7,6 @@ class SideBar extends Component {
     this.state = {};
   }
 
-
-
   linkClickHandler = (e) => {
     const targetlink = e.target.closest("a");
     if (!targetlink) return;
@@ -54,7 +52,7 @@ class SideBar extends Component {
                     alt="User Logo"
                     className="brand-image img-circle elevation-3 mx-1"
                   />
-                  <span>{this.props.FullNameLogin}</span>
+                  <span style={{ marginLeft: 5 }}>{this.props.FullNameLogin}</span>
                 </a>
               </div>
 

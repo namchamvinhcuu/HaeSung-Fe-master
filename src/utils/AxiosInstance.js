@@ -19,21 +19,16 @@ const API_URL = ConfigConstants.BASE_URL;
 // const intl = useIntl();
 
 const instance = axios.create({
-    // baseURL: 'http://localhost:8080',
     baseURL: API_URL,
     // timeout: 10 * 1000,
+    // mode: 'no-cors',
     headers: {
         'Content-Type': 'application/json',
         'Authorization': '',
-        // "Access-Control-Allow-Headers": "*",
-        // "Access-Control-Allow-Origin": "*",
-        // "Access-Control-Allow-Methods": "*"
     },
     // withCredentials: true
 });
 
-// const controller = new AbortController();
-// const signal = controller.signal;
 const currentExecutingRequests = {};
 
 const createError = (httpStatusCode, statusCode, errorMessage, problems, errorCode = '') => {
@@ -71,7 +66,6 @@ instance.interceptors.request.use(async (request) => {
     if (
         originalRequest.url.indexOf(ConfigConstants.LOGIN_URL) >= 0
         || originalRequest.url.indexOf(ConfigConstants.REFRESH_TOKEN_URL) >= 0
-        // || request.url.indexOf(`/api/logout`) >= 0
     ) return originalRequest;
 
     else {
@@ -95,17 +89,14 @@ instance.interceptors.request.use(async (request) => {
                     SetLocalStorage(ConfigConstants.TOKEN_ACCESS, response.Data.accessToken);
                     SetLocalStorage(ConfigConstants.TOKEN_REFRESH, response.Data.refreshToken);
                     originalRequest.headers.Authorization = `Bearer ${response.Data.accessToken}`;
-                    // return originalRequest;
                 }
                 else {
                     await instance.Logout();
-                    // return originalRequest;
                 }
             }
         }
         else {
             await instance.Logout();
-            // return originalRequest;
         }
 
         return originalRequest;

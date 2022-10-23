@@ -22,6 +22,7 @@ import CreateMenuFormik from './CreateMenuFormik';
 import { MenuDto } from '@models'
 
 const Menu = (props) => {
+
     const intl = useIntl();
     let isRendered = useRef(false);
 

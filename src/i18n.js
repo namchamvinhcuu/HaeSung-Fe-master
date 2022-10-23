@@ -17,7 +17,7 @@ import * as ConfigConstants from '@constants/ConfigConstants';
 //     language: esLocaleLangauge
 //   }
 // };
- 
+
 export const DEFAULT_LOCALES = [
   { name: "English", code: "en" },
   { name: "普通话", code: "zh" },
@@ -38,8 +38,8 @@ function loadLocaleBundle(locale, ns) {
   // Load default locale using dynamic imports
   if (find(propEq("code", locale))(DEFAULT_LOCALES)) {
     return defaultBundle(locale, ns).catch((err) => {
-       
-    //  console.error(err);
+
+      //  console.error(err);
     });
   }
 
@@ -76,7 +76,7 @@ i18n.use(Backend).init({
   defaultNS: "common",
   ns: ["common", "language"],
   fallbackLng: DEFAULT_LANGUAGE,
- 
+
   interpolation: {
     escapeValue: false
   },
