@@ -13,6 +13,7 @@ import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import _ from 'lodash'
 import moment from "moment"
+import { useIntl } from 'react-intl'
 
 import { PurchaseOrderDto } from '@models'
 import { purchaseOrderService } from '@services'
@@ -20,6 +21,7 @@ import { ErrorAlert, SuccessAlert } from '@utils'
 
 const FixedPO = (props) => {
     let isRendered = useRef(true);
+    const intl = useIntl();
 
     const [purchaseOrderState, setPurchaseOrderState] = useState({
         isLoading: false,
@@ -135,14 +137,14 @@ const FixedPO = (props) => {
                 </Grid>
 
                 <Grid item xs>
-                    <MuiDateField
+                    {/* <MuiDateField
                         disabled={purchaseOrderState.isLoading}
                         label={intl.formatMessage({ id: 'purchar_order.DeliveryDate' })}
                         value={values.ETADate ?? null}
                         onChange={(e) => setFieldValue("ETADate", e)}
                         error={touched.ETADate && Boolean(errors.ETADate)}
                         helperText={touched.ETADate && errors.ETADate}
-                    />
+                    /> */}
                 </Grid>
 
                 <Grid item xs sx={{ display: 'flex', justifyContent: 'right' }}>
