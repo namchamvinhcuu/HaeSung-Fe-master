@@ -260,5 +260,12 @@
         "Week_required": "Week is required",
         "Year_required": "Year is required",
         "Amount_required": "Amount is required"
+    },
+    "document": {
+        "menuName": "Menu Name",
+        "menuComponent": "Menu Component",
+        "language": "Language",
+        "urlFile": "Url File",
+        "FileNotFound" :"File Not Found"
     }
 }

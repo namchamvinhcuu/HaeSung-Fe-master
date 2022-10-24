@@ -1,24 +1,28 @@
+import { Store } from '@appstate'
+import { User_Operations } from '@appstate/user'
 import React, { useEffect, useRef, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import UndoIcon from '@mui/icons-material/Undo';
-import { Autocomplete, FormControlLabel, Grid, IconButton, Switch, TextField } from '@mui/material'
-import { createTheme, ThemeProvider } from "@mui/material"
+import { FormControlLabel, Grid, IconButton, Switch, TextField, Tooltip, Typography } from '@mui/material'
 import { useIntl } from 'react-intl'
 import { MuiButton, MuiDataGrid, MuiSelectField } from '@controls'
-import { moldService } from '@services'
+import { documentService } from '@services'
 import { useModal } from "@basesShared"
-import { ErrorAlert, SuccessAlert } from '@utils'
-import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { ErrorAlert, SuccessAlert, GetLocalStorage } from '@utils'
+import { CREATE_ACTION, UPDATE_ACTION, TOKEN_ACCESS, API_URL } from '@constants/ConfigConstants';
 import moment from 'moment';
-import MoldDialog from './MoldDialog'
+import DocumentDialog from './DocumentDialog'
+import { connect } from 'react-redux'
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS'
+import { bindActionCreators } from 'redux'
 
 export default function Document() {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
-  const [moldState, setMoldState] = useState({
+  const [state, setState] = useState({
     isLoading: false,
     data: [],
     totalRow: 0,
@@ -26,31 +30,29 @@ export default function Document() {
     pageSize: 20,
     searchData: {
       keyWord: '',
-      Model: null,
-      MoldType: null,
-      MachineType: null,
+      language: '',
       showDelete: true
     }
   });
   const [newData, setNewData] = useState({})
   const [updateData, setUpdateData] = useState({})
   const [rowData, setRowData] = useState({});
-  const [PMList, setPMList] = useState([]);// Product Model list
-  const [PTList, setPTList] = useState([]);// Product Type list
-  const [MTList, setMTList] = useState([]);// Machine Type list
+  const [MenuComponentList, setMenuComponentList] = useState([]);
+  const [LanguageList, setLanguageList] = useState([]);
+  const [SupplierList, setSupplierList] = useState([]);
 
   const columns = [
     {
-      field: 'id', headerName: '', width: 50, align: 'center',
+      field: 'id', headerName: '', flex: 0.1, align: 'center',
       filterable: false,
-      renderCell: (index) => (index.api.getRowIndex(index.row.MoldId) + 1) + (moldState.page - 1) * moldState.pageSize,
+      renderCell: (index) => (index.api.getRowIndex(index.row.documentId) + 1) + (state.page - 1) * state.pageSize,
     },
-    { field: 'MoldId', hide: true },
+    { field: 'documentId', hide: true },
     { field: 'row_version', hide: true },
     {
       field: "action",
       headerName: "",
-      width: 80,
+      flex: 0.3,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
@@ -83,78 +85,68 @@ export default function Document() {
         );
       },
     },
-    { field: 'MoldSerial', headerName: intl.formatMessage({ id: "mold.MoldSerial" }), width: 150, },
-    { field: 'MoldCode', headerName: intl.formatMessage({ id: "mold.MoldCode" }), width: 150, },
-    { field: 'ModelName', headerName: intl.formatMessage({ id: "mold.Model" }), width: 150, },
-    { field: 'MoldTypeName', headerName: intl.formatMessage({ id: "mold.MoldType" }), width: 150, },
-    { field: 'Inch', headerName: intl.formatMessage({ id: "mold.Inch" }), width: 100, },
-    { field: 'MachineTypeName', headerName: intl.formatMessage({ id: "mold.MachineType" }), width: 150, },
-    { field: 'MachineTon', headerName: intl.formatMessage({ id: "mold.MachineTon" }), width: 150, },
+    { field: 'menuName', headerName: intl.formatMessage({ id: "document.menuName" }), flex: 0.5, },
+    { field: 'menuComponent', headerName: intl.formatMessage({ id: "document.menuComponent" }), flex: 0.5, },
+    { field: 'language', headerName: intl.formatMessage({ id: "document.language" }), flex: 0.5, },
     {
-      field: 'ETADate', headerName: intl.formatMessage({ id: "mold.ETADate" }), width: 150,
-      valueFormatter: params => moment(params?.value).add(7, 'hours').format("YYYY-MM-DD")
+      field: 'urlFile', headerName: intl.formatMessage({ id: "document.urlFile" }), flex: 0.8, renderCell: (params) => {
+        return <a onClick={() => handleDownload(params.row)} style={{ fontSize: 14, cursor: 'pointer' }}> {params.row.urlFile} </a>
+      }
     },
-    { field: 'Cabity', headerName: intl.formatMessage({ id: "mold.Cabity" }), width: 100, },
+    { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.3, },
     {
-      field: 'ETAStatus', headerName: intl.formatMessage({ id: "mold.ETAStatus" }), width: 150, align: 'center',
-      renderCell: params => params.row.ETAStatus ? "Y" : "N"
-    },
-    { field: 'Remark', headerName: intl.formatMessage({ id: "mold.Remark" }), width: 150, },
-    { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), width: 150, },
-    {
-      field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), width: 150,
+      field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.4,
       valueFormatter: params => params?.value ? moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss") : null
     },
-    { field: 'modifiedName', headerName: intl.formatMessage({ id: "general.modifiedName" }), width: 150, },
+    { field: 'modifiedName', headerName: intl.formatMessage({ id: "general.modifiedName" }), flex: 0.3, },
     {
-      field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modifiedDate" }), width: 150,
+      field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modifiedDate" }), flex: 0.4,
       valueFormatter: params => params?.value ? moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss") : null
     },
   ];
 
   //useEffect
   useEffect(() => {
-    getProductModel();
-    getProductType();
-    getMachineType();
+    getMenuComponent();
+    getLanguage();
   }, [])
 
   useEffect(() => {
     fetchData();
     return () => { isRendered = false; }
-  }, [moldState.page, moldState.pageSize, moldState.searchData.showDelete]);
+  }, [state.page, state.pageSize, state.searchData.showDelete]);
 
   useEffect(() => {
     if (!_.isEmpty(newData)) {
-      const data = [newData, ...moldState.data];
-      if (data.length > moldState.pageSize) {
+      const data = [newData, ...state.data];
+      if (data.length > state.pageSize) {
         data.pop();
       }
-      setMoldState({
-        ...moldState
+      setState({
+        ...state
         , data: [...data]
-        , totalRow: moldState.totalRow + 1
+        , totalRow: state.totalRow + 1
       });
     }
   }, [newData]);
 
   useEffect(() => {
     if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData)) {
-      let newArr = [...moldState.data]
-      const index = _.findIndex(newArr, function (o) { return o.MoldId == updateData.MoldId; });
+      let newArr = [...state.data]
+      const index = _.findIndex(newArr, function (o) { return o.documentId == updateData.documentId; });
       if (index !== -1) {
         newArr[index] = updateData
       }
 
-      setMoldState({ ...moldState, data: [...newArr] });
+      setState({ ...state, data: [...newArr] });
     }
   }, [updateData]);
 
-  //handle 
-  const handleDelete = async (mold) => {
-    if (window.confirm(intl.formatMessage({ id: mold.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
+  //handle
+  const handleDelete = async (document) => {
+    if (window.confirm(intl.formatMessage({ id: document.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
       try {
-        let res = await moldService.deleteMold({ MoldId: mold.MoldId, row_version: mold.row_version });
+        let res = await documentService.deleteDocument({ documentId: document.documentId, row_version: document.row_version });
         if (res && res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }))
           await fetchData();
@@ -174,69 +166,86 @@ export default function Document() {
     toggle();
   };
 
-  const handleUpdate = (row) => {
+  const handleUpdate = async (row) => {
     setMode(UPDATE_ACTION);
-    setRowData({ ...row });
+    setRowData(row);
     toggle();
   };
 
   const handleSearch = (e, inputName) => {
-    let newSearchData = { ...moldState.searchData };
+    let newSearchData = { ...state.searchData };
     newSearchData[inputName] = e;
     if (inputName == 'showDelete') {
-      setMoldState({ ...moldState, page: 1, searchData: { ...newSearchData } })
+      setState({ ...state, page: 1, searchData: { ...newSearchData } })
     }
     else {
-
-      setMoldState({ ...moldState, searchData: { ...newSearchData } })
+      setState({ ...state, searchData: { ...newSearchData } })
     }
   }
 
-  const handleCellClick = (param, event) => {
-    //disable click cell 
-    event.defaultMuiPrevented = (param.field === "action");
+  const handleDownload = async (row) => {
+    const token = GetLocalStorage(TOKEN_ACCESS);
+    const options = {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': `Bearer ${token}`
+      }
+    }
+
+    fetch(`${API_URL}Document/download/${row.menuComponent}/${row.language}`, options)
+      .then(response => {
+        if (response.status == 200) {
+          response.blob().then(blob => {
+            let url = URL.createObjectURL(blob);
+            let downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = 'document.pdf';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            URL.revokeObjectURL(url);
+          });
+        }
+        else {
+          ErrorAlert(intl.formatMessage({ id: "document.FileNotFound" }));
+        }
+      });
   };
 
+
   async function fetchData() {
-    setMoldState({ ...moldState, isLoading: true });
+    setState({ ...state, isLoading: true });
     const params = {
-      page: moldState.page,
-      pageSize: moldState.pageSize,
-      keyWord: moldState.searchData.keyWord,
-      Model: moldState.searchData.Model,
-      MoldType: moldState.searchData.MoldType,
-      MachineType: moldState.searchData.MachineType,
-      showDelete: moldState.searchData.showDelete
+      page: state.page,
+      pageSize: state.pageSize,
+      keyWord: state.searchData.keyWord,
+      language: state.searchData.language,
+      showDelete: state.searchData.showDelete
 
     }
-    const res = await moldService.getMoldList(params);
+    const res = await documentService.getDocumentList(params);
     if (res && res.Data && isRendered)
-      setMoldState({
-        ...moldState
+      setState({
+        ...state
         , data: res.Data ?? []
         , totalRow: res.TotalRow
         , isLoading: false
       });
   }
 
-  const getProductModel = async () => {
-    const res = await moldService.getProductModel();
-    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-      setPMList([...res.Data])
+  const getMenuComponent = async () => {
+    const res = await documentService.getMenu();
+    if (res.HttpResponseCode === 200 && res.Data) {
+      setMenuComponentList([...res.Data])
     }
   }
 
-  const getProductType = async () => {
-    const res = await moldService.getProductType();
-    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-      setPTList([...res.Data])
-    }
-  }
-
-  const getMachineType = async () => {
-    const res = await moldService.getMachineType();
-    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-      setMTList([...res.Data])
+  const getLanguage = async () => {
+    const res = await documentService.getLanguage();
+    if (res.HttpResponseCode === 200 && res.Data) {
+      setLanguageList([...res.Data])
     }
   }
 
@@ -246,50 +255,28 @@ export default function Document() {
         direction="row"
         justifyContent="space-between"
         alignItems="width-end">
-        <Grid item xs={3}>
+        <Grid item xs={6}>
           <MuiButton text="create" color='success' onClick={handleAdd} sx={{ mt: 1 }} />
         </Grid>
         <Grid item>
           <TextField
-            sx={{ width: 200 }}
+            sx={{ width: 210 }}
             fullWidth
             variant="standard"
             size='small'
-            label='Serial / Code'
+            label='Code'
             onChange={(e) => handleSearch(e.target.value, 'keyWord')}
           />
         </Grid>
         <Grid item>
           <MuiSelectField
-            label={intl.formatMessage({ id: 'mold.Model' })}
-            options={PMList}
+            label={intl.formatMessage({ id: 'document.language' })}
+            options={LanguageList}
             displayLabel="commonDetailName"
-            displayValue="commonDetailId"
-            onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Model')}
+            displayValue="commonDetailName"
+            onChange={(e, item) => handleSearch(item ? item.commonDetailName ?? null : null, 'language')}
             variant="standard"
-            sx={{ width: 200 }}
-          />
-        </Grid>
-        <Grid item>
-          <MuiSelectField
-            label={intl.formatMessage({ id: 'mold.MoldType' })}
-            options={PTList}
-            displayLabel="commonDetailName"
-            displayValue="commonDetailId"
-            onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'MoldType')}
-            variant="standard"
-            sx={{ width: 200 }}
-          />
-        </Grid>
-        <Grid item>
-          <MuiSelectField
-            label={intl.formatMessage({ id: 'mold.MachineType' })}
-            options={MTList}
-            displayLabel="commonDetailName"
-            displayValue="commonDetailId"
-            onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'MachineType')}
-            variant="standard"
-            sx={{ width: 200 }}
+            sx={{ width: 210 }}
           />
         </Grid>
         <Grid item>
@@ -299,31 +286,30 @@ export default function Document() {
           <FormControlLabel
             sx={{ mt: 1 }}
             control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
-            label={intl.formatMessage({ id: moldState.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted' })} />
+            label={intl.formatMessage({ id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted' })} />
         </Grid>
       </Grid>
       <MuiDataGrid
-        showLoading={moldState.isLoading}
+        showLoading={state.isLoading}
         isPagingServer={true}
         headerHeight={45}
         columns={columns}
-        rows={moldState.data}
+        rows={state.data}
         gridHeight={736}
-        page={moldState.page - 1}
-        pageSize={moldState.pageSize}
-        rowCount={moldState.totalRow}
+        page={state.page - 1}
+        pageSize={state.pageSize}
+        rowCount={state.totalRow}
         rowsPerPageOptions={[5, 10, 20]}
-        onPageChange={(newPage) => setMoldState({ ...moldState, page: newPage + 1 })}
-        onPageSizeChange={(newPageSize) => setMoldState({ ...moldState, pageSize: newPageSize, page: 1 })}
-        onCellClick={handleCellClick}
-        getRowId={(rows) => rows.MoldId}
+        onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
+        onPageSizeChange={(newPageSize) => setState({ ...state, pageSize: newPageSize, page: 1 })}
+        getRowId={(rows) => rows.documentId}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`
         }}
       />
 
-      <MoldDialog
-        valueOption={{ PMList: PMList, PTList: PTList, MTList: MTList }}
+      <DocumentDialog
+        valueOption={{ MenuComponentList: MenuComponentList, LanguageList: LanguageList }}
         setNewData={setNewData}
         setUpdateData={setUpdateData}
         initModal={rowData}
@@ -335,3 +321,25 @@ export default function Document() {
 
   )
 }
+
+// User_Operations.toString = function () {
+//   return 'User_Operations';
+// }
+
+// const mapStateToProps = state => {
+//   const { User_Reducer: { language } } = CombineStateToProps(state.AppReducer, [
+//     [Store.User_Reducer]
+//   ]);
+
+//   return { language };
+// };
+
+// const mapDispatchToProps = dispatch => {
+//   const { User_Operations: { changeLanguage } } = CombineDispatchToProps(dispatch, bindActionCreators, [
+//     [User_Operations]
+//   ]);
+
+//   return { changeLanguage }
+// };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(Document);

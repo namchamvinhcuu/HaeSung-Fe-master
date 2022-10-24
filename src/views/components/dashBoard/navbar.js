@@ -3,7 +3,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import CloseIcon from '@mui/icons-material/Close';
 import { withStyles } from '@mui/styles';
-import { historyDashboard, historyApp, calDateAgo, UserManager } from '@utils'
+import { historyDashboard, historyApp, calDateAgo, UserManager, GetLocalStorage } from '@utils'
 import { api_get, api_post, api_push_notify, SuccessAlert, ErrorAlert, RemoveLocalStorage } from "@utils";
 import * as ConfigConstants from "@constants/ConfigConstants";
 
@@ -128,26 +128,38 @@ class NavBar extends Component {
     e.preventDefault();
     const { HistoryElementTabs, index_tab_active_array } = this.props
     var tab = HistoryElementTabs[index_tab_active_array];
-    console.log(tab);
-    //language
-    // var curlang = window?.i18n.language;
-    // var guid_lang = "";
-    // if (curlang == 'vi') {
-    //   guid_lang = "vietnam"
-    // } else if (curlang == 'en') {
-    //   guid_lang = "english"
-    // } else if (curlang == 'zh') {
-    //   guid_lang = "china"
-    // }
-    // api_get("EquipmentManagerApi/get-document_by_code/" + tab.code + "/" + guid_lang).then(res => {
 
-    //   if (res) {
-    //     var url_file = ConfigConstants.BASE_URL + "document/" + res.url_file
-    //     this.setState({ isShowing: true, pdfURL: url_file, title_guide: res.title });
-    //   } else {
-    //     ErrorAlert("Chưa có hướng dẫn cho màn này")
-    //   }
-    // });
+    const token = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
+    const options = {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': `Bearer ${token}`
+      }
+    }
+
+    fetch(`${ConfigConstants.API_URL}Document/download/${tab.component}/${this.props.language}`, options)
+      .then(response => {
+        if (response.status == 200) {
+          response.blob().then(blob => {
+            let url = URL.createObjectURL(blob);
+            let downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = 'document.pdf';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            URL.revokeObjectURL(url);
+          });
+        }
+        else {
+          if (this.props.language == "VI")
+            ErrorAlert("Không có tài liệu hướng dẫn");
+          else
+            ErrorAlert("No documentation available");
+        }
+      });
   }
 
   // handleLang(e, code) {

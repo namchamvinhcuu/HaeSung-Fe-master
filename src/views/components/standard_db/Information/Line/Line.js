@@ -165,7 +165,7 @@ const Line = (props) => {
     const columns = [
         { field: 'LineId', headerName: '', hide: true },
         {
-            field: 'id', headerName: '', width: 100,
+            field: 'id', headerName: '', width: 20,
             filterable: false,
             renderCell: (index) => (index.api.getRowIndex(index.row.LineId) + 1) + (lineState.page - 1) * lineState.pageSize,
         },

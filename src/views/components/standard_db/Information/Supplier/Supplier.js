@@ -167,6 +167,11 @@ const Supplier = (props) => {
     const columns = [
         { field: 'SupplierId', headerName: '', hide: true },
         {
+            field: 'id', headerName: '', flex: 0.01,
+            filterable: false,
+            renderCell: (index) => index.api.getRowIndex(index.row.SupplierId) + 1,
+        },
+        {
             field: "action",
             headerName: "",
             width: 80,

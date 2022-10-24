@@ -23,12 +23,12 @@ const mapStateToProps = state => {
             , notify_list
             , total_notify
         }
-        // , User_Reducer: {
-        //     language
-        // }
+        , User_Reducer: {
+            language
+        }
     } = CombineStateToProps(state.AppReducer, [
         [Store.Dashboard_Reducer]
-        // , [Store.User_Reducer]
+        , [Store.User_Reducer]
     ]);
 
     return {
@@ -38,7 +38,7 @@ const mapStateToProps = state => {
         , notify_list
         , total_notify
 
-        // , language
+        , language
     };
 
 };
