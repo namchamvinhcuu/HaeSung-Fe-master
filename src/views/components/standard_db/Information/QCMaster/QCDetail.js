@@ -176,17 +176,7 @@ export default function QCDetail({ QCMasterId }) {
       renderCell: (params) => {
         return (
           <Grid container spacing={1} alignItems="center" justifyContent="center">
-            <Grid item xs={6} style={{ textAlign: "center" }}>
-              <IconButton
-                aria-label="delete"
-                color="error"
-                size="small"
-                sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                onClick={() => handleDelete(params.row)}
-              >
-                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
-              </IconButton>
-            </Grid>
+  
             <Grid item xs={6} style={{ textAlign: "center" }}>
               <IconButton
                 aria-label="edit"
@@ -196,6 +186,17 @@ export default function QCDetail({ QCMasterId }) {
                 onClick={toggleModifyDialog}
               >
                 {params.row.isActived ? <EditIcon fontSize="inherit" /> : ""}
+              </IconButton>
+            </Grid>
+            <Grid item xs={6} style={{ textAlign: "center" }}>
+              <IconButton
+                aria-label="delete"
+                color="error"
+                size="small"
+                sx={[{ '&:hover': { border: '1px solid red', }, }]}
+                onClick={() => handleDelete(params.row)}
+              >
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
           </Grid>
