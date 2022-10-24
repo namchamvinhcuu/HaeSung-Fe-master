@@ -139,6 +139,8 @@ const FixedPO = (props) => {
       });
   };
 
+  const handleDeletePurchaseOrder = () => {};
+
   useEffect(() => {
     if (isRendered) fetchData();
 
@@ -177,6 +179,153 @@ const FixedPO = (props) => {
       });
     }
   }, [selectedRow]);
+
+  const columns = [
+    { field: "PoId", headerName: "", hide: true },
+    {
+      field: "id",
+      headerName: "",
+      width: 100,
+      filterable: false,
+      renderCell: (index) =>
+        index.api.getRowIndex(index.row.PoId) +
+        1 +
+        (purchaseOrderState.page - 1) * purchaseOrderState.pageSize,
+    },
+    {
+      field: "action",
+      headerName: "",
+      width: 80,
+      // headerAlign: 'center',
+      disableClickEventBubbling: true,
+      sortable: false,
+      disableColumnMenu: true,
+      renderCell: (params) => {
+        return (
+          <Grid
+            container
+            spacing={1}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Grid item xs={6}>
+              <IconButton
+                aria-label="edit"
+                color="warning"
+                size="small"
+                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                onClick={toggleModifyDialog}
+              >
+                <EditIcon fontSize="inherit" />
+              </IconButton>
+            </Grid>
+
+            <Grid item xs={6}>
+              <IconButton
+                aria-label="delete"
+                color="error"
+                size="small"
+                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                onClick={() => handleDeletePurchaseOrder(params.row)}
+              >
+                {showActivedData ? (
+                  <DeleteIcon fontSize="inherit" />
+                ) : (
+                  <UndoIcon fontSize="inherit" />
+                )}
+              </IconButton>
+            </Grid>
+          </Grid>
+        );
+      },
+    },
+    {
+      field: "PoCode",
+      headerName: intl.formatMessage({ id: "purchase_order.PoCode" }),
+      /*flex: 0.7,*/ width: 200,
+    },
+    {
+      field: "Description",
+      headerName: intl.formatMessage({ id: "purchase_order.Description" }),
+      width: 400,
+      renderCell: (params) => {
+        return (
+          <Tooltip
+            title={params.row.Description ?? ""}
+            className="col-text-elip"
+          >
+            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>
+              {params.row.Description}
+            </Typography>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      field: "TotalQty",
+      headerName: intl.formatMessage({ id: "purchase_order.TotalQty" }),
+      width: 150,
+    },
+    {
+      field: "RemainQty",
+      headerName: intl.formatMessage({ id: "purchase_order.RemainQty" }),
+      width: 150,
+    },
+    {
+      field: "DeliveryDate",
+      headerName: intl.formatMessage({ id: "purchase_order.DeliveryDate" }),
+      width: 150,
+      valueFormatter: (params) => {
+        if (params.value !== null) {
+          return moment(params?.value).add(7, "hours").format("YYYY-MM-DD");
+        }
+      },
+    },
+    {
+      field: "DueDate",
+      headerName: intl.formatMessage({ id: "purchase_order.DueDate" }),
+      width: 150,
+      valueFormatter: (params) => {
+        if (params.value !== null) {
+          return moment(params?.value).add(7, "hours").format("YYYY-MM-DD");
+        }
+      },
+    },
+    {
+      field: "createdName",
+      headerName: intl.formatMessage({ id: "general.createdName" }),
+      width: 150,
+    },
+    {
+      field: "createdDate",
+      headerName: intl.formatMessage({ id: "general.created_date" }),
+      width: 150,
+      valueFormatter: (params) => {
+        if (params.value !== null) {
+          return moment(params?.value)
+            .add(7, "hours")
+            .format("YYYY-MM-DD HH:mm:ss");
+        }
+      },
+    },
+    {
+      field: "modifiedName",
+      headerName: intl.formatMessage({ id: "general.modifiedName" }),
+      width: 150,
+    },
+    {
+      field: "modifiedDate",
+      headerName: intl.formatMessage({ id: "general.modified_date" }),
+      width: 150,
+      valueFormatter: (params) => {
+        if (params.value !== null) {
+          return moment(params?.value)
+            .add(7, "hours")
+            .format("YYYY-MM-DD HH:mm:ss");
+        }
+      },
+    },
+  ];
 
   return (
     <React.Fragment>
@@ -244,6 +393,37 @@ const FixedPO = (props) => {
           />
         </Grid>
       </Grid>
+
+      <MuiDataGrid
+        showLoading={purchaseOrderState.isLoading}
+        isPagingServer={true}
+        headerHeight={45}
+        // rowHeight={30}
+        gridHeight={736}
+        columns={columns}
+        rows={purchaseOrderState.data}
+        page={purchaseOrderState.page - 1}
+        pageSize={purchaseOrderState.pageSize}
+        rowCount={purchaseOrderState.totalRow}
+        // rowsPerPageOptions={[5, 10, 20, 30]}
+
+        onPageChange={(newPage) => {
+          setSupplierState({ ...purchaseOrderState, page: newPage + 1 });
+        }}
+        // onPageSizeChange={(newPageSize) => {
+        //     setSupplierState({ ...supplierState, pageSize: newPageSize, page: 1 });
+        // }}
+        getRowId={(rows) => rows.PoId}
+        onSelectionModelChange={(newSelectedRowId) => {
+          handleRowSelection(newSelectedRowId);
+        }}
+        // selectionModel={selectedRow.menuId}
+        getRowClassName={(params) => {
+          if (_.isEqual(params.row, newData)) {
+            return `Mui-created`;
+          }
+        }}
+      />
     </React.Fragment>
   );
 };
