@@ -399,7 +399,7 @@ const FixedPO = (props) => {
         isPagingServer={true}
         headerHeight={45}
         // rowHeight={30}
-        gridHeight={736}
+        gridHeight={345}
         columns={columns}
         rows={purchaseOrderState.data}
         page={purchaseOrderState.page - 1}
