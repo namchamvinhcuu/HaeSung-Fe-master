@@ -248,5 +248,12 @@
         "Area_required": "Khu vực không được để trống",
         "data_actived": "Actived Data",
         "data_deleted": "Deleted Data"
+    },
+    "document": {
+        "menuName": "Tên Menu",
+        "menuComponent": "Menu Component",
+        "language": "Ngôn ngữ",
+        "urlFile": "Đường dẫn File",
+        "FileNotFound" :"không tìm thấy file"
     }
 }

@@ -248,5 +248,12 @@
         "Area_required": "Area is required",
         "data_actived": "Actived Data",
         "data_deleted": "Deleted Data"
+    },
+    "document": {
+        "menuName": "Menu Name",
+        "menuComponent": "Menu Component",
+        "language": "Language",
+        "urlFile": "Url File",
+        "FileNotFound" :"File Not Found"
     }
 }
