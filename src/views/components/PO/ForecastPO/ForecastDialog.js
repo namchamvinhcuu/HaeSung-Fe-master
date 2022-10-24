@@ -5,6 +5,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { Grid, TextField } from "@mui/material";
 import { CREATE_ACTION } from '@constants/ConfigConstants';
+import {forecastService} from '@services';
 
 const ForecastDialog = (props) => {
     const { initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption } = props;
@@ -14,10 +15,8 @@ const ForecastDialog = (props) => {
         isSubmit: false,
     });
     useEffect(()=>{
-      console.log("OKE")
     },[])
     const schema = yup.object().shape({
-      // MaterialId: yup.number().nullable().required(intl.formatMessage({ id: 'forecast.MaterialId_required' })),
       MaterialId: yup.number().nullable().required(intl.formatMessage({ id: 'forecast.MaterialId_required' })),
       LineId: yup.number().nullable().required(intl.formatMessage({ id: 'forecast.LineId_required' })),
       Week: yup.number().nullable().required(intl.formatMessage({ id: 'forecast.Week_required' })),
@@ -52,21 +51,23 @@ const ForecastDialog = (props) => {
         , resetForm
     } = formik;
     const onSubmit = async (data) => { 
-      console.log("SUBMITTT")
-      //  setDialogState({ ...dialogState, isSubmit: true });
-      // if (mode == CREATE_ACTION) {
-      //   const res = await trayService.createTray(data);
-      //   if (res.HttpResponseCode === 200 && res.Data) {
-      //     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-      //     setNewData({ ...res.Data });
-      //     setDialogState({ ...dialogState, isSubmit: false });
-      //     handleReset();
-      //   }
-      //   else {
-      //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-      //     setDialogState({ ...dialogState, isSubmit: false });
-      //   }
-      // }
+      setDialogState({ ...dialogState, isSubmit: true });
+      if (mode == CREATE_ACTION) {
+        const res = await forecastService.createForecast(data);
+        if (res.HttpResponseCode === 200 && res.Data) {
+          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+          setNewData({ ...res.Data });
+          setDialogState({ ...dialogState, isSubmit: false });
+          handleReset();
+        }
+        else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+          setDialogState({ ...dialogState, isSubmit: false });
+        }
+      }
+      else{
+        console.log("MODIFY");
+      }
     }
 
   return (
@@ -86,34 +87,34 @@ const ForecastDialog = (props) => {
         >
          <Grid item xs={12}>
             <MuiSelectField
-              value={values.MaterialId ? { MaterialId: values.MaterialId, MaterialName: values.MaterialCode } : null}
+              value={values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'forecast.MaterialId' }) + ' *'}
               options={valueOption.MaterialList}
               displayLabel="MaterialCode" 
               displayValue="MaterialId"
               onChange={(e, value) => {
-                setFieldValue("MaterialCode", value?.MaterialName || '');
+                setFieldValue("MaterialCode", value?.MaterialCode || '');
                 setFieldValue("MaterialId", value?.MaterialId || "");
               }}
-              defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.MaterialId, commonDetailName: initModal.MaterialCode }}
+              defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.MaterialId, MaterialCode: initModal.MaterialCode }}
               error={touched.MaterialId && Boolean(errors.MaterialId)}
               helperText={touched.MaterialId && errors.MaterialId}
             />
           </Grid>
           <Grid item xs={12}>
             <MuiSelectField
-              value={values.LineId ? { commonDetailId: values.LineId, commonDetailName: values.LineName } : null}
+              value={values.LineId ? { LineId: values.LineId, LineName: values.LineName } : null}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'forecast.LineId' }) + ' *'}
               options={valueOption.LineList}
-              displayLabel="commonDetailName" 
-              displayValue="commonDetailId"
+              displayLabel="LineName" 
+              displayValue="LineId"
               onChange={(e, value) => {
-                setFieldValue("LineName", value?.commonDetailName || '');
-                setFieldValue("LineId", value?.commonDetailId || "");
+                setFieldValue("LineName", value?.LineName || '');
+                setFieldValue("LineId", value?.LineId || "");
               }}
-              defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.LineId, commonDetailName: initModal.LineName }}
+              defaultValue={mode == CREATE_ACTION ? null : { LineId: initModal.LineId, LineName: initModal.LineName }}
               error={touched.LineId && Boolean(errors.LineId)}
               helperText={touched.LineId && errors.LineId}
             />

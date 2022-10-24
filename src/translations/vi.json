@@ -267,5 +267,17 @@
         "PoCode_maxLength": "Purchase Order Code qúa dài",
         "DeliveryDate_required": "Delivery Date không được để trống",
         "DueDate_required": "Due Date không được để trống"
+    },
+    "forecast": {
+        "MaterialId": "Mã Material",
+        "LineId": "Tên Line",
+        "Week": "Tuần",
+        "Year": "Năm",
+        "Amount": "Số lượng",
+        "MaterialId_required": "Mã Material không được để trống",
+        "LineId_required": "Tên Line không được để trống ",
+        "Week_required": "Tuần không được để trống",
+        "Year_required": "Năm không được để trống",
+        "Amount_required": "Số lượng không được để trống"
     }
 }

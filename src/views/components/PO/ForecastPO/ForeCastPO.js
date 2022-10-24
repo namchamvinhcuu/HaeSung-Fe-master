@@ -33,8 +33,8 @@ const ForecastPO = (props) => {
         }
     });
     useEffect(()=>{
-        console.log("RUNEFFFECT")
         getMaterialList();
+        getLineList();
       },[])
     const [newData, setNewData] = useState({ ...ForecastPODto });
     const [updateData, setUpdateData] = useState({});
@@ -126,9 +126,14 @@ const ForecastPO = (props) => {
     ];
     const getMaterialList = async () => {
       const res = await forecastService.getMaterialModel();
-      console.log("RESS",res)
       if (res.HttpResponseCode === 200 && res.Data && isRendered) {
         setMaterialList([...res.Data])
+      }
+    }
+    const getLineList = async () => {
+      const res = await forecastService.getLineModel();
+      if (res.HttpResponseCode === 200 && res.Data && isRendered) {
+        setLineList([...res.Data])
       }
     }
   return (
