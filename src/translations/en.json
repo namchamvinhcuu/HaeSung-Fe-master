@@ -249,6 +249,18 @@
         "data_actived": "Actived Data",
         "data_deleted": "Deleted Data"
     },
+    "forecast": {
+        "MaterialId": "Material Code",
+        "LineId": "Line Name",
+        "Week": "Week",
+        "Year": "Year",
+        "Amount": "Amount",
+        "MaterialId_required": "Material Code is required",
+        "LineId_required": "Line Name is required",
+        "Week_required": "Week is required",
+        "Year_required": "Year is required",
+        "Amount_required": "Amount is required"
+    },
     "document": {
         "menuName": "Menu Name",
         "menuComponent": "Menu Component",

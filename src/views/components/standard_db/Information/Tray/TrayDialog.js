@@ -110,7 +110,7 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'tray.TrayType' }) + ' *'}
               options={valueOption.TrayTypeList}
-              displayLabel="commonDetailName"
+              displayLabel="commonDetailName" 
               displayValue="commonDetailId"
               onChange={(e, value) => {
                 setFieldValue("TrayTypeName", value?.commonDetailName || '');
