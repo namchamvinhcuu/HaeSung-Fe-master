@@ -24,6 +24,7 @@ import * as versionAppService from './Standard/Configuration/VersionAppService'
 import * as documentService from './Standard/Configuration/DocumentService'
 
 import * as purchaseOrderService from './PO/purchase-order/PurchaseOrderService'
+import * as deliveryOrderService from './PO/delivery-order/DeliveryOrderService'
 
 export {
     loginService,
@@ -52,4 +53,5 @@ export {
     documentService,
 
     purchaseOrderService,
+    deliveryOrderService,
 }
