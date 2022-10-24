@@ -23,6 +23,8 @@ import * as locationService from './Standard/Information/LocationService'
 import * as versionAppService from './Standard/Configuration/VersionAppService'
 import * as documentService from './Standard/Configuration/DocumentService'
 
+import * as purchaseOrderService from './PO/purchase-order/PurchaseOrderService'
+
 export {
     loginService,
     menuService,
@@ -48,4 +50,6 @@ export {
     locationService,
     versionAppService,
     documentService,
+
+    purchaseOrderService,
 }
