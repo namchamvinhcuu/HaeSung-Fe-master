@@ -1,5 +1,3 @@
-import { Store } from '@appstate'
-import { User_Operations } from '@appstate/user'
 import React, { useEffect, useRef, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
@@ -10,12 +8,9 @@ import { MuiButton, MuiDataGrid, MuiSelectField } from '@controls'
 import { documentService } from '@services'
 import { useModal } from "@basesShared"
 import { ErrorAlert, SuccessAlert, GetLocalStorage } from '@utils'
-import { CREATE_ACTION, UPDATE_ACTION, TOKEN_ACCESS, API_URL } from '@constants/ConfigConstants';
+import { CREATE_ACTION, UPDATE_ACTION, TOKEN_ACCESS, BASE_URL } from '@constants/ConfigConstants';
 import moment from 'moment';
 import DocumentDialog from './DocumentDialog'
-import { connect } from 'react-redux'
-import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS'
-import { bindActionCreators } from 'redux'
 
 export default function Document() {
   const intl = useIntl();
@@ -39,7 +34,6 @@ export default function Document() {
   const [rowData, setRowData] = useState({});
   const [MenuComponentList, setMenuComponentList] = useState([]);
   const [LanguageList, setLanguageList] = useState([]);
-  const [SupplierList, setSupplierList] = useState([]);
 
   const columns = [
     {
@@ -89,8 +83,11 @@ export default function Document() {
     { field: 'menuComponent', headerName: intl.formatMessage({ id: "document.menuComponent" }), flex: 0.5, },
     { field: 'language', headerName: intl.formatMessage({ id: "document.language" }), flex: 0.5, },
     {
-      field: 'urlFile', headerName: intl.formatMessage({ id: "document.urlFile" }), flex: 0.8, renderCell: (params) => {
-        return <a onClick={() => handleDownload(params.row)} style={{ fontSize: 14, cursor: 'pointer' }}> {params.row.urlFile} </a>
+      field: 'urlFile', headerName: intl.formatMessage({ id: "document.urlFile" }), flex: 0.8,
+      renderCell: (params) => {
+        return <a href={`${BASE_URL}/document/${params.row.language}/${params.row.urlFile}`} style={{ fontSize: 14, cursor: 'pointer' }} target="_blank">
+          {params.row.urlFile}
+        </a>
       }
     },
     { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.3, },
@@ -214,7 +211,6 @@ export default function Document() {
       });
   };
 
-
   async function fetchData() {
     setState({ ...state, isLoading: true });
     const params = {
@@ -264,7 +260,7 @@ export default function Document() {
             fullWidth
             variant="standard"
             size='small'
-            label='Code'
+            label={intl.formatMessage({ id: "document.menuComponent" })}
             onChange={(e) => handleSearch(e.target.value, 'keyWord')}
           />
         </Grid>
@@ -321,25 +317,3 @@ export default function Document() {
 
   )
 }
-
-// User_Operations.toString = function () {
-//   return 'User_Operations';
-// }
-
-// const mapStateToProps = state => {
-//   const { User_Reducer: { language } } = CombineStateToProps(state.AppReducer, [
-//     [Store.User_Reducer]
-//   ]);
-
-//   return { language };
-// };
-
-// const mapDispatchToProps = dispatch => {
-//   const { User_Operations: { changeLanguage } } = CombineDispatchToProps(dispatch, bindActionCreators, [
-//     [User_Operations]
-//   ]);
-
-//   return { changeLanguage }
-// };
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Document);

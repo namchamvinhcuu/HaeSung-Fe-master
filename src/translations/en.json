@@ -13,7 +13,7 @@
         "close": "Close",
         "save": "Save",
         "copy": "Copy",
-        "cancel":"cancel",
+        "cancel": "cancel",
         "changepassword": "Change password",
         "refresh": "Refresh",
         "accept": "Accept",
@@ -214,15 +214,15 @@
         "CreateLv1": "Create - Bom",
         "CreateLv2": "Create - Bom Child - ",
         "BomLevel": "Level",
-        "Version":"Version",
+        "Version": "Version",
         "Amount": "Amount",
         "BomCode": "Bom Code",
         "ParentCode": "Parent Code",
         "MaterialId": "Material Code",
         "ParentId": "Parent Code",
         "Remark": "Remark",
-        "min_value":"Value greater than 0",
-        "delete_error" : "Bom have child, can't delete"
+        "min_value": "Value greater than 0",
+        "delete_error": "Bom have child, can't delete"
     },
     "bomDetail": {
         "MaterialId": "Material Code",
@@ -266,6 +266,18 @@
         "menuComponent": "Menu Component",
         "language": "Language",
         "urlFile": "Url File",
-        "FileNotFound" :"File Not Found"
+        "FileNotFound": "File Not Found"
+    },
+    "purchase_order": {
+        "PoCode": "PO Code",
+        "Description": "Description",
+        "TotalQty": "Total Order Qty",
+        "DeliveryDate": "Delivery Date",
+        "RemainQty": "Remain Qty",
+        "DueDate": "Due Date",
+        "PoCode_required": "Purchase Order Code is required",
+        "PoCode_maxLength": "Purchase Order Code is over limited length",
+        "DeliveryDate_required": "Delivery Date is required",
+        "DueDate_required": "Due Date is required"
     }
 }

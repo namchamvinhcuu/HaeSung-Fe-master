@@ -29,15 +29,6 @@ const DocumentDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
   const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
 
-  // useEffect(() => {
-  //   if (mode == CREATE_ACTION) {
-  //     formik.initialValues = defaultValue
-  //   }
-  //   else {
-  //     formik.initialValues = initModal;
-  //   }
-  // }, [initModal, mode])
-
   const handleReset = () => {
     document.getElementById('file').value = null;
     setSelectedFile(null);
@@ -106,9 +97,7 @@ const DocumentDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                 options={valueOption.MenuComponentList}
                 displayLabel="menuComponent"
                 displayValue="menuComponent"
-                onChange={(e, value) => {
-                  setFieldValue("menuComponent", value?.menuComponent || '');
-                }}
+                onChange={(e, value) => setFieldValue("menuComponent", value?.menuComponent || '')}
                 error={touched.menuComponent && Boolean(errors.menuComponent)}
                 helperText={touched.menuComponent && errors.menuComponent}
               /> :
@@ -129,15 +118,13 @@ const DocumentDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               options={valueOption.LanguageList}
               displayLabel="commonDetailName"
               displayValue="commonDetailName"
-              onChange={(e, value) => {
-                setFieldValue("language", value?.commonDetailName || '');
-              }}
+              onChange={(e, value) => setFieldValue("language", value?.commonDetailName || '')}
               error={touched.language && Boolean(errors.language)}
               helperText={touched.language && errors.language}
             />
           </Grid>
           <Grid item xs={12}>
-            <input type="file" id="file" name="file" onChange={changeHandler} style={{ float: 'left', marginTop: '20px' }} />
+            <input type="file" id="file" name="file" onChange={changeHandler} />
           </Grid>
           <Grid item xs={12}>
             <Grid container direction="row-reverse">

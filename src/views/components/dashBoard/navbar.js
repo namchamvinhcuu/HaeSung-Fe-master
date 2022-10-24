@@ -19,7 +19,7 @@ import Button from "@mui/material/Button";
 import { withTranslation } from 'react-i18next';
 import NotifyUnread from './NotifyUnread'
 import { ChangeLanguage } from "@containers";
-import { loginService } from '@services'
+import { loginService, documentService } from '@services'
 
 const styles = (theme) => ({
   tabs: {
@@ -124,42 +124,21 @@ class NavBar extends Component {
 
   }
 
-  handleGuide(e) {
+  handleGuide = async (e) => {
     e.preventDefault();
     const { HistoryElementTabs, index_tab_active_array } = this.props
     var tab = HistoryElementTabs[index_tab_active_array];
-
-    const token = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
-    const options = {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': `Bearer ${token}`
-      }
+    var res = await documentService.downloadDocument(tab.component, this.props.language)
+    if (res.Data) {
+      var url_file = `${ConfigConstants.BASE_URL}/document/${res.Data.language}/${res.Data.urlFile}`
+      this.setState({ isShowing: true, pdfURL: url_file, title_guide: res.Data.menuName });
     }
-
-    fetch(`${ConfigConstants.API_URL}Document/download/${tab.component}/${this.props.language}`, options)
-      .then(response => {
-        if (response.status == 200) {
-          response.blob().then(blob => {
-            let url = URL.createObjectURL(blob);
-            let downloadLink = document.createElement('a');
-            downloadLink.href = url;
-            downloadLink.download = 'document.pdf';
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
-            URL.revokeObjectURL(url);
-          });
-        }
-        else {
-          if (this.props.language == "VI")
-            ErrorAlert("Không có tài liệu hướng dẫn");
-          else
-            ErrorAlert("No documentation available");
-        }
-      });
+    else {
+      if (this.props.language == "VI")
+        ErrorAlert("Không có tài liệu hướng dẫn");
+      else
+        ErrorAlert("No documentation available");
+    }
   }
 
   // handleLang(e, code) {
@@ -427,13 +406,13 @@ const PDFModal = ({ isShowing, hide, pdfURL, title }) => {
         <div>
           <Dialog
             open={true}
-            maxWidth={"lg"}
+            maxWidth={"xl"}
             fullWidth={true}
 
           >
-            <DialogTitle>User Guide : {title}</DialogTitle>
+            <DialogTitle>{title}</DialogTitle>
             <DialogContent dividers={true}>
-              <div  >
+              <div>
                 <Document file={pdfURL}
                   onLoadSuccess={onDocumentLoadSuccess}
                 >
@@ -460,7 +439,7 @@ const PDFModal = ({ isShowing, hide, pdfURL, title }) => {
             </DialogActions>
           </Dialog>
         </div>
-      </React.Fragment>,
+      </React.Fragment >,
       document.body
     )
     : null;
