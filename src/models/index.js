@@ -8,6 +8,8 @@ import StandardQCDto from './StandardQCDto';
 import QCMasterDto from './QCMasterDto';
 import QCDetailDto from './QCDetailDto';
 import LocationDto from "./LocationDto";
+import PurchaseOrderDto from "./PurchaseOrderDto";
+import PODetailDto from "./PoDetailDto";
 
 export {
     SupplierDto,
@@ -19,5 +21,7 @@ export {
     StandardQCDto,
     QCMasterDto,
     QCDetailDto,
-    LocationDto
+    LocationDto,
+    PurchaseOrderDto,
+    PODetailDto,
 }
