@@ -221,7 +221,8 @@
         "MaterialId": "Material Code",
         "ParentId": "Parent Code",
         "Remark": "Remark",
-        "min_value":"Giá trị phải lớn hơn 0"
+        "min_value":"Giá trị phải lớn hơn 0",
+        "delete_error" : "Bom có bom con, không thể xóa"
     },
     "bomDetail": {
         "MaterialId": "Material Code",

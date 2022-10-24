@@ -58,7 +58,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
                     color="error"
                     size="small"
                     sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                    onClick={() => handleDelete(params.row.BomId)}
+                    onClick={() => handleDelete(params.row)}
                   >
                     <DeleteIcon fontSize="inherit" />
                   </IconButton>
@@ -119,11 +119,17 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
   }, [MaterialType])
 
   //handle
-  const handleDelete = async (BomId) => {
+  const handleDelete = async (row) => {
     if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
-      let newArr = [...state.data]
-      newArr = newArr.filter(x => x.BomId != BomId)
-      setState({ ...state, data: [...newArr] });
+      let child = state.data.filter(x => x.ParentId == row.MaterialId);
+      if (child.length == 0) {
+        let newArr = [...state.data]
+        newArr = newArr.filter(x => x.BomId != row.BomId);
+        setState({ ...state, data: [...newArr] });
+      }
+      else {
+        ErrorAlert(intl.formatMessage({ id: 'bom.delete_error' }));
+      }
     }
   }
 
@@ -310,7 +316,6 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
             </Grid>
             <Grid item xs={12} sx={{ mb: 3 }}>
               <TextField
-                required
                 fullWidth
                 type="number"
                 size='small'
@@ -318,7 +323,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
                 disabled={dialogState.isSubmit}
                 value={values.Amount}
                 onChange={handleChange}
-                label={intl.formatMessage({ id: 'bomDetail.Amount' })}
+                label={intl.formatMessage({ id: 'bomDetail.Amount' }) + ' *'}
                 error={touched.Amount && Boolean(errors.Amount)}
                 helperText={touched.Amount && errors.Amount}
               />

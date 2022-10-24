@@ -97,7 +97,6 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
         <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12}>
             <TextField
-              required
               autoFocus
               fullWidth
               size='small'
@@ -106,7 +105,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               disabled={dialogState.isSubmit}
               value={values.MaterialCode}
               onChange={handleChange}
-              label={intl.formatMessage({ id: 'material.MaterialCode' })}
+              label={intl.formatMessage({ id: 'material.MaterialCode' }) + ' *'}
               error={touched.MaterialCode && Boolean(errors.MaterialCode)}
               helperText={touched.MaterialCode && errors.MaterialCode}
             />

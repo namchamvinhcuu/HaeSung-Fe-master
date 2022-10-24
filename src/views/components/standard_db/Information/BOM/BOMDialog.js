@@ -228,7 +228,6 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
           }
           {!checkLV ? <Grid item xs={12}>
             <TextField
-              required
               fullWidth
               type="number"
               size='small'
@@ -236,14 +235,13 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
               disabled={dialogState.isSubmit}
               value={values.Amount}
               onChange={handleChange}
-              label={intl.formatMessage({ id: 'bomDetail.Amount' })}
+              label={intl.formatMessage({ id: 'bomDetail.Amount' }) + ' *'}
               error={touched.Amount && Boolean(errors.Amount)}
               helperText={touched.Amount && errors.Amount}
             />
           </Grid> :
             <Grid item xs={12}>
               <TextField
-                required
                 fullWidth
                 size='small'
                 name='Version'
@@ -251,7 +249,7 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
                 disabled={mode == UPDATE_ACTION ? true : dialogState.isSubmit}
                 value={values.Version}
                 onChange={handleChange}
-                label={intl.formatMessage({ id: 'bom.Version' })}
+                label={intl.formatMessage({ id: 'bom.Version' }) + ' *'}
                 error={touched.Version && Boolean(errors.Version)}
                 helperText={touched.Version && errors.Version}
               />

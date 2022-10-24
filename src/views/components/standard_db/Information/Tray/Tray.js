@@ -211,7 +211,6 @@ export default function Tray() {
         </Grid>
         <Grid item>
           <TextField
-            required
             sx={{ width: 220 }}
             fullWidth
             variant="standard"
@@ -222,7 +221,6 @@ export default function Tray() {
         </Grid>
         <Grid item>
           <MuiSelectField
-            required
             label={intl.formatMessage({ id: 'tray.TrayType' })}
             options={TrayTypeList}
             displayLabel="commonDetailName"

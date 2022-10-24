@@ -173,7 +173,6 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
           </Grid>
           <Grid item xs={12}>
             <TextField
-              required
               fullWidth
               type="number"
               size='small'
@@ -181,7 +180,7 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
               disabled={dialogState.isSubmit}
               value={values.Amount}
               onChange={handleChange}
-              label={intl.formatMessage({ id: 'bomDetail.Amount' })}
+              label={intl.formatMessage({ id: 'bomDetail.Amount' }) + ' *'}
               error={touched.Amount && Boolean(errors.Amount)}
               helperText={touched.Amount && errors.Amount}
             />

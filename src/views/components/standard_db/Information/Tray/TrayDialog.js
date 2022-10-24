@@ -99,7 +99,7 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
               disabled={dialogState.isSubmit}
               value={values.TrayCode}
               onChange={handleChange}
-              label={intl.formatMessage({ id: 'tray.TrayCode' })}
+              label={intl.formatMessage({ id: 'tray.TrayCode' }) + ' *'}
               error={touched.TrayCode && Boolean(errors.TrayCode)}
               helperText={touched.TrayCode && errors.TrayCode}
             />
@@ -108,7 +108,7 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
             <MuiSelectField
               value={values.TrayType ? { commonDetailId: values.TrayType, commonDetailName: values.TrayTypeName } : null}
               disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: 'tray.TrayType' })}
+              label={intl.formatMessage({ id: 'tray.TrayType' }) + ' *'}
               options={valueOption.TrayTypeList}
               displayLabel="commonDetailName"
               displayValue="commonDetailId"

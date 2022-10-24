@@ -3,6 +3,10 @@ import TextField from '@mui/material/TextField';
 import { Autocomplete } from '@mui/material';
 
 export default function MuiSelectField({ value, options, displayLabel, displayValue, displayGroup, onChange, defaultValue, sx, margin, disabled, label, error, helperText, variant, required }) {
+  let labelFomart = label;
+  if (required)
+    labelFomart += " *";
+
   return (
     !displayGroup ? <Autocomplete
       fullWidth
@@ -20,10 +24,9 @@ export default function MuiSelectField({ value, options, displayLabel, displayVa
       renderInput={(params) => {
         return <TextField
           {...params}
-          required={required}
           sx={sx}
           variant={variant}
-          label={label}
+          label={labelFomart}
           error={error}
           helperText={helperText}
         />
@@ -47,10 +50,9 @@ export default function MuiSelectField({ value, options, displayLabel, displayVa
         renderInput={(params) => {
           return <TextField
             {...params}
-            required={required}
             sx={sx}
             variant={variant}
-            label={label}
+            label={labelFomart}
             error={error}
             helperText={helperText}
           />

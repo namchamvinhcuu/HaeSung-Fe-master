@@ -99,7 +99,6 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
           <Grid item container spacing={2}>
             <Grid item xs={6}>
               <TextField
-                required
                 autoFocus
                 fullWidth
                 size='small'
@@ -107,21 +106,20 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
                 disabled={dialogState.isSubmit}
                 value={values.MoldSerial}
                 onChange={handleChange}
-                label={intl.formatMessage({ id: 'mold.MoldSerial' })}
+                label={intl.formatMessage({ id: 'mold.MoldSerial' }) + ' *'}
                 error={touched.MoldSerial && Boolean(errors.MoldSerial)}
                 helperText={touched.MoldSerial && errors.MoldSerial}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
-                required
                 fullWidth
                 size='small'
                 name='MoldCode'
                 disabled={dialogState.isSubmit}
                 value={values.MoldCode}
                 onChange={handleChange}
-                label={intl.formatMessage({ id: 'mold.MoldCode' })}
+                label={intl.formatMessage({ id: 'mold.MoldCode' }) + ' *'}
                 error={touched.MoldCode && Boolean(errors.MoldCode)}
                 helperText={touched.MoldCode && errors.MoldCode}
               />
@@ -147,7 +145,6 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
             </Grid>
             <Grid item xs={6}>
               <TextField
-                required
                 fullWidth
                 type='number'
                 size='small'
@@ -155,7 +152,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
                 disabled={dialogState.isSubmit}
                 value={values.Inch}
                 onChange={handleChange}
-                label={intl.formatMessage({ id: 'mold.Inch' })}
+                label={intl.formatMessage({ id: 'mold.Inch' }) + ' *'}
                 error={touched.Inch && Boolean(errors.Inch)}
                 helperText={touched.Inch && errors.Inch}
               />
@@ -211,7 +208,6 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
             </Grid>
             <Grid item xs={6}>
               <TextField
-                required
                 fullWidth
                 type='number'
                 size='small'
@@ -219,7 +215,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
                 disabled={dialogState.isSubmit}
                 value={values.MachineTon}
                 onChange={handleChange}
-                label={intl.formatMessage({ id: 'mold.MachineTon' })}
+                label={intl.formatMessage({ id: 'mold.MachineTon' }) + ' *'}
                 error={touched.MachineTon && Boolean(errors.MachineTon)}
                 helperText={touched.MachineTon && errors.MachineTon}
               />
@@ -228,7 +224,6 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
           <Grid item container spacing={2}>
             <Grid item xs={6}>
               <TextField
-                required
                 fullWidth
                 type='number'
                 size='small'
@@ -237,7 +232,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
                 disabled={dialogState.isSubmit}
                 value={values.Cabity}
                 onChange={handleChange}
-                label={intl.formatMessage({ id: 'mold.Cabity' })}
+                label={intl.formatMessage({ id: 'mold.Cabity' }) + ' *'}
                 error={touched.Cabity && Boolean(errors.Cabity)}
                 helperText={touched.Cabity && errors.Cabity}
               />
