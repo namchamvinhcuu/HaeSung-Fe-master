@@ -63,6 +63,7 @@ import WIPStock from "./WMS/WIP/Stock/WIPStock"
 //PO
 import DeliveryOrder from "./PO/DeliveryOrder/DeliveryOrder";
 import ForecastPO from "./PO/ForecastPO/ForecastPO";
+import FixedPO from "./PO/FixedPO/FixedPO";
 
 //account manager
 import UserList from "./account_manager/User/UserList";
@@ -135,6 +136,7 @@ export {
   //PO
   DeliveryOrder,
   ForecastPO,
+  FixedPO,
 
   //ACCOUNT MANAGER
   UserList,
