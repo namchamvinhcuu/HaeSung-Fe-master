@@ -86,15 +86,15 @@ const ForecastDialog = (props) => {
         >
          <Grid item xs={12}>
             <MuiSelectField
-              value={values.MaterialId ? { commonDetailId: values.MaterialId, commonDetailName: values.MaterialCode } : null}
+              value={values.MaterialId ? { MaterialId: values.MaterialId, MaterialName: values.MaterialCode } : null}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'forecast.MaterialId' }) + ' *'}
               options={valueOption.MaterialList}
-              displayLabel="commonDetailName" 
-              displayValue="commonDetailId"
+              displayLabel="MaterialCode" 
+              displayValue="MaterialId"
               onChange={(e, value) => {
-                setFieldValue("MaterialCode", value?.commonDetailName || '');
-                setFieldValue("MaterialId", value?.commonDetailId || "");
+                setFieldValue("MaterialCode", value?.MaterialName || '');
+                setFieldValue("MaterialId", value?.MaterialId || "");
               }}
               defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.MaterialId, commonDetailName: initModal.MaterialCode }}
               error={touched.MaterialId && Boolean(errors.MaterialId)}
@@ -106,7 +106,7 @@ const ForecastDialog = (props) => {
               value={values.LineId ? { commonDetailId: values.LineId, commonDetailName: values.LineName } : null}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'forecast.LineId' }) + ' *'}
-              options={valueOption.MaterialList}
+              options={valueOption.LineList}
               displayLabel="commonDetailName" 
               displayValue="commonDetailId"
               onChange={(e, value) => {

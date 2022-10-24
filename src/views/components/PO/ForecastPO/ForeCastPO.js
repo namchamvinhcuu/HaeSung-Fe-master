@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
@@ -17,6 +17,7 @@ import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import {forecastService} from '@services';
 const ForecastPO = (props) => {
     const intl = useIntl();
+    let isRendered = useRef(true);
     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
     const [mode, setMode] = useState(CREATE_ACTION);
     const [MaterialList, setMaterialList] = useState([]);
@@ -124,12 +125,11 @@ const ForecastPO = (props) => {
         },
     ];
     const getMaterialList = async () => {
-        console.log("RUNN functuion")
       const res = await forecastService.getMaterialModel();
-      console.log("RESSS",res)
-    //   if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-    //     setMaterialList([...res.Data])
-    //   }
+      console.log("RESS",res)
+      if (res.HttpResponseCode === 200 && res.Data && isRendered) {
+        setMaterialList([...res.Data])
+      }
     }
   return (
     <React.Fragment>
