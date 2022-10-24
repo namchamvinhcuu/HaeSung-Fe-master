@@ -13,7 +13,7 @@
         "close": "Đóng",
         "save": "Lưu",
         "copy": "Sao chép",
-        "cancel":"Hủy",
+        "cancel": "Hủy",
         "changepassword": "Đổi mật khẩu",
         "refresh": "Làm mới",
         "accept": "Chấp nhận",
@@ -214,15 +214,15 @@
         "CreateLv1": "Tạo - Bom",
         "CreateLv2": "Tạo - Bom Child - ",
         "BomLevel": "Level",
-        "Version":"Version",
+        "Version": "Version",
         "Amount": "Amount",
         "BomCode": "Bom Code",
         "ParentCode": "Parent Code",
         "MaterialId": "Material Code",
         "ParentId": "Parent Code",
         "Remark": "Remark",
-        "min_value":"Giá trị phải lớn hơn 0",
-        "delete_error" : "Bom có bom con, không thể xóa"
+        "min_value": "Giá trị phải lớn hơn 0",
+        "delete_error": "Bom có bom con, không thể xóa"
     },
     "bomDetail": {
         "MaterialId": "Material Code",
@@ -254,6 +254,18 @@
         "menuComponent": "Menu Component",
         "language": "Ngôn ngữ",
         "urlFile": "Đường dẫn File",
-        "FileNotFound" :"không tìm thấy file"
+        "FileNotFound": "không tìm thấy file"
+    },
+    "purchase_order": {
+        "PoCode": "PO Code",
+        "Description": "Mô tả",
+        "TotalQty": "Tổng Số lượng",
+        "DeliveryDate": "Ngày giao hàng",
+        "RemainQty": "Số lượng còn thiếu",
+        "DueDate": "Ngày hết hạn",
+        "PoCode_required": "Purchase Order Code không được để trống",
+        "PoCode_maxLength": "Purchase Order Code qúa dài",
+        "DeliveryDate_required": "Delivery Date không được để trống",
+        "DueDate_required": "Due Date không được để trống"
     }
 }
