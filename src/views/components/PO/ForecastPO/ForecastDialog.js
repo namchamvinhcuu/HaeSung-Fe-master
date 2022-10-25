@@ -50,12 +50,14 @@ const ForecastDialog = (props) => {
       .number()
       .nullable()
       .required(intl.formatMessage({ id: "forecast.Week_required" }))
+      .integer(intl.formatMessage({ id: "forecast.Required_Int" }))
       .min(1, intl.formatMessage({ id: "forecast.Week_required_bigger" }))
       .max(52, intl.formatMessage({ id: "forecast.Week_required_less" })),
     Year: yup
-      .date()
+      .number()
       .nullable()
       .required(intl.formatMessage({ id: "forecast.Year_required" }))
+      .integer(intl.formatMessage({ id: "forecast.Required_Int" }))
       .min(
         new Date().getFullYear(),
         intl.formatMessage({ id: "forecast.Year_required_bigger" })

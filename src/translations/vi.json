@@ -283,7 +283,8 @@
         "Week_required_bigger": "Tuần không bé hơn 1",
         "Week_required_less": "Tuần không lớn hơn 52",
         "Amount_required_bigger": "Số lượng không bé hơn 1",
-        "Amount_required": "Số lượng không được để trống"
+        "Amount_required": "Số lượng không được để trống",
+        "Required_Int": "Bắt buộc là số nguyên"
     },
     "delivery_order":{
         "DoCode": "DO Code",

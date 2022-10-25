@@ -263,7 +263,8 @@
         "Year_required_bigger": "Year must be not less than current year",
         "Week_required_bigger": "Year must be not less 1",
         "Week_required_less": "Year must not be bigger 52",
-        "Amount_required_bigger": "Year must be not less 1"
+        "Amount_required_bigger": "Year must be not less 1",
+        "Required_Int": "Required must is integer"
     },
     "document": {
         "menuName": "Menu Name",
