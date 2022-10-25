@@ -10,8 +10,8 @@ const DeliveryOrderDto = {
   PackingNote: "",
   InvoiceNo: "",
   Dock: "",
-  ETDLoad: moment.utc(),
-  DeliveryTime: moment.utc(),
+  ETDLoad: new Date(),
+  DeliveryTime: new Date(),
   Remark: "",
   Truck: "",
 
@@ -19,10 +19,10 @@ const DeliveryOrderDto = {
   MaterialCode: "",
 
   isActived: true,
-  createdDate: moment.utc(),
+  createdDate: new Date(),
   createdBy: 0,
   createdName: "",
-  modifiedDate: moment.utc(),
+  modifiedDate: new Date(),
   modifiedBy: 0,
   modifiedName: "",
   row_version: "",

@@ -1,4 +1,4 @@
-import moment from 'moment'
+import moment from "moment";
 const calDateAgo = (date) => {
   var date = moment(date);
 
@@ -26,44 +26,57 @@ const calDateAgo = (date) => {
     return Math.floor(interval) + " minutes ago";
   }
   return Math.floor(seconds) + " seconds ago";
-}
+};
 
 function toCamel(o) {
-  var newO, origKey, newKey, value
+  var newO, origKey, newKey, value;
   if (o instanceof Array) {
     return o.map(function (value) {
       if (typeof value === "object") {
-        value = toCamel(value)
+        value = toCamel(value);
       }
-      return value
-    })
+      return value;
+    });
   } else {
-    newO = {}
+    newO = {};
     for (origKey in o) {
       if (o.hasOwnProperty(origKey)) {
-        newKey = (origKey.charAt(0).toLowerCase() + origKey.slice(1) || origKey).toString()
-        value = o[origKey]
-        if (value instanceof Array || (value !== null && value.constructor === Object)) {
-          value = toCamel(value)
+        newKey = (
+          origKey.charAt(0).toLowerCase() + origKey.slice(1) || origKey
+        ).toString();
+        value = o[origKey];
+        if (
+          value instanceof Array ||
+          (value !== null && value.constructor === Object)
+        ) {
+          value = toCamel(value);
         }
-        newO[newKey] = value
+        newO[newKey] = value;
       }
     }
   }
-  return newO
+  return newO;
 }
 
 function dateToTicks(date) {
   const epochOffset = 621355968000000000;
   const ticksPerMillisecond = 10000;
 
-  const ticks = epochOffset + date.getTime() * ticksPerMillisecond
+  const ticks = epochOffset + date.getTime() * ticksPerMillisecond;
 
   return Math.floor(ticks / 10000);
 }
 
-export {
-  calDateAgo,
-  toCamel,
-  dateToTicks
+const addDays = (date, days) => {
+  let result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
 };
+
+const minusDays = (date, days) => {
+  let result = new Date(date);
+  result.setDate(result.getDate() - days);
+  return result;
+};
+
+export { calDateAgo, toCamel, dateToTicks, addDays, minusDays };

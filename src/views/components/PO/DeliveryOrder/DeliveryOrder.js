@@ -18,27 +18,29 @@ import {
   MuiDataGrid,
   MuiSearchField,
   MuiDateTimeField,
+  MuiSelectField,
 } from "@controls";
-import { ErrorAlert, SuccessAlert } from "@utils";
+import { ErrorAlert, SuccessAlert, addDays } from "@utils";
 import { DeliveryOrderDto } from "@models";
+import { deliveryOrderService } from "@services";
 
 const DeliveryOrder = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
-  const currentDate = new Date();
+  const initETDLoad = new Date();
 
   const [deliveryOrderState, setDeliveryOrderState] = useState({
     isLoading: false,
     data: [],
     totalRow: 0,
     page: 1,
-    pageSize: 20,
+    pageSize: 7,
     searchData: {
       DoCode: "",
-      DoId: 0,
+      PoId: 0,
       MaterialId: 0,
-      ETDLoad: currentDate,
-      DeliveryTime: new Date().setDate(currentDate.getDate() + 1),
+      ETDLoad: initETDLoad,
+      DeliveryTime: addDays(initETDLoad, 1),
     },
   });
 
@@ -49,6 +51,9 @@ const DeliveryOrder = (props) => {
   const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false);
   const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
   const [showActivedData, setShowActivedData] = useState(true);
+
+  const [poArr, setPoArr] = useState([]);
+  const [materialArr, setMaterialArr] = useState([]);
 
   const toggleCreateDialog = () => {
     setIsOpenCreateDialog(!isOpenCreateDialog);
@@ -72,27 +77,54 @@ const DeliveryOrder = (props) => {
 
   const changeSearchData = (e, inputName) => {
     let newSearchData = { ...deliveryOrderState.searchData };
-    newSearchData[inputName] = e.target.value;
 
-    setSupplierState({
+    console.log(e);
+    switch (inputName) {
+      case "ETDLoad":
+      case "DeliveryTime":
+      case "PoId":
+        newSearchData[inputName] = e;
+        break;
+      default:
+        newSearchData[inputName] = e.target.value;
+        break;
+    }
+
+    setDeliveryOrderState({
       ...deliveryOrderState,
       searchData: { ...newSearchData },
     });
   };
 
+  const getPoArr = async () => {
+    const res = await deliveryOrderService.getPoArr();
+
+    if (res && isRendered) {
+      setPoArr(!res.Data ? [] : [...res.Data]);
+    }
+  };
+
+  const getMaterialArr = async (poId) => {};
+
   const fetchData = async () => {
-    // setPurchaseOrderState({
-    //   ...purchaseOrderState,
-    //   isLoading: true,
-    // });
-    // const params = {
-    //   page: purchaseOrderState.page,
-    //   pageSize: purchaseOrderState.pageSize,
-    //   PoCode: purchaseOrderState.searchData.PoCode.trim(),
-    //   DeliveryDate: purchaseOrderState.searchData.DeliveryDate,
-    //   DueDate: purchaseOrderState.searchData.DueDate,
-    //   isActived: showActivedData,
-    // };
+    setDeliveryOrderState({
+      ...deliveryOrderState,
+      isLoading: false,
+    });
+
+    const params = {
+      page: deliveryOrderState.page,
+      pageSize: deliveryOrderState.pageSize,
+      DoCode: deliveryOrderState.searchData.DoCode.trim(),
+      PoId: deliveryOrderState.searchData.PoId,
+      MaterialId: deliveryOrderState.searchData.MaterialId,
+      ETDLoad: deliveryOrderState.searchData.ETDLoad,
+      DeliveryTime: deliveryOrderState.searchData.DeliveryTime,
+      isActived: showActivedData,
+    };
+
+    console.log("[searchParams]", params);
+
     // const res = await purchaseOrderService.get(params);
     // if (res && isRendered)
     //   setPurchaseOrderState({
@@ -104,7 +136,12 @@ const DeliveryOrder = (props) => {
   };
 
   useEffect(() => {
-    if (isRendered) fetchData();
+    getPoArr();
+    getMaterialArr(63802265960648);
+  }, []);
+
+  useEffect(() => {
+    fetchData();
 
     return () => {
       isRendered = false;
@@ -370,7 +407,7 @@ const DeliveryOrder = (props) => {
         justifyContent="space-between"
         alignItems="flex-end"
       >
-        <Grid item xs={2}>
+        <Grid item xs={1.5}>
           <MuiButton
             text="create"
             color="success"
@@ -387,6 +424,36 @@ const DeliveryOrder = (props) => {
         </Grid>
 
         <Grid item xs>
+          <MuiSelectField
+            label={intl.formatMessage({ id: "delivery_order.PoCode" })}
+            options={poArr}
+            displayLabel="PoCode"
+            displayValue="PoId"
+            onChange={(e, item) =>
+              changeSearchData(item ? item.PoId ?? null : null, "PoId")
+            }
+            variant="standard"
+          />
+        </Grid>
+
+        <Grid item xs>
+          <MuiSelectField
+            label={intl.formatMessage({ id: "delivery_order.MaterialCode" })}
+            options={materialArr}
+            displayLabel="MaterialCode"
+            displayValue="MaterialId"
+            // onOpen={getMaterialArr}
+            onChange={(e, item) =>
+              changeSearchData(
+                item ? item.MaterialId ?? null : null,
+                "MaterialId"
+              )
+            }
+            variant="standard"
+          />
+        </Grid>
+
+        <Grid item xs>
           <MuiDateTimeField
             disabled={deliveryOrderState.isLoading}
             label={intl.formatMessage({
@@ -394,7 +461,7 @@ const DeliveryOrder = (props) => {
             })}
             value={deliveryOrderState.searchData.ETDLoad}
             onChange={(e) => {
-              changeSearchData;
+              changeSearchData(e, "ETDLoad");
             }}
             // error={touched.ETADate && Boolean(errors.ETADate)}
             // helperText={touched.ETADate && errors.ETADate}
@@ -409,14 +476,14 @@ const DeliveryOrder = (props) => {
             })}
             value={deliveryOrderState.searchData.DeliveryTime}
             onChange={(e) => {
-              changeSearchData;
+              changeSearchData(e, "DeliveryTime");
             }}
             // error={touched.ETADate && Boolean(errors.ETADate)}
             // helperText={touched.ETADate && errors.ETADate}
           />
         </Grid>
 
-        <Grid item xs sx={{ display: "flex", justifyContent: "right" }}>
+        <Grid item xs={2} sx={{ display: "flex", justifyContent: "right" }}>
           <MuiButton text="search" color="info" onClick={fetchData} />
           <FormControlLabel
             sx={{ mb: 0, ml: "1px" }}
