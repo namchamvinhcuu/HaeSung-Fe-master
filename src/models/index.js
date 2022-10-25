@@ -10,7 +10,7 @@ import QCDetailDto from './QCDetailDto';
 import LocationDto from "./LocationDto";
 import PurchaseOrderDto from "./PurchaseOrderDto";
 import PODetailDto from "./PoDetailDto";
-
+import ForecastPODto from "./ForecastPODto";
 export {
     SupplierDto,
     ProductDto,
@@ -24,4 +24,5 @@ export {
     LocationDto,
     PurchaseOrderDto,
     PODetailDto,
+    ForecastPODto
 }

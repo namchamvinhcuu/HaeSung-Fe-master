@@ -259,7 +259,10 @@
         "LineId_required": "Line Name is required",
         "Week_required": "Week is required",
         "Year_required": "Year is required",
-        "Amount_required": "Amount is required"
+        "Amount_required": "Amount is required",
+        "Year_required_bigger": "Year must be not less than current year",
+        "Week_required_bigger": "Year must be not less 1",
+        "Amount_required_bigger": "Year must be not less 1"
     },
     "document": {
         "menuName": "Menu Name",

@@ -278,6 +278,9 @@
         "LineId_required": "Tên Line không được để trống ",
         "Week_required": "Tuần không được để trống",
         "Year_required": "Năm không được để trống",
-        "Amount_required": "Số lượng không được để trống"
+        "Amount_required": "Số lượng không được để trống",
+        "Year_required_bigger": "Năm không bé hơn  năm hiện tại",
+        "Week_required_bigger": "Tuần không bé hơn 1",
+        "Amount_required_bigger": "Số lượng không bé hơn 1"
     }
 }

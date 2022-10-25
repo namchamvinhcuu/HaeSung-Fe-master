@@ -1,25 +1,49 @@
-import { axios } from '@utils'
-const apiName = '/api/forecast-po';
+import { axios } from "@utils";
+const apiName = "/api/forecast-po";
 
-const getMaterialModel = async () => {
-    try {
-        return await axios.get(`${apiName}/get-select-material`);
-    }
-    catch (error) {
-      console.log(`ERROR: ${error}`);
-    }
-}
-const getLineModel = async () => {
+const getForecastList = async (params) => {
   try {
-      return await axios.get(`${apiName}/get-select-line`);
-  }
-  catch (error) {
+    return await axios.get(apiName, { params: { ...params } });
+  } catch (error) {
     console.log(`ERROR: ${error}`);
   }
-}
+};
+
+const getMaterialModel = async () => {
+  try {
+    return await axios.get(`${apiName}/get-select-material`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+const getLineModel = async () => {
+  try {
+    return await axios.get(`${apiName}/get-select-line`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
 const createForecast = async (params) => {
   try {
     return await axios.post(`${apiName}/create-forecast`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+const modifyForecast = async (params) => {
+  try {
+    return await axios.put(`${apiName}/modify-forecast`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+const deleteForecast = async (params) => {
+  try {
+    return await axios.delete(`${apiName}/delete-forecast`, { data: params });
   }
   catch (error) {
     console.log(`ERROR: ${error}`);
@@ -27,7 +51,10 @@ const createForecast = async (params) => {
 }
 
 export {
-    getMaterialModel,
-    getLineModel,
-    createForecast
-}
+  getMaterialModel,
+  getLineModel,
+  createForecast,
+  modifyForecast,
+  getForecastList,
+  deleteForecast,
+};
