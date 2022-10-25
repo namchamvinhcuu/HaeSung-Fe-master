@@ -24,6 +24,7 @@ const ForecastDialog = (props) => {
     mode,
     valueOption,
   } = props;
+ 
   const intl = useIntl();
   const defaultValue = {
     MaterialId: null,
@@ -49,7 +50,8 @@ const ForecastDialog = (props) => {
       .number()
       .nullable()
       .required(intl.formatMessage({ id: "forecast.Week_required" }))
-      .min(1, intl.formatMessage({ id: "forecast.Week_required_bigger" })),
+      .min(1, intl.formatMessage({ id: "forecast.Week_required_bigger" }))
+      .max(52, intl.formatMessage({ id: "forecast.Week_required_less" })),
     Year: yup
       .date()
       .nullable()
@@ -106,9 +108,9 @@ const ForecastDialog = (props) => {
       }
     } else {
       const res = await forecastService.modifyForecast({
-        ...data,
-        FPOId: initModal.FPOId,
-        row_version: initModal.row_version,
+         ...data,
+        // FPOId: initModal.FPOId,
+        // row_version: initModal.row_version,
       });
       if (res.HttpResponseCode === 200) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
