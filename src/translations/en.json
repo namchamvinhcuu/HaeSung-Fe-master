@@ -264,7 +264,9 @@
         "Week_required_bigger": "Year must be not less 1",
         "Week_required_less": "Year must not be bigger 52",
         "Amount_required_bigger": "Year must be not less 1",
-        "Required_Int": "Required must is integer"
+        "Required_Int": "Required must is integer",
+        "Max_2033" : "Year must be less 2033",
+        "Desciption": "Desciption"
     },
     "document": {
         "menuName": "Menu Name",
