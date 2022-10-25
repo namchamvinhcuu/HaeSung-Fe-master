@@ -264,7 +264,9 @@
         "Week_required_bigger": "Year must be not less 1",
         "Week_required_less": "Year must not be bigger 52",
         "Amount_required_bigger": "Year must be not less 1",
-        "Required_Int": "Required must is integer"
+        "Required_Int": "Required must is integer",
+        "Max_2033" : "Year must be less 2033",
+        "Desciption": "Desciption"
     },
     "document": {
         "menuName": "Menu Name",
@@ -280,10 +282,13 @@
         "DeliveryDate": "Delivery Date",
         "RemainQty": "Remain Qty",
         "DueDate": "Due Date",
+        "MaterialId":"Material Code",
+        "Qty":"Qty",
         "PoCode_required": "Purchase Order Code is required",
         "PoCode_maxLength": "Purchase Order Code is over limited length",
         "DeliveryDate_required": "Delivery Date is required",
-        "DueDate_required": "Due Date is required"
+        "DueDate_required": "Due Date is required",
+        "Qty_min": "Qty value more than 0"
     },
     "delivery_order":{
         "DoCode": "DO Code",

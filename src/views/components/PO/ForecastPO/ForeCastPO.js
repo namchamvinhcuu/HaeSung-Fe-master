@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
 import { User_Operations } from "@appstate/user";
 import { Store } from "@appstate";
-import { Box, FormControlLabel, Grid, IconButton, Switch } from "@mui/material";
+import { Box, FormControl, FormControlLabel, Grid, IconButton, Input, InputLabel, Switch } from "@mui/material";
 import { MuiButton, MuiDataGrid, MuiSearchField } from "@controls";
 import { useIntl } from "react-intl";
 import EditIcon from "@mui/icons-material/Edit";
@@ -36,6 +36,8 @@ const ForecastPO = (props) => {
     pageSize: 20,
     searchData: {
       keyWord: "",
+      keyWordWeek: 0,
+      keyWordYear: 0,
       showDelete: true,
     },
   });
@@ -137,19 +139,18 @@ const ForecastPO = (props) => {
                 )}
               </IconButton>
             </Grid>
-        
-              <Grid item xs={6} style={{ textAlign: "center" }}>
-                <IconButton
-                  aria-label="edit"
-                  color="warning"
-                  size="small"
-                  sx={[{ "&:hover": { border: "1px solid orange" } }]}
-                  onClick={() => handleUpdate(params.row)}
-                >
-                  <EditIcon fontSize="inherit" />
-                </IconButton>
-              </Grid>
-       
+
+            <Grid item xs={6} style={{ textAlign: "center" }}>
+              <IconButton
+                aria-label="edit"
+                color="warning"
+                size="small"
+                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                onClick={() => handleUpdate(params.row)}
+              >
+                <EditIcon fontSize="inherit" />
+              </IconButton>
+            </Grid>
           </Grid>
         );
       },
@@ -178,6 +179,16 @@ const ForecastPO = (props) => {
       field: "Amount",
       headerName: intl.formatMessage({ id: "forecast.Amount" }),
       width: 100,
+    },
+    {
+      field: "Inch",
+      headerName: "Inch",
+      width: 100,
+    },
+    {
+      field: "Description",
+      headerName: intl.formatMessage({ id: "forecast.Desciption" }),
+      width: 180,
     },
     {
       field: "createdName",
@@ -233,6 +244,8 @@ const ForecastPO = (props) => {
       page: forecastState.page,
       pageSize: forecastState.pageSize,
       keyWord: forecastState.searchData.keyWord,
+      keyWordWeek: forecastState.searchData.keyWordWeek,
+      keyWordYear: forecastState.searchData.keyWordYear,
       showDelete: forecastState.searchData.showDelete,
     };
     const res = await forecastService.getForecastList(params);
@@ -247,6 +260,7 @@ const ForecastPO = (props) => {
 
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...forecastState.searchData };
+    console.log("newSearchData", newSearchData)
     newSearchData[inputName] = e;
     if (inputName == "showDelete") {
       setForecastState({
@@ -293,23 +307,46 @@ const ForecastPO = (props) => {
         justifyContent="space-between"
         alignItems="flex-end"
       >
-        <Grid item xs={8}>
+        <Grid item xs={5}>
           <MuiButton text="create" color="success" onClick={handleAdd} />
         </Grid>
         <Grid item>
-          <MuiSearchField
+          <Box display="flex" >
+            <Box>
+               
+              <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
+                        <InputLabel>Week</InputLabel>
+                        <Input
+                          type="number"
+                          onChange={(e) => handleSearch(e.target.value, "keyWordWeek")}
+                        />
+              </FormControl>
+            </Box>
+            <Box sx={{mx:3}}>
+               <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
+                         <InputLabel>Year</InputLabel>
+                         <Input
+                           type="number"
+                           onChange={(e) => handleSearch(e.target.value, "keyWordYear")}
+                         />
+               </FormControl>
+             </Box>
+      
+            <MuiSearchField
             label="general.name"
             name="LineName"
             onClick={fetchData}
             onChange={(e) => handleSearch(e.target.value, "keyWord")}
           />
+          </Box>
+        
         </Grid>
-        <Grid item >
+        <Grid item>
           <MuiButton text="search" color="info" onClick={fetchData} />
         </Grid>
         <Grid item>
           <FormControlLabel
-          sx={{marginBottom:"3px"}}
+            sx={{ marginBottom: "3px" }}
             control={
               <Switch
                 defaultChecked={true}

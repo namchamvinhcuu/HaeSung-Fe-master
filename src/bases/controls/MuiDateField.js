@@ -14,7 +14,14 @@ export default function MuiDateField({
   error,
   helperText,
   disabled,
+  required
 }) {
+
+  let labelFomart = label;
+  if (required)
+    labelFomart += " *";
+
+
   const onKeyDown = (e) => {
     e.preventDefault();
   };
@@ -22,7 +29,7 @@ export default function MuiDateField({
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
         disabled={disabled}
-        label={label}
+        label={labelFomart}
         value={value ? value : null}
         onChange={onChange}
         inputFormat="yyyy-MM-dd"

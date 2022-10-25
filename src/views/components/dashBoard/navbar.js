@@ -130,14 +130,11 @@ class NavBar extends Component {
     var tab = HistoryElementTabs[index_tab_active_array];
     var res = await documentService.downloadDocument(tab.component, this.props.language)
     if (res.Data) {
-      var url_file = `${ConfigConstants.BASE_URL}/document/${res.Data.language}/${res.Data.urlFile}`
+      var url_file = `${ConfigConstants.BASE_URL}/document/${res.Data.language}/${res.Data.urlFile}`;
       this.setState({ isShowing: true, pdfURL: url_file, title_guide: res.Data.menuName });
     }
     else {
-      if (this.props.language == "VI")
-        ErrorAlert("Không có tài liệu hướng dẫn");
-      else
-        ErrorAlert("No documentation available");
+      ErrorAlert(this.props.language == "VI" ? "Không có tài liệu hướng dẫn" : "No documentation available");
     }
   }
 
