@@ -12,56 +12,56 @@ import {
   MuiDateField,
 } from "@controls";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from '@mui/icons-material/Delete'
 import UndoIcon from "@mui/icons-material/Undo";
-import { FormControlLabel, Switch } from "@mui/material";
+import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import _ from "lodash";
 import moment from "moment";
 import { useIntl } from "react-intl";
-
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { useModal } from "@basesShared"
 import { PurchaseOrderDto } from "@models";
 import { purchaseOrderService } from "@services";
 import { ErrorAlert, SuccessAlert } from "@utils";
+import FixedPODialog from "./FixedPODialog";
+import FixedPODetail from "./FixedPODetail";
 
 const FixedPO = (props) => {
   const currentDate = new Date();
   let isRendered = useRef(true);
   const intl = useIntl();
 
-  const [purchaseOrderState, setPurchaseOrderState] = useState({
+  const [state, setState] = useState({
     isLoading: false,
     data: [],
     totalRow: 0,
     page: 1,
-    pageSize: 20,
+    pageSize: 8,
     searchData: {
       PoCode: "",
       DeliveryDate: currentDate,
-      DueDate: new Date().setDate(currentDate.getDate() + 30),
+      //DueDate: new Date().setDate(currentDate.getDate() + 30),
+      DueDate: moment(currentDate).add(30, "days").format("YYYY-MM-DD"),
+      showDelete: true
     },
   });
 
-  const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false);
-  const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
+  const [PoId, setPoId] = useState(0);
+  const [mode, setMode] = useState(CREATE_ACTION);
   const [showActivedData, setShowActivedData] = useState(true);
-
+  const { isShowing, toggle } = useModal();
   const [selectedRow, setSelectedRow] = useState({
     ...PurchaseOrderDto,
   });
 
   const [newData, setNewData] = useState({ ...PurchaseOrderDto });
-
-  const toggleCreateDialog = () => {
-    setIsOpenCreateDialog(!isOpenCreateDialog);
-  };
-
-  const toggleModifyDialog = () => {
-    setIsOpenModifyDialog(!isOpenModifyDialog);
-  };
+  const [updateData, setUpdateData] = useState({})
+  const [rowData, setRowData] = useState({});
 
   const handleRowSelection = (arrIds) => {
-    const rowSelected = purchaseOrderState.data.filter(function (item) {
+    const rowSelected = state.data.filter(function (item) {
       return item.PoId === arrIds[0];
     });
 
@@ -73,11 +73,11 @@ const FixedPO = (props) => {
   };
 
   const changeSearchData = (e, inputName) => {
-    let newSearchData = { ...purchaseOrderState.searchData };
+    let newSearchData = { ...state.searchData };
     newSearchData[inputName] = e.target.value;
 
-    setSupplierState({
-      ...purchaseOrderState,
+    setState({
+      ...state,
       searchData: { ...newSearchData },
     });
   };
@@ -87,85 +87,133 @@ const FixedPO = (props) => {
     let y = new Date();
 
     if (date === "deliveryDate") {
-      y = new Date(purchaseOrderState.searchData.DueDate);
+      y = new Date(state.searchData.DueDate);
       if (+x >= +y) {
-        e = purchaseOrderState.searchData.DueDate;
+        e = state.searchData.DueDate;
       }
 
-      setPurchaseOrderState({
-        ...purchaseOrderState,
+      setState({
+        ...state,
         searchData: {
-          ...purchaseOrderState.searchData,
+          ...state.searchData,
           DeliveryDate: e,
         },
       });
     } else {
-      y = new Date(purchaseOrderState.searchData.DeliveryDate);
+      y = new Date(state.searchData.DeliveryDate);
       if (+x < +y) {
-        e = purchaseOrderState.searchData.DeliveryDate;
+        e = state.searchData.DeliveryDate;
       }
 
-      setPurchaseOrderState({
-        ...purchaseOrderState,
+      setState({
+        ...state,
         searchData: {
-          ...purchaseOrderState.searchData,
+          ...state.searchData,
           DueDate: e,
         },
       });
     }
   };
 
+  const handleAdd = () => {
+    setMode(CREATE_ACTION);
+    setRowData();
+    toggle();
+  };
+
+  const handleUpdate = (row) => {
+    setMode(UPDATE_ACTION);
+    setRowData({ ...row });
+    toggle();
+  };
+
   const fetchData = async () => {
-    setPurchaseOrderState({
-      ...purchaseOrderState,
+    setState({
+      ...state,
       isLoading: true,
     });
     const params = {
-      page: purchaseOrderState.page,
-      pageSize: purchaseOrderState.pageSize,
-      PoCode: purchaseOrderState.searchData.PoCode.trim(),
-      DeliveryDate: purchaseOrderState.searchData.DeliveryDate,
-      DueDate: purchaseOrderState.searchData.DueDate,
-      isActived: showActivedData,
+      page: state.page,
+      pageSize: state.pageSize,
+      PoCode: state.searchData.PoCode.trim(),
+      DeliveryDate: state.searchData.DeliveryDate,
+      DueDate: state.searchData.DueDate,
+      isActived: state.searchData.showDelete,
     };
     const res = await purchaseOrderService.get(params);
 
     if (res && isRendered)
-      setPurchaseOrderState({
-        ...purchaseOrderState,
+      setState({
+        ...state,
         data: !res.Data ? [] : [...res.Data],
         totalRow: res.TotalRow,
         isLoading: false,
       });
   };
 
-  const handleDeletePurchaseOrder = () => {};
+  const handleDelete = async (row) => {
+    if (window.confirm(intl.formatMessage({ id: row.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
+      try {
+        let res = await purchaseOrderService.deletePO({ PoId: row.PoId, row_version: row.row_version });
+        if (res && res.HttpResponseCode === 200) {
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }))
+          await fetchData();
+        }
+        else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
 
+  const handleSearch = (e, inputName) => {
+    let newSearchData = { ...state.searchData };
+    newSearchData[inputName] = e;
+    if (inputName == 'showDelete') {
+      setState({ ...state, page: 1, searchData: { ...newSearchData } })
+    }
+    else {
+      setState({ ...state, searchData: { ...newSearchData } })
+    }
+  }
+
+  //useEffect
   useEffect(() => {
-    if (isRendered) fetchData();
-
-    return () => {
-      isRendered = false;
-    };
-  }, [purchaseOrderState.page, purchaseOrderState.pageSize, showActivedData]);
+    fetchData();
+    return () => { isRendered = false; }
+  }, [state.page, state.pageSize, state.searchData.showDelete]);
 
   useEffect(() => {
     if (!_.isEmpty(newData) && !_.isEqual(newData, PurchaseOrderDto)) {
-      const data = [newData, ...purchaseOrderState.data];
-      if (data.length > purchaseOrderState.pageSize) {
+      const data = [newData, ...state.data];
+      if (data.length > state.pageSize) {
         data.pop();
       }
-      setSupplierState({
-        ...supplierState,
+      setState({
+        ...state,
         data: [...data],
-        totalRow: supplierState.totalRow + 1,
+        totalRow: state.totalRow + 1,
       });
     }
   }, [newData]);
 
   useEffect(() => {
+    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData) && isRendered) {
+      let newArr = [...state.data]
+      const index = _.findIndex(newArr, function (o) { return o.TrayId == updateData.TrayId; });
+      if (index !== -1) {
+        newArr[index] = updateData
+      }
+
+      setState({ ...state, data: [...newArr] });
+    }
+  }, [updateData]);
+
+  useEffect(() => {
     if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, PurchaseOrderDto)) {
-      let newArr = [...purchaseOrderState.data];
+      let newArr = [...state.data];
       const index = _.findIndex(newArr, function (o) {
         return o.PoId == selectedRow.PoId;
       });
@@ -173,8 +221,8 @@ const FixedPO = (props) => {
         newArr[index] = selectedRow;
       }
 
-      setSupplierState({
-        ...purchaseOrderState,
+      setState({
+        ...state,
         data: [...newArr],
       });
     }
@@ -182,21 +230,11 @@ const FixedPO = (props) => {
 
   const columns = [
     { field: "PoId", headerName: "", hide: true },
-    {
-      field: "id",
-      headerName: "",
-      width: 100,
-      filterable: false,
-      renderCell: (index) =>
-        index.api.getRowIndex(index.row.PoId) +
-        1 +
-        (purchaseOrderState.page - 1) * purchaseOrderState.pageSize,
-    },
+    { field: "id", headerName: "", width: 50, filterable: false, renderCell: (index) => index.api.getRowIndex(index.row.PoId) + 1 + (state.page - 1) * state.pageSize },
     {
       field: "action",
       headerName: "",
       width: 80,
-      // headerAlign: 'center',
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
@@ -214,35 +252,28 @@ const FixedPO = (props) => {
                 color="warning"
                 size="small"
                 sx={[{ "&:hover": { border: "1px solid orange" } }]}
-                onClick={toggleModifyDialog}
+                onClick={() => handleUpdate(params.row)}
               >
                 <EditIcon fontSize="inherit" />
               </IconButton>
             </Grid>
-
             <Grid item xs={6}>
               <IconButton
                 aria-label="delete"
                 color="error"
                 size="small"
                 sx={[{ "&:hover": { border: "1px solid red" } }]}
-                onClick={() => handleDeletePurchaseOrder(params.row)}
+                onClick={() => handleDelete(params.row)}
               >
-                {showActivedData ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
+                {params.row.isActived ? (<DeleteIcon fontSize="inherit" />) : (<UndoIcon fontSize="inherit" />)}
               </IconButton>
             </Grid>
-          </Grid>
+          </Grid >
         );
       },
     },
     {
-      field: "PoCode",
-      headerName: intl.formatMessage({ id: "purchase_order.PoCode" }),
-      /*flex: 0.7,*/ width: 200,
+      field: "PoCode", headerName: intl.formatMessage({ id: "purchase_order.PoCode" }), width: 200,
     },
     {
       field: "Description",
@@ -250,10 +281,7 @@ const FixedPO = (props) => {
       width: 400,
       renderCell: (params) => {
         return (
-          <Tooltip
-            title={params.row.Description ?? ""}
-            className="col-text-elip"
-          >
+          <Tooltip title={params.row.Description ?? ""} className="col-text-elip" >
             <Typography sx={{ fontSize: 14, maxWidth: 200 }}>
               {params.row.Description}
             </Typography>
@@ -261,69 +289,25 @@ const FixedPO = (props) => {
         );
       },
     },
+    { field: "TotalQty", headerName: intl.formatMessage({ id: "purchase_order.TotalQty" }), width: 150, },
+    { field: "RemainQty", headerName: intl.formatMessage({ id: "purchase_order.RemainQty" }), width: 150, },
     {
-      field: "TotalQty",
-      headerName: intl.formatMessage({ id: "purchase_order.TotalQty" }),
-      width: 150,
+      field: "DeliveryDate", headerName: intl.formatMessage({ id: "purchase_order.DeliveryDate" }), width: 150,
+      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).add(7, "hours").format("YYYY-MM-DD"); } },
     },
     {
-      field: "RemainQty",
-      headerName: intl.formatMessage({ id: "purchase_order.RemainQty" }),
-      width: 150,
+      field: "DueDate", headerName: intl.formatMessage({ id: "purchase_order.DueDate" }), width: 150,
+      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).add(7, "hours").format("YYYY-MM-DD"); } },
     },
+    { field: "createdName", headerName: intl.formatMessage({ id: "general.createdName" }), width: 150, },
     {
-      field: "DeliveryDate",
-      headerName: intl.formatMessage({ id: "purchase_order.DeliveryDate" }),
-      width: 150,
-      valueFormatter: (params) => {
-        if (params.value !== null) {
-          return moment(params?.value).add(7, "hours").format("YYYY-MM-DD");
-        }
-      },
+      field: "createdDate", headerName: intl.formatMessage({ id: "general.created_date" }), width: 150,
+      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss"); } },
     },
+    { field: "modifiedName", headerName: intl.formatMessage({ id: "general.modifiedName" }), width: 150, },
     {
-      field: "DueDate",
-      headerName: intl.formatMessage({ id: "purchase_order.DueDate" }),
-      width: 150,
-      valueFormatter: (params) => {
-        if (params.value !== null) {
-          return moment(params?.value).add(7, "hours").format("YYYY-MM-DD");
-        }
-      },
-    },
-    {
-      field: "createdName",
-      headerName: intl.formatMessage({ id: "general.createdName" }),
-      width: 150,
-    },
-    {
-      field: "createdDate",
-      headerName: intl.formatMessage({ id: "general.created_date" }),
-      width: 150,
-      valueFormatter: (params) => {
-        if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
-        }
-      },
-    },
-    {
-      field: "modifiedName",
-      headerName: intl.formatMessage({ id: "general.modifiedName" }),
-      width: 150,
-    },
-    {
-      field: "modifiedDate",
-      headerName: intl.formatMessage({ id: "general.modified_date" }),
-      width: 150,
-      valueFormatter: (params) => {
-        if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
-        }
-      },
+      field: "modifiedDate", headerName: intl.formatMessage({ id: "general.modified_date" }), width: 150,
+      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss"); } },
     },
   ];
 
@@ -331,16 +315,17 @@ const FixedPO = (props) => {
     <React.Fragment>
       <Grid
         container
-        spacing={2}
+        spacing={3}
+        sx={{ mb: 1 }}
         direction="row"
         justifyContent="space-between"
         alignItems="flex-end"
       >
-        <Grid item xs={2}>
+        <Grid item xs={3}>
           <MuiButton
             text="create"
             color="success"
-            onClick={toggleCreateDialog}
+            onClick={handleAdd}
           />
         </Grid>
         <Grid item xs>
@@ -354,31 +339,34 @@ const FixedPO = (props) => {
 
         <Grid item xs>
           <MuiDateField
-            disabled={purchaseOrderState.isLoading}
+            disabled={state.isLoading}
             label={intl.formatMessage({ id: "purchase_order.DeliveryDate" })}
-            value={purchaseOrderState.searchData.DeliveryDate}
-            onChange={(e) => {
-              handleChangeSearchDate(e, "deliveryDate");
-            }}
-            // error={touched.ETADate && Boolean(errors.ETADate)}
-            // helperText={touched.ETADate && errors.ETADate}
+            value={state.searchData.DeliveryDate}
+            onChange={(e) => handleChangeSearchDate(e, "deliveryDate")}
+            variant="standard"
           />
         </Grid>
 
         <Grid item xs>
           <MuiDateField
-            disabled={purchaseOrderState.isLoading}
+            disabled={state.isLoading}
             label={intl.formatMessage({ id: "purchase_order.DueDate" })}
-            value={purchaseOrderState.searchData.DueDate}
+            value={state.searchData.DueDate}
             onChange={(e) => {
               handleChangeSearchDate(e, "dueDate");
             }}
-            // error={touched.ETADate && Boolean(errors.ETADate)}
-            // helperText={touched.ETADate && errors.ETADate}
+            variant="standard"
           />
         </Grid>
-
-        <Grid item xs sx={{ display: "flex", justifyContent: "right" }}>
+        <Grid item>
+          <MuiButton text="search" color='info' onClick={fetchData} />
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
+            label={intl.formatMessage({ id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted' })} />
+        </Grid>
+        {/*  <Grid item xs sx={{ display: "flex", justifyContent: "right" }}>
           <MuiButton text="search" color="info" onClick={fetchData} />
           <FormControlLabel
             sx={{ mb: 0, ml: "1px" }}
@@ -389,34 +377,32 @@ const FixedPO = (props) => {
                 onChange={(e) => handleshowActivedData(e)}
               />
             }
-            label={showActivedData ? "Actived" : "Deleted"}
+            label={intl.formatMessage({ id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted' })}
           />
-        </Grid>
+        </Grid> */}
       </Grid>
 
       <MuiDataGrid
-        showLoading={purchaseOrderState.isLoading}
+        showLoading={state.isLoading}
         isPagingServer={true}
         headerHeight={45}
         // rowHeight={30}
         gridHeight={345}
         columns={columns}
-        rows={purchaseOrderState.data}
-        page={purchaseOrderState.page - 1}
-        pageSize={purchaseOrderState.pageSize}
-        rowCount={purchaseOrderState.totalRow}
+        rows={state.data}
+        page={state.page - 1}
+        pageSize={state.pageSize}
+        rowCount={state.totalRow}
         // rowsPerPageOptions={[5, 10, 20, 30]}
 
         onPageChange={(newPage) => {
-          setSupplierState({ ...purchaseOrderState, page: newPage + 1 });
+          setState({ ...state, page: newPage + 1 });
         }}
         // onPageSizeChange={(newPageSize) => {
-        //     setSupplierState({ ...supplierState, pageSize: newPageSize, page: 1 });
+        //     setState({ ...supplierState, pageSize: newPageSize, page: 1 });
         // }}
         getRowId={(rows) => rows.PoId}
-        onSelectionModelChange={(newSelectedRowId) => {
-          handleRowSelection(newSelectedRowId);
-        }}
+        onSelectionModelChange={(newSelectedRowId) => setPoId(newSelectedRowId[0])}
         // selectionModel={selectedRow.menuId}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) {
@@ -424,6 +410,18 @@ const FixedPO = (props) => {
           }
         }}
       />
+
+      <FixedPODialog
+        // valueOption={{ TrayTypeList: TrayTypeList }}
+        setNewData={setNewData}
+        setUpdateData={setUpdateData}
+        initModal={rowData}
+        isOpen={isShowing}
+        onClose={toggle}
+        mode={mode}
+      />
+
+      <FixedPODetail PoId={PoId} />
     </React.Fragment>
   );
 };

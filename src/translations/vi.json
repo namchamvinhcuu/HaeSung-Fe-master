@@ -263,10 +263,13 @@
         "DeliveryDate": "Ngày giao hàng",
         "RemainQty": "Số lượng còn thiếu",
         "DueDate": "Ngày hết hạn",
+        "MaterialId":"Material Code",
+        "Qty":"Số lượng",
         "PoCode_required": "Purchase Order Code không được để trống",
         "PoCode_maxLength": "Purchase Order Code qúa dài",
         "DeliveryDate_required": "Delivery Date không được để trống",
-        "DueDate_required": "Due Date không được để trống"
+        "DueDate_required": "Due Date không được để trống",
+        "Qty_min": "Số lượng giá trị phải lớn hơn 0"
     },
     "forecast": {
         "MaterialId": "Mã Material",

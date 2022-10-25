@@ -282,10 +282,13 @@
         "DeliveryDate": "Delivery Date",
         "RemainQty": "Remain Qty",
         "DueDate": "Due Date",
+        "MaterialId":"Material Code",
+        "Qty":"Qty",
         "PoCode_required": "Purchase Order Code is required",
         "PoCode_maxLength": "Purchase Order Code is over limited length",
         "DeliveryDate_required": "Delivery Date is required",
-        "DueDate_required": "Due Date is required"
+        "DueDate_required": "Due Date is required",
+        "Qty_min": "Qty value more than 0"
     },
     "delivery_order":{
         "DoCode": "DO Code",
