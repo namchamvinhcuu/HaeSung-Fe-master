@@ -11,6 +11,7 @@ import LocationDto from "./LocationDto";
 import PurchaseOrderDto from "./PurchaseOrderDto";
 import PODetailDto from "./PoDetailDto";
 import ForecastPODto from "./ForecastPODto";
+import DeliveryOrderDto from "./DeliveryOrderDto";
 
 export {
   SupplierDto,
@@ -26,4 +27,5 @@ export {
   PurchaseOrderDto,
   PODetailDto,
   ForecastPODto,
+  DeliveryOrderDto,
 };

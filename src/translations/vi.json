@@ -279,5 +279,28 @@
         "Week_required": "Tuần không được để trống",
         "Year_required": "Năm không được để trống",
         "Amount_required": "Số lượng không được để trống"
+    },
+    "delivery_order":{
+        "DoCode": "DO Code",
+        "PoCode": "PO Code",
+        "MaterialCode": "Assy Code",
+        "OrderQty": "Order Qty",
+        "RemainQty": "Remain Qty",
+        "PackingNote": "Packing Note",
+        "InvoiceNo": "Invoice No.",
+        "Dock": "Dock",
+        "ETDLoad": "ETD Load Time",
+        "DeliveryTime": "Delivery Time",
+        "Remark": "Note",
+        "Truck": "Truck",
+        "DoCode_required": "DO Code không được để trống",
+        "DoCode_length": "DO Code must be 12 characters",
+        "OrderQty_required": "Order Qty không được để trống",
+        "OrderQty_GreaterThan_0": "Order Qty phải lớn hơn 0 ",
+        "ETDLoad_required": "ETDLoad Time không được để trống",
+        "ETDLoad_invalid": "ETDLoad Time không đúng định dạng",
+        "DeliveryTime_required": "Delivery Time không được để trống",
+        "DeliveryTime_invalid": "Delivery Time không đúng định dạng",
+        "DeliveryTime_GreaterThanETDLoad": "Delivery Time phải lớn hơn ETD Time"
     }
 }

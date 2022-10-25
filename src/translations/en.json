@@ -279,5 +279,28 @@
         "PoCode_maxLength": "Purchase Order Code is over limited length",
         "DeliveryDate_required": "Delivery Date is required",
         "DueDate_required": "Due Date is required"
+    },
+    "delivery_order":{
+        "DoCode": "DO Code",
+        "PoCode": "PO Code",
+        "MaterialCode": "Assy Code",
+        "OrderQty": "Order Qty",
+        "RemainQty": "Remain Qty",
+        "PackingNote": "Packing Note",
+        "InvoiceNo": "Invoice No.",
+        "Dock": "Dock",
+        "ETDLoad": "ETD Load Time",
+        "DeliveryTime": "Delivery Time",
+        "Remark": "Note",
+        "Truck": "Truck",
+        "DoCode_required": "DO Code is required",
+        "DoCode_length": "DO Code must be 12 characters",
+        "OrderQty_required": "Order Qty is required",
+        "OrderQty_GreaterThan_0": "Order Qty must be greater than zero ",
+        "ETDLoad_required": "ETDLoad Time is required",
+        "ETDLoad_invalid": "ETDLoad Time format is invalid",
+        "DeliveryTime_required": "Delivery Time is required",
+        "DeliveryTime_invalid": "Delivery Time format is invalid",
+        "DeliveryTime_GreaterThanETDLoad": "Delivery Time must be greater than ETD Time"
     }
 }
