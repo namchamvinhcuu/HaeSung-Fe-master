@@ -4,10 +4,8 @@
 export const API_URL = "https://localhost:44301/api/";
 export const BASE_URL = "https://localhost:44301";
 
-
-export const LOGIN_URL = '/api/login/checklogin';
-export const REFRESH_TOKEN_URL = '/api/refreshtoken';
-
+export const LOGIN_URL = "/api/login/checklogin";
+export const REFRESH_TOKEN_URL = "/api/refreshtoken";
 
 const company = "_Hanlim";
 
@@ -24,4 +22,3 @@ export const VIEW_ACTION = "View";
 export const CREATE_ACTION = "Create";
 export const UPDATE_ACTION = "Update";
 export const DELETE_ACTION = "Delete";
-
