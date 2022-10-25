@@ -137,7 +137,7 @@ const ForecastPO = (props) => {
                 )}
               </IconButton>
             </Grid>
-            {params.row.isActived && (
+        
               <Grid item xs={6} style={{ textAlign: "center" }}>
                 <IconButton
                   aria-label="edit"
@@ -149,7 +149,7 @@ const ForecastPO = (props) => {
                   <EditIcon fontSize="inherit" />
                 </IconButton>
               </Grid>
-            )}
+       
           </Grid>
         );
       },
