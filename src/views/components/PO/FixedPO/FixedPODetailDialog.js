@@ -1,17 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField } from '@controls'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
-import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 import { purchaseOrderService } from '@services'
 import { ErrorAlert, SuccessAlert } from '@utils'
-import { CREATE_ACTION } from '@constants/ConfigConstants';
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import { useFormik } from 'formik'
 import moment from "moment";
 
-const FixedPODetailDialog = ({ PoId, initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
+const FixedPODetailDialog = ({ PoId, initModal, isOpen, onClose, setNewData, setUpdateData, mode, updateDataPO, setUpdateDataPO }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
   const defaultValue = { PoId: null, MaterialId: null, Qty: '', Description: '', DeliveryDate: null, DueDate: null };
@@ -35,8 +33,8 @@ const FixedPODetailDialog = ({ PoId, initModal, isOpen, onClose, setNewData, set
 
   useEffect(() => {
     if (PoId)
-      getMaterial(PoId);
-  }, [PoId])
+      getMaterial(PoId, mode);
+  }, [PoId, mode])
 
   const handleReset = () => {
     resetForm();
@@ -56,7 +54,11 @@ const FixedPODetailDialog = ({ PoId, initModal, isOpen, onClose, setNewData, set
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
         setNewData({ ...res.Data });
         setDialogState({ ...dialogState, isSubmit: false });
+        //Update qty Po
+        let TotalQtyNew = updateDataPO.TotalQty + data.Qty
+        setUpdateDataPO({ ...updateDataPO, TotalQty: TotalQtyNew });
         handleReset();
+
       }
       else {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -69,8 +71,13 @@ const FixedPODetailDialog = ({ PoId, initModal, isOpen, onClose, setNewData, set
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
         setUpdateData({ ...res.Data });
         setDialogState({ ...dialogState, isSubmit: false });
+        //Update qty Po
+        let TotalQtyNew = updateDataPO.TotalQty - initModal.Qty + data.Qty
+        setUpdateDataPO({ ...updateDataPO, TotalQty: TotalQtyNew });
+
         handleReset();
         handleCloseDialog();
+
       }
       else {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -79,10 +86,16 @@ const FixedPODetailDialog = ({ PoId, initModal, isOpen, onClose, setNewData, set
     }
   };
 
-  const getMaterial = async (id) => {
+  const getMaterial = async (id, mode) => {
     const res = await purchaseOrderService.getMaterial(id);
     if (res.HttpResponseCode === 200 && res.Data) {
-      setMaterialList([...res.Data])
+      if (mode == UPDATE_ACTION) {
+        let a = [...res.Data, { MaterialId: initModal.MaterialId, MaterialCode: initModal.MaterialCode }];
+        setMaterialList(a);
+        console.log(MaterialList);
+      }
+      else
+        setMaterialList([...res.Data]);
     }
   }
 
