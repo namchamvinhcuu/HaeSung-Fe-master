@@ -43,6 +43,7 @@
         "sort_order": "Thứ tự",
         "unauthorized": "Bạn không có quyền truy cập",
         "field_required": "Không được để trống",
+        "field_invalid": "Giá trị không phù hợp",
         "one_data_at_least": "Vui lòng chọn một",
         "confirm_redo_deleted": "Xác nhận để quay lại dữ liệu đã xóa",
         "description": "Mô tả",
@@ -222,7 +223,8 @@
         "ParentId": "Parent Code",
         "Remark": "Remark",
         "min_value": "Giá trị phải lớn hơn 0",
-        "delete_error": "Bom có bom con, không thể xóa"
+        "delete_error": "Bom có bom con, không thể xóa",
+        "Unit": "Unit"
     },
     "bomDetail": {
         "MaterialId": "Material Code",
@@ -269,6 +271,10 @@
         "PoCode_maxLength": "Purchase Order Code qúa dài",
         "DeliveryDate_required": "Delivery Date không được để trống",
         "DueDate_required": "Due Date không được để trống",
+        "DeliveryDate_Invalid": "Delivery Date Không hợp lệ",
+        "DueDate_Invalid": "Due Date Không hợp lệ",
+        "DeliveryDate_warning": "Delivery Date không lớn hơn Due Date",
+        "DueDate_warning": "Due Date không bé hơn Delivery Date",
         "Qty_min": "Số lượng giá trị phải lớn hơn 0"
     },
     "forecast": {
@@ -286,7 +292,6 @@
         "Week_required_bigger": "Tuần không bé hơn 1",
         "Week_required_less": "Tuần không lớn hơn 52",
         "Amount_required_bigger": "Số lượng không bé hơn 1",
-        "Amount_required": "Số lượng không được để trống",
         "Required_Int": "Bắt buộc là số nguyên",
         "Max_2033" : "Nắm phải bé hơn 2033",
         "Desciption": "Mô tả",

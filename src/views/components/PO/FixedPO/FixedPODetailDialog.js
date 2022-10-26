@@ -4,7 +4,7 @@ import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 import { purchaseOrderService } from '@services'
-import { ErrorAlert, SuccessAlert } from '@utils'
+import { ErrorAlert, SuccessAlert, WarningAlert } from '@utils'
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import { useFormik } from 'formik'
 import moment from "moment";
@@ -17,9 +17,13 @@ const FixedPODetailDialog = ({ PoId, initModal, isOpen, onClose, setNewData, set
 
   const schema = yup.object().shape({
     MaterialId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    Qty: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })).moreThan(0, intl.formatMessage({ id: 'purchase_order.Qty_min' })),
-    DeliveryDate: yup.date().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+    Qty: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+      .moreThan(0, intl.formatMessage({ id: 'purchase_order.Qty_min' }))
+      .typeError(intl.formatMessage({ id: 'general.field_invalid' })),
+    DeliveryDate: yup.date().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+      .typeError(intl.formatMessage({ id: 'general.field_invalid' })),
     DueDate: yup.date().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+      .typeError(intl.formatMessage({ id: 'general.field_invalid' }))
   });
 
   const formik = useFormik({
@@ -44,6 +48,32 @@ const FixedPODetailDialog = ({ PoId, initModal, isOpen, onClose, setNewData, set
     resetForm();
     onClose();
   }
+
+  const handleChangeDate = (date, e) => {
+    let x = new Date(e);
+    let y = new Date();
+
+    if (date === "DeliveryDate") {
+      if (values.DueDate != null) {
+        y = new Date(values.DueDate);
+        if (+x >= +y) {
+          e = values.DueDate;
+          WarningAlert(intl.formatMessage({ id: "purchase_order.DeliveryDate_warning" }));
+        }
+      }
+      setFieldValue(date, e)
+    }
+    else {
+      if (values.DeliveryDate != null) {
+        y = new Date(values.DeliveryDate);
+        if (+x < +y) {
+          e = values.DeliveryDate;
+          WarningAlert(intl.formatMessage({ id: "purchase_order.DueDate_warning" }));
+        }
+      }
+      setFieldValue(date, e)
+    }
+  };
 
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
@@ -158,7 +188,7 @@ const FixedPODetailDialog = ({ PoId, initModal, isOpen, onClose, setNewData, set
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'purchase_order.DeliveryDate' })}
               value={values.DeliveryDate ?? null}
-              onChange={(e) => setFieldValue("DeliveryDate", e)}
+              onChange={(e) => handleChangeDate("DeliveryDate", e)}
               error={touched.DeliveryDate && Boolean(errors.DeliveryDate)}
               helperText={touched.DeliveryDate && errors.DeliveryDate}
             />
@@ -169,7 +199,7 @@ const FixedPODetailDialog = ({ PoId, initModal, isOpen, onClose, setNewData, set
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'purchase_order.DueDate' })}
               value={values.DueDate ?? null}
-              onChange={(e) => setFieldValue("DueDate", e)}
+              onChange={(e) => handleChangeDate("DueDate", e)}
               error={touched.DueDate && Boolean(errors.DueDate)}
               helperText={touched.DueDate && errors.DueDate}
             />

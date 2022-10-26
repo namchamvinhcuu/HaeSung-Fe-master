@@ -43,6 +43,7 @@
         "sort_order": "Sort Order",
         "unauthorized": "Unauthorized",
         "field_required": "This field cannot be blank",
+        "field_invalid": "This field value invalid",
         "one_data_at_least": "Please choose one option",
         "confirm_redo_deleted": "Confirm to redo deleted",
         "description": "Description",
@@ -222,7 +223,8 @@
         "ParentId": "Parent Code",
         "Remark": "Remark",
         "min_value": "Value greater than 0",
-        "delete_error": "Bom have child, can't delete"
+        "delete_error": "Bom have child, can't delete",
+        "Unit": "Unit"
     },
     "bomDetail": {
         "MaterialId": "Material Code",
@@ -292,6 +294,10 @@
         "PoCode_maxLength": "Purchase Order Code is over limited length",
         "DeliveryDate_required": "Delivery Date is required",
         "DueDate_required": "Due Date is required",
+        "DeliveryDate_Invalid": "Delivery Date is Invalid",
+        "DueDate_Invalid": "Due Date is Invalid",
+        "DeliveryDate_warning": "Delivery Date not greater than Due Date",
+        "DueDate_warning": "Due Date not less than Delivery Date",
         "Qty_min": "Qty value more than 0"
     },
     "delivery_order":{

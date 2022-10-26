@@ -15,7 +15,19 @@ const ErrorAlert = (message) => {
     });
 }
 
+const WarningAlert = (message) => {
+    toast.warning(message, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+    });
+}
+
 export {
     SuccessAlert,
-    ErrorAlert
+    ErrorAlert,
+    WarningAlert
 }
