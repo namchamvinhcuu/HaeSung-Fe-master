@@ -17,7 +17,14 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   const schema = yup.object().shape({
     MaterialCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
     MaterialType: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    Unit: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+   
+    Unit: yup.number().nullable().
+     when("MaterialTypeName", (MaterialTypeName) => {
+      if (MaterialTypeName !== "BARE MATERIAL")
+      return yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+    }),
+   
+   
     Suppliers: yup.array().nullable()
       .when("MaterialTypeName", (MaterialTypeName) => {
         if (MaterialTypeName !== "BARE MATERIAL")
@@ -56,6 +63,13 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     setDialogState({ ...dialogState, isSubmit: true });
 
     if (mode == CREATE_ACTION) {
+      if(data.MaterialTypeName == "BARE MATERIAL")
+      {
+        var unitBare = valueOption.UnitList.filter(x => x.commonDetailName == "PCS");
+        // console.log(unitBare,valueOption.UnitList)
+        data.Unit = unitBare[0].commonDetailId;
+      }
+
       const res = await materialService.createMaterial(data);
       if (res.HttpResponseCode === 200 && res.Data) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -130,9 +144,11 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               helperText={touched.MaterialType && errors.MaterialType}
             />
           </Grid>
-          <Grid item xs={12}>
+          {values.MaterialTypeName != "BARE MATERIAL" &&
+            <Grid item xs={12}>
             <MuiSelectField
               required
+              multiple
               value={values.Unit ? { commonDetailId: values.Unit, commonDetailName: values.UnitName } : null}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'material.Unit' })}
@@ -148,8 +164,9 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               helperText={touched.Unit && errors.Unit}
             />
           </Grid>
+          }
           {values.MaterialTypeName != "BARE MATERIAL" &&
-            <Grid Grid item xs={12}>
+            <Grid item xs={12}>
               <Autocomplete
                 multiple
                 fullWidth
@@ -173,7 +190,11 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                   />
                 }}
               />
-            </Grid>}
+              
+            </Grid>         
+            
+            }
+            
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -193,7 +214,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           </Grid>
         </Grid>
       </form>
-    </MuiDialog >
+    </MuiDialog>
   )
 }
 
