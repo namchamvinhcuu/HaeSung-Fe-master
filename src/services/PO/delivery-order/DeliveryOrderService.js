@@ -29,3 +29,23 @@ export const getMaterialArr = async (poId) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+export const create = async (params) => {
+  try {
+    return await axios.post(`${API}/create-do`, {
+      ...params,
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+export const handleDelete = async (params) => {
+  try {
+    return await axios.put(`${API}/delete-reuse-do`, {
+      ...params,
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};

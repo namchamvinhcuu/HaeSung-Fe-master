@@ -46,6 +46,8 @@
         "field_required": "This field cannot be blank",
         "field_invalid": "This field value invalid",
         "field_length": "Length is {length} characters",
+        "field_min": "Value must be greater than or equal {min}",
+        "field_max": "Value must be less than or equal {max}",
         "one_data_at_least": "Please choose one option",
         "confirm_redo_deleted": "Confirm to redo deleted",
         "description": "Description",

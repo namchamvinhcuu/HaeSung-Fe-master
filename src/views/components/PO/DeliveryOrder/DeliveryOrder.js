@@ -6,8 +6,9 @@ import { User_Operations } from "@appstate/user";
 import { Store } from "@appstate";
 
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import UndoIcon from "@mui/icons-material/Undo";
-import { FormControlLabel, Switch } from "@mui/material";
+import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import _ from "lodash";
@@ -65,18 +66,27 @@ const DeliveryOrder = (props) => {
   const [materialArr, setMaterialArr] = useState([]);
 
   const toggleDialog = () => {
-    // if(mode === CREATE_ACTION){
-    //   setMode(CREATE_ACTION)
-    // }
-    // else{
-    //   setMode(UPDATE_ACTION)
-    // }
+    if (mode === CREATE_ACTION) {
+      setMode(CREATE_ACTION);
+    } else {
+      setMode(UPDATE_ACTION);
+    }
     setIsOpenDialog(!isOpenDialog);
   };
 
   // const toggleModifyDialog = () => {
   //   setIsOpenModifyDialog(!isOpenModifyDialog);
   // };
+
+  const handleshowActivedData = async (event) => {
+    setShowActivedData(event.target.checked);
+    if (!event.target.checked) {
+      setDeliveryOrderState({
+        ...deliveryOrderState,
+        page: 1,
+      });
+    }
+  };
 
   const handleRowSelection = (arrIds) => {
     const rowSelected = deliveryOrderState.data.filter(function (item) {
@@ -87,6 +97,29 @@ const DeliveryOrder = (props) => {
       setSelectedRow({ ...rowSelected[0] });
     } else {
       setSelectedRow({ ...DeliveryOrderDto });
+    }
+  };
+
+  const handleDelete = async (deliveryOrder) => {
+    if (
+      window.confirm(
+        intl.formatMessage({
+          id: showActivedData
+            ? "general.confirm_delete"
+            : "general.confirm_redo_deleted",
+        })
+      )
+    ) {
+      try {
+        let res = await deliveryOrderService.handleDelete(deliveryOrder);
+        if (res && res.HttpResponseCode === 200) {
+          await fetchData();
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -165,17 +198,12 @@ const DeliveryOrder = (props) => {
   };
 
   useEffect(() => {
-    if (deliveryOrderState.searchData.PoId !== 0) {
-      getMaterialArr(deliveryOrderState.searchData.PoId);
-    } else {
-      setMaterialArr([]);
-    }
-  }, [deliveryOrderState.searchData.PoId]);
-
-  useEffect(() => {
-    if (deliveryOrderState.searchData.PoId !== prevPoId) {
-      getMaterialArr(deliveryOrderState.searchData.PoId);
-    }
+    if (isRendered)
+      if (deliveryOrderState.searchData.PoId !== 0) {
+        getMaterialArr(deliveryOrderState.searchData.PoId);
+      } else {
+        setMaterialArr([]);
+      }
   }, [deliveryOrderState.searchData.PoId]);
 
   useEffect(() => {
@@ -211,7 +239,7 @@ const DeliveryOrder = (props) => {
         newArr[index] = selectedRow;
       }
 
-      setSupplierState({
+      setDeliveryOrderState({
         ...deliveryOrderState,
         data: [...newArr],
       });
@@ -266,7 +294,7 @@ const DeliveryOrder = (props) => {
                 color="error"
                 size="small"
                 sx={[{ "&:hover": { border: "1px solid red" } }]}
-                onClick={() => handleDeletePurchaseOrder(params.row)}
+                onClick={() => handleDelete(params.row)}
               >
                 {showActivedData ? (
                   <DeleteIcon fontSize="inherit" />
@@ -283,19 +311,19 @@ const DeliveryOrder = (props) => {
     {
       field: "DoCode",
       headerName: intl.formatMessage({ id: "delivery_order.DoCode" }),
-      /*flex: 0.7,*/ width: 200,
+      /*flex: 0.7,*/ width: 120,
     },
 
     {
       field: "PoCode",
       headerName: intl.formatMessage({ id: "delivery_order.PoCode" }),
-      /*flex: 0.7,*/ width: 200,
+      /*flex: 0.7,*/ width: 120,
     },
 
     {
       field: "MaterialCode",
       headerName: intl.formatMessage({ id: "delivery_order.MaterialCode" }),
-      /*flex: 0.7,*/ width: 200,
+      /*flex: 0.7,*/ width: 120,
     },
 
     {
@@ -577,7 +605,7 @@ const DeliveryOrder = (props) => {
         }}
         getRowId={(rows) => rows.DoId}
         onSelectionModelChange={(newSelectedRowId) =>
-          setPoId(newSelectedRowId[0])
+          handleRowSelection(newSelectedRowId)
         }
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) {

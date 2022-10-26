@@ -46,6 +46,8 @@
         "field_required": "Không được để trống",
         "field_invalid": "Giá trị không phù hợp",
         "field_length": "Độ dài là {length} ký tự",
+        "field_min": "Giá trị phải lớn hơn hoặc bằng {min}",
+        "field_max": "Giá trị phải nhỏ hơn hoặc bằng {max}",
         "one_data_at_least": "Vui lòng chọn một",
         "confirm_redo_deleted": "Xác nhận để quay lại dữ liệu đã xóa",
         "description": "Mô tả",

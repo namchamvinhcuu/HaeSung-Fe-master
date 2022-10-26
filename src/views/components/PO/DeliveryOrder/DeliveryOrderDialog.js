@@ -30,6 +30,7 @@ const DeliveryOrderDialog = (props) => {
     valueOption,
   } = props;
 
+  let isRendered = useRef(true);
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({
     ...initModal,
@@ -41,21 +42,23 @@ const DeliveryOrderDialog = (props) => {
       .number()
       .nullable()
       .required(intl.formatMessage({ id: "general.field_required" }))
-      .min(1, intl.formatMessage({ id: "general.field_required" })),
+      .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
     MaterialId: yup
       .number()
       .nullable()
       .required(intl.formatMessage({ id: "general.field_required" }))
-      .min(1, intl.formatMessage({ id: "general.field_required" })),
+      .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
     DoCode: yup
       .string()
-      .nullable()
-      .required(intl.formatMessage({ id: "general.field_required" })),
+      .required(intl.formatMessage({ id: "general.field_required" }))
+      .length(
+        12,
+        intl.formatMessage({ id: "general.field_length" }, { length: 12 })
+      ),
     OrderQty: yup
       .number()
-      .nullable()
       .required(intl.formatMessage({ id: "general.field_required" }))
-      .min(1, intl.formatMessage({ id: "general.field_required" })),
+      .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
     ETDLoad: yup
       .date()
       .nullable()
@@ -97,18 +100,21 @@ const DeliveryOrderDialog = (props) => {
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
 
-    // if (mode == CREATE_ACTION) {
-    //   const res = await purchaseOrderService.createPO(data);
-    //   if (res.HttpResponseCode === 200 && res.Data) {
-    //     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-    //     setNewData({ ...res.Data });
-    //     setDialogState({ ...dialogState, isSubmit: false });
-    //     handleReset();
-    //   } else {
-    //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-    //     setDialogState({ ...dialogState, isSubmit: false });
-    //   }
-    // } else {
+    if (mode == CREATE_ACTION) {
+      const res = await deliveryOrderService.create(data);
+      if (res && isRendered) {
+        if (res.HttpResponseCode === 200 && res.Data) {
+          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+          setNewData({ ...res.Data });
+          setDialogState({ ...dialogState, isSubmit: false });
+          handleReset();
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+          setDialogState({ ...dialogState, isSubmit: false });
+        }
+      }
+    }
+    // else {
     //   const res = await purchaseOrderService.modifyPO(data);
     //   if (res.HttpResponseCode === 200) {
     //     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
@@ -131,7 +137,11 @@ const DeliveryOrderDialog = (props) => {
     return await deliveryOrderService.getMaterialArr(values.PoId);
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    return () => {
+      isRendered = false;
+    };
+  }, []);
 
   return (
     <React.Fragment>
@@ -169,7 +179,10 @@ const DeliveryOrderDialog = (props) => {
                     }
                     onChange={(e, value) => {
                       setFieldValue("PoCode", value?.PoCode || "");
-                      setFieldValue("PoId", value?.PoId || "");
+                      setFieldValue("PoId", value?.PoId || 0);
+
+                      setFieldValue("MaterialCode", "");
+                      setFieldValue("MaterialId", 0);
                     }}
                     error={touched.PoId && Boolean(errors.PoId)}
                     helperText={touched.PoId && errors.PoId}
@@ -184,16 +197,16 @@ const DeliveryOrderDialog = (props) => {
                     displayLabel="MaterialCode"
                     displayValue="MaterialId"
                     value={
-                      dialogState.MaterialId !== 0
+                      values.MaterialId !== 0
                         ? {
-                            MaterialId: dialogState.MaterialId,
-                            MaterialCode: dialogState.MaterialCode,
+                            MaterialId: values.MaterialId,
+                            MaterialCode: values.MaterialCode,
                           }
                         : null
                     }
                     onChange={(e, value) => {
                       setFieldValue("MaterialCode", value?.MaterialCode || "");
-                      setFieldValue("MaterialId", value?.MaterialId || "");
+                      setFieldValue("MaterialId", value?.MaterialId || 0);
                     }}
                     error={touched.MaterialId && Boolean(errors.MaterialId)}
                     helperText={touched.MaterialId && errors.MaterialId}
@@ -259,7 +272,7 @@ const DeliveryOrderDialog = (props) => {
                       id: "delivery_order.DeliveryTime",
                     })}
                     value={values.DeliveryTime ?? null}
-                    onChange={(e) => setFieldValue("ETDLoad", e)}
+                    onChange={(e) => setFieldValue("DeliveryTime", e)}
                     error={touched.DeliveryTime && Boolean(errors.DeliveryTime)}
                     helperText={touched.DeliveryTime && errors.DeliveryTime}
                   />
