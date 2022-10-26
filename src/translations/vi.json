@@ -290,8 +290,8 @@
         "Required_Int": "Bắt buộc là số nguyên",
         "Max_2033" : "Nắm phải bé hơn 2033",
         "Desciption": "Mô tả",
-        "Week_required_range" : "Giá trị phải nằm trong khoảng 1 , 52",
-        "Year_required_range" : "Giá trị phải nằm trong khoảng 2022 , 2033",
+        "Week_required_range" : "Giá trị tuần phải nằm trong khoảng 1 , 52",
+        "Year_required_range" : "Giá trị năm phải nằm trong khoảng 2022 , 2033",
         "Week_start":"Tuần bắt đầu",
         "Week_end":"Tuần kết thúc"
     },

@@ -29,9 +29,9 @@ const ForecastDialog = (props) => {
   const defaultValue = {
     MaterialId: null,
     LineId: null,
-    Week: null,
-    Year: null,
-    Amount: null,
+    Week: undefined,
+    Year: undefined,
+    Amount: undefined,
   };
   const [dialogState, setDialogState] = useState({
     isSubmit: false,
