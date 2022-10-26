@@ -19,11 +19,15 @@ import {
   MuiSearchField,
   MuiDateTimeField,
   MuiSelectField,
+  MuiAutoComplete,
 } from "@controls";
+import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
 import { ErrorAlert, SuccessAlert, addDays } from "@utils";
 import { DeliveryOrderDto } from "@models";
 import { deliveryOrderService } from "@services";
 import { usePrevious } from "@hooks";
+
+import DeliveryOrderDialog from "./DeliveryOrderDialog";
 
 const DeliveryOrder = (props) => {
   let isRendered = useRef(true);
@@ -39,37 +43,40 @@ const DeliveryOrder = (props) => {
     searchData: {
       DoCode: "",
       PoId: 0,
-      Material: {
-        MaterialId: 0,
-        MaterialCode: "",
-      },
+      PoCode: "",
+      MaterialId: 0,
+      MaterialCode: "",
       ETDLoad: initETDLoad,
       DeliveryTime: addDays(initETDLoad, 1),
     },
   });
 
-  const defaultMaterial = { ...deliveryOrderState.searchData.Material };
-
-  const prevPoId = usePrevious(deliveryOrderState.searchData.PoId);
+  const [mode, setMode] = useState(CREATE_ACTION);
 
   const [selectedRow, setSelectedRow] = useState({
     ...DeliveryOrderDto,
   });
   const [newData, setNewData] = useState({ ...DeliveryOrderDto });
-  const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false);
+  const [isOpenDialog, setIsOpenDialog] = useState(false);
   const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
   const [showActivedData, setShowActivedData] = useState(true);
 
   const [poArr, setPoArr] = useState([]);
   const [materialArr, setMaterialArr] = useState([]);
 
-  const toggleCreateDialog = () => {
-    setIsOpenCreateDialog(!isOpenCreateDialog);
+  const toggleDialog = () => {
+    // if(mode === CREATE_ACTION){
+    //   setMode(CREATE_ACTION)
+    // }
+    // else{
+    //   setMode(UPDATE_ACTION)
+    // }
+    setIsOpenDialog(!isOpenDialog);
   };
 
-  const toggleModifyDialog = () => {
-    setIsOpenModifyDialog(!isOpenModifyDialog);
-  };
+  // const toggleModifyDialog = () => {
+  //   setIsOpenModifyDialog(!isOpenModifyDialog);
+  // };
 
   const handleRowSelection = (arrIds) => {
     const rowSelected = deliveryOrderState.data.filter(function (item) {
@@ -86,14 +93,26 @@ const DeliveryOrder = (props) => {
   const changeSearchData = (e, inputName) => {
     let newSearchData = { ...deliveryOrderState.searchData };
 
-    console.log(e);
+    newSearchData[inputName] = e;
+
     switch (inputName) {
       case "ETDLoad":
       case "DeliveryTime":
-      case "PoId":
-        newSearchData["Material"] = { ...defaultMaterial };
-      case "MaterialId":
         newSearchData[inputName] = e;
+        break;
+      case "PoId":
+        newSearchData[inputName] = e ? e.PoId : DeliveryOrderDto.PoId;
+        newSearchData["PoCode"] = e ? e.PoCode : DeliveryOrderDto.PoCode;
+        newSearchData.MaterialId = 0;
+        newSearchData.MaterialCode = "";
+        break;
+      case "MaterialId":
+        newSearchData[inputName] = e
+          ? e.MaterialId
+          : DeliveryOrderDto.MaterialId;
+        newSearchData["MaterialCode"] = e
+          ? e.MaterialCode
+          : DeliveryOrderDto.MaterialCode;
         break;
       default:
         newSearchData[inputName] = e.target.value;
@@ -107,16 +126,11 @@ const DeliveryOrder = (props) => {
   };
 
   const getPoArr = async () => {
-    const res = await deliveryOrderService.getPoArr();
-
-    if (res && isRendered) {
-      setPoArr(!res.Data ? [] : [...res.Data]);
-    }
+    return await deliveryOrderService.getPoArr();
   };
 
   const getMaterialArr = async (poId) => {
     const res = await deliveryOrderService.getMaterialArr(poId);
-
     if (res && isRendered) {
       setMaterialArr(!res.Data ? [] : [...res.Data]);
     }
@@ -139,21 +153,24 @@ const DeliveryOrder = (props) => {
       isActived: showActivedData,
     };
 
-    console.log("[searchParams]", params);
+    const res = await deliveryOrderService.get(params);
 
-    // const res = await purchaseOrderService.get(params);
-    // if (res && isRendered)
-    //   setPurchaseOrderState({
-    //     ...purchaseOrderState,
-    //     data: !res.Data ? [] : [...res.Data],
-    //     totalRow: res.TotalRow,
-    //     isLoading: false,
-    //   });
+    if (res && isRendered)
+      setDeliveryOrderState({
+        ...deliveryOrderState,
+        data: !res.Data ? [] : [...res.Data],
+        totalRow: res.TotalRow,
+        isLoading: false,
+      });
   };
 
   useEffect(() => {
-    getPoArr();
-  }, []);
+    if (deliveryOrderState.searchData.PoId !== 0) {
+      getMaterialArr(deliveryOrderState.searchData.PoId);
+    } else {
+      setMaterialArr([]);
+    }
+  }, [deliveryOrderState.searchData.PoId]);
 
   useEffect(() => {
     if (deliveryOrderState.searchData.PoId !== prevPoId) {
@@ -235,7 +252,9 @@ const DeliveryOrder = (props) => {
                 color="warning"
                 size="small"
                 sx={[{ "&:hover": { border: "1px solid orange" } }]}
-                onClick={toggleModifyDialog}
+                onClick={() => {
+                  toggleDialog();
+                }}
               >
                 <EditIcon fontSize="inherit" />
               </IconButton>
@@ -260,35 +279,41 @@ const DeliveryOrder = (props) => {
         );
       },
     },
+
     {
       field: "DoCode",
       headerName: intl.formatMessage({ id: "delivery_order.DoCode" }),
       /*flex: 0.7,*/ width: 200,
     },
+
     {
       field: "PoCode",
       headerName: intl.formatMessage({ id: "delivery_order.PoCode" }),
       /*flex: 0.7,*/ width: 200,
     },
+
     {
       field: "MaterialCode",
       headerName: intl.formatMessage({ id: "delivery_order.MaterialCode" }),
       /*flex: 0.7,*/ width: 200,
     },
+
     {
       field: "OrderQty",
       headerName: intl.formatMessage({ id: "delivery_order.OrderQty" }),
-      /*flex: 0.7,*/ width: 200,
+      /*flex: 0.7,*/ width: 120,
     },
+
     {
       field: "RemainQty",
       headerName: intl.formatMessage({ id: "delivery_order.RemainQty" }),
-      /*flex: 0.7,*/ width: 200,
+      /*flex: 0.7,*/ width: 120,
     },
+
     {
       field: "PackingNote",
       headerName: intl.formatMessage({ id: "delivery_order.PackingNote" }),
-      width: 400,
+      width: 200,
       renderCell: (params) => {
         return (
           <Tooltip
@@ -302,10 +327,11 @@ const DeliveryOrder = (props) => {
         );
       },
     },
+
     {
       field: "InvoiceNo",
       headerName: intl.formatMessage({ id: "delivery_order.InvoiceNo" }),
-      width: 400,
+      width: 150,
       renderCell: (params) => {
         return (
           <Tooltip title={params.row.InvoiceNo ?? ""} className="col-text-elip">
@@ -316,10 +342,11 @@ const DeliveryOrder = (props) => {
         );
       },
     },
+
     {
       field: "Dock",
       headerName: intl.formatMessage({ id: "delivery_order.Dock" }),
-      width: 400,
+      width: 150,
       renderCell: (params) => {
         return (
           <Tooltip title={params.row.Dock ?? ""} className="col-text-elip">
@@ -330,6 +357,7 @@ const DeliveryOrder = (props) => {
         );
       },
     },
+
     {
       field: "ETDLoad",
       headerName: intl.formatMessage({ id: "delivery_order.ETDLoad" }),
@@ -342,6 +370,7 @@ const DeliveryOrder = (props) => {
         }
       },
     },
+
     {
       field: "DeliveryTime",
       headerName: intl.formatMessage({ id: "delivery_order.DeliveryTime" }),
@@ -354,10 +383,11 @@ const DeliveryOrder = (props) => {
         }
       },
     },
+
     {
       field: "Remark",
       headerName: intl.formatMessage({ id: "delivery_order.Remark" }),
-      width: 400,
+      width: 150,
       renderCell: (params) => {
         return (
           <Tooltip title={params.row.Remark ?? ""} className="col-text-elip">
@@ -368,10 +398,11 @@ const DeliveryOrder = (props) => {
         );
       },
     },
+
     {
       field: "Truck",
       headerName: intl.formatMessage({ id: "delivery_order.Truck" }),
-      width: 400,
+      width: 150,
       renderCell: (params) => {
         return (
           <Tooltip title={params.row.Truck ?? ""} className="col-text-elip">
@@ -388,6 +419,7 @@ const DeliveryOrder = (props) => {
       headerName: intl.formatMessage({ id: "general.createdName" }),
       width: 150,
     },
+
     {
       field: "createdDate",
       headerName: intl.formatMessage({ id: "general.created_date" }),
@@ -400,11 +432,13 @@ const DeliveryOrder = (props) => {
         }
       },
     },
+
     {
       field: "modifiedName",
       headerName: intl.formatMessage({ id: "general.modifiedName" }),
       width: 150,
     },
+
     {
       field: "modifiedDate",
       headerName: intl.formatMessage({ id: "general.modified_date" }),
@@ -429,11 +463,7 @@ const DeliveryOrder = (props) => {
         alignItems="flex-end"
       >
         <Grid item xs={1.5}>
-          <MuiButton
-            text="create"
-            color="success"
-            onClick={toggleCreateDialog}
-          />
+          <MuiButton text="create" color="success" onClick={toggleDialog} />
         </Grid>
 
         <Grid item xs>
@@ -446,13 +476,21 @@ const DeliveryOrder = (props) => {
         </Grid>
 
         <Grid item xs>
-          <MuiSelectField
+          <MuiAutoComplete
             label={intl.formatMessage({ id: "delivery_order.PoCode" })}
-            options={poArr}
+            fetchDataFunc={getPoArr}
             displayLabel="PoCode"
             displayValue="PoId"
+            value={
+              deliveryOrderState.searchData.PoId !== 0
+                ? {
+                    PoId: deliveryOrderState.searchData.PoId,
+                    PoCode: deliveryOrderState.searchData.PoCode,
+                  }
+                : null
+            }
             onChange={(e, item) => {
-              changeSearchData(item ? item.PoId ?? null : null, "PoId");
+              changeSearchData(item ?? null, "PoId");
             }}
             variant="standard"
           />
@@ -465,16 +503,16 @@ const DeliveryOrder = (props) => {
             displayLabel="MaterialCode"
             displayValue="MaterialId"
             value={
-              deliveryOrderState.searchData.Material.MaterialId
-                ? deliveryOrderState.searchData.Material.MaterialId
-                : defaultMaterial
+              deliveryOrderState.searchData.MaterialId !== 0
+                ? {
+                    MaterialId: deliveryOrderState.searchData.MaterialId,
+                    MaterialCode: deliveryOrderState.searchData.MaterialCode,
+                  }
+                : null
             }
-            onChange={(e, item) =>
-              changeSearchData(
-                item ? item.MaterialId ?? null : null,
-                "MaterialId"
-              )
-            }
+            onChange={(e, item) => {
+              changeSearchData(item ?? null, "MaterialId");
+            }}
             variant="standard"
           />
         </Grid>
@@ -489,8 +527,7 @@ const DeliveryOrder = (props) => {
             onChange={(e) => {
               changeSearchData(e, "ETDLoad");
             }}
-            // error={touched.ETADate && Boolean(errors.ETADate)}
-            // helperText={touched.ETADate && errors.ETADate}
+            variant="standard"
           />
         </Grid>
 
@@ -504,8 +541,7 @@ const DeliveryOrder = (props) => {
             onChange={(e) => {
               changeSearchData(e, "DeliveryTime");
             }}
-            // error={touched.ETADate && Boolean(errors.ETADate)}
-            // helperText={touched.ETADate && errors.ETADate}
+            variant="standard"
           />
         </Grid>
 
@@ -530,30 +566,34 @@ const DeliveryOrder = (props) => {
         isPagingServer={true}
         headerHeight={45}
         // rowHeight={30}
-        // gridHeight={345}
+        gridHeight={736}
         columns={columns}
         rows={deliveryOrderState.data}
         page={deliveryOrderState.page - 1}
         pageSize={deliveryOrderState.pageSize}
         rowCount={deliveryOrderState.totalRow}
-        // rowsPerPageOptions={[5, 10, 20, 30]}
-
         onPageChange={(newPage) => {
-          setState({ ...deliveryOrderState, page: newPage + 1 });
+          setDeliveryOrderState({ ...deliveryOrderState, page: newPage + 1 });
         }}
-        // onPageSizeChange={(newPageSize) => {
-        //     setState({ ...supplierState, pageSize: newPageSize, page: 1 });
-        // }}
         getRowId={(rows) => rows.DoId}
         onSelectionModelChange={(newSelectedRowId) =>
           setPoId(newSelectedRowId[0])
         }
-        // selectionModel={selectedRow.menuId}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) {
             return `Mui-created`;
           }
         }}
+      />
+
+      <DeliveryOrderDialog
+        // valueOption={{ TrayTypeList: TrayTypeList }}
+        setNewData={setNewData}
+        setUpdateData={setSelectedRow}
+        initModal={mode === CREATE_ACTION ? DeliveryOrderDto : selectedRow}
+        isOpen={isOpenDialog}
+        onClose={toggleDialog}
+        mode={mode}
       />
     </React.Fragment>
   );

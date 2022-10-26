@@ -10,7 +10,7 @@ import {
   api_push_notify,
 } from "./dataService";
 import { GetMenus_LoginUser } from "./permission";
-import { SuccessAlert, ErrorAlert } from "./notifyMessage";
+import { SuccessAlert, ErrorAlert, WarningAlert } from "./notifyMessage";
 import eventBus from "./EventBus";
 
 import {
@@ -46,6 +46,7 @@ export {
   GetMenus_LoginUser,
   SuccessAlert,
   ErrorAlert,
+  WarningAlert,
   eventBus,
   api_post_prevent_doubleclick,
   api_get_prevent_doubleclick,

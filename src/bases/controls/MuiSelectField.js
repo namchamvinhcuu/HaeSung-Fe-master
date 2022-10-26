@@ -9,6 +9,7 @@ export default function MuiSelectField({
   displayValue,
   displayGroup,
   onChange,
+  // onOpen,
   defaultValue,
   sx,
   margin,
@@ -22,7 +23,7 @@ export default function MuiSelectField({
   let labelFomart = label;
   if (required) labelFomart += " *";
 
-  const foo = () => {};
+  // const foo = () => {};
 
   return !displayGroup ? (
     <Autocomplete
@@ -40,6 +41,7 @@ export default function MuiSelectField({
       }
       defaultValue={defaultValue ?? null}
       onChange={onChange}
+      // onOpen={onOpen ?? foo}
       renderInput={(params) => {
         return (
           <TextField

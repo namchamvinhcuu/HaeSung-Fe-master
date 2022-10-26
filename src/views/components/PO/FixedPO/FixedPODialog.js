@@ -6,7 +6,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 import { purchaseOrderService } from '@services'
-import { ErrorAlert, SuccessAlert } from '@utils'
+import { ErrorAlert, SuccessAlert, WarningAlert } from '@utils'
 import { CREATE_ACTION } from '@constants/ConfigConstants';
 import { useFormik } from 'formik'
 import moment from "moment";
@@ -17,11 +17,13 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
   const defaultValue = { PoCode: '', Description: '', DeliveryDate: null, DueDate: null };
 
   const schema = yup.object().shape({
-    PoCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    DeliveryDate: yup.date().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+    PoCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+      .length(10, intl.formatMessage({ id: 'general.field_length' }, { length: 10 })),
+    DeliveryDate: yup.date().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+      .typeError(intl.formatMessage({ id: 'general.field_invalid' })),
     DueDate: yup.date().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+      .typeError(intl.formatMessage({ id: 'general.field_invalid' }))
   });
-
   const formik = useFormik({
     validationSchema: schema,
     initialValues: mode == CREATE_ACTION ? defaultValue : initModal,
@@ -31,15 +33,6 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
 
   const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
 
-  // useEffect(() => {
-  //   if (mode == CREATE_ACTION) {
-  //     formik.initialValues = defaultValue
-  //   }
-  //   else {
-  //     formik.initialValues = initModal;
-  //   }
-  // }, [initModal, mode])
-
   const handleReset = () => {
     resetForm();
   }
@@ -48,6 +41,32 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
     resetForm();
     onClose();
   }
+
+  const handleChangeDate = (date, e) => {
+    let x = new Date(e);
+    let y = new Date();
+
+    if (date === "DeliveryDate") {
+      if (values.DueDate != null) {
+        y = new Date(values.DueDate);
+        if (+x >= +y) {
+          e = values.DueDate;
+          WarningAlert(intl.formatMessage({ id: "purchase_order.DeliveryDate_warning" }));
+        }
+      }
+      setFieldValue(date, e)
+    }
+    else {
+      if (values.DeliveryDate != null) {
+        y = new Date(values.DeliveryDate);
+        if (+x < +y) {
+          e = values.DeliveryDate;
+          WarningAlert(intl.formatMessage({ id: "purchase_order.DueDate_warning" }));
+        }
+      }
+      setFieldValue(date, e)
+    }
+  };
 
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
@@ -98,6 +117,7 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
               fullWidth
               size='small'
               name='PoCode'
+              inputProps={{ maxLength: 10 }}
               disabled={dialogState.isSubmit}
               value={values.PoCode}
               onChange={handleChange}
@@ -123,7 +143,7 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'purchase_order.DeliveryDate' })}
               value={values.DeliveryDate ?? null}
-              onChange={(e) => setFieldValue("DeliveryDate", e)}
+              onChange={(e) => handleChangeDate("DeliveryDate", moment(e))}
               error={touched.DeliveryDate && Boolean(errors.DeliveryDate)}
               helperText={touched.DeliveryDate && errors.DeliveryDate}
             />
@@ -134,7 +154,7 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'purchase_order.DueDate' })}
               value={values.DueDate ?? null}
-              onChange={(e) => setFieldValue("DueDate", e)}
+              onChange={(e) => handleChangeDate("DueDate", moment(e))}
               error={touched.DueDate && Boolean(errors.DueDate)}
               helperText={touched.DueDate && errors.DueDate}
             />

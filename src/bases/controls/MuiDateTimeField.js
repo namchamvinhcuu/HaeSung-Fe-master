@@ -14,15 +14,15 @@ export default function MuiDateTimeField({
   error,
   helperText,
   disabled,
+  required,
 }) {
-  const onKeyDown = (e) => {
-    e.preventDefault();
-  };
+  let labelFormat = label;
+  if (required) labelFormat += " *";
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DateTimePicker
         disabled={disabled}
-        label={label}
+        label={labelFormat}
         value={value ? value : null}
         onChange={onChange}
         inputFormat="yyyy-MM-dd HH:mm"
@@ -31,9 +31,8 @@ export default function MuiDateTimeField({
             fullWidth
             size="small"
             sx={sx ?? { mb: 0.5 }}
-            // onKeyDown={onKeyDown}
             margin={margin}
-            variant={variant}
+            variant={variant ?? "outlined"}
             {...params}
             error={error}
             helperText={helperText}

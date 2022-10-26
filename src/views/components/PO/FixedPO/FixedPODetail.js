@@ -2,17 +2,17 @@ import React, { useEffect, useRef, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import UndoIcon from '@mui/icons-material/Undo';
-import { FormControlLabel, Grid, IconButton, Switch, TextField, Tooltip, Typography } from '@mui/material'
+import { FormControlLabel, Grid, IconButton, Switch } from '@mui/material'
 import { useIntl } from 'react-intl'
-import { MuiButton, MuiDataGrid, MuiSelectField } from '@controls'
+import { MuiButton, MuiDataGrid } from '@controls'
 import { purchaseOrderService } from '@services'
 import { useModal } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
-import moment from 'moment';
 import FixedPODetailDialog from './FixedPODetailDialog';
+import moment from 'moment';
 
-export default function FixedPODetail({ PoId }) {
+export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
@@ -34,9 +34,6 @@ export default function FixedPODetail({ PoId }) {
   const [newData, setNewData] = useState({})
   const [updateData, setUpdateData] = useState({})
   const [rowData, setRowData] = useState({});
-  const [MaterialTypeList, setMaterialTypeList] = useState([]);
-  const [UnitList, setUnitList] = useState([]);
-  const [SupplierList, setSupplierList] = useState([]);
 
   const columns = [
     {
@@ -89,11 +86,11 @@ export default function FixedPODetail({ PoId }) {
     { field: 'RemainQty', headerName: intl.formatMessage({ id: "purchase_order.RemainQty" }), flex: 0.4, },
     {
       field: "DeliveryDate", headerName: intl.formatMessage({ id: "purchase_order.DeliveryDate" }), width: 150,
-      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).add(7, "hours").format("YYYY-MM-DD"); } },
+      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).format("YYYY-MM-DD"); } },
     },
     {
       field: "DueDate", headerName: intl.formatMessage({ id: "purchase_order.DueDate" }), width: 150,
-      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).add(7, "hours").format("YYYY-MM-DD"); } },
+      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).format("YYYY-MM-DD"); } },
     },
     { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.4, },
     {
@@ -109,7 +106,8 @@ export default function FixedPODetail({ PoId }) {
 
   //useEffect
   useEffect(() => {
-    fetchData();
+    if (PoId || PoId == 0)
+      fetchData();
     return () => { isRendered = false; }
   }, [state.page, state.pageSize, state.searchData.showDelete, PoId]);
 
@@ -146,6 +144,9 @@ export default function FixedPODetail({ PoId }) {
         let res = await purchaseOrderService.deletePODetail({ PoDetailId: row.PoDetailId, row_version: row.row_version });
         if (res && res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }))
+          //Update qty Po
+          let TotalQtyNew = updateDataPO.TotalQty - row.Qty
+          setUpdateDataPO({ ...updateDataPO, TotalQty: TotalQtyNew });
           await fetchData();
         }
         else {
@@ -186,14 +187,11 @@ export default function FixedPODetail({ PoId }) {
       page: state.page,
       pageSize: state.pageSize,
       keyWord: state.searchData.keyWord,
-      // MaterialType: state.searchData.MaterialType,
-      // Unit: state.searchData.Unit,
-      // SupplierId: state.searchData.SupplierId,
       isActived: state.searchData.showDelete
 
     }
     const res = await purchaseOrderService.getPODetail(PoId, params);
-    if (res && res.Data && isRendered)
+    if (res && res.Data)
       setState({
         ...state
         , data: res.Data ?? []
@@ -207,56 +205,12 @@ export default function FixedPODetail({ PoId }) {
       <Grid container
         direction="row"
         justifyContent="space-between"
-        alignItems="width-end">
+        alignItems="width-end"
+        sx={{ mt: 2 }}
+      >
         <Grid item xs={9}>
           <MuiButton text="create" color='success' onClick={handleAdd} sx={{ mt: 1 }} disabled={PoId ? false : true} />
         </Grid>
-        {/* <Grid item>
-          <TextField
-            sx={{ width: 210 }}
-            fullWidth
-            variant="standard"
-            size='small'
-            label='Code'
-            onChange={(e) => handleSearch(e.target.value, 'keyWord')}
-          />
-        </Grid>
-        <Grid item>
-          <MuiSelectField
-            label={intl.formatMessage({ id: 'material.MaterialType' })}
-            options={MaterialTypeList}
-            displayLabel="commonDetailName"
-            displayValue="commonDetailId"
-            onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'MaterialType')}
-            variant="standard"
-            sx={{ width: 210 }}
-          />
-        </Grid>
-        <Grid item>
-          <MuiSelectField
-            label={intl.formatMessage({ id: 'material.Unit' })}
-            options={UnitList}
-            displayLabel="commonDetailName"
-            displayValue="commonDetailId"
-            onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Unit')}
-            variant="standard"
-            sx={{ width: 210 }}
-          />
-        </Grid>
-        <Grid item>
-          <MuiSelectField
-            label={intl.formatMessage({ id: 'material.SupplierId' })}
-            options={SupplierList}
-            displayLabel="SupplierName"
-            displayValue="SupplierId"
-            onChange={(e, item) => handleSearch(item ? item.SupplierId ?? null : null, 'SupplierId')}
-            variant="standard"
-            sx={{ width: 210 }}
-          />
-        </Grid>
-        <Grid item>
-          <MuiButton text="search" color='info' onClick={fetchData} sx={{ mt: 1 }} />
-        </Grid> */}
         <Grid item>
           <FormControlLabel
             sx={{ mt: 1 }}
@@ -285,10 +239,11 @@ export default function FixedPODetail({ PoId }) {
       />
 
       <FixedPODetailDialog
-        //valueOption={{ MaterialTypeList: MaterialTypeList, UnitList: UnitList, SupplierList: SupplierList }}
         PoId={PoId}
         setNewData={setNewData}
         setUpdateData={setUpdateData}
+        updateDataPO={updateDataPO}
+        setUpdateDataPO={setUpdateDataPO}
         initModal={rowData}
         isOpen={isShowing}
         onClose={toggle}

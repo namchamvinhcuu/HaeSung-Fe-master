@@ -37,8 +37,8 @@ export default function MuiDateField({
           <TextField
             fullWidth
             size="small"
-            sx={sx ?? { mb: 0.5 }}
-            onKeyDown={onKeyDown}
+            sx={{ ...sx, mb: 0.5 }}
+            // onKeyDown={onKeyDown}
             margin={margin}
             variant={variant}
             {...params}

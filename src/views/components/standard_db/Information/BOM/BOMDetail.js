@@ -79,17 +79,18 @@ export default function BOMDetail({ BomId, newDataChild }) {
     { field: 'BomCode', headerName: intl.formatMessage({ id: "bom.BomCode" }), flex: 0.5, },
     { field: 'ParentCode', headerName: intl.formatMessage({ id: "bom.ParentCode" }), flex: 0.5, },
     { field: 'MaterialCode', headerName: intl.formatMessage({ id: "bom.MaterialId" }), flex: 0.5, },
+    { field: 'MaterialUnit', headerName: intl.formatMessage({ id: "bom.Unit" }), flex: 0.5, },
     { field: 'BomLevel', headerName: intl.formatMessage({ id: "bom.BomLevel" }), flex: 0.5, },
     { field: 'Amount', headerName: intl.formatMessage({ id: "bom.Amount" }), flex: 0.5, },
     { field: 'Remark', headerName: intl.formatMessage({ id: "bom.Remark" }), flex: 0.7, },
     { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
     {
-      field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.5,
+      field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), width: 150,
       valueFormatter: params => params?.value ? moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss") : null
     },
     { field: 'modifiedName', headerName: intl.formatMessage({ id: "general.modifiedName" }), flex: 0.5, },
     {
-      field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modifiedDate" }), flex: 0.5,
+      field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modifiedDate" }), width: 150,
       valueFormatter: params => params?.value ? moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss") : null
     },
   ];
@@ -148,6 +149,8 @@ export default function BOMDetail({ BomId, newDataChild }) {
   const handleDelete = async (bomDetail) => {
     if (window.confirm(intl.formatMessage({ id: bomDetail.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
       try {
+        let child = state.data.filter(x => x.ParentId == bomDetail.BomId);
+        if (child.length == 0) {
         let res = await bomDetailService.deleteBomDetail({ BomDetailId: bomDetail.BomId, row_version: bomDetail.row_version });
         if (res && res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }))
@@ -156,6 +159,10 @@ export default function BOMDetail({ BomId, newDataChild }) {
         else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
         }
+      }
+      else {
+        ErrorAlert(intl.formatMessage({ id: 'bom.delete_error' }));
+      }
       } catch (error) {
         console.log(error)
       }

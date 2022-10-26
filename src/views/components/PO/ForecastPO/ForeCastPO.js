@@ -4,8 +4,25 @@ import { bindActionCreators } from "redux";
 import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
 import { User_Operations } from "@appstate/user";
 import { Store } from "@appstate";
-import { Box, FormControl, FormControlLabel, Grid, IconButton, Input, InputLabel, Switch } from "@mui/material";
-import { MuiButton, MuiDataGrid, MuiSearchField } from "@controls";
+import {
+  Box,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  Input,
+  InputLabel,
+  Switch,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import {
+  MuiButton,
+  MuiDataGrid,
+  MuiSearchField,
+  MuiSelectField,
+} from "@controls";
 import { useIntl } from "react-intl";
 import EditIcon from "@mui/icons-material/Edit";
 import UndoIcon from "@mui/icons-material/Undo";
@@ -18,6 +35,9 @@ import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
 import { forecastService } from "@services";
 import moment from "moment";
 
+const min = 1;
+const max = 52;
+
 const ForecastPO = (props) => {
   const intl = useIntl();
   let isRendered = useRef(true);
@@ -28,6 +48,7 @@ const ForecastPO = (props) => {
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
   const { isShowing, toggle } = useModal();
+  const [yearList, setYearList] = useState([]);
   const [forecastState, setForecastState] = useState({
     isLoading: false,
     data: [],
@@ -36,7 +57,8 @@ const ForecastPO = (props) => {
     pageSize: 20,
     searchData: {
       keyWord: "",
-      keyWordWeek: 0,
+      keyWordWeekStart: 0,
+      keyWordWeekEnd: 0,
       keyWordYear: 0,
       showDelete: true,
     },
@@ -44,6 +66,7 @@ const ForecastPO = (props) => {
   useEffect(() => {
     getMaterialList();
     getLineList();
+    getYearList();
     return () => {
       isRendered = false;
     };
@@ -56,7 +79,11 @@ const ForecastPO = (props) => {
     forecastState.searchData.showDelete,
   ]);
   useEffect(() => {
-    if (!_.isEmpty(newData)) {
+    if (
+      !_.isEmpty(newData) &&
+      isRendered &&
+      !_.isEqual(newData, ForecastPODto)
+    ) {
       const data = [newData, ...forecastState.data];
       if (data.length > forecastState.pageSize) {
         data.pop();
@@ -102,7 +129,7 @@ const ForecastPO = (props) => {
     {
       field: "id",
       headerName: "",
-      width: 100,
+      width: 80,
       filterable: false,
       renderCell: (index) =>
         index.api.getRowIndex(index.row.FPOId) +
@@ -112,7 +139,7 @@ const ForecastPO = (props) => {
     {
       field: "action",
       headerName: "",
-      width: 110,
+      width: 80,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
@@ -156,14 +183,41 @@ const ForecastPO = (props) => {
       },
     },
     {
-      field: "MaterialCode",
-      headerName: intl.formatMessage({ id: "forecast.MaterialId" }),
-      width: 200,
+      field: "Inch",
+      headerName: "Inch",
+      width: 100,
     },
     {
       field: "LineName",
       headerName: intl.formatMessage({ id: "forecast.LineId" }),
       width: 200,
+    },
+    {
+      field: "MaterialCode",
+      headerName: intl.formatMessage({ id: "forecast.MaterialId" }),
+      width: 200,
+    },
+    {
+      field: "DescriptionMaterial",
+      headerName: intl.formatMessage({ id: "forecast.Desciption" }),
+      width: 300,
+      renderCell: (params) => {
+        return (
+          <Tooltip
+            title={params.row.DescriptionMaterial ?? ""}
+            className="col-text-elip"
+          >
+            <Typography sx={{ fontSize: 14, maxWidth: 300 }}>
+              {params.row.DescriptionMaterial}
+            </Typography>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      field: "Description",
+      headerName: "Desc 2",
+      width: 180,
     },
     {
       field: "Week",
@@ -180,16 +234,7 @@ const ForecastPO = (props) => {
       headerName: intl.formatMessage({ id: "forecast.Amount" }),
       width: 100,
     },
-    {
-      field: "Inch",
-      headerName: "Inch",
-      width: 100,
-    },
-    {
-      field: "Description",
-      headerName: intl.formatMessage({ id: "forecast.Desciption" }),
-      width: 180,
-    },
+  
     {
       field: "createdName",
       headerName: intl.formatMessage({ id: "general.createdName" }),
@@ -237,14 +282,27 @@ const ForecastPO = (props) => {
       setLineList([...res.Data]);
     }
   };
-
+  const getYearList = async () => {
+    const res = await forecastService.getYearModel();
+    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
+      setYearList([...res.Data]);
+    }
+  };
   async function fetchData() {
+    if (
+      forecastState.searchData.keyWordWeekStart >
+        forecastState.searchData.keyWordWeekEnd &&
+      forecastState.searchData.keyWordWeekEnd != 0
+    ) {
+      ErrorAlert(intl.formatMessage({ id: "forecast.Start_end_week_error" }));
+    }
     setForecastState({ ...forecastState, isLoading: true });
     const params = {
       page: forecastState.page,
       pageSize: forecastState.pageSize,
       keyWord: forecastState.searchData.keyWord,
-      keyWordWeek: forecastState.searchData.keyWordWeek,
+      keyWordWeekStart: forecastState.searchData.keyWordWeekStart,
+      keyWordWeekEnd: forecastState.searchData.keyWordWeekEnd,
       keyWordYear: forecastState.searchData.keyWordYear,
       showDelete: forecastState.searchData.showDelete,
     };
@@ -260,7 +318,6 @@ const ForecastPO = (props) => {
 
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...forecastState.searchData };
-    console.log("newSearchData", newSearchData)
     newSearchData[inputName] = e;
     if (inputName == "showDelete") {
       setForecastState({
@@ -299,6 +356,10 @@ const ForecastPO = (props) => {
       }
     }
   };
+
+  const [valueStart, setValueStart] = useState("");
+  const [valueEnd, setValueEnd] = useState("");
+
   return (
     <React.Fragment>
       <Grid
@@ -311,35 +372,114 @@ const ForecastPO = (props) => {
           <MuiButton text="create" color="success" onClick={handleAdd} />
         </Grid>
         <Grid item>
-          <Box display="flex" >
-            <Box>
-               
-              <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
-                        <InputLabel>Week</InputLabel>
-                        <Input
-                          type="number"
-                          onChange={(e) => handleSearch(e.target.value, "keyWordWeek")}
-                        />
-              </FormControl>
-            </Box>
-            <Box sx={{mx:3}}>
-               <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
-                         <InputLabel>Year</InputLabel>
+          <Box display="flex">
+            <Box sx={{ maxWidth: "120px", mr: 3 }}>
+              <TextField
+                label={intl.formatMessage({ id: "forecast.Week_start" })}
+                variant="standard"
+                type="number"
+                sx={{ width: "120px" }}
+                value={valueStart}
+                inputProps={{ min, max }}
+                onChange={(e) => {
+                  var value = parseInt(e.target.value, 10);
+                  if (value > max) value = max;
+                  if (value < min) value = min;
+                  setValueStart(value || "");
+                  handleSearch(value || 0, "keyWordWeekStart");
+                }}
+              />
+              {/* <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
+                         <InputLabel>{intl.formatMessage({ id: "forecast.Week_start" })}</InputLabel>
                          <Input
                            type="number"
-                           onChange={(e) => handleSearch(e.target.value, "keyWordYear")}
+                           onChange={(e) => handleSearch(e.target.value || 0, "keyWordWeekStart")}
                          />
-               </FormControl>
-             </Box>
-      
-            <MuiSearchField
-            label="general.name"
-            name="LineName"
-            onClick={fetchData}
-            onChange={(e) => handleSearch(e.target.value, "keyWord")}
-          />
+               </FormControl> */}
+            </Box>
+            <Box sx={{ maxWidth: "120px" }}>
+              <TextField
+                label={intl.formatMessage({ id: "forecast.Week_end" })}
+                variant="standard"
+                type="number"
+                sx={{ width: "120px" }}
+                value={valueEnd}
+                inputProps={{ min, max }}
+                onChange={(e) => {
+                  var value = parseInt(e.target.value, 10);
+                  if (value > max) value = max;
+                  if (value < min) value = min;
+                  setValueEnd(value || "");
+                  handleSearch(value || 0, "keyWordWeekEnd");
+                }}
+              />
+              {/* <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
+                <InputLabel>
+                  {intl.formatMessage({ id: "forecast.Week_end" })}
+                </InputLabel>
+                <Input
+                  type="number"
+                  onChange={(e) =>
+                    handleSearch(e.target.value || 0, "keyWordWeekEnd")
+                  }
+                />
+              </FormControl> */}
+            </Box>
+            <Box sx={{ mx: 3, maxWidth: "120px" }}>
+              <FormControl sx={{marginTop:"3px"}}>
+                <MuiSelectField
+                  label={intl.formatMessage({ id: "forecast.Year" })}
+                  options={yearList}
+                  displayLabel="YearName"
+                  displayValue="YearId"
+                  onChange={(e, item) =>
+                    handleSearch(
+                      item ? item.YearId ?? null : null,
+                      "keyWordYear"
+                    )
+                  }
+                  variant="standard"
+                  sx={{ width: 120 }}
+                />
+              </FormControl>
+
+              {/* <TextField
+                label={intl.formatMessage({ id: "forecast.Year" })}
+                variant="standard"
+                type="number"
+                sx={{ width: "120px" }}
+                value={valueYear}
+                inputProps={{ minyear, maxyear }}
+                onChange={(e) => {
+                  var value = parseInt(e.target.value, 10);
+                  if (value > maxyear) value = maxyear;
+                  // if (value < minyear) value = minyear;
+                  setValueYear(value || "");
+                  handleSearch(value || 0, "keyWordYear");
+                }}
+              /> */}
+              {/* <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
+                <InputLabel>
+                  {intl.formatMessage({ id: "forecast.Year" })}
+                </InputLabel>
+                <Input
+                  type="number"
+                  onChange={(e) =>
+                    handleSearch(e.target.value || 0, "keyWordYear")
+                  }
+                />
+              </FormControl> */}
+            </Box>
+
+            <Box>
+              <MuiSearchField
+                label="general.name"
+                name="LineName"
+                onClick={fetchData}
+                onChange={(e) => handleSearch(e.target.value, "keyWord")}
+              />
+            </Box>
           </Box>
-        
         </Grid>
         <Grid item>
           <MuiButton text="search" color="info" onClick={fetchData} />
@@ -376,7 +516,7 @@ const ForecastPO = (props) => {
         // rowsPerPageOptions={[5, 10, 20, 30]}
 
         onPageChange={(newPage) => {
-          setLineState({ ...forecastState, page: newPage + 1 });
+          setForecastState({ ...forecastState, page: newPage + 1 });
         }}
         // onPageSizeChange={(newPageSize) => {
         //     setLineState({ ...lineState, pageSize: newPageSize, page: 1 });
