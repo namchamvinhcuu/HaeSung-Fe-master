@@ -23,6 +23,7 @@ import {
 import { ErrorAlert, SuccessAlert, addDays } from "@utils";
 import { DeliveryOrderDto } from "@models";
 import { deliveryOrderService } from "@services";
+import { usePrevious } from "@hooks";
 
 const DeliveryOrder = (props) => {
   let isRendered = useRef(true);
@@ -34,15 +35,22 @@ const DeliveryOrder = (props) => {
     data: [],
     totalRow: 0,
     page: 1,
-    pageSize: 7,
+    pageSize: 20,
     searchData: {
       DoCode: "",
       PoId: 0,
-      MaterialId: 0,
+      Material: {
+        MaterialId: 0,
+        MaterialCode: "",
+      },
       ETDLoad: initETDLoad,
       DeliveryTime: addDays(initETDLoad, 1),
     },
   });
+
+  const defaultMaterial = { ...deliveryOrderState.searchData.Material };
+
+  const prevPoId = usePrevious(deliveryOrderState.searchData.PoId);
 
   const [selectedRow, setSelectedRow] = useState({
     ...DeliveryOrderDto,
@@ -83,6 +91,8 @@ const DeliveryOrder = (props) => {
       case "ETDLoad":
       case "DeliveryTime":
       case "PoId":
+        newSearchData["Material"] = { ...defaultMaterial };
+      case "MaterialId":
         newSearchData[inputName] = e;
         break;
       default:
@@ -104,7 +114,13 @@ const DeliveryOrder = (props) => {
     }
   };
 
-  const getMaterialArr = async (poId) => {};
+  const getMaterialArr = async (poId) => {
+    const res = await deliveryOrderService.getMaterialArr(poId);
+
+    if (res && isRendered) {
+      setMaterialArr(!res.Data ? [] : [...res.Data]);
+    }
+  };
 
   const fetchData = async () => {
     setDeliveryOrderState({
@@ -137,8 +153,13 @@ const DeliveryOrder = (props) => {
 
   useEffect(() => {
     getPoArr();
-    getMaterialArr(63802265960648);
   }, []);
+
+  useEffect(() => {
+    if (deliveryOrderState.searchData.PoId !== prevPoId) {
+      getMaterialArr(deliveryOrderState.searchData.PoId);
+    }
+  }, [deliveryOrderState.searchData.PoId]);
 
   useEffect(() => {
     fetchData();
@@ -414,6 +435,7 @@ const DeliveryOrder = (props) => {
             onClick={toggleCreateDialog}
           />
         </Grid>
+
         <Grid item xs>
           <MuiSearchField
             label="delivery_order.DoCode"
@@ -429,9 +451,9 @@ const DeliveryOrder = (props) => {
             options={poArr}
             displayLabel="PoCode"
             displayValue="PoId"
-            onChange={(e, item) =>
-              changeSearchData(item ? item.PoId ?? null : null, "PoId")
-            }
+            onChange={(e, item) => {
+              changeSearchData(item ? item.PoId ?? null : null, "PoId");
+            }}
             variant="standard"
           />
         </Grid>
@@ -442,7 +464,11 @@ const DeliveryOrder = (props) => {
             options={materialArr}
             displayLabel="MaterialCode"
             displayValue="MaterialId"
-            // onOpen={getMaterialArr}
+            value={
+              deliveryOrderState.searchData.Material.MaterialId
+                ? deliveryOrderState.searchData.Material.MaterialId
+                : defaultMaterial
+            }
             onChange={(e, item) =>
               changeSearchData(
                 item ? item.MaterialId ?? null : null,
@@ -498,6 +524,37 @@ const DeliveryOrder = (props) => {
           />
         </Grid>
       </Grid>
+
+      <MuiDataGrid
+        showLoading={deliveryOrderState.isLoading}
+        isPagingServer={true}
+        headerHeight={45}
+        // rowHeight={30}
+        // gridHeight={345}
+        columns={columns}
+        rows={deliveryOrderState.data}
+        page={deliveryOrderState.page - 1}
+        pageSize={deliveryOrderState.pageSize}
+        rowCount={deliveryOrderState.totalRow}
+        // rowsPerPageOptions={[5, 10, 20, 30]}
+
+        onPageChange={(newPage) => {
+          setState({ ...deliveryOrderState, page: newPage + 1 });
+        }}
+        // onPageSizeChange={(newPageSize) => {
+        //     setState({ ...supplierState, pageSize: newPageSize, page: 1 });
+        // }}
+        getRowId={(rows) => rows.DoId}
+        onSelectionModelChange={(newSelectedRowId) =>
+          setPoId(newSelectedRowId[0])
+        }
+        // selectionModel={selectedRow.menuId}
+        getRowClassName={(params) => {
+          if (_.isEqual(params.row, newData)) {
+            return `Mui-created`;
+          }
+        }}
+      />
     </React.Fragment>
   );
 };
