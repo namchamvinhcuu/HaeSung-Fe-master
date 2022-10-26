@@ -79,7 +79,7 @@ export default function BOMDetail({ BomId, newDataChild }) {
     { field: 'BomCode', headerName: intl.formatMessage({ id: "bom.BomCode" }), flex: 0.5, },
     { field: 'ParentCode', headerName: intl.formatMessage({ id: "bom.ParentCode" }), flex: 0.5, },
     { field: 'MaterialCode', headerName: intl.formatMessage({ id: "bom.MaterialId" }), flex: 0.5, },
-    { field: 'Unit', headerName: intl.formatMessage({ id: "bom.Unit" }), flex: 0.5, },
+    { field: 'unitmaterial', headerName: intl.formatMessage({ id: "bom.Unit" }), flex: 0.5, },
     { field: 'BomLevel', headerName: intl.formatMessage({ id: "bom.BomLevel" }), flex: 0.5, },
     { field: 'Amount', headerName: intl.formatMessage({ id: "bom.Amount" }), flex: 0.5, },
     { field: 'Remark', headerName: intl.formatMessage({ id: "bom.Remark" }), flex: 0.7, },
