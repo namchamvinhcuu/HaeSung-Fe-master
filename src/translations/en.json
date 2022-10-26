@@ -222,7 +222,8 @@
         "ParentId": "Parent Code",
         "Remark": "Remark",
         "min_value": "Value greater than 0",
-        "delete_error": "Bom have child, can't delete"
+        "delete_error": "Bom have child, can't delete",
+        "Unit": "Unit"
     },
     "bomDetail": {
         "MaterialId": "Material Code",

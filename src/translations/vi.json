@@ -222,7 +222,8 @@
         "ParentId": "Parent Code",
         "Remark": "Remark",
         "min_value": "Giá trị phải lớn hơn 0",
-        "delete_error": "Bom có bom con, không thể xóa"
+        "delete_error": "Bom có bom con, không thể xóa",
+        "Unit": "Unit"
     },
     "bomDetail": {
         "MaterialId": "Material Code",
