@@ -6,7 +6,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 import { purchaseOrderService } from '@services'
-import { ErrorAlert, SuccessAlert } from '@utils'
+import { ErrorAlert, SuccessAlert, WarningAlert } from '@utils'
 import { CREATE_ACTION } from '@constants/ConfigConstants';
 import { useFormik } from 'formik'
 import moment from "moment";
@@ -18,8 +18,10 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
 
   const schema = yup.object().shape({
     PoCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    DeliveryDate: yup.date().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+    DeliveryDate: yup.date().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+      .typeError(intl.formatMessage({ id: 'general.field_invalid' })),
     DueDate: yup.date().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+      .typeError(intl.formatMessage({ id: 'general.field_invalid' }))
   });
 
   const formik = useFormik({
@@ -39,6 +41,32 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
     resetForm();
     onClose();
   }
+
+  const handleChangeDate = (date, e) => {
+    let x = new Date(e);
+    let y = new Date();
+
+    if (date === "DeliveryDate") {
+      if (values.DueDate != null) {
+        y = new Date(values.DueDate);
+        if (+x >= +y) {
+          e = values.DueDate;
+          WarningAlert(intl.formatMessage({ id: "purchase_order.DeliveryDate_warning" }));
+        }
+      }
+      setFieldValue(date, e)
+    }
+    else {
+      if (values.DeliveryDate != null) {
+        y = new Date(values.DeliveryDate);
+        if (+x < +y) {
+          e = values.DeliveryDate;
+          WarningAlert(intl.formatMessage({ id: "purchase_order.DueDate_warning" }));
+        }
+      }
+      setFieldValue(date, e)
+    }
+  };
 
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
@@ -114,7 +142,7 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'purchase_order.DeliveryDate' })}
               value={values.DeliveryDate ?? null}
-              onChange={(e) => setFieldValue("DeliveryDate", e)}
+              onChange={(e) => handleChangeDate("DeliveryDate", e)}
               error={touched.DeliveryDate && Boolean(errors.DeliveryDate)}
               helperText={touched.DeliveryDate && errors.DeliveryDate}
             />
@@ -125,7 +153,7 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'purchase_order.DueDate' })}
               value={values.DueDate ?? null}
-              onChange={(e) => setFieldValue("DueDate", e)}
+              onChange={(e) => handleChangeDate("DueDate", e)}
               error={touched.DueDate && Boolean(errors.DueDate)}
               helperText={touched.DueDate && errors.DueDate}
             />

@@ -24,7 +24,7 @@ import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import { useModal } from "@basesShared"
 import { PurchaseOrderDto } from "@models";
 import { purchaseOrderService } from "@services";
-import { ErrorAlert, SuccessAlert } from "@utils";
+import { ErrorAlert, SuccessAlert, WarningAlert } from "@utils";
 import FixedPODialog from "./FixedPODialog";
 import FixedPODetail from "./FixedPODetail";
 
@@ -41,7 +41,7 @@ const FixedPO = (props) => {
     pageSize: 8,
     searchData: {
       PoCode: "",
-      DeliveryDate: currentDate,
+      DeliveryDate: moment(currentDate).format("YYYY-MM-DD"),
       DueDate: moment(currentDate).add(30, "days").format("YYYY-MM-DD"),
       showDelete: true
     },
@@ -101,24 +101,33 @@ const FixedPO = (props) => {
   };
 
   const fetchData = async () => {
-    setState({ ...state, isLoading: true, });
-    const params = {
-      page: state.page,
-      pageSize: state.pageSize,
-      PoCode: state.searchData.PoCode.trim(),
-      DeliveryDate: state.searchData.DeliveryDate,
-      DueDate: state.searchData.DueDate,
-      isActived: state.searchData.showDelete,
-    };
-    const res = await purchaseOrderService.get(params);
+    if (state.searchData.DeliveryDate == 'Invalid Date') {
+      ErrorAlert(intl.formatMessage({ id: 'purchase_order.DeliveryDate_Invalid' }))
+    }
+    else if (state.searchData.DueDate == 'Invalid Date') {
+      ErrorAlert(intl.formatMessage({ id: 'purchase_order.DueDate_Invalid' }))
+    }
+    else {
+      setState({ ...state, isLoading: true, });
+      const params = {
+        page: state.page,
+        pageSize: state.pageSize,
+        PoCode: state.searchData.PoCode.trim(),
+        DeliveryDate: state.searchData.DeliveryDate,
+        DueDate: state.searchData.DueDate,
+        isActived: state.searchData.showDelete,
+      };
 
-    if (res && isRendered)
-      setState({
-        ...state,
-        data: !res.Data ? [] : [...res.Data],
-        totalRow: res.TotalRow,
-        isLoading: false,
-      });
+      const res = await purchaseOrderService.get(params);
+      setPoId(0);
+      if (res && isRendered)
+        setState({
+          ...state,
+          data: !res.Data ? [] : [...res.Data],
+          totalRow: res.TotalRow,
+          isLoading: false,
+        });
+    }
   };
 
   const handleDelete = async (row) => {

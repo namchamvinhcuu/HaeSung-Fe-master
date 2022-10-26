@@ -2,15 +2,15 @@ import React, { useEffect, useRef, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import UndoIcon from '@mui/icons-material/Undo';
-import { FormControlLabel, Grid, IconButton, Switch, TextField, Tooltip, Typography } from '@mui/material'
+import { FormControlLabel, Grid, IconButton, Switch } from '@mui/material'
 import { useIntl } from 'react-intl'
-import { MuiButton, MuiDataGrid, MuiSelectField } from '@controls'
+import { MuiButton, MuiDataGrid } from '@controls'
 import { purchaseOrderService } from '@services'
 import { useModal } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
-import moment from 'moment';
 import FixedPODetailDialog from './FixedPODetailDialog';
+import moment from 'moment';
 
 export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
   const intl = useIntl();
@@ -106,7 +106,8 @@ export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
 
   //useEffect
   useEffect(() => {
-    fetchData();
+    if (PoId || PoId == 0)
+      fetchData();
     return () => { isRendered = false; }
   }, [state.page, state.pageSize, state.searchData.showDelete, PoId]);
 
@@ -190,7 +191,7 @@ export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
 
     }
     const res = await purchaseOrderService.getPODetail(PoId, params);
-    if (res && res.Data && isRendered)
+    if (res && res.Data)
       setState({
         ...state
         , data: res.Data ?? []
@@ -204,7 +205,9 @@ export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
       <Grid container
         direction="row"
         justifyContent="space-between"
-        alignItems="width-end">
+        alignItems="width-end"
+        sx={{ mt: 2 }}
+      >
         <Grid item xs={9}>
           <MuiButton text="create" color='success' onClick={handleAdd} sx={{ mt: 1 }} disabled={PoId ? false : true} />
         </Grid>
