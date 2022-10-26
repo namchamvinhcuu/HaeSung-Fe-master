@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
 import { User_Operations } from "@appstate/user";
 import { Store } from "@appstate";
-import { Box, FormControl, FormControlLabel, Grid, IconButton, Input, InputLabel, Switch } from "@mui/material";
+import { Box, FormControl, FormControlLabel, Grid, IconButton, Input, InputLabel, Switch, Tooltip, Typography } from "@mui/material";
 import { MuiButton, MuiDataGrid, MuiSearchField } from "@controls";
 import { useIntl } from "react-intl";
 import EditIcon from "@mui/icons-material/Edit";
@@ -36,7 +36,8 @@ const ForecastPO = (props) => {
     pageSize: 20,
     searchData: {
       keyWord: "",
-      keyWordWeek: 0,
+      keyWordWeekStart: 0,
+      keyWordWeekEnd: 0,
       keyWordYear: 0,
       showDelete: true,
     },
@@ -50,13 +51,9 @@ const ForecastPO = (props) => {
   }, []);
   useEffect(() => {
     fetchData();
-  }, [
-    forecastState.page,
-    forecastState.pageSize,
-    forecastState.searchData.showDelete,
-  ]);
+  }, [forecastState.page, forecastState.pageSize, forecastState.searchData.showDelete]);
   useEffect(() => {
-    if (!_.isEmpty(newData)) {
+    if (!_.isEmpty(newData) && isRendered && !_.isEqual(newData, ForecastPODto)) {
       const data = [newData, ...forecastState.data];
       if (data.length > forecastState.pageSize) {
         data.pop();
@@ -187,8 +184,22 @@ const ForecastPO = (props) => {
     },
     {
       field: "Description",
-      headerName: intl.formatMessage({ id: "forecast.Desciption" }),
+      headerName: "Desc 2",
       width: 180,
+    },
+    {
+      field: "DescriptionMaterial",
+      headerName: intl.formatMessage({ id: "forecast.Desciption" }),
+      width: 300,
+      renderCell: (params) => {
+        return (
+          <Tooltip title={params.row.DescriptionMaterial ?? ""} className="col-text-elip">
+            <Typography sx={{ fontSize: 14, maxWidth: 300 }}>
+              {params.row.DescriptionMaterial}
+            </Typography>
+          </Tooltip>
+        );
+      },
     },
     {
       field: "createdName",
@@ -244,7 +255,8 @@ const ForecastPO = (props) => {
       page: forecastState.page,
       pageSize: forecastState.pageSize,
       keyWord: forecastState.searchData.keyWord,
-      keyWordWeek: forecastState.searchData.keyWordWeek,
+      keyWordWeekStart: forecastState.searchData.keyWordWeekStart,
+      keyWordWeekEnd: forecastState.searchData.keyWordWeekEnd,
       keyWordYear: forecastState.searchData.keyWordYear,
       showDelete: forecastState.searchData.showDelete,
     };
@@ -312,32 +324,44 @@ const ForecastPO = (props) => {
         </Grid>
         <Grid item>
           <Box display="flex" >
-            <Box>
+          <Box sx={{maxWidth:"100px", mr:3}}>
+               
+               <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
+                         <InputLabel>Week Start</InputLabel>
+                         <Input
+                           type="number"
+                           onChange={(e) => handleSearch(e.target.value || 0, "keyWordWeekStart")}
+                         />
+               </FormControl>
+             </Box>
+            <Box  sx={{maxWidth:"100px"}}>
                
               <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
-                        <InputLabel>Week</InputLabel>
+                        <InputLabel>Week End</InputLabel>
                         <Input
                           type="number"
-                          onChange={(e) => handleSearch(e.target.value, "keyWordWeek")}
+                          onChange={(e) => handleSearch(e.target.value || 0, "keyWordWeekEnd")}
                         />
               </FormControl>
             </Box>
-            <Box sx={{mx:3}}>
+            <Box sx={{mx:3, maxWidth:"120px"}} >
                <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
                          <InputLabel>Year</InputLabel>
                          <Input
                            type="number"
-                           onChange={(e) => handleSearch(e.target.value, "keyWordYear")}
+                           onChange={(e) => handleSearch(e.target.value || 0, "keyWordYear")}
                          />
                </FormControl>
              </Box>
       
-            <MuiSearchField
+           <Box>
+           <MuiSearchField
             label="general.name"
             name="LineName"
             onClick={fetchData}
             onChange={(e) => handleSearch(e.target.value, "keyWord")}
           />
+           </Box>
           </Box>
         
         </Grid>
