@@ -26,7 +26,7 @@ import { ErrorAlert, SuccessAlert, addDays } from "@utils";
 import { DeliveryOrderDto } from "@models";
 import { deliveryOrderService } from "@services";
 
-// import DeliveryOrderDialog from "./DeliveryOrderDialog";
+import DeliveryOrderDialog from "./DeliveryOrderDialog";
 
 const DeliveryOrder = (props) => {
   let isRendered = useRef(true);
@@ -125,13 +125,7 @@ const DeliveryOrder = (props) => {
   };
 
   const getPoArr = async () => {
-    const res = await deliveryOrderService.getPoArr();
-
-    // if (res && isRendered) {
-    //   setPoArr(!res.Data ? [] : [...res.Data]);
-    // }
-
-    return res;
+    return await deliveryOrderService.getPoArr();
   };
 
   const getMaterialArr = async (poId) => {
@@ -158,8 +152,6 @@ const DeliveryOrder = (props) => {
       isActived: showActivedData,
     };
 
-    console.log("[params]", params);
-
     const res = await deliveryOrderService.get(params);
 
     if (res && isRendered)
@@ -170,10 +162,6 @@ const DeliveryOrder = (props) => {
         isLoading: false,
       });
   };
-
-  useEffect(() => {
-    // getPoArr();
-  }, []);
 
   useEffect(() => {
     if (deliveryOrderState.searchData.PoId !== 0) {
@@ -531,8 +519,7 @@ const DeliveryOrder = (props) => {
             onChange={(e) => {
               changeSearchData(e, "ETDLoad");
             }}
-            // error={touched.ETADate && Boolean(errors.ETADate)}
-            // helperText={touched.ETADate && errors.ETADate}
+            variant="standard"
           />
         </Grid>
 
@@ -546,8 +533,7 @@ const DeliveryOrder = (props) => {
             onChange={(e) => {
               changeSearchData(e, "DeliveryTime");
             }}
-            // error={touched.ETADate && Boolean(errors.ETADate)}
-            // helperText={touched.ETADate && errors.ETADate}
+            variant="standard"
           />
         </Grid>
 
@@ -592,7 +578,7 @@ const DeliveryOrder = (props) => {
         }}
       />
 
-      {/* <DeliveryOrderDialog
+      <DeliveryOrderDialog
         // valueOption={{ TrayTypeList: TrayTypeList }}
         setNewData={setNewData}
         setUpdateData={setSelectedRow}
@@ -600,7 +586,7 @@ const DeliveryOrder = (props) => {
         isOpen={isOpenDialog}
         onClose={toggleDialog}
         mode={mode}
-      /> */}
+      />
     </React.Fragment>
   );
 };

@@ -5,6 +5,8 @@ import {
   MuiSubmitButton,
   MuiDateTimeField,
   MuiSelectField,
+  MuiAutoComplete,
+  MuiTextField,
 } from "@controls";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Checkbox, FormControlLabel, Grid, TextField } from "@mui/material";
@@ -29,18 +31,36 @@ const DeliveryOrderDialog = (props) => {
   } = props;
 
   const intl = useIntl();
-  const [dialogState, setDialogState] = useState({ isSubmit: false });
+  const [dialogState, setDialogState] = useState({
+    ...initModal,
+    isSubmit: false,
+  });
 
   const schema = yup.object().shape({
-    PoCode: yup
+    PoId: yup
+      .number()
+      .nullable()
+      .required(intl.formatMessage({ id: "general.field_required" }))
+      .min(1, intl.formatMessage({ id: "general.field_required" })),
+    MaterialId: yup
+      .number()
+      .nullable()
+      .required(intl.formatMessage({ id: "general.field_required" }))
+      .min(1, intl.formatMessage({ id: "general.field_required" })),
+    DoCode: yup
       .string()
       .nullable()
       .required(intl.formatMessage({ id: "general.field_required" })),
-    DeliveryDate: yup
+    OrderQty: yup
+      .number()
+      .nullable()
+      .required(intl.formatMessage({ id: "general.field_required" }))
+      .min(1, intl.formatMessage({ id: "general.field_required" })),
+    ETDLoad: yup
       .date()
       .nullable()
       .required(intl.formatMessage({ id: "general.field_required" })),
-    DueDate: yup
+    DeliveryTime: yup
       .date()
       .nullable()
       .required(intl.formatMessage({ id: "general.field_required" })),
@@ -77,30 +97,38 @@ const DeliveryOrderDialog = (props) => {
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
 
-    if (mode == CREATE_ACTION) {
-      const res = await purchaseOrderService.createPO(data);
-      if (res.HttpResponseCode === 200 && res.Data) {
-        SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-        setNewData({ ...res.Data });
-        setDialogState({ ...dialogState, isSubmit: false });
-        handleReset();
-      } else {
-        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-        setDialogState({ ...dialogState, isSubmit: false });
-      }
-    } else {
-      const res = await purchaseOrderService.modifyPO(data);
-      if (res.HttpResponseCode === 200) {
-        SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-        setUpdateData({ ...res.Data });
-        setDialogState({ ...dialogState, isSubmit: false });
-        handleReset();
-        handleCloseDialog();
-      } else {
-        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-        setDialogState({ ...dialogState, isSubmit: false });
-      }
-    }
+    // if (mode == CREATE_ACTION) {
+    //   const res = await purchaseOrderService.createPO(data);
+    //   if (res.HttpResponseCode === 200 && res.Data) {
+    //     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //     setNewData({ ...res.Data });
+    //     setDialogState({ ...dialogState, isSubmit: false });
+    //     handleReset();
+    //   } else {
+    //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //     setDialogState({ ...dialogState, isSubmit: false });
+    //   }
+    // } else {
+    //   const res = await purchaseOrderService.modifyPO(data);
+    //   if (res.HttpResponseCode === 200) {
+    //     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //     setUpdateData({ ...res.Data });
+    //     setDialogState({ ...dialogState, isSubmit: false });
+    //     handleReset();
+    //     handleCloseDialog();
+    //   } else {
+    //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //     setDialogState({ ...dialogState, isSubmit: false });
+    //   }
+    // }
+  };
+
+  const getPoArr = async () => {
+    return await deliveryOrderService.getPoArr();
+  };
+
+  const getMaterialArr = async () => {
+    return await deliveryOrderService.getMaterialArr(values.PoId);
   };
 
   useEffect(() => {}, []);
@@ -108,7 +136,7 @@ const DeliveryOrderDialog = (props) => {
   return (
     <React.Fragment>
       <MuiDialog
-        maxWidth="sm"
+        maxWidth="md"
         title={intl.formatMessage({
           id: mode == CREATE_ACTION ? "general.create" : "general.modify",
         })}
@@ -124,65 +152,192 @@ const DeliveryOrderDialog = (props) => {
             columnSpacing={{ xs: 1, sm: 2, md: 3 }}
           >
             <Grid item xs={12}>
-              {/* <MuiSelectField
-                fullWidth
-                size="small"
-                name="PoCode"
-                disabled={dialogState.isSubmit}
-                value={values.PoCode}
-                onChange={handleChange}
-                label={
-                  intl.formatMessage({ id: "purchase_order.PoCode" }) + " *"
-                }
-                error={touched.PoCode && Boolean(errors.PoCode)}
-                helperText={touched.PoCode && errors.PoCode}
-              /> */}
-              <MuiSelectField
-                label={intl.formatMessage({ id: "delivery_order.PoCode" })}
-                options={poArr}
-                displayLabel="PoCode"
-                displayValue="PoId"
-                onChange={(e, item) => {
-                  getMaterialArr(item.PoId);
-                  // changeSearchData(item ? item.PoId ?? null : null, "PoId");
-                }}
-                variant="standard"
-              />
+              <Grid container spacing={2}>
+                <Grid item xs>
+                  <MuiAutoComplete
+                    label={intl.formatMessage({ id: "delivery_order.PoCode" })}
+                    fetchDataFunc={getPoArr}
+                    displayLabel="PoCode"
+                    displayValue="PoId"
+                    value={
+                      values.PoId !== 0
+                        ? {
+                            PoId: values.PoId,
+                            PoCode: values.PoCode,
+                          }
+                        : null
+                    }
+                    onChange={(e, value) => {
+                      setFieldValue("PoCode", value?.PoCode || "");
+                      setFieldValue("PoId", value?.PoId || "");
+                    }}
+                    error={touched.PoId && Boolean(errors.PoId)}
+                    helperText={touched.PoId && errors.PoId}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <MuiAutoComplete
+                    label={intl.formatMessage({
+                      id: "delivery_order.MaterialCode",
+                    })}
+                    fetchDataFunc={getMaterialArr}
+                    displayLabel="MaterialCode"
+                    displayValue="MaterialId"
+                    value={
+                      dialogState.MaterialId !== 0
+                        ? {
+                            MaterialId: dialogState.MaterialId,
+                            MaterialCode: dialogState.MaterialCode,
+                          }
+                        : null
+                    }
+                    onChange={(e, value) => {
+                      setFieldValue("MaterialCode", value?.MaterialCode || "");
+                      setFieldValue("MaterialId", value?.MaterialId || "");
+                    }}
+                    error={touched.MaterialId && Boolean(errors.MaterialId)}
+                    helperText={touched.MaterialId && errors.MaterialId}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                <Grid item xs>
+                  <MuiTextField
+                    required
+                    disabled={dialogState.isSubmit}
+                    label={intl.formatMessage({
+                      id: "delivery_order.DoCode",
+                    })}
+                    name="DoCode"
+                    value={values.DoCode}
+                    onChange={handleChange}
+                    error={touched.DoCode && Boolean(errors.DoCode)}
+                    helperText={touched.DoCode && errors.DoCode}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <MuiTextField
+                    required
+                    type="number"
+                    disabled={dialogState.isSubmit}
+                    label={intl.formatMessage({
+                      id: "delivery_order.OrderQty",
+                    })}
+                    name="OrderQty"
+                    value={values.OrderQty}
+                    onChange={handleChange}
+                    error={touched.OrderQty && Boolean(errors.OrderQty)}
+                    helperText={touched.OrderQty && errors.OrderQty}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                <Grid item xs>
+                  <MuiDateTimeField
+                    required
+                    disabled={dialogState.isSubmit}
+                    label={intl.formatMessage({
+                      id: "delivery_order.ETDLoad",
+                    })}
+                    value={values.ETDLoad ?? null}
+                    onChange={(e) => setFieldValue("ETDLoad", e)}
+                    error={touched.ETDLoad && Boolean(errors.ETDLoad)}
+                    helperText={touched.ETDLoad && errors.ETDLoad}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <MuiDateTimeField
+                    required
+                    disabled={dialogState.isSubmit}
+                    label={intl.formatMessage({
+                      id: "delivery_order.DeliveryTime",
+                    })}
+                    value={values.DeliveryTime ?? null}
+                    onChange={(e) => setFieldValue("ETDLoad", e)}
+                    error={touched.DeliveryTime && Boolean(errors.DeliveryTime)}
+                    helperText={touched.DeliveryTime && errors.DeliveryTime}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                <Grid item xs>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    name="PackingNote"
+                    disabled={dialogState.isSubmit}
+                    value={values.PackingNote}
+                    onChange={handleChange}
+                    label={intl.formatMessage({
+                      id: "delivery_order.PackingNote",
+                    })}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    name="InvoiceNo"
+                    disabled={dialogState.isSubmit}
+                    value={values.InvoiceNo}
+                    onChange={handleChange}
+                    label={intl.formatMessage({
+                      id: "delivery_order.InvoiceNo",
+                    })}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                <Grid item xs>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    name="Dock"
+                    disabled={dialogState.isSubmit}
+                    value={values.Dock}
+                    onChange={handleChange}
+                    label={intl.formatMessage({
+                      id: "delivery_order.Dock",
+                    })}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    name="InvoiceNo"
+                    disabled={dialogState.isSubmit}
+                    value={values.Truck}
+                    onChange={handleChange}
+                    label={intl.formatMessage({
+                      id: "delivery_order.Truck",
+                    })}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 size="small"
-                name="Description"
+                name="OrderQty"
                 disabled={dialogState.isSubmit}
-                value={values.Description}
+                value={values.Remark}
                 onChange={handleChange}
-                label={intl.formatMessage({ id: "purchase_order.Description" })}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              {/* <MuiDateTimeField
-                required
-                disabled={dialogState.isSubmit}
                 label={intl.formatMessage({
-                  id: "purchase_order.DeliveryDate",
+                  id: "delivery_order.Remark",
                 })}
-                value={values.DeliveryDate ?? null}
-                onChange={(e) => setFieldValue("DeliveryDate", e)}
-                error={touched.DeliveryDate && Boolean(errors.DeliveryDate)}
-                helperText={touched.DeliveryDate && errors.DeliveryDate}
-              /> */}
-            </Grid>
-            <Grid item xs={12}>
-              {/* <MuiDateTimeField
-                required
-                disabled={dialogState.isSubmit}
-                label={intl.formatMessage({ id: "purchase_order.DueDate" })}
-                value={values.DueDate ?? null}
-                onChange={(e) => setFieldValue("DueDate", e)}
-                error={touched.DueDate && Boolean(errors.DueDate)}
-                helperText={touched.DueDate && errors.DueDate}
-              /> */}
+              />
             </Grid>
             <Grid item xs={12}>
               <Grid container direction="row-reverse">
