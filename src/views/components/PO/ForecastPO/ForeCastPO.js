@@ -324,20 +324,20 @@ const ForecastPO = (props) => {
         </Grid>
         <Grid item>
           <Box display="flex" >
-          <Box sx={{maxWidth:"100px", mr:3}}>
+          <Box sx={{maxWidth:"120px", mr:3}}>
                
                <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
-                         <InputLabel>Week Start</InputLabel>
+                         <InputLabel>{intl.formatMessage({ id: "forecast.Week_start" })}</InputLabel>
                          <Input
                            type="number"
                            onChange={(e) => handleSearch(e.target.value || 0, "keyWordWeekStart")}
                          />
                </FormControl>
              </Box>
-            <Box  sx={{maxWidth:"100px"}}>
+            <Box  sx={{maxWidth:"120px"}}>
                
               <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
-                        <InputLabel>Week End</InputLabel>
+                        <InputLabel>{intl.formatMessage({ id: "forecast.Week_end" })}</InputLabel>
                         <Input
                           type="number"
                           onChange={(e) => handleSearch(e.target.value || 0, "keyWordWeekEnd")}
@@ -346,7 +346,7 @@ const ForecastPO = (props) => {
             </Box>
             <Box sx={{mx:3, maxWidth:"120px"}} >
                <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
-                         <InputLabel>Year</InputLabel>
+                         <InputLabel>{intl.formatMessage({ id: "forecast.Year" })}</InputLabel>
                          <Input
                            type="number"
                            onChange={(e) => handleSearch(e.target.value || 0, "keyWordYear")}

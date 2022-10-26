@@ -268,7 +268,9 @@
         "Max_2033" : "Year must be less 2033",
         "Desciption": "Desciption",
         "Week_required_range" : "Value must be number beetween 1 , 52",
-        "Year_required_range" : "Value must be number beetween 2022 , 2033"
+        "Year_required_range" : "Value must be number beetween 2022 , 2033",
+        "Week_start":"Week Start",
+        "Week_end":"Week End"
     },
     "document": {
         "menuName": "Menu Name",
