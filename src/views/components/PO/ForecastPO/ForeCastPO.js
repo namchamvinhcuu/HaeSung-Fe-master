@@ -129,7 +129,7 @@ const ForecastPO = (props) => {
     {
       field: "id",
       headerName: "",
-      width: 100,
+      width: 80,
       filterable: false,
       renderCell: (index) =>
         index.api.getRowIndex(index.row.FPOId) +
@@ -139,7 +139,7 @@ const ForecastPO = (props) => {
     {
       field: "action",
       headerName: "",
-      width: 110,
+      width: 80,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
@@ -183,9 +183,9 @@ const ForecastPO = (props) => {
       },
     },
     {
-      field: "MaterialCode",
-      headerName: intl.formatMessage({ id: "forecast.MaterialId" }),
-      width: 200,
+      field: "Inch",
+      headerName: "Inch",
+      width: 100,
     },
     {
       field: "LineName",
@@ -193,29 +193,9 @@ const ForecastPO = (props) => {
       width: 200,
     },
     {
-      field: "Week",
-      headerName: intl.formatMessage({ id: "forecast.Week" }),
-      width: 100,
-    },
-    {
-      field: "Year",
-      headerName: intl.formatMessage({ id: "forecast.Year" }),
-      width: 100,
-    },
-    {
-      field: "Amount",
-      headerName: intl.formatMessage({ id: "forecast.Amount" }),
-      width: 100,
-    },
-    {
-      field: "Inch",
-      headerName: "Inch",
-      width: 100,
-    },
-    {
-      field: "Description",
-      headerName: "Desc 2",
-      width: 180,
+      field: "MaterialCode",
+      headerName: intl.formatMessage({ id: "forecast.MaterialId" }),
+      width: 200,
     },
     {
       field: "DescriptionMaterial",
@@ -234,6 +214,27 @@ const ForecastPO = (props) => {
         );
       },
     },
+    {
+      field: "Description",
+      headerName: "Desc 2",
+      width: 180,
+    },
+    {
+      field: "Week",
+      headerName: intl.formatMessage({ id: "forecast.Week" }),
+      width: 100,
+    },
+    {
+      field: "Year",
+      headerName: intl.formatMessage({ id: "forecast.Year" }),
+      width: 100,
+    },
+    {
+      field: "Amount",
+      headerName: intl.formatMessage({ id: "forecast.Amount" }),
+      width: 100,
+    },
+  
     {
       field: "createdName",
       headerName: intl.formatMessage({ id: "general.createdName" }),
