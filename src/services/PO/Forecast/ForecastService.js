@@ -50,6 +50,15 @@ const deleteForecast = async (params) => {
   }
 }
 
+const getYearModel = async () => {
+  try {
+    return await axios.get(`${apiName}/get-select-year`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+
 export {
   getMaterialModel,
   getLineModel,
@@ -57,4 +66,5 @@ export {
   modifyForecast,
   getForecastList,
   deleteForecast,
+  getYearModel
 };

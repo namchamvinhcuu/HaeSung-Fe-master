@@ -17,7 +17,12 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { MuiButton, MuiDataGrid, MuiSearchField } from "@controls";
+import {
+  MuiButton,
+  MuiDataGrid,
+  MuiSearchField,
+  MuiSelectField,
+} from "@controls";
 import { useIntl } from "react-intl";
 import EditIcon from "@mui/icons-material/Edit";
 import UndoIcon from "@mui/icons-material/Undo";
@@ -32,8 +37,7 @@ import moment from "moment";
 
 const min = 1;
 const max = 52;
-const minyear = 2022;
-const maxyear = 2050;
+
 const ForecastPO = (props) => {
   const intl = useIntl();
   let isRendered = useRef(true);
@@ -44,6 +48,7 @@ const ForecastPO = (props) => {
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
   const { isShowing, toggle } = useModal();
+  const [yearList, setYearList] = useState([]);
   const [forecastState, setForecastState] = useState({
     isLoading: false,
     data: [],
@@ -61,6 +66,7 @@ const ForecastPO = (props) => {
   useEffect(() => {
     getMaterialList();
     getLineList();
+    getYearList();
     return () => {
       isRendered = false;
     };
@@ -275,10 +281,19 @@ const ForecastPO = (props) => {
       setLineList([...res.Data]);
     }
   };
-
+  const getYearList = async () => {
+    const res = await forecastService.getYearModel();
+    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
+      setYearList([...res.Data]);
+    }
+  };
   async function fetchData() {
-    if((forecastState.searchData.keyWordWeekStart> forecastState.searchData.keyWordWeekEnd) && forecastState.searchData.keyWordWeekEnd!=0){
-        ErrorAlert(intl.formatMessage({ id: "forecast.Start_end_week_error" }))
+    if (
+      forecastState.searchData.keyWordWeekStart >
+        forecastState.searchData.keyWordWeekEnd &&
+      forecastState.searchData.keyWordWeekEnd != 0
+    ) {
+      ErrorAlert(intl.formatMessage({ id: "forecast.Start_end_week_error" }));
     }
     setForecastState({ ...forecastState, isLoading: true });
     const params = {
@@ -343,7 +358,7 @@ const ForecastPO = (props) => {
 
   const [valueStart, setValueStart] = useState("");
   const [valueEnd, setValueEnd] = useState("");
-  const [valueYear, setValueYear] = useState("");
+
   return (
     <React.Fragment>
       <Grid
@@ -382,7 +397,7 @@ const ForecastPO = (props) => {
                </FormControl> */}
             </Box>
             <Box sx={{ maxWidth: "120px" }}>
-            <TextField
+              <TextField
                 label={intl.formatMessage({ id: "forecast.Week_end" })}
                 variant="standard"
                 type="number"
@@ -410,7 +425,24 @@ const ForecastPO = (props) => {
               </FormControl> */}
             </Box>
             <Box sx={{ mx: 3, maxWidth: "120px" }}>
-            <TextField
+              <FormControl sx={{marginTop:"3px"}}>
+                <MuiSelectField
+                  label={intl.formatMessage({ id: "forecast.Year" })}
+                  options={yearList}
+                  displayLabel="YearName"
+                  displayValue="YearId"
+                  onChange={(e, item) =>
+                    handleSearch(
+                      item ? item.YearId ?? null : null,
+                      "keyWordYear"
+                    )
+                  }
+                  variant="standard"
+                  sx={{ width: 120 }}
+                />
+              </FormControl>
+
+              {/* <TextField
                 label={intl.formatMessage({ id: "forecast.Year" })}
                 variant="standard"
                 type="number"
@@ -424,7 +456,7 @@ const ForecastPO = (props) => {
                   setValueYear(value || "");
                   handleSearch(value || 0, "keyWordYear");
                 }}
-              />
+              /> */}
               {/* <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
                 <InputLabel>
                   {intl.formatMessage({ id: "forecast.Year" })}
