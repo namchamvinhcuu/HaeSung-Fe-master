@@ -376,7 +376,7 @@ const ForecastPO = (props) => {
         // rowsPerPageOptions={[5, 10, 20, 30]}
 
         onPageChange={(newPage) => {
-          setLineState({ ...forecastState, page: newPage + 1 });
+          setForecastState({ ...forecastState, page: newPage + 1 });
         }}
         // onPageSizeChange={(newPageSize) => {
         //     setLineState({ ...lineState, pageSize: newPageSize, page: 1 });
