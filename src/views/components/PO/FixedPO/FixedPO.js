@@ -14,7 +14,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from '@mui/icons-material/Delete'
 import UndoIcon from "@mui/icons-material/Undo";
-import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material";
+import { FormControlLabel, Switch, TextField, Tooltip, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import _ from "lodash";
@@ -42,7 +42,6 @@ const FixedPO = (props) => {
     searchData: {
       PoCode: "",
       DeliveryDate: currentDate,
-      //DueDate: new Date().setDate(currentDate.getDate() + 30),
       DueDate: moment(currentDate).add(30, "days").format("YYYY-MM-DD"),
       showDelete: true
     },
@@ -50,37 +49,11 @@ const FixedPO = (props) => {
 
   const [PoId, setPoId] = useState(0);
   const [mode, setMode] = useState(CREATE_ACTION);
-  const [showActivedData, setShowActivedData] = useState(true);
   const { isShowing, toggle } = useModal();
-  const [selectedRow, setSelectedRow] = useState({
-    ...PurchaseOrderDto,
-  });
 
-  const [newData, setNewData] = useState({ ...PurchaseOrderDto });
-  const [updateData, setUpdateData] = useState({})
-  const [rowData, setRowData] = useState({});
-
-  const handleRowSelection = (arrIds) => {
-    const rowSelected = state.data.filter(function (item) {
-      return item.PoId === arrIds[0];
-    });
-
-    if (rowSelected && rowSelected.length > 0) {
-      setSelectedRow({ ...rowSelected[0] });
-    } else {
-      setSelectedRow({ ...PurchaseOrderDto });
-    }
-  };
-
-  const changeSearchData = (e, inputName) => {
-    let newSearchData = { ...state.searchData };
-    newSearchData[inputName] = e.target.value;
-
-    setState({
-      ...state,
-      searchData: { ...newSearchData },
-    });
-  };
+  const [newData, setNewData] = useState(PurchaseOrderDto);
+  const [updateData, setUpdateData] = useState(PurchaseOrderDto)
+  const [rowData, setRowData] = useState(PurchaseOrderDto);
 
   const handleChangeSearchDate = (e, date) => {
     let x = new Date(e);
@@ -128,10 +101,7 @@ const FixedPO = (props) => {
   };
 
   const fetchData = async () => {
-    setState({
-      ...state,
-      isLoading: true,
-    });
+    setState({ ...state, isLoading: true, });
     const params = {
       page: state.page,
       pageSize: state.pageSize,
@@ -202,7 +172,7 @@ const FixedPO = (props) => {
   useEffect(() => {
     if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData) && isRendered) {
       let newArr = [...state.data]
-      const index = _.findIndex(newArr, function (o) { return o.TrayId == updateData.TrayId; });
+      const index = _.findIndex(newArr, function (o) { return o.PoId == updateData.PoId; });
       if (index !== -1) {
         newArr[index] = updateData
       }
@@ -210,23 +180,6 @@ const FixedPO = (props) => {
       setState({ ...state, data: [...newArr] });
     }
   }, [updateData]);
-
-  useEffect(() => {
-    if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, PurchaseOrderDto)) {
-      let newArr = [...state.data];
-      const index = _.findIndex(newArr, function (o) {
-        return o.PoId == selectedRow.PoId;
-      });
-      if (index !== -1) {
-        newArr[index] = selectedRow;
-      }
-
-      setState({
-        ...state,
-        data: [...newArr],
-      });
-    }
-  }, [selectedRow]);
 
   const columns = [
     { field: "PoId", headerName: "", hide: true },
@@ -321,7 +274,7 @@ const FixedPO = (props) => {
         justifyContent="space-between"
         alignItems="flex-end"
       >
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <MuiButton
             text="create"
             color="success"
@@ -329,14 +282,15 @@ const FixedPO = (props) => {
           />
         </Grid>
         <Grid item xs>
-          <MuiSearchField
-            label="general.code"
-            name="SupplierCode"
-            onClick={fetchData}
-            onChange={(e) => changeSearchData(e, "SupplierCode")}
+          <TextField
+            sx={{ width: 230, mb: 0.5 }}
+            fullWidth
+            variant="standard"
+            size='small'
+            label='Code'
+            onChange={(e) => handleSearch(e.target.value, 'PoCode')}
           />
         </Grid>
-
         <Grid item xs>
           <MuiDateField
             disabled={state.isLoading}
@@ -344,18 +298,17 @@ const FixedPO = (props) => {
             value={state.searchData.DeliveryDate}
             onChange={(e) => handleChangeSearchDate(e, "deliveryDate")}
             variant="standard"
+            sx={{ width: 230 }}
           />
         </Grid>
-
         <Grid item xs>
           <MuiDateField
             disabled={state.isLoading}
             label={intl.formatMessage({ id: "purchase_order.DueDate" })}
             value={state.searchData.DueDate}
-            onChange={(e) => {
-              handleChangeSearchDate(e, "dueDate");
-            }}
+            onChange={(e) => handleChangeSearchDate(e, "dueDate")}
             variant="standard"
+            sx={{ width: 230 }}
           />
         </Grid>
         <Grid item>
@@ -363,56 +316,30 @@ const FixedPO = (props) => {
         </Grid>
         <Grid item>
           <FormControlLabel
+            sx={{ mb: 0.5 }}
             control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
             label={intl.formatMessage({ id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted' })} />
         </Grid>
-        {/*  <Grid item xs sx={{ display: "flex", justifyContent: "right" }}>
-          <MuiButton text="search" color="info" onClick={fetchData} />
-          <FormControlLabel
-            sx={{ mb: 0, ml: "1px" }}
-            control={
-              <Switch
-                defaultChecked={true}
-                color="primary"
-                onChange={(e) => handleshowActivedData(e)}
-              />
-            }
-            label={intl.formatMessage({ id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted' })}
-          />
-        </Grid> */}
       </Grid>
 
       <MuiDataGrid
         showLoading={state.isLoading}
         isPagingServer={true}
         headerHeight={45}
-        // rowHeight={30}
         gridHeight={345}
         columns={columns}
         rows={state.data}
         page={state.page - 1}
         pageSize={state.pageSize}
         rowCount={state.totalRow}
-        // rowsPerPageOptions={[5, 10, 20, 30]}
-
-        onPageChange={(newPage) => {
-          setState({ ...state, page: newPage + 1 });
-        }}
-        // onPageSizeChange={(newPageSize) => {
-        //     setState({ ...supplierState, pageSize: newPageSize, page: 1 });
-        // }}
+        onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
         getRowId={(rows) => rows.PoId}
         onSelectionModelChange={(newSelectedRowId) => setPoId(newSelectedRowId[0])}
-        // selectionModel={selectedRow.menuId}
-        getRowClassName={(params) => {
-          if (_.isEqual(params.row, newData)) {
-            return `Mui-created`;
-          }
-        }}
+        getRowClassName={(params) => { if (_.isEqual(params.row, newData)) return `Mui-created` }}
+        onRowClick={(params, event) => setUpdateData(params.row)}
       />
 
       <FixedPODialog
-        // valueOption={{ TrayTypeList: TrayTypeList }}
         setNewData={setNewData}
         setUpdateData={setUpdateData}
         initModal={rowData}
@@ -421,7 +348,11 @@ const FixedPO = (props) => {
         mode={mode}
       />
 
-      <FixedPODetail PoId={PoId} />
+      <FixedPODetail
+        PoId={PoId}
+        updateDataPO={updateData}
+        setUpdateDataPO={setUpdateData}
+      />
     </React.Fragment>
   );
 };

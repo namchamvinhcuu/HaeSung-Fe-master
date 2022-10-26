@@ -31,15 +31,6 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
 
   const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
 
-  // useEffect(() => {
-  //   if (mode == CREATE_ACTION) {
-  //     formik.initialValues = defaultValue
-  //   }
-  //   else {
-  //     formik.initialValues = initModal;
-  //   }
-  // }, [initModal, mode])
-
   const handleReset = () => {
     resetForm();
   }
