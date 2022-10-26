@@ -86,11 +86,11 @@ export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
     { field: 'RemainQty', headerName: intl.formatMessage({ id: "purchase_order.RemainQty" }), flex: 0.4, },
     {
       field: "DeliveryDate", headerName: intl.formatMessage({ id: "purchase_order.DeliveryDate" }), width: 150,
-      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).add(7, "hours").format("YYYY-MM-DD"); } },
+      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).format("YYYY-MM-DD"); } },
     },
     {
       field: "DueDate", headerName: intl.formatMessage({ id: "purchase_order.DueDate" }), width: 150,
-      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).add(7, "hours").format("YYYY-MM-DD"); } },
+      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).format("YYYY-MM-DD"); } },
     },
     { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.4, },
     {

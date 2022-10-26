@@ -1,8 +1,7 @@
-import React from "react";
-import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import React from "react";
 
 const MuiAutoComplete = ({ ...props }) => {
   const {
@@ -91,14 +90,6 @@ const MuiAutoComplete = ({ ...props }) => {
           }
           defaultValue={defaultValue ?? null}
           onChange={onChange}
-          //   onChange={(event, newValue) => {
-          //     console.log(newValue);
-          //     // onChange && newValue && onChange(newValue);
-          //   }}
-          //   onInputChange={(event, newInputValue) => {
-          //     if (!newInputValue)
-          //       onChange && onChange({ displayLabel: "", displayValue: 0 });
-          //   }}
           renderInput={(params) => {
             return (
               <TextField
@@ -126,6 +117,13 @@ const MuiAutoComplete = ({ ...props }) => {
       ) : (
         <Autocomplete
           fullWidth
+          open={open}
+          onOpen={() => {
+            setOpen(true);
+          }}
+          onClose={() => {
+            setOpen(false);
+          }}
           disabled={disabled}
           size="small"
           margin={margin}

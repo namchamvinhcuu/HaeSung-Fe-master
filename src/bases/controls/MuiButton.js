@@ -6,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import SaveIcon from '@mui/icons-material/Save'
 import SearchIcon from '@mui/icons-material/Search';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { styled } from "@mui/material/styles"
 import { FormattedMessage } from 'react-intl'
 
@@ -35,6 +36,9 @@ const MuiButton = React.forwardRef((props, ref) => {
             case 'search':
                 return <SearchIcon />
             case 'cancel':
+            case 'download':
+                return <FileDownloadIcon />
+
             default:
                 return <DeleteIcon />;
         }
