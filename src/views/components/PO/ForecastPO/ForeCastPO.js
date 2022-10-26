@@ -338,8 +338,8 @@ const ForecastPO = (props) => {
   };
   const min = 1;
   const max = 52;
-  const [valueStart, setValueStart] = useState();
-  const [valueEnd, setValueEnd] = useState();
+  const [valueStart, setValueStart] = useState("");
+  const [valueEnd, setValueEnd] = useState("");
   return (
     <React.Fragment>
       <Grid
