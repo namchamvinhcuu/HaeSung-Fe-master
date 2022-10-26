@@ -2,9 +2,11 @@ import { axios } from "@utils";
 
 const API = "/api/delivery-order";
 
-export const get = async () => {
+export const get = async (params) => {
   try {
-    return await axios.get(`${API}`);
+    return await axios.get(`${API}`, {
+      params: { ...params },
+    });
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }
