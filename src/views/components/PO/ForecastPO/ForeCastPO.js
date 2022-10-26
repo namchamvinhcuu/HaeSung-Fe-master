@@ -30,6 +30,10 @@ import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
 import { forecastService } from "@services";
 import moment from "moment";
 
+const min = 1;
+const max = 52;
+const minyear = 2022;
+const maxyear = 2050;
 const ForecastPO = (props) => {
   const intl = useIntl();
   let isRendered = useRef(true);
@@ -336,10 +340,10 @@ const ForecastPO = (props) => {
       }
     }
   };
-  const min = 1;
-  const max = 52;
+
   const [valueStart, setValueStart] = useState("");
   const [valueEnd, setValueEnd] = useState("");
+  const [valueYear, setValueYear] = useState("");
   return (
     <React.Fragment>
       <Grid
@@ -366,7 +370,7 @@ const ForecastPO = (props) => {
                   if (value > max) value = max;
                   if (value < min) value = min;
                   setValueStart(value);
-                  handleSearch(e.target.value || 0, "keyWordWeekStart");
+                  handleSearch(value || 0, "keyWordWeekStart");
                 }}
               />
               {/* <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
@@ -390,7 +394,7 @@ const ForecastPO = (props) => {
                   if (value > max) value = max;
                   if (value < min) value = min;
                   setValueEnd(value);
-                  handleSearch(e.target.value || 0, "keyWordWeekEnd");
+                  handleSearch(value || 0, "keyWordWeekEnd");
                 }}
               />
               {/* <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
@@ -406,7 +410,22 @@ const ForecastPO = (props) => {
               </FormControl> */}
             </Box>
             <Box sx={{ mx: 3, maxWidth: "120px" }}>
-              <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
+            <TextField
+                label={intl.formatMessage({ id: "forecast.Year" })}
+                variant="standard"
+                type="number"
+                sx={{ width: "120px" }}
+                value={valueYear}
+                inputProps={{ minyear, maxyear }}
+                onChange={(e) => {
+                  var value = parseInt(e.target.value, 10);
+                  if (value > maxyear) value = maxyear;
+                  // if (value < minyear) value = minyear;
+                  setValueYear(value);
+                  handleSearch(value || 0, "keyWordYear");
+                }}
+              />
+              {/* <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
                 <InputLabel>
                   {intl.formatMessage({ id: "forecast.Year" })}
                 </InputLabel>
@@ -416,7 +435,7 @@ const ForecastPO = (props) => {
                     handleSearch(e.target.value || 0, "keyWordYear")
                   }
                 />
-              </FormControl>
+              </FormControl> */}
             </Box>
 
             <Box>

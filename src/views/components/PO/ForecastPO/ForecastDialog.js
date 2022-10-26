@@ -61,7 +61,7 @@ const ForecastDialog = (props) => {
       .min(
         new Date().getFullYear(),
         intl.formatMessage({ id: "forecast.Year_required_bigger" })
-      ).max(2033,intl.formatMessage({ id: "forecast.Max_2033" })),
+      ).max(2050,intl.formatMessage({ id: "forecast.Max_2050" })),
     Amount: yup
       .number()
       .nullable()
