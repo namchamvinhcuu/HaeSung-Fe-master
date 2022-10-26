@@ -8,6 +8,7 @@ import MuiSearchField from "./MuiSearchField";
 import MuiDateField from "./MuiDateField";
 import MuiDateTimeField from "./MuiDateTimeField";
 import MuiSelectField from "./MuiSelectField";
+import MuiAutoComplete from "./MuiAutoComplete";
 
 export {
   MuiDataGrid,
@@ -20,4 +21,5 @@ export {
   MuiDateField,
   MuiDateTimeField,
   MuiSelectField,
+  MuiAutoComplete,
 };

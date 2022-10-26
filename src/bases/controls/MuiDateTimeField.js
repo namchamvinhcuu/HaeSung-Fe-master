@@ -33,7 +33,7 @@ export default function MuiDateTimeField({
             sx={sx ?? { mb: 0.5 }}
             // onKeyDown={onKeyDown}
             margin={margin}
-            variant={variant}
+            variant={variant ?? "standard"}
             {...params}
             error={error}
             helperText={helperText}
