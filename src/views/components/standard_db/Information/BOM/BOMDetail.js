@@ -148,6 +148,8 @@ export default function BOMDetail({ BomId, newDataChild }) {
   const handleDelete = async (bomDetail) => {
     if (window.confirm(intl.formatMessage({ id: bomDetail.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
       try {
+        let child = state.data.filter(x => x.ParentId == bomDetail.BomId);
+        if (child.length == 0) {
         let res = await bomDetailService.deleteBomDetail({ BomDetailId: bomDetail.BomId, row_version: bomDetail.row_version });
         if (res && res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }))
@@ -156,6 +158,10 @@ export default function BOMDetail({ BomId, newDataChild }) {
         else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
         }
+      }
+      else {
+        ErrorAlert(intl.formatMessage({ id: 'bom.delete_error' }));
+      }
       } catch (error) {
         console.log(error)
       }
