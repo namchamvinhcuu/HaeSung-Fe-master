@@ -369,7 +369,7 @@ const ForecastPO = (props) => {
                   var value = parseInt(e.target.value, 10);
                   if (value > max) value = max;
                   if (value < min) value = min;
-                  setValueStart(value);
+                  setValueStart(value || "");
                   handleSearch(value || 0, "keyWordWeekStart");
                 }}
               />
@@ -393,7 +393,7 @@ const ForecastPO = (props) => {
                   var value = parseInt(e.target.value, 10);
                   if (value > max) value = max;
                   if (value < min) value = min;
-                  setValueEnd(value);
+                  setValueEnd(value || "");
                   handleSearch(value || 0, "keyWordWeekEnd");
                 }}
               />
@@ -421,7 +421,7 @@ const ForecastPO = (props) => {
                   var value = parseInt(e.target.value, 10);
                   if (value > maxyear) value = maxyear;
                   // if (value < minyear) value = minyear;
-                  setValueYear(value);
+                  setValueYear(value || "");
                   handleSearch(value || 0, "keyWordYear");
                 }}
               />
