@@ -17,13 +17,13 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
   const defaultValue = { PoCode: '', Description: '', DeliveryDate: null, DueDate: null };
 
   const schema = yup.object().shape({
-    PoCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+    PoCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+      .length(10, intl.formatMessage({ id: 'general.field_length' }, { length: 10 })),
     DeliveryDate: yup.date().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
       .typeError(intl.formatMessage({ id: 'general.field_invalid' })),
     DueDate: yup.date().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
       .typeError(intl.formatMessage({ id: 'general.field_invalid' }))
   });
-
   const formik = useFormik({
     validationSchema: schema,
     initialValues: mode == CREATE_ACTION ? defaultValue : initModal,
@@ -117,6 +117,7 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
               fullWidth
               size='small'
               name='PoCode'
+              inputProps={{ maxLength: 10 }}
               disabled={dialogState.isSubmit}
               value={values.PoCode}
               onChange={handleChange}
@@ -142,7 +143,7 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'purchase_order.DeliveryDate' })}
               value={values.DeliveryDate ?? null}
-              onChange={(e) => handleChangeDate("DeliveryDate", e)}
+              onChange={(e) => handleChangeDate("DeliveryDate", moment(e))}
               error={touched.DeliveryDate && Boolean(errors.DeliveryDate)}
               helperText={touched.DeliveryDate && errors.DeliveryDate}
             />
@@ -153,7 +154,7 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'purchase_order.DueDate' })}
               value={values.DueDate ?? null}
-              onChange={(e) => handleChangeDate("DueDate", e)}
+              onChange={(e) => handleChangeDate("DueDate", moment(e))}
               error={touched.DueDate && Boolean(errors.DueDate)}
               helperText={touched.DueDate && errors.DueDate}
             />

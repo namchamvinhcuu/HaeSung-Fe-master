@@ -100,6 +100,14 @@ const FixedPO = (props) => {
     toggle();
   };
 
+  const handleDownload = async () => {
+    try {
+      await purchaseOrderService.downloadReport(state.searchData);
+    } catch (error) {
+      console.log(`ERROR: ${error}`);
+    }
+  }
+
   const fetchData = async () => {
     if (state.searchData.DeliveryDate == 'Invalid Date') {
       ErrorAlert(intl.formatMessage({ id: 'purchase_order.DeliveryDate_Invalid' }))
@@ -255,11 +263,11 @@ const FixedPO = (props) => {
     { field: "RemainQty", headerName: intl.formatMessage({ id: "purchase_order.RemainQty" }), width: 150, },
     {
       field: "DeliveryDate", headerName: intl.formatMessage({ id: "purchase_order.DeliveryDate" }), width: 150,
-      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).add(7, "hours").format("YYYY-MM-DD"); } },
+      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).format("YYYY-MM-DD"); } },
     },
     {
       field: "DueDate", headerName: intl.formatMessage({ id: "purchase_order.DueDate" }), width: 150,
-      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).add(7, "hours").format("YYYY-MM-DD"); } },
+      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).format("YYYY-MM-DD"); } },
     },
     { field: "createdName", headerName: intl.formatMessage({ id: "general.createdName" }), width: 150, },
     {
@@ -284,11 +292,8 @@ const FixedPO = (props) => {
         alignItems="flex-end"
       >
         <Grid item xs={4}>
-          <MuiButton
-            text="create"
-            color="success"
-            onClick={handleAdd}
-          />
+          <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mt: 1 }} />
+          <MuiButton text="Download" color='info' onClick={() => handleDownload(PoId)} sx={{ mt: 1 }} />
         </Grid>
         <Grid item xs>
           <TextField
