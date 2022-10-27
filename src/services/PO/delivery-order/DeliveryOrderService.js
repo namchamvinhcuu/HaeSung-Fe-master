@@ -40,6 +40,16 @@ export const create = async (params) => {
   }
 };
 
+export const modify = async (params) => {
+  try {
+    return await axios.put(`${API}/modify-do`, {
+      ...params,
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
 export const handleDelete = async (params) => {
   try {
     return await axios.put(`${API}/delete-reuse-do`, {

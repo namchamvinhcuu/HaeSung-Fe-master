@@ -65,7 +65,7 @@ const DeliveryOrder = (props) => {
   const [poArr, setPoArr] = useState([]);
   const [materialArr, setMaterialArr] = useState([]);
 
-  const toggleDialog = () => {
+  const toggleDialog = (mode) => {
     if (mode === CREATE_ACTION) {
       setMode(CREATE_ACTION);
     } else {
@@ -281,7 +281,7 @@ const DeliveryOrder = (props) => {
                 size="small"
                 sx={[{ "&:hover": { border: "1px solid orange" } }]}
                 onClick={() => {
-                  toggleDialog();
+                  toggleDialog(UPDATE_ACTION);
                 }}
               >
                 <EditIcon fontSize="inherit" />
@@ -491,7 +491,13 @@ const DeliveryOrder = (props) => {
         alignItems="flex-end"
       >
         <Grid item xs={1.5}>
-          <MuiButton text="create" color="success" onClick={toggleDialog} />
+          <MuiButton
+            text="create"
+            color="success"
+            onClick={() => {
+              toggleDialog(CREATE_ACTION);
+            }}
+          />
         </Grid>
 
         <Grid item xs>

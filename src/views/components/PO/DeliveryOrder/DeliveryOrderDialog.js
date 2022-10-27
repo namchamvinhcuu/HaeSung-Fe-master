@@ -15,7 +15,7 @@ import { useIntl } from "react-intl";
 import * as yup from "yup";
 import { deliveryOrderService } from "@services";
 import { ErrorAlert, SuccessAlert } from "@utils";
-import { CREATE_ACTION } from "@constants/ConfigConstants";
+import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
 import { useFormik } from "formik";
 import moment from "moment";
 
@@ -71,7 +71,14 @@ const DeliveryOrderDialog = (props) => {
 
   const formik = useFormik({
     validationSchema: schema,
-    initialValues: { ...initModal },
+    initialValues:
+      mode === UPDATE_ACTION
+        ? {
+            ...initModal,
+            ETDLoad: moment(initModal.ETDLoad).add(7, "hours"),
+            DeliveryTime: moment(initModal.DeliveryTime).add(7, "hours"),
+          }
+        : { ...initModal },
     enableReinitialize: true,
     onSubmit: async (values) => onSubmit(values),
   });
@@ -113,20 +120,24 @@ const DeliveryOrderDialog = (props) => {
           setDialogState({ ...dialogState, isSubmit: false });
         }
       }
+    } else {
+      const res = await deliveryOrderService.modify(data);
+      if (res) {
+        if (res.HttpResponseCode === 200) {
+          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+          setUpdateData({ ...res.Data });
+          setDialogState({ ...dialogState, isSubmit: false });
+          handleReset();
+          handleCloseDialog();
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+          setDialogState({ ...dialogState, isSubmit: false });
+        }
+      } else {
+        ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+        setDialogState({ ...dialogState, isSubmit: false });
+      }
     }
-    // else {
-    //   const res = await purchaseOrderService.modifyPO(data);
-    //   if (res.HttpResponseCode === 200) {
-    //     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-    //     setUpdateData({ ...res.Data });
-    //     setDialogState({ ...dialogState, isSubmit: false });
-    //     handleReset();
-    //     handleCloseDialog();
-    //   } else {
-    //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-    //     setDialogState({ ...dialogState, isSubmit: false });
-    //   }
-    // }
   };
 
   const getPoArr = async () => {
@@ -343,7 +354,7 @@ const DeliveryOrderDialog = (props) => {
               <TextField
                 fullWidth
                 size="small"
-                name="OrderQty"
+                name="Remark"
                 disabled={dialogState.isSubmit}
                 value={values.Remark}
                 onChange={handleChange}
