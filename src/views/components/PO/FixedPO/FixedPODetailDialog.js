@@ -7,7 +7,6 @@ import { purchaseOrderService } from '@services'
 import { ErrorAlert, SuccessAlert, WarningAlert } from '@utils'
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import { useFormik } from 'formik'
-import moment from "moment";
 
 const FixedPODetailDialog = ({ PoId, initModal, isOpen, onClose, setNewData, setUpdateData, mode, updateDataPO, setUpdateDataPO }) => {
   const intl = useIntl();

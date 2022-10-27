@@ -38,7 +38,7 @@ const FixedPO = (props) => {
     data: [],
     totalRow: 0,
     page: 1,
-    pageSize: 8,
+    pageSize: 7,
     searchData: {
       PoCode: "",
       DeliveryDate: moment(currentDate).format("YYYY-MM-DD"),
@@ -102,7 +102,15 @@ const FixedPO = (props) => {
 
   const handleDownload = async () => {
     try {
-      await purchaseOrderService.downloadReport(state.searchData);
+      if (state.searchData.DeliveryDate == 'Invalid Date') {
+        ErrorAlert(intl.formatMessage({ id: 'purchase_order.DeliveryDate_Invalid' }))
+      }
+      else if (state.searchData.DueDate == 'Invalid Date') {
+        ErrorAlert(intl.formatMessage({ id: 'purchase_order.DueDate_Invalid' }))
+      }
+      else {
+        await purchaseOrderService.downloadReport(state.searchData);
+      }
     } catch (error) {
       console.log(`ERROR: ${error}`);
     }
@@ -293,7 +301,7 @@ const FixedPO = (props) => {
       >
         <Grid item xs={4}>
           <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mt: 1 }} />
-          <MuiButton text="Download" color='info' onClick={() => handleDownload(PoId)} sx={{ mt: 1 }} />
+          <MuiButton text="excel" color='info' onClick={() => handleDownload(PoId)} sx={{ mt: 1 }} />
         </Grid>
         <Grid item xs>
           <TextField

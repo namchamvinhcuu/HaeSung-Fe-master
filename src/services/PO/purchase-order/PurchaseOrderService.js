@@ -1,6 +1,7 @@
 import { axios } from '@utils'
 import * as ConfigConstants from '@constants/ConfigConstants';
 import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils'
+import moment from "moment";
 
 const apiName = '/api/fixed-po'
 
@@ -96,7 +97,7 @@ const downloadReport = async (params) => {
 			},
 		}
 
-		fetch(`${ConfigConstants.API_URL}fixed-po/download-excel?PoCode=${params.PoCode}&DeliveryDate=${params.DeliveryDate}&DueDate=${params.DueDate}&isActived=${params.showDelete}`, options)
+		fetch(`${ConfigConstants.API_URL}fixed-po/download-excel?PoCode=${params.PoCode}&DeliveryDate=${moment(params.DeliveryDate).format("YYYY-MM-DD")}&DueDate=${moment(params.DueDate).format("YYYY-MM-DD")}&isActived=${params.showDelete}`, options)
 			.then(response => {
 				response.blob().then(blob => {
 					let url = URL.createObjectURL(blob);

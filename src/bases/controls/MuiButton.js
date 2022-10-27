@@ -38,7 +38,8 @@ const MuiButton = React.forwardRef((props, ref) => {
             case 'cancel':
             case 'download':
                 return <FileDownloadIcon />
-
+            case 'excel':
+                return <FileDownloadIcon />
             default:
                 return <DeleteIcon />;
         }

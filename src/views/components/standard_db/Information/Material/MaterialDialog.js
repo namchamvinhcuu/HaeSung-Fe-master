@@ -17,14 +17,14 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   const schema = yup.object().shape({
     MaterialCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
     MaterialType: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-   
+
     Unit: yup.number().nullable().
-     when("MaterialTypeName", (MaterialTypeName) => {
-      if (MaterialTypeName !== "BARE MATERIAL")
-      return yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
-    }),
-   
-   
+      when("MaterialTypeName", (MaterialTypeName) => {
+        if (MaterialTypeName !== "BARE MATERIAL")
+          return yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+      }),
+
+
     Suppliers: yup.array().nullable()
       .when("MaterialTypeName", (MaterialTypeName) => {
         if (MaterialTypeName !== "BARE MATERIAL")
@@ -63,10 +63,8 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     setDialogState({ ...dialogState, isSubmit: true });
 
     if (mode == CREATE_ACTION) {
-      if(data.MaterialTypeName == "BARE MATERIAL")
-      {
+      if (data.MaterialTypeName == "BARE MATERIAL") {
         var unitBare = valueOption.UnitList.filter(x => x.commonDetailName == "PCS");
-        // console.log(unitBare,valueOption.UnitList)
         data.Unit = unitBare[0].commonDetailId;
       }
 
@@ -146,24 +144,23 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           </Grid>
           {values.MaterialTypeName != "BARE MATERIAL" &&
             <Grid item xs={12}>
-            <MuiSelectField
-              required
-              multiple
-              value={values.Unit ? { commonDetailId: values.Unit, commonDetailName: values.UnitName } : null}
-              disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: 'material.Unit' })}
-              options={valueOption.UnitList}
-              displayLabel="commonDetailName"
-              displayValue="commonDetailId"
-              onChange={(e, value) => {
-                setFieldValue("UnitName", value?.commonDetailName || '');
-                setFieldValue("Unit", value?.commonDetailId || '');
-              }}
-              defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.Unit, commonDetailName: initModal.UnitName }}
-              error={touched.Unit && Boolean(errors.Unit)}
-              helperText={touched.Unit && errors.Unit}
-            />
-          </Grid>
+              <MuiSelectField
+                required
+                value={values.Unit ? { commonDetailId: values.Unit, commonDetailName: values.UnitName } : null}
+                disabled={dialogState.isSubmit}
+                label={intl.formatMessage({ id: 'material.Unit' })}
+                options={valueOption.UnitList}
+                displayLabel="commonDetailName"
+                displayValue="commonDetailId"
+                onChange={(e, value) => {
+                  setFieldValue("UnitName", value?.commonDetailName || '');
+                  setFieldValue("Unit", value?.commonDetailId || '');
+                }}
+                defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.Unit, commonDetailName: initModal.UnitName }}
+                error={touched.Unit && Boolean(errors.Unit)}
+                helperText={touched.Unit && errors.Unit}
+              />
+            </Grid>
           }
           {values.MaterialTypeName != "BARE MATERIAL" &&
             <Grid item xs={12}>
@@ -190,11 +187,11 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                   />
                 }}
               />
-              
-            </Grid>         
-            
-            }
-            
+
+            </Grid>
+
+          }
+
           <Grid item xs={12}>
             <TextField
               fullWidth
