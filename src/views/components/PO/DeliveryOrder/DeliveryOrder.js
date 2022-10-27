@@ -57,12 +57,13 @@ const DeliveryOrder = (props) => {
   const [selectedRow, setSelectedRow] = useState({
     ...DeliveryOrderDto,
   });
+
   const [newData, setNewData] = useState({ ...DeliveryOrderDto });
+
   const [isOpenDialog, setIsOpenDialog] = useState(false);
-  const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
+
   const [showActivedData, setShowActivedData] = useState(true);
 
-  const [poArr, setPoArr] = useState([]);
   const [materialArr, setMaterialArr] = useState([]);
 
   const toggleDialog = (mode) => {
@@ -73,10 +74,6 @@ const DeliveryOrder = (props) => {
     }
     setIsOpenDialog(!isOpenDialog);
   };
-
-  // const toggleModifyDialog = () => {
-  //   setIsOpenModifyDialog(!isOpenModifyDialog);
-  // };
 
   const handleshowActivedData = async (event) => {
     setShowActivedData(event.target.checked);
@@ -172,7 +169,7 @@ const DeliveryOrder = (props) => {
   const fetchData = async () => {
     setDeliveryOrderState({
       ...deliveryOrderState,
-      isLoading: false,
+      isLoading: true,
     });
 
     const params = {
@@ -248,6 +245,7 @@ const DeliveryOrder = (props) => {
 
   const columns = [
     { field: "DoId", headerName: "", hide: true },
+
     {
       field: "id",
       headerName: "",
@@ -258,6 +256,7 @@ const DeliveryOrder = (props) => {
         1 +
         (deliveryOrderState.page - 1) * deliveryOrderState.pageSize,
     },
+
     {
       field: "action",
       headerName: "",
@@ -621,7 +620,6 @@ const DeliveryOrder = (props) => {
       />
 
       <DeliveryOrderDialog
-        // valueOption={{ TrayTypeList: TrayTypeList }}
         setNewData={setNewData}
         setUpdateData={setSelectedRow}
         initModal={mode === CREATE_ACTION ? DeliveryOrderDto : selectedRow}
