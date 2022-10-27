@@ -61,7 +61,11 @@
         "duplicated_name": "Duplicated name",
         "duplicated_version": "Duplicated version",
         "data_actived": "Actived data",
-        "data_deleted": "Deleted data"
+        "data_deleted": "Deleted data",
+        "StartSearchingDate": "From",
+        "StartSearchingDate_invalid": "Start Searching Date format is invalid",
+        "EndSearchingDate": "To",
+        "EndSearchingDate_invalid": "End Searching Date format is invalid"
     },
     "login": {
         "account_password_invalid": "Account/Password is invalid",
@@ -331,6 +335,7 @@
     },
     "work_order":{
         "WoCode": "WO Code",
+        "FPoMasterCode": "Plant",
         "MaterialCode": "Assy Code",
         "LineName": "Line",
         "OrderQty": "Order Qty",

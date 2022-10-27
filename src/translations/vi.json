@@ -61,7 +61,11 @@
         "duplicated_name": "Trùng tên",
         "duplicated_version": "Trùng phiên bản",
         "data_actived": "Actived data",
-        "data_deleted": "Deleted data"
+        "data_deleted": "Deleted data",
+        "StartSearchingDate": "Từ",
+        "StartSearchingDate_invalid": "Ngày bắt đầu không đúng định dạng",
+        "EndSearchingDate": "Đến",
+        "EndSearchingDate_invalid": "Ngày kết thúc không đúng định dạng"
     },
     "login": {
         "account_password_invalid": "Tài khoản/Mật khẩu không hợp lệ",
@@ -331,6 +335,7 @@
     },
     "work_order":{
         "WoCode": "WO Code",
+        "FPoMasterCode": "Plant",
         "MaterialCode": "Assy Code",
         "LineName": "Line",
         "OrderQty": "SL yêu cầu",
