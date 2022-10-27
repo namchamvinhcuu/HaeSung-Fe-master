@@ -49,6 +49,8 @@ const ForecastPO = (props) => {
   const [rowData, setRowData] = useState({});
   const { isShowing, toggle } = useModal();
   const [yearList, setYearList] = useState([]);
+  const [isSearch, setIsSearch] = useState(false);
+  const [currentYear, setCurrentYear] = useState(0);
   const [forecastState, setForecastState] = useState({
     isLoading: false,
     data: [],
@@ -59,10 +61,14 @@ const ForecastPO = (props) => {
       keyWord: "",
       keyWordWeekStart: 0,
       keyWordWeekEnd: 0,
-      keyWordYear: 0,
+      keyWordYear: currentYear,
       showDelete: true,
     },
   });
+  useEffect(()=>{
+    setCurrentYear(new Date().getFullYear())
+    setIsSearch(true)
+  },[isSearch])
   useEffect(() => {
     getMaterialList();
     getLineList();
@@ -123,7 +129,7 @@ const ForecastPO = (props) => {
     setRowData({ ...row });
     toggle();
   };
-
+  
   const columns = [
     { field: "FPOId", headerName: "", hide: true },
     {
@@ -289,6 +295,9 @@ const ForecastPO = (props) => {
     }
   };
   async function fetchData() {
+    if(isSearch===true) {
+      forecastState.searchData.keyWordYear===0?forecastState.searchData.keyWordYear=currentYear:forecastState.searchData.keyWordYear
+    }
     if (
       forecastState.searchData.keyWordWeekStart >
         forecastState.searchData.keyWordWeekEnd &&
@@ -432,6 +441,7 @@ const ForecastPO = (props) => {
                   options={yearList}
                   displayLabel="YearName"
                   displayValue="YearId"
+                  defaultValue={{ YearId: new Date().getFullYear() ||"", YearName: `${new Date().getFullYear()+ ""}` || "" }}
                   onChange={(e, item) =>
                     handleSearch(
                       item ? item.YearId ?? null : null,
@@ -482,7 +492,10 @@ const ForecastPO = (props) => {
           </Box>
         </Grid>
         <Grid item>
-          <MuiButton text="search" color="info" onClick={fetchData} />
+          <MuiButton text="search" color="info" onClick={()=>{
+            fetchData();
+            setIsSearch(true)
+          }} />
         </Grid>
         <Grid item>
           <FormControlLabel
