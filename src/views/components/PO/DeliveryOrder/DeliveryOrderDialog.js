@@ -61,12 +61,15 @@ const DeliveryOrderDialog = (props) => {
       .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
     ETDLoad: yup
       .date()
+      .typeError(intl.formatMessage({ id: "general.field_invalid" }))
       .nullable()
       .required(intl.formatMessage({ id: "general.field_required" })),
     DeliveryTime: yup
       .date()
+      .typeError(intl.formatMessage({ id: "general.field_invalid" }))
       .nullable()
-      .required(intl.formatMessage({ id: "general.field_required" })),
+      .required(intl.formatMessage({ id: "general.field_required" }))
+      .min(yup.ref("ETDLoad"), "end date can't be before start date"),
   });
 
   const formik = useFormik({
@@ -80,7 +83,14 @@ const DeliveryOrderDialog = (props) => {
           }
         : { ...initModal },
     enableReinitialize: true,
-    onSubmit: async (values) => onSubmit(values),
+    onSubmit: async (values, actions) => {
+      await onSubmit(values);
+      // actions.setFieldValue("PoId", values.PoId);
+      // actions.setFieldValue("PoCode", values.PoCode);
+      // actions.setFieldValue("MaterialId", values.MaterialId);
+      // actions.setFieldValue("MaterialCode", values.MaterialCode);
+      actions.setSubmitting(false);
+    },
   });
 
   const {
@@ -114,7 +124,7 @@ const DeliveryOrderDialog = (props) => {
           SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
           setNewData({ ...res.Data });
           setDialogState({ ...dialogState, isSubmit: false });
-          handleReset();
+          // handleReset();
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
           setDialogState({ ...dialogState, isSubmit: false });
@@ -293,9 +303,7 @@ const DeliveryOrderDialog = (props) => {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item xs>
-                  <TextField
-                    fullWidth
-                    size="small"
+                  <MuiTextField
                     name="PackingNote"
                     disabled={dialogState.isSubmit}
                     value={values.PackingNote}
@@ -306,9 +314,7 @@ const DeliveryOrderDialog = (props) => {
                   />
                 </Grid>
                 <Grid item xs>
-                  <TextField
-                    fullWidth
-                    size="small"
+                  <MuiTextField
                     name="InvoiceNo"
                     disabled={dialogState.isSubmit}
                     value={values.InvoiceNo}
@@ -323,9 +329,7 @@ const DeliveryOrderDialog = (props) => {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item xs>
-                  <TextField
-                    fullWidth
-                    size="small"
+                  <MuiTextField
                     name="Dock"
                     disabled={dialogState.isSubmit}
                     value={values.Dock}
@@ -336,10 +340,8 @@ const DeliveryOrderDialog = (props) => {
                   />
                 </Grid>
                 <Grid item xs>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    name="InvoiceNo"
+                  <MuiTextField
+                    name="Truck"
                     disabled={dialogState.isSubmit}
                     value={values.Truck}
                     onChange={handleChange}
@@ -351,9 +353,7 @@ const DeliveryOrderDialog = (props) => {
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                size="small"
+              <MuiTextField
                 name="Remark"
                 disabled={dialogState.isSubmit}
                 value={values.Remark}

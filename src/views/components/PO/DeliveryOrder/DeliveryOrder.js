@@ -167,31 +167,58 @@ const DeliveryOrder = (props) => {
   };
 
   const fetchData = async () => {
-    setDeliveryOrderState({
-      ...deliveryOrderState,
-      isLoading: true,
+    let flag = true;
+    let message = "";
+    const checkObj = { ...deliveryOrderState.searchData };
+    _.forOwn(checkObj, (value, key) => {
+      switch (key) {
+        case "ETDLoad":
+          if (value == "Invalid Date") {
+            message = "delivery_order.ETDLoad_invalid";
+            flag = false;
+          }
+          break;
+        case "DeliveryTime":
+          if (value == "Invalid Date") {
+            message = "delivery_order.DeliveryTime_invalid";
+            flag = false;
+          }
+          break;
+
+        default:
+          break;
+      }
     });
 
-    const params = {
-      page: deliveryOrderState.page,
-      pageSize: deliveryOrderState.pageSize,
-      DoCode: deliveryOrderState.searchData.DoCode.trim(),
-      PoId: deliveryOrderState.searchData.PoId,
-      MaterialId: deliveryOrderState.searchData.MaterialId,
-      ETDLoad: deliveryOrderState.searchData.ETDLoad,
-      DeliveryTime: deliveryOrderState.searchData.DeliveryTime,
-      isActived: showActivedData,
-    };
-
-    const res = await deliveryOrderService.get(params);
-
-    if (res && isRendered)
+    if (flag) {
       setDeliveryOrderState({
         ...deliveryOrderState,
-        data: !res.Data ? [] : [...res.Data],
-        totalRow: res.TotalRow,
-        isLoading: false,
+        isLoading: true,
       });
+
+      const params = {
+        page: deliveryOrderState.page,
+        pageSize: deliveryOrderState.pageSize,
+        DoCode: deliveryOrderState.searchData.DoCode.trim(),
+        PoId: deliveryOrderState.searchData.PoId,
+        MaterialId: deliveryOrderState.searchData.MaterialId,
+        ETDLoad: deliveryOrderState.searchData.ETDLoad,
+        DeliveryTime: deliveryOrderState.searchData.DeliveryTime,
+        isActived: showActivedData,
+      };
+
+      const res = await deliveryOrderService.get(params);
+
+      if (res && isRendered)
+        setDeliveryOrderState({
+          ...deliveryOrderState,
+          data: !res.Data ? [] : [...res.Data],
+          totalRow: res.TotalRow,
+          isLoading: false,
+        });
+    } else {
+      ErrorAlert(intl.formatMessage({ id: message }));
+    }
   };
 
   useEffect(() => {
