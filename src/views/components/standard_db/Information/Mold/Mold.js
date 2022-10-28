@@ -5,7 +5,7 @@ import UndoIcon from '@mui/icons-material/Undo';
 import { Autocomplete, FormControlLabel, Grid, IconButton, Switch, TextField } from '@mui/material'
 import { createTheme, ThemeProvider } from "@mui/material"
 import { useIntl } from 'react-intl'
-import { MuiButton, MuiDataGrid, MuiSelectField } from '@controls'
+import { MuiButton, MuiDataGrid, MuiSelectField, MuiSearchField } from '@controls'
 import { moldService } from '@services'
 import { useModal } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
@@ -250,12 +250,13 @@ export default function Mold() {
           <MuiButton text="create" color='success' onClick={handleAdd} sx={{ mt: 1 }} />
         </Grid>
         <Grid item>
-          <TextField
+          <MuiSearchField
             sx={{ width: 200 }}
             fullWidth
-            variant="standard"
+            variant="keyWord"
             size='small'
-            label='Serial / Code'
+            label='mold.SerialCode'
+            onClick={fetchData}
             onChange={(e) => handleSearch(e.target.value, 'keyWord')}
           />
         </Grid>

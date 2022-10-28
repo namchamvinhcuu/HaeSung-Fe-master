@@ -179,7 +179,8 @@
         "Cabity_required": "Cabity không được để trống",
         "ETAStatus_required": "ETAStatus không được để trống",
         "duplicated_code": "Mold Code đã trùng",
-        "duplicated_serial": "Mold Serial đã trùng"
+        "duplicated_serial": "Mold Serial đã trùng",
+        "SerialCode": "Serial / Code"
     },
     "staff": {
         "StaffCode": "Mã Nhân Viên",

@@ -180,7 +180,8 @@
         "Cabity_required": "Cabity required",
         "ETAStatus_required": "ETA Status required",
         "duplicated_code": "Mold Code duplicated",
-        "duplicated_serial": "Mold Serial duplicated"
+        "duplicated_serial": "Mold Serial duplicated",
+        "SerialCode": "Serial / Code"
     },
     "staff": {
         "StaffCode": "Staff Code",
