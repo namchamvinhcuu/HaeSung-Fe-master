@@ -79,4 +79,12 @@ const minusDays = (date, days) => {
   return result;
 };
 
-export { calDateAgo, toCamel, dateToTicks, addDays, minusDays };
+const getCurrentWeek = () => {
+  const todaydate = new Date();
+  const oneJan = new Date(todaydate.getFullYear(), 0, 1);
+  const numberOfDays = Math.floor((todaydate - oneJan) / (24 * 60 * 60 * 1000));
+  const curWeek = Math.ceil((todaydate.getDay() + 1 + numberOfDays) / 7);
+  return curWeek;
+};
+
+export { calDateAgo, toCamel, dateToTicks, addDays, minusDays, getCurrentWeek };

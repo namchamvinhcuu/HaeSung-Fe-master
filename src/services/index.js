@@ -26,6 +26,7 @@ import * as documentService from "./Standard/Configuration/DocumentService";
 import * as purchaseOrderService from "./PO/purchase-order/PurchaseOrderService";
 import * as deliveryOrderService from "./PO/delivery-order/DeliveryOrderService";
 import * as forecastService from "./PO/Forecast/ForecastService";
+import * as forecastMasterService from "./PO/Forecast/ForecastMasterService";
 
 import * as workOrderService from "./mms/work-order/WorkOrderService";
 
@@ -56,4 +57,5 @@ export {
   deliveryOrderService,
   forecastService,
   workOrderService,
+  forecastMasterService,
 };
