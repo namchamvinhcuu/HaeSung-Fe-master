@@ -61,7 +61,11 @@
         "duplicated_name": "Trùng tên",
         "duplicated_version": "Trùng phiên bản",
         "data_actived": "Actived data",
-        "data_deleted": "Deleted data"
+        "data_deleted": "Deleted data",
+        "StartSearchingDate": "Từ",
+        "StartSearchingDate_invalid": "Ngày bắt đầu không đúng định dạng",
+        "EndSearchingDate": "Đến",
+        "EndSearchingDate_invalid": "Ngày kết thúc không đúng định dạng"
     },
     "login": {
         "account_password_invalid": "Tài khoản/Mật khẩu không hợp lệ",
@@ -330,5 +334,20 @@
         "DeliveryTime_required": "Delivery Time không được để trống",
         "DeliveryTime_invalid": "Delivery Time không đúng định dạng",
         "DeliveryTime_GreaterThanETDLoad": "Delivery Time phải lớn hơn ETD Time"
+    },
+    "work_order":{
+        "WoCode": "WO Code",
+        "FPoMasterCode": "Plant",
+        "MaterialCode": "Assy Code",
+        "LineName": "Line",
+        "OrderQty": "SL yêu cầu",
+        "ActualQty": "SL thực tế",
+        "StartDate": "Ngày bắt đầu",
+        "WoCode_required": "WO Code không được để trống",
+        "WoCode_length": "WO Code phải có {length} ký tự",
+        "OrderQty_required": "SL yêu cầu không được để trống",
+        "OrderQty_GreaterThan_0": "SL yêu cầu phải lớn hơn 0",
+        "StartDate_required": "Ngày bắt đầu không được để trống",
+        "StartDate_invalid": "Ngày bắt đầu không đúng định dạng"
     }
 }

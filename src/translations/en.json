@@ -61,7 +61,11 @@
         "duplicated_name": "Duplicated name",
         "duplicated_version": "Duplicated version",
         "data_actived": "Actived data",
-        "data_deleted": "Deleted data"
+        "data_deleted": "Deleted data",
+        "StartSearchingDate": "From",
+        "StartSearchingDate_invalid": "Start Searching Date format is invalid",
+        "EndSearchingDate": "To",
+        "EndSearchingDate_invalid": "End Searching Date format is invalid"
     },
     "login": {
         "account_password_invalid": "Account/Password is invalid",
@@ -325,11 +329,26 @@
         "DoCode_required": "DO Code is required",
         "DoCode_length": "DO Code must be 12 characters",
         "OrderQty_required": "Order Qty is required",
-        "OrderQty_GreaterThan_0": "Order Qty must be greater than zero ",
+        "OrderQty_GreaterThan_0": "Order Qty must be greater than zero",
         "ETDLoad_required": "ETDLoad Time is required",
         "ETDLoad_invalid": "ETDLoad Time format is invalid",
         "DeliveryTime_required": "Delivery Time is required",
         "DeliveryTime_invalid": "Delivery Time format is invalid",
         "DeliveryTime_GreaterThanETDLoad": "Delivery Time must be greater than ETD Time"
+    },
+    "work_order":{
+        "WoCode": "WO Code",
+        "FPoMasterCode": "Plant",
+        "MaterialCode": "Assy Code",
+        "LineName": "Line",
+        "OrderQty": "Order Qty",
+        "ActualQty": "Actual Qty",
+        "StartDate": "Working Date",
+        "WoCode_required": "WO Code is required",
+        "WoCode_length": "WO Code must be {length} characters",
+        "OrderQty_required": "Order Qty is required",
+        "OrderQty_GreaterThan_0": "Order Qty must be greater than zero",
+        "StartDate_required": "Working Date is required",
+        "StartDate_invalid": "Working Date format is invalid"
     }
 }
