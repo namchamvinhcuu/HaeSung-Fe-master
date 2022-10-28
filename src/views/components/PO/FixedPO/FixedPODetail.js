@@ -9,10 +9,10 @@ import { purchaseOrderService } from '@services'
 import { useModal } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
-import FixedPODetailDialog from './FixedPODetailDialog';
+import FixedPODialog from './FixedPODialog';
 import moment from 'moment';
 
-export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
+export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO, newData, setNewData }) {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
@@ -31,7 +31,7 @@ export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
       showDelete: true
     }
   });
-  const [newData, setNewData] = useState({})
+  // const [newData, setNewData] = useState({})
   const [updateData, setUpdateData] = useState({})
   const [rowData, setRowData] = useState({});
 
@@ -39,9 +39,8 @@ export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
     {
       field: 'id', headerName: '', flex: 0.1, align: 'center',
       filterable: false,
-      renderCell: (index) => (index.api.getRowIndex(index.row.PoDetailId) + 1) + (state.page - 1) * state.pageSize,
+      renderCell: (index) => (index.api.getRowIndex(index.row.PoId) + 1) + (state.page - 1) * state.pageSize,
     },
-    { field: 'PoDetailId', hide: true },
     { field: 'PoId', hide: true },
     { field: 'row_version', hide: true },
     {
@@ -80,18 +79,13 @@ export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
         );
       },
     },
+    { field: 'PoCode', headerName: intl.formatMessage({ id: "purchase_order.PoCode" }), flex: 0.5, },
     { field: 'MaterialCode', headerName: intl.formatMessage({ id: "purchase_order.MaterialId" }), flex: 0.5, },
     { field: 'Description', headerName: intl.formatMessage({ id: "purchase_order.Description" }), flex: 0.8, },
-    { field: 'Qty', headerName: intl.formatMessage({ id: "purchase_order.Qty" }), flex: 0.4, },
+    { field: 'TotalQty', headerName: intl.formatMessage({ id: "purchase_order.Qty" }), flex: 0.4, },
     { field: 'RemainQty', headerName: intl.formatMessage({ id: "purchase_order.RemainQty" }), flex: 0.4, },
-    {
-      field: "DeliveryDate", headerName: intl.formatMessage({ id: "purchase_order.DeliveryDate" }), width: 150,
-      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).format("YYYY-MM-DD"); } },
-    },
-    {
-      field: "DueDate", headerName: intl.formatMessage({ id: "purchase_order.DueDate" }), width: 150,
-      valueFormatter: (params) => { if (params.value !== null) { return moment(params?.value).format("YYYY-MM-DD"); } },
-    },
+    { field: "Week", headerName: intl.formatMessage({ id: "forecast.Week" }), width: 150, },
+    { field: "Year", headerName: intl.formatMessage({ id: "forecast.Year" }), width: 150, },
     { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.4, },
     {
       field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.5,
@@ -106,13 +100,12 @@ export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
 
   //useEffect
   useEffect(() => {
-    if (PoId || PoId == 0)
-      fetchData();
+    fetchData();
     return () => { isRendered = false; }
   }, [state.page, state.pageSize, state.searchData.showDelete, PoId]);
 
   useEffect(() => {
-    if (!_.isEmpty(newData)) {
+    if (!_.isEmpty(newData) && newData.PoId) {
       const data = [newData, ...state.data];
       if (data.length > state.pageSize) {
         data.pop();
@@ -128,7 +121,7 @@ export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
   useEffect(() => {
     if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData)) {
       let newArr = [...state.data]
-      const index = _.findIndex(newArr, function (o) { return o.PoDetailId == updateData.PoDetailId; });
+      const index = _.findIndex(newArr, function (o) { return o.PoId == updateData.PoId; });
       if (index !== -1) {
         newArr[index] = updateData
       }
@@ -141,7 +134,7 @@ export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
   const handleDelete = async (row) => {
     if (window.confirm(intl.formatMessage({ id: row.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' }))) {
       try {
-        let res = await purchaseOrderService.deletePODetail({ PoDetailId: row.PoDetailId, row_version: row.row_version });
+        let res = await purchaseOrderService.deletePODetail({ PoId: row.PoId, row_version: row.row_version });
         if (res && res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }))
           //Update qty Po
@@ -190,7 +183,7 @@ export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
       isActived: state.searchData.showDelete
 
     }
-    const res = await purchaseOrderService.getPODetail(PoId, params);
+    const res = await purchaseOrderService.get(params);
     if (res && res.Data)
       setState({
         ...state
@@ -209,12 +202,11 @@ export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
         sx={{ mt: 2 }}
       >
         <Grid item xs={9}>
-          <MuiButton text="create" color='success' onClick={handleAdd} sx={{ mt: 1 }} disabled={PoId ? false : true} />
+          <MuiButton text="create" color='success' onClick={handleAdd} sx={{ mt: 1 }} />
         </Grid>
         <Grid item>
           <FormControlLabel
             sx={{ mt: 1 }}
-            disabled={PoId ? false : true}
             control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
             label={intl.formatMessage({ id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted' })} />
         </Grid>
@@ -232,13 +224,13 @@ export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO }) {
         rowsPerPageOptions={[5, 10, 20]}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
         onPageSizeChange={(newPageSize) => setState({ ...state, pageSize: newPageSize, page: 1 })}
-        getRowId={(rows) => rows.PoDetailId}
+        getRowId={(rows) => rows.PoId}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`
         }}
       />
 
-      <FixedPODetailDialog
+      <FixedPODialog
         PoId={PoId}
         setNewData={setNewData}
         setUpdateData={setUpdateData}

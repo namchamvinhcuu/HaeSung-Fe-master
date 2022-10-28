@@ -4,23 +4,13 @@ import { bindActionCreators } from "redux";
 import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
 import { User_Operations } from "@appstate/user";
 import { Store } from "@appstate";
-
-import {
-  MuiButton,
-  MuiDataGrid,
-  MuiSearchField,
-  MuiDateField,
-} from "@controls";
+import { MuiButton, MuiDataGrid, MuiSearchField, MuiSelectField, MuiDateField, } from "@controls";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 import UndoIcon from "@mui/icons-material/Undo";
-import {
-  FormControlLabel,
-  Switch,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import DoDisturbIcon from '@mui/icons-material/DoDisturb';
+import { FormControlLabel, Switch, TextField, Tooltip, Typography, } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import _ from "lodash";
@@ -29,7 +19,7 @@ import { useIntl } from "react-intl";
 import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
 import { useModal } from "@basesShared";
 import { PurchaseOrderDto } from "@models";
-import { purchaseOrderService } from "@services";
+import { purchaseOrderService, forecastService } from "@services";
 import { ErrorAlert, SuccessAlert, WarningAlert } from "@utils";
 import FixedPODialog from "./FixedPODialog";
 import FixedPODetail from "./FixedPODetail";
@@ -46,21 +36,25 @@ const FixedPO = (props) => {
     page: 1,
     pageSize: 7,
     searchData: {
-      PoCode: "",
-      // DeliveryDate: moment(currentDate).format("YYYY-MM-DD"),
-      DeliveryDate: currentDate,
-      DueDate: moment(currentDate).add(30, "days").format("YYYY-MM-DD"),
+      MaterialId: null,
+      week: null,
+      year: currentDate.getFullYear(),
+      // DeliveryDate: currentDate,
+      // DueDate: moment(currentDate).add(30, "days").format("YYYY-MM-DD"),
       showDelete: true,
     },
   });
 
-  const [PoId, setPoId] = useState(0);
+  const [RowID, setRowID] = useState(0);
   const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
-
+  const [MaterialList, setMaterialList] = useState([]);
+  const [YearList, setYearList] = useState([]);
   const [newData, setNewData] = useState(PurchaseOrderDto);
   const [updateData, setUpdateData] = useState(PurchaseOrderDto);
   const [rowData, setRowData] = useState(PurchaseOrderDto);
+
+  const [valueRow, setValueRow] = useState({ PoCode: '' });
 
   const handleChangeSearchDate = (e, date) => {
     let x = new Date(e);
@@ -102,9 +96,27 @@ const FixedPO = (props) => {
   };
 
   const handleUpdate = (row) => {
-    setMode(UPDATE_ACTION);
-    setRowData({ ...row });
-    toggle();
+    setRowID(row.FPOId);
+    // setRowData({ ...row });
+    // toggle();
+  };
+
+  const handleSave = async (row, valueRow) => {
+    console.log(row, valueRow)
+
+    const res = await purchaseOrderService.createPOByForeCastPO({ FPOId: RowID, PoCode: valueRow.PoCode, TotalQty: valueRow.Amount });
+    if (res.HttpResponseCode === 200 && res.Data) {
+      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+      setNewData({ ...res.Data });
+      // setDialogState({ ...dialogState, isSubmit: false });
+      setValueRow({});
+      setRowID(0);
+      handleReset();
+    }
+    else {
+      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+      // setDialogState({ ...dialogState, isSubmit: false });
+    }
   };
 
   const handleDownload = async () => {
@@ -126,33 +138,25 @@ const FixedPO = (props) => {
   };
 
   const fetchData = async () => {
-    if (state.searchData.DeliveryDate == "Invalid Date") {
-      ErrorAlert(
-        intl.formatMessage({ id: "purchase_order.DeliveryDate_Invalid" })
-      );
-    } else if (state.searchData.DueDate == "Invalid Date") {
-      ErrorAlert(intl.formatMessage({ id: "purchase_order.DueDate_Invalid" }));
-    } else {
-      setState({ ...state, isLoading: true });
-      const params = {
-        page: state.page,
-        pageSize: state.pageSize,
-        PoCode: state.searchData.PoCode.trim(),
-        DeliveryDate: state.searchData.DeliveryDate,
-        DueDate: state.searchData.DueDate,
-        isActived: state.searchData.showDelete,
-      };
+    setState({ ...state, isLoading: true });
+    const params = {
+      page: state.page,
+      pageSize: state.pageSize,
+      MaterialId: state.searchData.MaterialId,
+      week: state.searchData.week,
+      year: state.searchData.year,
+      isActived: state.searchData.showDelete,
+    };
 
-      const res = await purchaseOrderService.get(params);
-      setPoId(0);
-      if (res && isRendered)
-        setState({
-          ...state,
-          data: !res.Data ? [] : [...res.Data],
-          totalRow: res.TotalRow,
-          isLoading: false,
-        });
-    }
+    const res = await purchaseOrderService.getForecastPO(params);
+    setRowID(0);
+    if (res && isRendered)
+      setState({
+        ...state,
+        data: !res.Data ? [] : [...res.Data],
+        totalRow: res.TotalRow,
+        isLoading: false,
+      });
   };
 
   const handleDelete = async (row) => {
@@ -167,7 +171,7 @@ const FixedPO = (props) => {
     ) {
       try {
         let res = await purchaseOrderService.deletePO({
-          PoId: row.PoId,
+          RowID: row.RowID,
           row_version: row.row_version,
         });
         if (res && res.HttpResponseCode === 200) {
@@ -192,27 +196,43 @@ const FixedPO = (props) => {
     }
   };
 
+  const getMaterial = async () => {
+    const res = await purchaseOrderService.getMaterial();
+    if (res.HttpResponseCode === 200 && res.Data) {
+      setMaterialList([...res.Data]);
+    }
+  }
+
+  const getYearList = async () => {
+    const res = await forecastService.getYearModel();
+    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
+      setYearList([...res.Data]);
+    }
+  };
+
   //useEffect
   useEffect(() => {
     fetchData();
+    getMaterial();
+    getYearList();
     return () => {
       isRendered = false;
     };
   }, [state.page, state.pageSize, state.searchData.showDelete]);
 
-  useEffect(() => {
-    if (!_.isEmpty(newData) && !_.isEqual(newData, PurchaseOrderDto)) {
-      const data = [newData, ...state.data];
-      if (data.length > state.pageSize) {
-        data.pop();
-      }
-      setState({
-        ...state,
-        data: [...data],
-        totalRow: state.totalRow + 1,
-      });
-    }
-  }, [newData]);
+  // useEffect(() => {
+  //   if (!_.isEmpty(newData) && !_.isEqual(newData, PurchaseOrderDto)) {
+  //     const data = [newData, ...state.data];
+  //     if (data.length > state.pageSize) {
+  //       data.pop();
+  //     }
+  //     setState({
+  //       ...state,
+  //       data: [...data],
+  //       totalRow: state.totalRow + 1,
+  //     });
+  //   }
+  // }, [newData]);
 
   useEffect(() => {
     if (
@@ -222,7 +242,7 @@ const FixedPO = (props) => {
     ) {
       let newArr = [...state.data];
       const index = _.findIndex(newArr, function (o) {
-        return o.PoId == updateData.PoId;
+        return o.RowID == updateData.RowID;
       });
       if (index !== -1) {
         newArr[index] = updateData;
@@ -233,17 +253,8 @@ const FixedPO = (props) => {
   }, [updateData]);
 
   const columns = [
-    { field: "PoId", headerName: "", hide: true },
-    {
-      field: "id",
-      headerName: "",
-      width: 50,
-      filterable: false,
-      renderCell: (index) =>
-        index.api.getRowIndex(index.row.PoId) +
-        1 +
-        (state.page - 1) * state.pageSize,
-    },
+    { field: "FPOId", headerName: "", hide: true },
+    { field: "id", headerName: "", width: 80, filterable: false, renderCell: (index) => index.api.getRowIndex(index.row.FPOId) + 1 + (state.page - 1) * state.pageSize, },
     {
       field: "action",
       headerName: "",
@@ -253,94 +264,117 @@ const FixedPO = (props) => {
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Grid item xs={6}>
-              <IconButton
-                aria-label="edit"
-                color="warning"
-                size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
-                onClick={() => handleUpdate(params.row)}
-              >
-                <EditIcon fontSize="inherit" />
-              </IconButton>
-            </Grid>
-            <Grid item xs={6}>
-              <IconButton
-                aria-label="delete"
-                color="error"
-                size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
-                onClick={() => handleDelete(params.row)}
-              >
-                {params.row.isActived ? (
+          <Grid container spacing={1} alignItems="center" justifyContent="center"          >
+            <Grid item xs={6} style={{ textAlign: "center" }}>
+              {params.row.FPOId == RowID ?
+                <>
+                  <IconButton
+                    aria-label="save"
+                    color="success"
+                    size="small"
+                    sx={[{ "&:hover": { border: "1px solid red" } }]}
+                    onClick={() => handleSave(params.row, valueRow)}
+                  >
+                    <SaveAsIcon fontSize="inherit" />
+                  </IconButton>
+                  <IconButton
+                    aria-label="save"
+                    color="warning"
+                    size="small"
+                    sx={[{ "&:hover": { border: "1px solid red" } }]}
+                    onClick={() => setRowID(0)}
+                  >
+                    <DoDisturbIcon fontSize="inherit" />
+                  </IconButton>
+                </>
+                :
+                <IconButton
+                  aria-label="delete"
+                  color="error"
+                  size="small"
+                  sx={[{ "&:hover": { border: "1px solid red" } }]}
+                  onClick={() => handleUpdate(params.row)}
+                  disabled={RowID == 0 ? false : params.row.FPOId == RowID ? false : true}
+                >
                   <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
-              </IconButton>
+                </IconButton>}
             </Grid>
           </Grid>
         );
       },
     },
     {
-      field: "PoCode",
-      headerName: intl.formatMessage({ id: "purchase_order.PoCode" }),
+      field: "PoCode", headerName: intl.formatMessage({ id: "purchase_order.PoCode" }), width: 150, renderCell: (params) => {
+        return (<>{params.row.FPOId == RowID &&
+          <TextField
+            value={valueRow.PoCode}
+            label=' '
+            size='small'
+            onChange={(e) => setValueRow({ ...valueRow, PoCode: e.target.value })}
+          />}</>)
+      }
+    },
+    {
+      field: "Amount", headerName: intl.formatMessage({ id: "forecast.Amount" }), width: 150, renderCell: (params) => {
+        return (<>{params.row.FPOId != RowID ? params.row.Amount :
+          <TextField
+            value={valueRow.Amount}
+            label={intl.formatMessage({ id: "forecast.Week" })}
+            size='small'
+            type="number"
+            onChange={(e) => setValueRow({ ...valueRow, Amount: e.target.value })}
+            defaultValue={params.row.Amount}
+          />}</>)
+      }
+    },
+    {
+      field: "Inch",
+      headerName: "Inch",
+      width: 100,
+    },
+    {
+      field: "LineName",
+      headerName: intl.formatMessage({ id: "forecast.LineId" }),
       width: 200,
     },
     {
-      field: "Description",
-      headerName: intl.formatMessage({ id: "purchase_order.Description" }),
-      width: 400,
+      field: "MaterialCode",
+      headerName: intl.formatMessage({ id: "forecast.MaterialId" }),
+      width: 200,
+    },
+    {
+      field: "DescriptionMaterial",
+      headerName: intl.formatMessage({ id: "forecast.Desciption" }),
+      width: 300,
       renderCell: (params) => {
         return (
           <Tooltip
-            title={params.row.Description ?? ""}
+            title={params.row.DescriptionMaterial ?? ""}
             className="col-text-elip"
           >
-            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>
-              {params.row.Description}
+            <Typography sx={{ fontSize: 14, maxWidth: 300 }}>
+              {params.row.DescriptionMaterial}
             </Typography>
           </Tooltip>
         );
       },
     },
     {
-      field: "TotalQty",
-      headerName: intl.formatMessage({ id: "purchase_order.TotalQty" }),
-      width: 150,
+      field: "Description",
+      headerName: "Desc 2",
+      width: 180,
     },
     {
-      field: "RemainQty",
-      headerName: intl.formatMessage({ id: "purchase_order.RemainQty" }),
-      width: 150,
+      field: "Week",
+      headerName: intl.formatMessage({ id: "forecast.Week" }),
+      width: 100,
     },
     {
-      field: "DeliveryDate",
-      headerName: intl.formatMessage({ id: "purchase_order.DeliveryDate" }),
-      width: 150,
-      valueFormatter: (params) => {
-        if (params.value !== null) {
-          return moment(params?.value).format("YYYY-MM-DD");
-        }
-      },
+      field: "Year",
+      headerName: intl.formatMessage({ id: "forecast.Year" }),
+      width: 100,
     },
-    {
-      field: "DueDate",
-      headerName: intl.formatMessage({ id: "purchase_order.DueDate" }),
-      width: 150,
-      valueFormatter: (params) => {
-        if (params.value !== null) {
-          return moment(params?.value).format("YYYY-MM-DD");
-        }
-      },
-    },
+
     {
       field: "createdName",
       headerName: intl.formatMessage({ id: "general.createdName" }),
@@ -388,7 +422,7 @@ const FixedPO = (props) => {
         alignItems="flex-end"
       >
         <Grid item xs={4}>
-          <MuiButton
+          {/* <MuiButton
             text="create"
             color="success"
             onClick={handleAdd}
@@ -397,38 +431,49 @@ const FixedPO = (props) => {
           <MuiButton
             text="excel"
             color="info"
-            onClick={() => handleDownload(PoId)}
+            onClick={() => handleDownload(RowID)}
             sx={{ mt: 1 }}
+          /> */}
+        </Grid>
+        <Grid item xs>
+          <MuiSelectField
+            label={intl.formatMessage({ id: 'purchase_order.MaterialId' })}
+            options={MaterialList}
+            displayLabel="MaterialCode"
+            displayValue="MaterialId"
+            onChange={(e, item) => handleSearch(item ? item.MaterialId ?? null : null, 'MaterialId')}
+            variant="standard"
+            sx={{ width: 230, mb: 0.5 }}
+          />
+        </Grid>
+        <Grid item xs>
+          <MuiSelectField
+            label={intl.formatMessage({ id: "forecast.Year" })}
+            options={YearList}
+            defaultValue={state.searchData.year ? { YearId: state.searchData.year, YearName: `${state.searchData.year}` } : null}
+            displayLabel="YearName"
+            displayValue="YearId"
+            onChange={(e, item) => handleSearch(item ? item.YearId ?? null : null, "year")}
+            variant="standard"
+            sx={{ width: 230, mb: 0.5 }}
           />
         </Grid>
         <Grid item xs>
           <TextField
+            label={intl.formatMessage({ id: "forecast.Week" })}
+            variant="standard"
+            type="number"
             sx={{ width: 230, mb: 0.5 }}
-            fullWidth
-            variant="standard"
-            size="small"
-            label="Code"
-            onChange={(e) => handleSearch(e.target.value, "PoCode")}
-          />
-        </Grid>
-        <Grid item xs>
-          <MuiDateField
-            disabled={state.isLoading}
-            label={intl.formatMessage({ id: "purchase_order.DeliveryDate" })}
-            value={state.searchData.DeliveryDate}
-            onChange={(e) => handleChangeSearchDate(e, "deliveryDate")}
-            variant="standard"
-            sx={{ width: 230 }}
-          />
-        </Grid>
-        <Grid item xs>
-          <MuiDateField
-            disabled={state.isLoading}
-            label={intl.formatMessage({ id: "purchase_order.DueDate" })}
-            value={state.searchData.DueDate}
-            onChange={(e) => handleChangeSearchDate(e, "dueDate")}
-            variant="standard"
-            sx={{ width: 230 }}
+            //inputProps={{ min, max }}
+            // defaultValue={}
+            onChange={(e) => {
+              // var value = parseInt(e.target.value, 10);
+              // if (value > max) value = max;
+              // if (value < min) value = min;
+              // setValueStart(value || "");
+              console.log(new Date().getDay())
+              handleSearch(e.target.value || 0, "week");
+            }}
           />
         </Grid>
         <Grid item>
@@ -464,14 +509,14 @@ const FixedPO = (props) => {
         pageSize={state.pageSize}
         rowCount={state.totalRow}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
-        getRowId={(rows) => rows.PoId}
-        onSelectionModelChange={(newSelectedRowId) =>
-          setPoId(newSelectedRowId[0])
-        }
+        getRowId={(rows) => rows.FPOId}
+        // onSelectionModelChange={(newSelectedRowId) =>
+        //   setRowID(newSelectedRowId[0])
+        // }
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;
         }}
-        onRowClick={(params, event) => setUpdateData(params.row)}
+      // onRowClick={(params, event) => setUpdateData(params.row)}
       />
 
       <FixedPODialog
@@ -484,7 +529,9 @@ const FixedPO = (props) => {
       />
 
       <FixedPODetail
-        PoId={PoId}
+        newData={newData}
+        setNewData={setNewData}
+        RowID={RowID}
         updateDataPO={updateData}
         setUpdateDataPO={setUpdateData}
       />

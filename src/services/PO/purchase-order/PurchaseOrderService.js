@@ -13,9 +13,26 @@ const get = async (params) => {
 	}
 }
 
+const getForecastPO = async (params) => {
+	try {
+		return await axios.get(`${apiName}/GetForecastPO`, { params: { ...params } });
+	} catch (error) {
+		console.log(`ERROR: ${error}`);
+	}
+}
+
 const createPO = async (params) => {
 	try {
 		return await axios.post(`${apiName}/create`, params);
+	}
+	catch (error) {
+		console.log(`ERROR: ${error}`);
+	}
+}
+
+const createPOByForeCastPO = async (params) => {
+	try {
+		return await axios.post(`${apiName}/createByForeCastPO`, params);
 	}
 	catch (error) {
 		console.log(`ERROR: ${error}`);
@@ -75,9 +92,9 @@ const deletePODetail = async (params) => {
 	}
 }
 
-const getMaterial = async (PoId) => {
+const getMaterial = async () => {
 	try {
-		return await axios.get(`${apiName}/get-material/${PoId}`);
+		return await axios.get(`${apiName}/get-material`);
 	}
 	catch (error) {
 		console.log(`ERROR: ${error}`);
@@ -121,7 +138,9 @@ const downloadReport = async (params) => {
 
 export {
 	get,
+	getForecastPO,
 	createPO,
+	createPOByForeCastPO,
 	modifyPO,
 	deletePO,
 

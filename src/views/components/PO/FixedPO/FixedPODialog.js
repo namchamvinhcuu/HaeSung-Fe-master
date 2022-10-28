@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField } from '@controls'
+import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField } from '@controls'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
@@ -14,15 +14,16 @@ import moment from "moment";
 const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
-  const defaultValue = { PoCode: '', Description: '', DeliveryDate: null, DueDate: null };
-
+  const defaultValue = { PoCode: '', Description: '', Week: null, Year: null, TotalQty: null };
+  const [YearList, setYearList] = useState([]);
   const schema = yup.object().shape({
     PoCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
       .length(10, intl.formatMessage({ id: 'general.field_length' }, { length: 10 })),
-    DeliveryDate: yup.date().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
-      .typeError(intl.formatMessage({ id: 'general.field_invalid' })),
-    DueDate: yup.date().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
-      .typeError(intl.formatMessage({ id: 'general.field_invalid' }))
+    Week: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+    //.typeError(intl.formatMessage({ id: 'general.field_invalid' }))
+    ,
+    Year: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+    TotalQty: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
   });
   const formik = useFormik({
     validationSchema: schema,
@@ -41,6 +42,11 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
     resetForm();
     onClose();
   }
+
+  //useEffect
+  useEffect(() => {
+    getYearList();
+  }, []);
 
   const handleChangeDate = (date, e) => {
     let x = new Date(e);
@@ -66,6 +72,16 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
       }
       setFieldValue(date, e)
     }
+  };
+
+  const getYearList = async () => {
+    const currentYear = new Date().getFullYear();
+    let yearList = [];
+    for (let i = currentYear; i < 2100; i++) {
+      yearList.push({ YearId: i, YearName: i.toString() });
+    }
+    setYearList(yearList);
+
   };
 
   const onSubmit = async (data) => {
@@ -138,25 +154,41 @@ const FixedPODialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, 
             />
           </Grid>
           <Grid item xs={12}>
-            <MuiDateField
-              required
+            <TextField
+              fullWidth
+              type="number"
+              size="small"
+              name="TotalQty"
               disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: 'purchase_order.DeliveryDate' })}
-              value={values.DeliveryDate ?? null}
-              onChange={(e) => handleChangeDate("DeliveryDate", moment(e))}
-              error={touched.DeliveryDate && Boolean(errors.DeliveryDate)}
-              helperText={touched.DeliveryDate && errors.DeliveryDate}
+              onChange={handleChange}
+              label={intl.formatMessage({ id: "purchase_order.TotalQty" }) + " *"}
+              error={touched.TotalQty && Boolean(errors.TotalQty)}
+              helperText={touched.TotalQty && errors.TotalQty}
             />
           </Grid>
           <Grid item xs={12}>
-            <MuiDateField
-              required
+            <TextField
+              fullWidth
+              type="number"
+              size="small"
+              name="Week"
               disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: 'purchase_order.DueDate' })}
-              value={values.DueDate ?? null}
-              onChange={(e) => handleChangeDate("DueDate", moment(e))}
-              error={touched.DueDate && Boolean(errors.DueDate)}
-              helperText={touched.DueDate && errors.DueDate}
+              onChange={handleChange}
+              label={intl.formatMessage({ id: "forecast.Week" }) + " *"}
+              error={touched.Week && Boolean(errors.Week)}
+              helperText={touched.Week && errors.Week}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <MuiSelectField
+              value={values.Year ? { YearId: values.Year, YearName: values.Year } : null}
+              label={intl.formatMessage({ id: "forecast.Year" })}
+              options={YearList}
+              displayLabel="YearName"
+              displayValue="YearId"
+              onChange={(e, item) => setFieldValue("Year", item?.YearId || '')}
+              error={touched.Year && Boolean(errors.Year)}
+              helperText={touched.Year && errors.Year}
             />
           </Grid>
           <Grid item xs={12}>
