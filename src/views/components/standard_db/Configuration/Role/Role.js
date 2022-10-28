@@ -37,6 +37,9 @@ export default function Role() {
     totalRow: 0,
     page: 1,
     pageSize: 10,
+    searchData: {
+      keyWord: ''
+    }
   });
 
   const [menuState, setMenuState] = useState({
@@ -45,6 +48,9 @@ export default function Role() {
     totalRow: 0,
     page: 1,
     pageSize: 10,
+    searchData: {
+      keyWord: ''
+    }
   });
 
   const [newData, setNewData] = useState({})
@@ -210,7 +216,8 @@ export default function Role() {
   }
 
   async function fetchDataPermission(Id) {
-    const permission = await roleService.GetPermissionByRole(Id, { page: permissionState.page, pageSize: permissionState.pageSize });
+    const permission = await roleService.GetPermissionByRole(Id, { page: permissionState.page, pageSize: permissionState.pageSize,
+      keyWord: permissionState.searchData.keyWord });
     if (permission && permission.Data && isRendered)
       setPermissionState({
         ...permissionState
@@ -234,6 +241,14 @@ export default function Role() {
     newSearchData[inputName] = e.target.value;
 
     setRoleState({ ...roleState, searchData: { ...newSearchData } })
+  }
+
+  //Permission
+  const handleSearchPermission = (e, inputName) => {
+    let newSearchData = { ...permissionState.searchData };
+    newSearchData[inputName] = e.target.value;
+
+    setPermissionState({ ...permissionState, searchData: { ...newSearchData } })
   }
 
   useEffect(() => {
@@ -295,12 +310,22 @@ export default function Role() {
 
       <Grid container sx={{ mt: 1 }} spacing={3}>
         <Grid item xs={6} style={{ paddingTop: 0 }}>
-          <Grid container sx={{ mb: 1 }}>
-            <MuiButton text="Create" color='success' onClick={toggle} disabled={roleId != 0 ? false : true} />
-            <Badge badgeContent={selectPermission.length} color="warning">
-              <MuiButton text="Delete" color='error' onClick={handleDeletePermission} disabled={selectPermission.length > 0 ? false : true} />
-            </Badge>
+          <Grid item xs={12} style={{}}>
+              <MuiButton text="Create" color='success' onClick={toggle} disabled={roleId != 0 ? false : true} />
+              <Badge style={{ paddingRight: 200}} badgeContent={selectPermission.length} color="warning">
+                <MuiButton text="Delete" color='error' onClick={handleDeletePermission} disabled={selectPermission.length > 0 ? false : true} />
+              </Badge>
+              <TextField
+              sx={{ width: 210 }}
+              fullWidth
+              variant="standard"
+              size='small'
+              label={intl.formatMessage({ id: "role.PermissionName" })}
+              onChange={(e) => handleSearchPermission(e, 'keyWord')}
+            />
+          <MuiButton text="search" color='info' onClick={() => fetchDataPermission(roleId)} sx={{ mt: 1, ml: 2 }} />
           </Grid>
+          
           <MuiDataGrid
             showLoading={permissionState.isLoading}
             isPagingServer={true}
@@ -323,6 +348,20 @@ export default function Role() {
               <MuiButton text="Delete" color='error' onClick={handleDeleteMenu} disabled={selectMenu.length > 0 ? false : true} />
             </Badge>
           </Grid>
+
+          {/* <Grid item>
+            <TextField
+            sx={{ width: 210 }}
+            fullWidth
+            variant="standard"
+            size='small'
+            label={intl.formatMessage({ id: "role.MenuName" })}
+            //onChange={(e) => handleSearch(e, 'keyWord')}
+          />
+          </Grid>
+          <Grid item>
+            <MuiButton text="search" color='info' onClick={fetchData} sx={{ mt: 1, ml: 2 }} />
+          </Grid> */}
           <MuiDataGrid
             showLoading={menuState.isLoading}
             isPagingServer={true}

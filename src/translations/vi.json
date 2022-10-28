@@ -113,7 +113,9 @@
         "roleName": "Tên Role",
         "not_found": "Role: không tồn tại",
         "duplicated_name": "Role: tên đã được tạo",
-        "roleName_required": "Tên role không được để trống"
+        "roleName_required": "Tên role không được để trống",
+        "PermissionName": "Permission Name",
+        "MenuName": "Menu Name"
     },
     "user": {
         "userName": "Tài khoản",

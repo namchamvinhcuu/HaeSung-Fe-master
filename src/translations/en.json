@@ -113,7 +113,10 @@
         "roleName": "Role Name",
         "not_found": "Role: not found/existed",
         "duplicated_name": "Role: duplicated name",
-        "roleName_required": "Role name is required"
+        "roleName_required": "Role name is required",
+        "PermissionName": "Permission Name",
+        "MenuName": "Menu Name"
+
     },
     "user": {
         "userName": "Username",
