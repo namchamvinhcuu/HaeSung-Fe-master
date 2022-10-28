@@ -227,7 +227,7 @@ export default function Role() {
   }
 
   async function fetchDataMenu(Id) {
-    const menu = await roleService.GetMenuByRole(Id, { page: menuState.page, pageSize: menuState.pageSize });
+    const menu = await roleService.GetMenuByRole(Id, { page: menuState.page, pageSize: menuState.pageSize, keyWord: menuState.searchData.keyWord });
     if (menu && menu.Data && isRendered)
       setMenuState({
         ...menuState
@@ -250,6 +250,15 @@ export default function Role() {
 
     setPermissionState({ ...permissionState, searchData: { ...newSearchData } })
   }
+
+  //Menu
+  const handleSearchMenu = (e, inputName) => {
+    let newSearchData = { ...menuState.searchData };
+    newSearchData[inputName] = e.target.value;
+
+    setMenuState({ ...menuState, searchData: { ...newSearchData } })
+  }
+
 
   useEffect(() => {
     if (!_.isEmpty(newData) && isRendered) {
@@ -310,7 +319,7 @@ export default function Role() {
 
       <Grid container sx={{ mt: 1 }} spacing={3}>
         <Grid item xs={6} style={{ paddingTop: 0 }}>
-          <Grid item xs={12} style={{}}>
+          <Grid item xs={12}>
               <MuiButton text="Create" color='success' onClick={toggle} disabled={roleId != 0 ? false : true} />
               <Badge style={{ paddingRight: 200}} badgeContent={selectPermission.length} color="warning">
                 <MuiButton text="Delete" color='error' onClick={handleDeletePermission} disabled={selectPermission.length > 0 ? false : true} />
@@ -342,26 +351,22 @@ export default function Role() {
           />
         </Grid>
         <Grid item xs={6} style={{ paddingTop: 0 }}>
-          <Grid container sx={{ mb: 1 }}>
+          <Grid item xs={12}>
             <MuiButton text="Create" color='success' onClick={toggle2} disabled={roleId != 0 ? false : true} />
-            <Badge badgeContent={selectMenu.length} color="warning">
+            <Badge style={{ paddingRight: 200}} badgeContent={selectMenu.length} color="warning">
               <MuiButton text="Delete" color='error' onClick={handleDeleteMenu} disabled={selectMenu.length > 0 ? false : true} />
             </Badge>
+            <TextField
+              sx={{ width: 210 }}
+              fullWidth
+              variant="standard"
+              size='small'
+              label={intl.formatMessage({ id: "role.MenuName" })}
+              onChange={(e) => handleSearchMenu(e, 'keyWord')}
+            />
+            <MuiButton text="search" color='info' onClick={() => fetchDataMenu(roleId)} sx={{ mt: 1, ml: 2 }} />
           </Grid>
 
-          {/* <Grid item>
-            <TextField
-            sx={{ width: 210 }}
-            fullWidth
-            variant="standard"
-            size='small'
-            label={intl.formatMessage({ id: "role.MenuName" })}
-            //onChange={(e) => handleSearch(e, 'keyWord')}
-          />
-          </Grid>
-          <Grid item>
-            <MuiButton text="search" color='info' onClick={fetchData} sx={{ mt: 1, ml: 2 }} />
-          </Grid> */}
           <MuiDataGrid
             showLoading={menuState.isLoading}
             isPagingServer={true}
