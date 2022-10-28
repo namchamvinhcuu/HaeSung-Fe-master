@@ -360,16 +360,6 @@ const Product = () => {
           />
         </Grid>
         <Grid item>
-          <TextField
-            sx={{ width: 200 }}
-            fullWidth
-            variant="standard"
-            size="small"
-            label="Product Code"
-            onChange={(e) => handleSearch(e.target.value, "MaterialCode")}
-          />
-        </Grid>
-        <Grid item>
           <Autocomplete
             fullWidth
             size="small"
@@ -399,12 +389,25 @@ const Product = () => {
           />
         </Grid>
         <Grid item>
-          <TextField
+          <MuiSearchField
             sx={{ width: 200 }}
             fullWidth
-            variant="standard"
+            variant="MaterialCode"
             size="small"
-            label={intl.formatMessage({ id: "product.Description" })}
+            label="product.product_code"
+            onClick={fetchData}
+            onChange={(e) => handleSearch(e.target.value, "MaterialCode")}
+          />
+        </Grid>
+
+        <Grid item>
+          <MuiSearchField
+            sx={{ width: 200 }}
+            fullWidth
+            variant="Description"
+            size="small"
+            label="product.Description"
+            onClick={fetchData}
             onChange={(e) => handleSearch(e.target.value, "Description")}
           />
         </Grid>

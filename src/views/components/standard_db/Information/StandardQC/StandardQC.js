@@ -232,22 +232,24 @@ const StandardQC = (props) => {
                     />
                 </Grid>
                 <Grid item>
-                    <TextField
+                    <MuiSearchField
                         sx={{ width: 200 }}
                         fullWidth
-                        variant="standard"
+                        variant="QCCode"
                         size='small'
-                        label={intl.formatMessage({ id: 'standardQC.QCCode' })}
+                        label='standardQC.QCCode'
+                        onClick={fetchData}
                         onChange={(e) => handleSearch(e.target.value, 'QCCode')}
                     />
                 </Grid>
                 <Grid item >
-                    <TextField
+                    <MuiSearchField
                         sx={{ width: 200 }}
                         fullWidth
-                        variant="standard"
+                        variant="Description"
                         size='small'
-                        label={intl.formatMessage({ id: 'general.description' })}
+                        label='general.description'
+                        onClick={fetchData}
                         onChange={(e) => handleSearch(e.target.value, 'Description')}
                     />
                 </Grid>
