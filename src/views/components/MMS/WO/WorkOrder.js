@@ -466,9 +466,9 @@ const WorkOrder = (props) => {
             value={
               workOrderState.searchData.MaterialId !== 0
                 ? {
-                    MaterialId: workOrderState.searchData.MaterialId,
-                    MaterialCode: workOrderState.searchData.MaterialCode,
-                  }
+                  MaterialId: workOrderState.searchData.MaterialId,
+                  MaterialCode: workOrderState.searchData.MaterialCode,
+                }
                 : null
             }
             onChange={(e, item) => {
