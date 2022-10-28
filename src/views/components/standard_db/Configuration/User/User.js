@@ -5,7 +5,7 @@ import { Grid, IconButton, TextField } from '@mui/material'
 import LockIcon from '@mui/icons-material/Lock';
 import { createTheme, ThemeProvider } from "@mui/material"
 import { useIntl } from 'react-intl'
-import { MuiButton, MuiDataGrid } from '@controls'
+import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
 import { userService } from '@services'
 import UserDialog from './UserDialog'
 import { useModal, useModal2, useModal3 } from "@basesShared";
@@ -41,6 +41,9 @@ export default function User() {
     totalRow: 0,
     page: 1,
     pageSize: 20,
+    search: {
+      keyWord: ''
+    }
   });
   const [newData, setNewData] = useState({})
   const [rowData, setRowData] = useState({});
@@ -180,12 +183,13 @@ export default function User() {
           </Grid>
           <Grid item xs={4} container>
             <Grid item xs={9}>
-              <TextField
+              <MuiSearchField
                 fullWidth
-                variant="standard"
+                variant="keyword"
                 size='small'
-                label={intl.formatMessage({ id: 'user.userName' })}
-                onChange={e => setSearch(e.target.value)}
+                label='user.userName'
+                onClick={fetchData}
+                onChange={e => setSearch(e.target.value, 'keyword')}
               />
             </Grid>
             <Grid item xs={3}>

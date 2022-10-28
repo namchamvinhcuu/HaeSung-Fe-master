@@ -112,6 +112,19 @@ const ModifyStaffDialog = (props) => {
               helperText={touched.StaffName && errors.StaffName}
             />
           </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              size="small"
+              multiline={true}
+              rows={3}
+              disabled={dialogState.isSubmit}
+              label={intl.formatMessage({ id: "staff.Contact" })}
+              name="Contact"
+              value={values.Contact}
+              onChange={handleChange}
+            />
+          </Grid>
 
           <Grid item xs={12}>
             <Grid container direction="row-reverse">

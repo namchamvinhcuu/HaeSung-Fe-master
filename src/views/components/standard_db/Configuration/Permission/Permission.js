@@ -85,10 +85,12 @@ const Permission = () => {
     }
 
     useEffect(() => {
-        fetchData();
+        isRendered = true;
+        if (isRendered)
+            fetchData();
 
         return () => {
-            isRendered = false;
+            isRendered = false
         }
     }, [menuState.page, menuState.pageSize]);
 
@@ -160,7 +162,7 @@ const Permission = () => {
 
 
         { field: 'commonDetailName', headerName: 'Common Detail Name', flex: 0.3, },
-        { field: 'permissionName', headerName: 'Permission Name', flex: 0.3, },
+        { field: 'permissionName', headerName: intl.formatMessage({ id: "permission.permissionName" }), flex: 0.3, },
 
         { field: 'forRoot', headerName: 'forRoot', flex: 0.3, },
         { field: 'isActived', headerName: 'isActived', flex: 0.3, },
@@ -187,12 +189,13 @@ const Permission = () => {
                     />
                 </Grid> */}
                 <Grid item>
-                    <TextField
+                    <MuiSearchField
                         sx={{ width: 300 }}
                         fullWidth
-                        variant="standard"
+                        name='keyWord'
                         size='small'
-                        label={intl.formatMessage({ id: 'permission.permissionName' })}
+                        label='permission.permissionName'
+                        onClick={fetchData}
                         onChange={(e) => changeSearchData(e.target.value, 'keyWord')}
                     />
                 </Grid>

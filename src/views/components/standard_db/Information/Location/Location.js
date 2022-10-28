@@ -4,7 +4,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import UndoIcon from '@mui/icons-material/Undo';
 import { FormControlLabel, Grid, IconButton, Switch, TextField } from '@mui/material'
 import { useIntl } from 'react-intl'
-import { MuiButton, MuiDataGrid, MuiSelectField } from '@controls'
+import { MuiButton, MuiDataGrid, MuiSelectField, MuiSearchField } from '@controls'
 import { locationService } from '@services'
 import { useModal } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
@@ -228,13 +228,14 @@ const Location = (props) => {
           onClick={toggleCreateDialog}
         />
         </Grid>
-        <Grid item>
-          <TextField
-            sx={{ width: 220 }}
+        <Grid item >
+          <MuiSearchField
+            sx={{ width: 220}}
             fullWidth
-            variant="standard"
+            variant="keyWord"
             size='small'
-            label='Code'
+            label='location.LocationCode'
+            onClick={fetchData}
             onChange={(e) => handleSearch(e.target.value, 'keyWord')}
           />
         </Grid>

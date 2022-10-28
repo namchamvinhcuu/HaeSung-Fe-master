@@ -37,6 +37,9 @@ export default function Role() {
     totalRow: 0,
     page: 1,
     pageSize: 10,
+    searchData: {
+      keyWord: ''
+    }
   });
 
   const [menuState, setMenuState] = useState({
@@ -45,6 +48,9 @@ export default function Role() {
     totalRow: 0,
     page: 1,
     pageSize: 10,
+    searchData: {
+      keyWord: ''
+    }
   });
 
   const [newData, setNewData] = useState({})
@@ -210,7 +216,8 @@ export default function Role() {
   }
 
   async function fetchDataPermission(Id) {
-    const permission = await roleService.GetPermissionByRole(Id, { page: permissionState.page, pageSize: permissionState.pageSize });
+    const permission = await roleService.GetPermissionByRole(Id, { page: permissionState.page, pageSize: permissionState.pageSize,
+      keyWord: permissionState.searchData.keyWord });
     if (permission && permission.Data && isRendered)
       setPermissionState({
         ...permissionState
@@ -220,7 +227,7 @@ export default function Role() {
   }
 
   async function fetchDataMenu(Id) {
-    const menu = await roleService.GetMenuByRole(Id, { page: menuState.page, pageSize: menuState.pageSize });
+    const menu = await roleService.GetMenuByRole(Id, { page: menuState.page, pageSize: menuState.pageSize, keyWord: menuState.searchData.keyWord });
     if (menu && menu.Data && isRendered)
       setMenuState({
         ...menuState
@@ -235,6 +242,23 @@ export default function Role() {
 
     setRoleState({ ...roleState, searchData: { ...newSearchData } })
   }
+
+  //Permission
+  const handleSearchPermission = (e, inputName) => {
+    let newSearchData = { ...permissionState.searchData };
+    newSearchData[inputName] = e.target.value;
+
+    setPermissionState({ ...permissionState, searchData: { ...newSearchData } })
+  }
+
+  //Menu
+  const handleSearchMenu = (e, inputName) => {
+    let newSearchData = { ...menuState.searchData };
+    newSearchData[inputName] = e.target.value;
+
+    setMenuState({ ...menuState, searchData: { ...newSearchData } })
+  }
+
 
   useEffect(() => {
     if (!_.isEmpty(newData) && isRendered) {
@@ -264,12 +288,13 @@ export default function Role() {
           <MuiButton text="create" color='success' onClick={handleAdd} />
         </Grid>
         <Grid item>
-          <TextField
+          <MuiSearchField
             sx={{ width: 210 }}
             fullWidth
-            variant="standard"
+            name="keyWord"
             size='small'
-            label={intl.formatMessage({ id: "role.roleName" })}
+            label='role.roleName'
+            onClick={fetchData}
             onChange={(e) => handleSearch(e, 'keyWord')}
           />
         </Grid>
@@ -294,13 +319,31 @@ export default function Role() {
       />
 
       <Grid container sx={{ mt: 1 }} spacing={3}>
-        <Grid item xs={6} style={{ paddingTop: 0 }}>
-          <Grid container sx={{ mb: 1 }}>
-            <MuiButton text="Create" color='success' onClick={toggle} disabled={roleId != 0 ? false : true} />
-            <Badge badgeContent={selectPermission.length} color="warning">
-              <MuiButton text="Delete" color='error' onClick={handleDeletePermission} disabled={selectPermission.length > 0 ? false : true} />
-            </Badge>
+        <Grid item xs={6}  style={{ paddingTop: 0 }} >
+        <Grid container spacing={4} direction="row"
+            justifyContent="space-between"
+            alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+            <Grid item xs={6} md={6}>
+              <MuiButton text="Create" color='success' onClick={toggle} disabled={roleId != 0 ? false : true} />
+                <Badge  badgeContent={selectPermission.length} color="warning">
+                  <MuiButton text="Delete" color='error' onClick={handleDeletePermission} disabled={selectPermission.length > 0 ? false : true} />
+                </Badge>
+            </Grid>
+             <Grid item xs={4} md={3}>
+              <MuiSearchField
+                    name="keyWord"
+                    size='small'
+                    label='role.PermissionName'
+                    onClick={() => fetchDataPermission(roleId)}
+                    onChange={(e) => handleSearchPermission(e, 'keyWord')}
+                  />
+            </Grid>
+            <Grid item xs={4} md={3} >
+                <MuiButton text="search" color='info' onClick={() => fetchDataPermission(roleId)} sx={{ mt: 1, ml: 2 }} />
+            </Grid>
+          
           </Grid>
+        
           <MuiDataGrid
             showLoading={permissionState.isLoading}
             isPagingServer={true}
@@ -316,13 +359,31 @@ export default function Role() {
             getRowId={(rows) => rows.permissionId}
           />
         </Grid>
-        <Grid item xs={6} style={{ paddingTop: 0 }}>
-          <Grid container sx={{ mb: 1 }}>
-            <MuiButton text="Create" color='success' onClick={toggle2} disabled={roleId != 0 ? false : true} />
-            <Badge badgeContent={selectMenu.length} color="warning">
+
+        <Grid item xs={6}  style={{ paddingTop: 0 }} >
+          <Grid container spacing={4} direction="row"
+            justifyContent="space-between"
+            alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+            <Grid item xs={6} md={6}>
+              <MuiButton text="Create" color='success' onClick={toggle2} disabled={roleId != 0 ? false : true} />
+              <Badge badgeContent={selectMenu.length} color="warning">
               <MuiButton text="Delete" color='error' onClick={handleDeleteMenu} disabled={selectMenu.length > 0 ? false : true} />
-            </Badge>
+              </Badge>
+            </Grid>
+            <Grid item xs={4} md={3}>
+              <MuiSearchField
+                name="keyWord"
+                size='small'
+                label='role.MenuName'
+                onClick={() => fetchDataMenu(roleId)}
+                onChange={(e) => handleSearchMenu(e, 'keyWord')}
+              />
+            </Grid>
+            <Grid item xs={4} md={3} >
+              <MuiButton text="search" color='info' onClick={() => fetchDataMenu(roleId)} sx={{ mt: 1, ml: 2 }} />
+            </Grid>
           </Grid>
+
           <MuiDataGrid
             showLoading={menuState.isLoading}
             isPagingServer={true}

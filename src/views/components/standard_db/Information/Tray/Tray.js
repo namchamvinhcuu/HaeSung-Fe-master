@@ -4,7 +4,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import UndoIcon from '@mui/icons-material/Undo';
 import { FormControlLabel, Grid, IconButton, Switch, TextField } from '@mui/material'
 import { useIntl } from 'react-intl'
-import { MuiButton, MuiDataGrid, MuiSelectField } from '@controls'
+import { MuiButton, MuiDataGrid, MuiSelectField, MuiSearchField } from '@controls'
 import { trayService } from '@services'
 import { useModal } from "@basesShared"
 import { ErrorAlert, SuccessAlert } from '@utils'
@@ -210,12 +210,13 @@ export default function Tray() {
           <MuiButton text="create" color='success' onClick={handleAdd} sx={{ mt: 1 }} />
         </Grid>
         <Grid item>
-          <TextField
+          <MuiSearchField
             sx={{ width: 220 }}
             fullWidth
-            variant="standard"
+            variant="keyWord"
             size='small'
-            label='Code'
+            label='general.code'
+            onClick={fetchData}
             onChange={(e) => handleSearch(e.target.value, 'keyWord')}
           />
         </Grid>

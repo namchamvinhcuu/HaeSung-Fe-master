@@ -117,7 +117,10 @@
         "roleName": "Role Name",
         "not_found": "Role: not found/existed",
         "duplicated_name": "Role: duplicated name",
-        "roleName_required": "Role name is required"
+        "roleName_required": "Role name is required",
+        "PermissionName": "Permission Name",
+        "MenuName": "Menu Name"
+
     },
     "user": {
         "userName": "Username",
@@ -177,13 +180,15 @@
         "Cabity_required": "Cabity required",
         "ETAStatus_required": "ETA Status required",
         "duplicated_code": "Mold Code duplicated",
-        "duplicated_serial": "Mold Serial duplicated"
+        "duplicated_serial": "Mold Serial duplicated",
+        "SerialCode": "Serial / Code"
     },
     "staff": {
         "StaffCode": "Staff Code",
         "StaffName": "Staff Name",
         "StaffCode_required": "Staff Code cannot be blank",
-        "StaffName_required": "Staff Name cannot be blank"
+        "StaffName_required": "Staff Name cannot be blank",
+        "Contact": "Contact"
     },
     "tray": {
         "TrayCode": "Tray Code",

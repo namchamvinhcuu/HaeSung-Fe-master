@@ -117,7 +117,9 @@
         "roleName": "Tên Role",
         "not_found": "Role: không tồn tại",
         "duplicated_name": "Role: tên đã được tạo",
-        "roleName_required": "Tên role không được để trống"
+        "roleName_required": "Tên role không được để trống",
+        "PermissionName": "Permission Name",
+        "MenuName": "Menu Name"
     },
     "user": {
         "userName": "Tài khoản",
@@ -177,13 +179,15 @@
         "Cabity_required": "Cabity không được để trống",
         "ETAStatus_required": "ETAStatus không được để trống",
         "duplicated_code": "Mold Code đã trùng",
-        "duplicated_serial": "Mold Serial đã trùng"
+        "duplicated_serial": "Mold Serial đã trùng",
+        "SerialCode": "Serial / Code"
     },
     "staff": {
         "StaffCode": "Mã Nhân Viên",
         "StaffName": "Tên Nhân Viên",
         "StaffCode_required": "Mã nhân viên không được để trống",
-        "StaffName_required": "Tên nhân viên không được để trống"
+        "StaffName_required": "Tên nhân viên không được để trống",
+        "Contact": "Contact"
     },
     "tray": {
         "TrayCode": "Tray Code",

@@ -265,12 +265,13 @@ const CommonMaster = () => {
                     />
                 </Grid>
                 <Grid item >
-                    <TextField
+                    <MuiSearchField
                         sx={{ width: 200 }}
                         fullWidth
-                        variant="standard"
+                        variant="keyWord"
                         size='small'
-                        label={intl.formatMessage({ id: 'general.name' })}
+                        label='general.name'
+                        onClick={fetchData}
                         onChange={(e) => handleSearch(e.target.value, 'keyWord')}
                     />
                 </Grid>

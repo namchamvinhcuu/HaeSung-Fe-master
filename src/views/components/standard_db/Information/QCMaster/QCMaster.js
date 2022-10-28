@@ -282,13 +282,25 @@ const QCMaster = (props) => {
                     />
                 </Grid>
                 <Grid item>
-                    <TextField
+                    <MuiSearchField
                         sx={{ width: 200 }}
                         fullWidth
-                        variant="standard"
+                        variant="QCMasterCode"
                         size='small'
-                        label={intl.formatMessage({ id: 'qcMaster.QCMasterCode' })}
+                        label='qcMaster.QCMasterCode'
+                        onClick={fetchData}
                         onChange={(e) => handleSearch(e.target.value, 'QCMasterCode')}
+                    />
+                </Grid>
+                <Grid item >
+                    <MuiSearchField
+                        sx={{ width: 200 }}
+                        fullWidth
+                        variant="Description"
+                        size='small'
+                        label='general.description'
+                        onClick={fetchData}
+                        onChange={(e) => handleSearch(e.target.value, 'Description')}
                     />
                 </Grid>
                 <Grid item>
@@ -318,16 +330,7 @@ const QCMaster = (props) => {
                         onChange={(e, item) => handleSearch(item ? item.MaterialId ?? null : null, 'MaterialId')}
                     />
                 </Grid>
-                <Grid item >
-                    <TextField
-                        sx={{ width: 200 }}
-                        fullWidth
-                        variant="standard"
-                        size='small'
-                        label={intl.formatMessage({ id: 'general.description' })}
-                        onChange={(e) => handleSearch(e.target.value, 'Description')}
-                    />
-                </Grid>
+                
 
                 <Grid item>
                     <MuiButton text="search" color='info' onClick={fetchData} sx={{ m: 0 }} />
