@@ -186,7 +186,8 @@
         "StaffCode": "Mã Nhân Viên",
         "StaffName": "Tên Nhân Viên",
         "StaffCode_required": "Mã nhân viên không được để trống",
-        "StaffName_required": "Tên nhân viên không được để trống"
+        "StaffName_required": "Tên nhân viên không được để trống",
+        "Contact": "Contact"
     },
     "tray": {
         "TrayCode": "Tray Code",

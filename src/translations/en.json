@@ -187,7 +187,8 @@
         "StaffCode": "Staff Code",
         "StaffName": "Staff Name",
         "StaffCode_required": "Staff Code cannot be blank",
-        "StaffName_required": "Staff Name cannot be blank"
+        "StaffName_required": "Staff Name cannot be blank",
+        "Contact": "Contact"
     },
     "tray": {
         "TrayCode": "Tray Code",

@@ -249,6 +249,11 @@ const Staff = (props) => {
       headerName: intl.formatMessage({ id: "staff.StaffName" }),
       flex: 1,
     },
+    {
+      field: "Contact",
+      headerName: intl.formatMessage({ id: "staff.Contact" }),
+      flex: 1,
+    },
     { field: "createdName", headerName: "User Create", width: 150 },
     {
       field: "createdDate",
@@ -314,6 +319,7 @@ const Staff = (props) => {
             onChange={(e) => changeSearchData(e, "StaffName")}
           />
         </Grid>
+        
 
         <Grid item xs sx={{ display: "flex", justifyContent: "right" }}>
           <MuiButton text="search" color="info" onClick={fetchData} />
