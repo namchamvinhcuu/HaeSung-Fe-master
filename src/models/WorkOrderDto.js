@@ -6,7 +6,6 @@ const WorkOrderDto = {
   ActualQty: 0,
   StartDate: new Date(),
 
-  FPOId: 0,
   FPoMasterId: 0,
   FPoMasterCode: "",
   MaterialId: 0,
