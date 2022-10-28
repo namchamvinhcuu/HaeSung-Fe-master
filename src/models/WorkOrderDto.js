@@ -10,6 +10,8 @@ const WorkOrderDto = {
   FPoMasterId: 0,
   FPoMasterCode: "",
   MaterialId: 0,
+  BomId: 0,
+  BomVersion: "",
   MaterialCode: "",
   LineId: 0,
   LineName: "",

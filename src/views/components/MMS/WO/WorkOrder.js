@@ -414,8 +414,7 @@ const WorkOrder = (props) => {
       <Grid
         container
         spacing={2}
-        direction="row"
-        justifyContent="space-between"
+        justifyContent="flex-end"
         alignItems="flex-end"
       >
         <Grid item xs={1.5}>
@@ -437,7 +436,7 @@ const WorkOrder = (props) => {
           />
         </Grid>
 
-        <Grid item xs>
+        {/* <Grid item xs>
           <MuiAutoComplete
             label={intl.formatMessage({ id: "work_order.FPoMasterCode" })}
             fetchDataFunc={getPoMasterArr}
@@ -456,7 +455,7 @@ const WorkOrder = (props) => {
             }}
             variant="standard"
           />
-        </Grid>
+        </Grid> */}
 
         <Grid item xs>
           <MuiAutoComplete
@@ -477,9 +476,21 @@ const WorkOrder = (props) => {
             }}
             variant="standard"
           />
+
+          {/* <MuiSelectField
+            label={intl.formatMessage({ id: "material.SupplierId" })}
+            // options={SupplierList}
+            displayLabel="SupplierName"
+            displayValue="SupplierId"
+            onChange={(e, item) =>
+              handleSearch(item ? item.SupplierId ?? null : null, "SupplierId")
+            }
+            variant="standard"
+            sx={{ width: 210 }}
+          /> */}
         </Grid>
 
-        <Grid item xs>
+        {/* <Grid item xs>
           <MuiAutoComplete
             label={intl.formatMessage({ id: "work_order.LineName" })}
             fetchDataFunc={getLineArr}
@@ -498,9 +509,9 @@ const WorkOrder = (props) => {
             }}
             variant="standard"
           />
-        </Grid>
+        </Grid> */}
 
-        <Grid item xs>
+        <Grid item>
           <MuiDateTimeField
             disabled={workOrderState.isLoading}
             label={intl.formatMessage({
@@ -528,19 +539,31 @@ const WorkOrder = (props) => {
           />
         </Grid>
 
-        <Grid item xs={2} sx={{ display: "flex", justifyContent: "right" }}>
-          <MuiButton text="search" color="info" onClick={fetchData} />
-          <FormControlLabel
-            sx={{ mb: 0, ml: "1px" }}
-            control={
-              <Switch
-                defaultChecked={true}
-                color="primary"
-                onChange={(e) => handleshowActivedData(e)}
+        <Grid item xs={2.5}>
+          <Grid
+            container
+            row
+            justifyContent="space-around"
+            alignItems="flex-end"
+          >
+            <Grid item>
+              <MuiButton text="search" color="info" onClick={fetchData} />
+            </Grid>
+
+            <Grid item>
+              <FormControlLabel
+                sx={{ mb: 0, ml: "1px" }}
+                control={
+                  <Switch
+                    defaultChecked={true}
+                    color="primary"
+                    onChange={(e) => handleshowActivedData(e)}
+                  />
+                }
+                label={showActivedData ? "Actived" : "Deleted"}
               />
-            }
-            label={showActivedData ? "Actived" : "Deleted"}
-          />
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
 
