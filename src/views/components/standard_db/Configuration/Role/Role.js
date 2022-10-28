@@ -288,12 +288,13 @@ export default function Role() {
           <MuiButton text="create" color='success' onClick={handleAdd} />
         </Grid>
         <Grid item>
-          <TextField
+          <MuiSearchField
             sx={{ width: 210 }}
             fullWidth
-            variant="standard"
+            name="keyWord"
             size='small'
-            label={intl.formatMessage({ id: "role.roleName" })}
+            label='role.roleName'
+            onClick={fetchData}
             onChange={(e) => handleSearch(e, 'keyWord')}
           />
         </Grid>
@@ -318,23 +319,31 @@ export default function Role() {
       />
 
       <Grid container sx={{ mt: 1 }} spacing={3}>
-        <Grid item xs={6} style={{ paddingTop: 0 }}>
-          <Grid item xs={12}>
+        <Grid item xs={6}  style={{ paddingTop: 0 }} >
+        <Grid container spacing={4} direction="row"
+            justifyContent="space-between"
+            alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+            <Grid item xs={6} md={6}>
               <MuiButton text="Create" color='success' onClick={toggle} disabled={roleId != 0 ? false : true} />
-              <Badge style={{ paddingRight: 200}} badgeContent={selectPermission.length} color="warning">
-                <MuiButton text="Delete" color='error' onClick={handleDeletePermission} disabled={selectPermission.length > 0 ? false : true} />
-              </Badge>
-              <TextField
-              sx={{ width: 210 }}
-              fullWidth
-              variant="standard"
-              size='small'
-              label={intl.formatMessage({ id: "role.PermissionName" })}
-              onChange={(e) => handleSearchPermission(e, 'keyWord')}
-            />
-          <MuiButton text="search" color='info' onClick={() => fetchDataPermission(roleId)} sx={{ mt: 1, ml: 2 }} />
-          </Grid>
+                <Badge  badgeContent={selectPermission.length} color="warning">
+                  <MuiButton text="Delete" color='error' onClick={handleDeletePermission} disabled={selectPermission.length > 0 ? false : true} />
+                </Badge>
+            </Grid>
+             <Grid item xs={4} md={3}>
+              <MuiSearchField
+                    name="keyWord"
+                    size='small'
+                    label='role.PermissionName'
+                    onClick={() => fetchDataPermission(roleId)}
+                    onChange={(e) => handleSearchPermission(e, 'keyWord')}
+                  />
+            </Grid>
+            <Grid item xs={4} md={3} >
+                <MuiButton text="search" color='info' onClick={() => fetchDataPermission(roleId)} sx={{ mt: 1, ml: 2 }} />
+            </Grid>
           
+          </Grid>
+        
           <MuiDataGrid
             showLoading={permissionState.isLoading}
             isPagingServer={true}
@@ -350,21 +359,29 @@ export default function Role() {
             getRowId={(rows) => rows.permissionId}
           />
         </Grid>
-        <Grid item xs={6} style={{ paddingTop: 0 }}>
-          <Grid item xs={12}>
-            <MuiButton text="Create" color='success' onClick={toggle2} disabled={roleId != 0 ? false : true} />
-            <Badge style={{ paddingRight: 200}} badgeContent={selectMenu.length} color="warning">
+
+        <Grid item xs={6}  style={{ paddingTop: 0 }} >
+          <Grid container spacing={4} direction="row"
+            justifyContent="space-between"
+            alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+            <Grid item xs={6} md={6}>
+              <MuiButton text="Create" color='success' onClick={toggle2} disabled={roleId != 0 ? false : true} />
+              <Badge badgeContent={selectMenu.length} color="warning">
               <MuiButton text="Delete" color='error' onClick={handleDeleteMenu} disabled={selectMenu.length > 0 ? false : true} />
-            </Badge>
-            <TextField
-              sx={{ width: 210 }}
-              fullWidth
-              variant="standard"
-              size='small'
-              label={intl.formatMessage({ id: "role.MenuName" })}
-              onChange={(e) => handleSearchMenu(e, 'keyWord')}
-            />
-            <MuiButton text="search" color='info' onClick={() => fetchDataMenu(roleId)} sx={{ mt: 1, ml: 2 }} />
+              </Badge>
+            </Grid>
+            <Grid item xs={4} md={3}>
+              <MuiSearchField
+                name="keyWord"
+                size='small'
+                label='role.MenuName'
+                onClick={() => fetchDataMenu(roleId)}
+                onChange={(e) => handleSearchMenu(e, 'keyWord')}
+              />
+            </Grid>
+            <Grid item xs={4} md={3} >
+              <MuiButton text="search" color='info' onClick={() => fetchDataMenu(roleId)} sx={{ mt: 1, ml: 2 }} />
+            </Grid>
           </Grid>
 
           <MuiDataGrid
