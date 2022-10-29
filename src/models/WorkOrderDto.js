@@ -1,3 +1,5 @@
+import { getCurrentWeek } from "@utils";
+
 const WorkOrderDto = {
   WoId: 0,
   WoCode: "",
@@ -17,6 +19,10 @@ const WorkOrderDto = {
 
   StartSearchingDate: new Date(),
   EndSearchingDate: new Date(),
+
+  Week: getCurrentWeek(),
+  Year: new Date().getFullYear(),
+  MaterialBuyerCode: "",
 
   isActived: true,
   createdDate: new Date(),

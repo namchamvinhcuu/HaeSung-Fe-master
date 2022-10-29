@@ -120,7 +120,6 @@
         "roleName_required": "Role name is required",
         "PermissionName": "Permission Name",
         "MenuName": "Menu Name"
-
     },
     "user": {
         "userName": "Username",
@@ -281,12 +280,12 @@
         "Week_required_less": "Year must not be bigger 52",
         "Amount_required_bigger": "Year must be not less 1",
         "Required_Int": "Required must is integer",
-        "Max_2050" : "Year must be less 2050",
+        "Max_2050": "Year must be less 2050",
         "Desciption": "Desciption",
-        "Week_required_range" : "Value weeek must be number beetween 1 , 52",
-        "Year_required_range" : "Value year must be number beetween 2022 , 2050",
-        "Week_start":"Week Start",
-        "Week_end":"Week End",
+        "Week_required_range": "Value weeek must be number beetween 1 , 52",
+        "Year_required_range": "Value year must be number beetween 2022 , 2050",
+        "Week_start": "Week Start",
+        "Week_end": "Week End",
         "Start_end_week_error": "Start Week not bigger than End Week",
         "BuyerId": "Buyer Code",
         "BuyerId_required": "Buyer Code is required"
@@ -305,8 +304,8 @@
         "DeliveryDate": "Delivery Date",
         "RemainQty": "Remain Qty",
         "DueDate": "Due Date",
-        "MaterialId":"Material Code",
-        "Qty":"Qty",
+        "MaterialId": "Material Code",
+        "Qty": "Qty",
         "PoCode_required": "Purchase Order Code is required",
         "PoCode_maxLength": "Purchase Order Code is over limited length",
         "DeliveryDate_required": "Delivery Date is required",
@@ -317,7 +316,7 @@
         "DueDate_warning": "Due Date not less than Delivery Date",
         "Qty_min": "Qty value more than 0"
     },
-    "delivery_order":{
+    "delivery_order": {
         "DoCode": "DO Code",
         "PoCode": "PO Code",
         "MaterialCode": "Assy Code",
@@ -340,14 +339,18 @@
         "DeliveryTime_invalid": "Delivery Time format is invalid",
         "DeliveryTime_GreaterThanETDLoad": "Delivery Time must be greater than ETD Time"
     },
-    "work_order":{
+    "work_order": {
         "WoCode": "WO Code",
         "FPoMasterCode": "Plant",
         "MaterialCode": "Assy Code",
+        "BomVersion": "Bom Version",
+        "Buyer": "Buyer",
         "LineName": "Line",
         "OrderQty": "Order Qty",
         "ActualQty": "Actual Qty",
         "StartDate": "Working Date",
+        "Week": "Week",
+        "Year": "Year",
         "WoCode_required": "WO Code is required",
         "WoCode_length": "WO Code must be {length} characters",
         "OrderQty_required": "Order Qty is required",

@@ -20,9 +20,9 @@ export const getPoMasterArr = async () => {
   }
 };
 
-export const getMaterialArr = async (BomLv, BomId) => {
+export const getSearchMaterialArr = async (BomLv, BomId) => {
   try {
-    return await axios.get(`${API}/get-material`, {
+    return await axios.get(`${API}/get-search-material`, {
       params: {
         BomLv: BomLv,
         BomId: BomId
@@ -32,6 +32,34 @@ export const getMaterialArr = async (BomLv, BomId) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+export const getMaterialArrByForecastPOMaster = async (params) => {
+  try {
+    return await axios.get(`${API}/get-material-by-forecastPOMaster`, {
+      params: {
+        FPoMasterId: params.FPoMasterId,
+        Week: params.Week,
+        Year: params.Year,
+      },
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+// export const getBomVersion = async (params) => {
+//   try {
+//     return await axios.get(`${API}/get-material-by-forecastPOMaster`, {
+//       params: {
+//         FPoMasterId: params.FPoMasterId,
+//         Week: params.Week,
+//         Year: params.Year,
+//       },
+//     });
+//   } catch (error) {
+//     console.log(`ERROR: ${error}`);
+//   }
+// };
 
 export const getLineArr = async () => {
   try {

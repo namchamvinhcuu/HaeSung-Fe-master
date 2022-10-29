@@ -3,13 +3,13 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
 import { User_Operations } from "@appstate/user";
+import { Store } from "@appstate";
 
 import {
     MuiDialog,
     MuiResetButton,
     MuiSubmitButton,
     MuiDateTimeField,
-    MuiAutoComplete,
     MuiAutoComplete,
     MuiTextField,
 } from "@controls";
@@ -19,7 +19,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useIntl } from "react-intl";
 import * as yup from "yup";
 import { workOrderService } from "@services";
-import { ErrorAlert, SuccessAlert } from "@utils";
+import { ErrorAlert, SuccessAlert, getCurrentWeek } from "@utils";
 import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
 import { useFormik } from "formik";
 import moment from "moment";
@@ -38,11 +38,89 @@ const WorkOrderDialog = (props) => {
         valueOption,
     } = props;
 
-
     const intl = useIntl();
     const [dialogState, setDialogState] = useState({
         ...initModal,
         isSubmit: false,
+    });
+
+    const curWeek = getCurrentWeek();
+    const curYear = new Date().getFullYear();
+
+    const schema = yup.object().shape({
+        FPoMasterId: yup
+            .number()
+            .nullable(),
+        Week: yup
+            .number()
+            .integer()
+            .nullable()
+            .when("FPoMasterId", (val) => {
+                if (val > 0) {
+                    return yup
+                        .number()
+                        .required(intl.formatMessage({ id: "general.field_required" }))
+                        .integer()
+                        .min(curWeek, intl.formatMessage({ id: "general.field_min" }, { min: curWeek }))
+                        .max(52, intl.formatMessage({ id: "general.field_max" }, { max: 52 }))
+                }
+                else {
+                    return yup.number().notRequired();
+                }
+            }),
+        Year: yup
+            .number()
+            .integer()
+            .nullable()
+            .when("FPoMasterId", (val) => {
+                if (val > 0) {
+                    return yup
+                        .number()
+                        .required(intl.formatMessage({ id: "general.field_required" }))
+                        .integer()
+                        .min(curYear, intl.formatMessage({ id: "general.field_min" }, { min: curYear }))
+                        .max(2050, intl.formatMessage({ id: "general.field_max" }, { max: 2050 }))
+                }
+                else {
+                    return yup.number().notRequired();
+                }
+            }),
+        BuyerId: yup
+            .number()
+            .nullable()
+            .when("FPoMasterId", (val) => {
+                if (val > 0) {
+                    return yup
+                        .number()
+                        .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 }))
+                }
+                else {
+                    return yup.number().notRequired();
+                }
+            }),
+        MaterialId: yup
+            .number()
+            .nullable()
+            .required(intl.formatMessage({ id: "general.field_required" }))
+            .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
+        BomId: yup
+            .number()
+            .nullable()
+            .required(intl.formatMessage({ id: "general.field_required" }))
+            .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
+        WoCode: yup
+            .string()
+            .required(intl.formatMessage({ id: "general.field_required" }))
+            .length(12, intl.formatMessage({ id: "general.field_length" }, { length: 12 })),
+        OrderQty: yup
+            .number()
+            .required(intl.formatMessage({ id: "general.field_required" }))
+            .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
+        StartDate: yup
+            .date()
+            .typeError(intl.formatMessage({ id: "general.field_invalid" }))
+            .nullable()
+            .required(intl.formatMessage({ id: "general.field_required" })),
     });
 
     const formik = useFormik({
@@ -117,8 +195,278 @@ const WorkOrderDialog = (props) => {
         setDialogState({ ...dialogState, isSubmit: false });
     };
 
+    const getForecastPOMaster = async () => {
+        return await workOrderService.getPoMasterArr();
+    };
+
+    const getMaterials = async () => {
+        if (values.FPoMasterId !== 0)
+            return await workOrderService.getMaterialArrByForecastPOMaster(values);
+        else
+            return await workOrderService.getSearchMaterialArr(0, 0);
+    };
+
+    const getBomArr = async () => {
+
+    };
+
+    const getLineArr = async () => {
+        return await workOrderService.getLineArr();
+    };
+
     return (
-        <div>WorkOrderDialog</div>
+        <React.Fragment>
+            <MuiDialog
+                maxWidth="md"
+                title={intl.formatMessage({
+                    id: mode == CREATE_ACTION ? "general.create" : "general.modify",
+                })}
+                isOpen={isOpen}
+                disabledCloseBtn={dialogState.isSubmit}
+                disable_animate={300}
+                onClose={handleCloseDialog}
+            >
+                <form onSubmit={handleSubmit}>
+                    <Grid
+                        container
+                        rowSpacing={2.5}
+                        columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                    >
+                        <Grid item xs={12}>
+                            <Grid container spacing={2}>
+                                {/* ForecastPOMaster - Autocomplete*/}
+                                <Grid item xs={4}>
+                                    <MuiAutoComplete
+                                        label={intl.formatMessage({
+                                            id: "work_order.FPoMasterCode",
+                                        })}
+                                        disabled={dialogState.isSubmit}
+                                        fetchDataFunc={getForecastPOMaster}
+                                        displayValue="FPoMasterId"
+                                        displayLabel="FPoMasterCode"
+                                        value={
+                                            values.FPoMasterId !== 0
+                                                ? {
+                                                    FPoMasterId: values.FPoMasterId,
+                                                    FPoMasterCode: values.FPoMasterCode
+                                                }
+                                                : null
+                                        }
+                                        onChange={(e, value) => {
+                                            setFieldValue("FPoMasterId", value?.FPoMasterId || 0);
+                                            setFieldValue("FPoMasterCode", value?.FPoMasterCode || "");
+                                        }}
+                                        error={touched.FPoMasterId && Boolean(errors.FPoMasterId)}
+                                        helperText={touched.FPoMasterId && errors.FPoMasterId}
+                                    />
+                                </Grid>
+
+                                {/* Year */}
+                                <Grid item xs={4}>
+                                    <MuiTextField
+                                        disabled={dialogState.isSubmit}
+                                        label={intl.formatMessage({
+                                            id: "work_order.Year",
+                                        })}
+                                        type="number"
+                                        name="Year"
+                                        value={values.Year}
+                                        onChange={handleChange}
+                                        error={touched.Year && Boolean(errors.Year)}
+                                        helperText={touched.Year && errors.Year}
+                                    />
+                                </Grid>
+
+                                {/* Week */}
+                                <Grid item xs={4}>
+                                    <MuiTextField
+                                        disabled={dialogState.isSubmit}
+                                        label={intl.formatMessage({
+                                            id: "work_order.Week",
+                                        })}
+                                        type="number"
+                                        name="Week"
+                                        value={values.Week}
+                                        onChange={handleChange}
+                                        error={touched.Week && Boolean(errors.Week)}
+                                        helperText={touched.Week && errors.Week}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Grid container spacing={2}>
+                                {/* Material */}
+
+                                <Grid item xs={6}>
+                                    {values.FPoMasterId !== 0
+                                        ? <MuiAutoComplete
+                                            label={intl.formatMessage({
+                                                id: "work_order.MaterialCode",
+                                            })}
+                                            disabled={dialogState.isSubmit}
+                                            fetchDataFunc={getMaterials}
+                                            displayValue="FPOId"
+                                            displayLabel="MaterialBuyerCode"
+                                            displayGroup="GroupMaterial"
+                                            value={
+                                                values.FPOId !== 0
+                                                    ? {
+                                                        FPOId: values.FPOId,
+                                                        MaterialBuyerCode: values.MaterialBuyerCode
+                                                    }
+                                                    : null
+                                            }
+                                            onChange={(e, value) => {
+                                                setFieldValue("FPOId", value?.FPOId || 0);
+                                                setFieldValue("MaterialBuyerCode", value?.MaterialBuyerCode || "");
+                                            }}
+                                            error={touched.FPOId && Boolean(errors.FPOId)}
+                                            helperText={touched.FPOId && errors.FPOId}
+                                        />
+                                        : <MuiAutoComplete
+                                            label={intl.formatMessage({ id: "work_order.MaterialCode" })}
+                                            fetchDataFunc={getMaterials}
+                                            displayLabel="MaterialCode"
+                                            displayValue="MaterialId"
+                                            displayGroup="GroupMaterial"
+                                            value={
+                                                values.MaterialId !== 0
+                                                    ? {
+                                                        MaterialId: values.MaterialId,
+                                                        MaterialCode: values.MaterialCode,
+                                                    }
+                                                    : null
+                                            }
+                                            onChange={(e, item) => {
+                                                setFieldValue("MaterialId", value?.MaterialId || 0);
+                                                setFieldValue("MaterialCode", value?.MaterialCode || "");
+                                            }}
+                                            error={touched.MaterialId && Boolean(errors.MaterialId)}
+                                            helperText={touched.MaterialId && errors.MaterialId}
+                                        />
+                                    }
+                                </Grid>
+
+                                {/* Bom - Version */}
+                                <Grid item xs={6}>
+                                    <MuiAutoComplete
+                                        label={intl.formatMessage({
+                                            id: "work_order.BomVersion",
+                                        })}
+                                        disabled={dialogState.isSubmit}
+                                        fetchDataFunc={getBomArr}
+                                        displayValue="BomId"
+                                        displayLabel="BomVersion"
+                                        value={
+                                            values.FPOId !== 0
+                                                ? {
+                                                    BomId: values.BomId,
+                                                    BomVersion: values.BomVersion
+                                                }
+                                                : null
+                                        }
+                                        onChange={(e, value) => {
+                                            setFieldValue("BomId", value?.BomId || 0);
+                                            setFieldValue("BomVersion", value?.BomVersion || "");
+                                        }}
+                                        error={touched.BomId && Boolean(errors.BomId)}
+                                        helperText={touched.BomId && errors.BomId}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Grid container spacing={2}>
+                                {/* WoCode */}
+                                <Grid item xs>
+                                    <MuiTextField
+                                        required
+                                        disabled={dialogState.isSubmit}
+                                        label={intl.formatMessage({ id: "work_order.WoCode" })}
+                                        name="WoCode"
+                                        value={values.WoCode}
+                                        onChange={handleChange}
+                                        error={touched.WoCode && Boolean(errors.WoCode)}
+                                        helperText={touched.WoCode && errors.WoCode}
+                                    />
+                                </Grid>
+
+                                {/* Line */}
+                                <Grid item xs>
+                                    <MuiAutoComplete
+                                        label={intl.formatMessage({
+                                            id: "work_order.LineName",
+                                        })}
+                                        disabled={dialogState.isSubmit}
+                                        fetchDataFunc={getLineArr}
+                                        displayValue="LineId"
+                                        displayLabel="LineName"
+                                        value={
+                                            values.LineId !== 0
+                                                ? {
+                                                    LineId: values.LineId,
+                                                    LineName: values.LineName
+                                                }
+                                                : null
+                                        }
+                                        onChange={(e, value) => {
+                                            setFieldValue("LineId", value?.LineId || 0);
+                                            setFieldValue("LineName", value?.LineName || "");
+                                        }}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Grid container spacing={2}>
+                                {/* OrderQty */}
+                                <Grid item xs>
+                                    <MuiTextField
+                                        required
+                                        disabled={dialogState.isSubmit}
+                                        label={intl.formatMessage({ id: "work_order.OrderQty" })}
+                                        name="OrderQty"
+                                        value={values.OrderQty}
+                                        onChange={handleChange}
+                                        error={touched.OrderQty && Boolean(errors.OrderQty)}
+                                        helperText={touched.OrderQty && errors.OrderQty}
+                                    />
+                                </Grid>
+
+                                {/* StartDate */}
+                                <Grid item xs>
+                                    <MuiDateTimeField
+                                        required
+                                        disabled={dialogState.isSubmit}
+                                        label={intl.formatMessage({
+                                            id: "work_order.StartDate",
+                                        })}
+                                        value={values.StartDate ?? null}
+                                        onChange={(e) => setFieldValue("StartDate", e)}
+                                        error={touched.StartDate && Boolean(errors.StartDate)}
+                                        helperText={touched.StartDate && errors.StartDate}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Grid container direction="row-reverse">
+                                <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
+                                <MuiResetButton
+                                    onClick={handleReset}
+                                    disabled={dialogState.isSubmit}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </form>
+            </MuiDialog>
+        </React.Fragment>
     )
 }
 
@@ -142,4 +490,4 @@ const mapDispatchToProps = (dispatch) => {
     return { changeLanguage };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkOrder);
+export default connect(mapStateToProps, mapDispatchToProps)(WorkOrderDialog);

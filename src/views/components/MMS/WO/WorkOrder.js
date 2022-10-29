@@ -26,7 +26,7 @@ import { addDays, ErrorAlert } from "@utils";
 import _ from "lodash";
 import moment from "moment";
 import { useIntl } from "react-intl";
-import { getLineArr } from "../../../../services/mms/work-order/WorkOrderService";
+import WorkOrderDialog from "./WorkOrderDialog";
 
 const WorkOrder = (props) => {
   let isRendered = useRef(true);
@@ -126,24 +126,13 @@ const WorkOrder = (props) => {
       case "EndSearchingDate":
         newSearchData[inputName] = e;
         break;
-      case "FPoMasterId":
-        newSearchData[inputName] = e ? e.FPoMasterId : WorkOrderDto.FPoMasterId;
-        newSearchData["FPoMasterCode"] = e
-          ? e.FPoMasterCode
-          : WorkOrderDto.FPoMasterCode;
-        newSearchData.MaterialId = 0;
-        newSearchData.MaterialCode = "";
-        break;
       case "MaterialId":
         newSearchData[inputName] = e ? e.MaterialId : WorkOrderDto.MaterialId;
         newSearchData["MaterialCode"] = e
           ? e.MaterialCode
           : WorkOrderDto.MaterialCode;
         break;
-      case "LineId":
-        newSearchData[inputName] = e ? e.LineId : WorkOrderDto.LineId;
-        newSearchData["LineName"] = e ? e.LineName : WorkOrderDto.LineName;
-        break;
+
       default:
         newSearchData[inputName] = e.target.value;
         break;
@@ -155,15 +144,8 @@ const WorkOrder = (props) => {
     });
   };
 
-  const getPoMasterArr = async () => {
-    const res = await workOrderService.getPoMasterArr();
-    return res;
-  };
-
-  const getMaterialArr = async () => {
-    const res = await workOrderService.getMaterialArr(
-      workOrderState.searchData.FPoMasterId
-    );
+  const getSearchMaterialArr = async () => {
+    const res = await workOrderService.getSearchMaterialArr(0, 0);
     return res;
   };
 
@@ -434,31 +416,10 @@ const WorkOrder = (props) => {
           />
         </Grid>
 
-        {/* <Grid item xs>
-          <MuiAutoComplete
-            label={intl.formatMessage({ id: "work_order.FPoMasterCode" })}
-            fetchDataFunc={getPoMasterArr}
-            displayLabel="FPoMasterCode"
-            displayValue="FPoMasterId"
-            value={
-              workOrderState.searchData.FPoMasterId !== 0
-                ? {
-                    FPoMasterId: workOrderState.searchData.FPoMasterId,
-                    FPoMasterCode: workOrderState.searchData.FPoMasterCode,
-                  }
-                : null
-            }
-            onChange={(e, item) => {
-              changeSearchData(item ?? null, "FPoMasterId");
-            }}
-            variant="standard"
-          />
-        </Grid> */}
-
         <Grid item xs>
           <MuiAutoComplete
             label={intl.formatMessage({ id: "work_order.MaterialCode" })}
-            fetchDataFunc={getMaterialArr}
+            fetchDataFunc={getSearchMaterialArr}
             displayLabel="MaterialCode"
             displayValue="MaterialId"
             displayGroup="GroupMaterial"
@@ -475,40 +436,7 @@ const WorkOrder = (props) => {
             }}
             variant="standard"
           />
-
-          {/* <MuiSelectField
-            label={intl.formatMessage({ id: "material.SupplierId" })}
-            // options={SupplierList}
-            displayLabel="SupplierName"
-            displayValue="SupplierId"
-            onChange={(e, item) =>
-              handleSearch(item ? item.SupplierId ?? null : null, "SupplierId")
-            }
-            variant="standard"
-            sx={{ width: 210 }}
-          /> */}
         </Grid>
-
-        {/* <Grid item xs>
-          <MuiAutoComplete
-            label={intl.formatMessage({ id: "work_order.LineName" })}
-            fetchDataFunc={getLineArr}
-            displayLabel="LineName"
-            displayValue="LineId"
-            value={
-              workOrderState.searchData.LineId !== 0
-                ? {
-                    MaterLineIdialId: workOrderState.searchData.LineId,
-                    LineName: workOrderState.searchData.LineName,
-                  }
-                : null
-            }
-            onChange={(e, item) => {
-              changeSearchData(item ?? null, "LineId");
-            }}
-            variant="standard"
-          />
-        </Grid> */}
 
         <Grid item>
           <MuiDateTimeField
@@ -590,14 +518,14 @@ const WorkOrder = (props) => {
         }}
       />
 
-      {/* <DeliveryOrderDialog
+      <WorkOrderDialog
         setNewData={setNewData}
         setUpdateData={setSelectedRow}
-        initModal={mode === CREATE_ACTION ? DeliveryOrderDto : selectedRow}
+        initModal={mode === CREATE_ACTION ? WorkOrderDto : selectedRow}
         isOpen={isOpenDialog}
         onClose={toggleDialog}
         mode={mode}
-      /> */}
+      />
     </React.Fragment>
   );
 };
