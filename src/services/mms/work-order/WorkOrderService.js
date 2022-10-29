@@ -20,10 +20,13 @@ export const getPoMasterArr = async () => {
   }
 };
 
-export const getMaterialArr = async (fPoMasterId) => {
+export const getMaterialArr = async (BomLv, BomId) => {
   try {
-    return await axios.get(`${API}/get-products-by-po-master`, {
-      params: { fPoMasterId: fPoMasterId },
+    return await axios.get(`${API}/get-material`, {
+      params: {
+        BomLv: BomLv,
+        BomId: BomId
+      },
     });
   } catch (error) {
     console.log(`ERROR: ${error}`);

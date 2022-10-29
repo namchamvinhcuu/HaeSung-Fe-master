@@ -191,7 +191,7 @@ const WorkOrder = (props) => {
       }
     });
 
-    if (flag) {
+    if (flag && isRendered) {
       setWorkOrderState({
         ...workOrderState,
         isLoading: true,
@@ -201,9 +201,7 @@ const WorkOrder = (props) => {
         page: workOrderState.page,
         pageSize: workOrderState.pageSize,
         WoCode: workOrderState.searchData.WoCode.trim(),
-        FPoMasterId: workOrderState.searchData.FPoMasterId,
         MaterialId: workOrderState.searchData.MaterialId,
-        LineId: workOrderState.searchData.LineId,
         StartSearchingDate: workOrderState.searchData.StartSearchingDate,
         EndSearchingDate: workOrderState.searchData.EndSearchingDate,
         isActived: showActivedData,
@@ -463,6 +461,7 @@ const WorkOrder = (props) => {
             fetchDataFunc={getMaterialArr}
             displayLabel="MaterialCode"
             displayValue="MaterialId"
+            displayGroup="GroupMaterial"
             value={
               workOrderState.searchData.MaterialId !== 0
                 ? {
@@ -542,7 +541,6 @@ const WorkOrder = (props) => {
         <Grid item xs={2.5}>
           <Grid
             container
-            row
             justifyContent="space-around"
             alignItems="flex-end"
           >
@@ -581,7 +579,7 @@ const WorkOrder = (props) => {
         onPageChange={(newPage) => {
           setDeliveryOrderState({ ...workOrderState, page: newPage + 1 });
         }}
-        getRowId={(rows) => rows.DoId}
+        getRowId={(rows) => rows.WoId}
         onSelectionModelChange={(newSelectedRowId) =>
           handleRowSelection(newSelectedRowId)
         }

@@ -1,19 +1,18 @@
 const WorkOrderDto = {
   WoId: 0,
   WoCode: "",
-
-  OrderQty: 0,
-  ActualQty: 0,
-  StartDate: new Date(),
-
   FPOId: 0,
-  FPoMasterId: 0,
-  FPoMasterCode: "",
   MaterialId: 0,
   BomId: 0,
-  BomVersion: "",
-  MaterialCode: "",
   LineId: 0,
+  OrderQty: 0,
+  StartDate: new Date(),
+  ActualQty: 0,
+
+  MaterialCode: "",
+  BomVersion: "",
+  FPoMasterId: 0,
+  FPoMasterCode: "",
   LineName: "",
 
   StartSearchingDate: new Date(),

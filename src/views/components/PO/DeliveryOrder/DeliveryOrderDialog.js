@@ -77,10 +77,10 @@ const DeliveryOrderDialog = (props) => {
     initialValues:
       mode === UPDATE_ACTION
         ? {
-            ...initModal,
-            ETDLoad: moment(initModal.ETDLoad).add(7, "hours"),
-            DeliveryTime: moment(initModal.DeliveryTime).add(7, "hours"),
-          }
+          ...initModal,
+          ETDLoad: moment(initModal.ETDLoad).add(7, "hours"),
+          DeliveryTime: moment(initModal.DeliveryTime).add(7, "hours"),
+        }
         : { ...initModal },
     enableReinitialize: true,
     onSubmit: async (values, actions) => {
@@ -193,9 +193,9 @@ const DeliveryOrderDialog = (props) => {
                     value={
                       values.PoId !== 0
                         ? {
-                            PoId: values.PoId,
-                            PoCode: values.PoCode,
-                          }
+                          PoId: values.PoId,
+                          PoCode: values.PoCode,
+                        }
                         : null
                     }
                     onChange={(e, value) => {
@@ -220,9 +220,9 @@ const DeliveryOrderDialog = (props) => {
                     value={
                       values.MaterialId !== 0
                         ? {
-                            MaterialId: values.MaterialId,
-                            MaterialCode: values.MaterialCode,
-                          }
+                          MaterialId: values.MaterialId,
+                          MaterialCode: values.MaterialCode,
+                        }
                         : null
                     }
                     onChange={(e, value) => {
