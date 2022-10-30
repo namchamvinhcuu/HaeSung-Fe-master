@@ -277,7 +277,6 @@ class NavBar extends Component {
           </Tabs>
 
           {/* <NotificationUpdater /> */}
-
           <ul className="navbar-nav ml-auto">
             {/* {total_notify > 0 && <li className="nav-item dropdown" id="notify_dropdown">
 
@@ -314,17 +313,6 @@ class NavBar extends Component {
             </li>
             } */}
 
-            {/* <li className="nav-item">
-              <a
-                className="nav-link" 
-               onClick={this.handleGuide.bind(this)}
-                href="#"
-                role="button"
-                title="help"
-              >
-                <i className="fa fa-question"></i>
-              </a>
-            </li> */}
             <li className="nav-item">
               <a
                 className="nav-link"
@@ -427,37 +415,37 @@ const PDFModal = ({ isShowing, hide, pdfURL, title }) => {
   // }
   return isShowing
     ? ReactDOM.createPortal(
-        <React.Fragment>
-          <div>
-            <Dialog open={true} maxWidth={"xl"} fullWidth={true}>
-              <DialogTitle>{title}</DialogTitle>
-              <DialogContent dividers={true}>
-                <div>
-                  <Document file={pdfURL} onLoadSuccess={onDocumentLoadSuccess}>
-                    {Array.from(new Array(numPages), (el, index) => (
-                      <Page
-                        key={`page_${index + 1}`}
-                        pageNumber={index + 1}
-                        width={1000}
-                      />
-                    ))}
-                  </Document>
-                  {/* <p>
+      <React.Fragment>
+        <div>
+          <Dialog open={true} maxWidth={"xl"} fullWidth={true}>
+            <DialogTitle>{title}</DialogTitle>
+            <DialogContent dividers={true}>
+              <div>
+                <Document file={pdfURL} onLoadSuccess={onDocumentLoadSuccess}>
+                  {Array.from(new Array(numPages), (el, index) => (
+                    <Page
+                      key={`page_${index + 1}`}
+                      pageNumber={index + 1}
+                      width={1000}
+                    />
+                  ))}
+                </Document>
+                {/* <p>
                   Page {pageNumber} of {numPages}
                 </p> */}
-                </div>
-              </DialogContent>
+              </div>
+            </DialogContent>
 
-              <DialogActions>
-                <Button variant="outlined" onClick={hide}>
-                  OK
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </div>
-        </React.Fragment>,
-        document.body
-      )
+            <DialogActions>
+              <Button variant="outlined" onClick={hide}>
+                OK
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+      </React.Fragment>,
+      document.body
+    )
     : null;
 };
 
