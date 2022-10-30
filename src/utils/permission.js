@@ -37,22 +37,33 @@ function ComponentWrapper(name, code, component, router, title, InputComponent, 
 
     constructor(props) {
       super(props);
-      this.state = { tabRender: null }
+      // this.state = { tabRender: null }
+      this.state = {
+        tabRender: createTab({
+          is_reload_component: this.props.location.is_reload_component
+          , component: component
+          , title: title
+          , name: String(name).toUpperCase()
+          , code: code
+          , router, breadcrumb_array
+          , ChildComponent: InputComponent
+        })
+      }
     }
 
-    UNSAFE_componentWillMount() {
-      var res = createTab({
-        is_reload_component: this.props.location.is_reload_component
-        , component: component
-        , title: title
-        , name: String(name).toUpperCase()
-        , code: code
-        , router, breadcrumb_array
-        , ChildComponent: InputComponent
-      });
-      this.setState({ tabRender: res })
+    // UNSAFE_componentWillMount() {
+    //   var res = createTab({
+    //     is_reload_component: this.props.location.is_reload_component
+    //     , component: component
+    //     , title: title
+    //     , name: String(name).toUpperCase()
+    //     , code: code
+    //     , router, breadcrumb_array
+    //     , ChildComponent: InputComponent
+    //   });
+    //   this.setState({ tabRender: res })
 
-    }
+    // }
 
     render() {
       return (this.state.tabRender
@@ -67,9 +78,16 @@ function ComponentWrapper(name, code, component, router, title, InputComponent, 
 
   //   const [tabRender, setTabRender] = useState(null);
 
-  //   useLayoutEffect(() => {
+  //   useEffect(() => {
   //     // componentWillMount events
-  //     const res = createTab({ is_reload_component: props.location.is_reload_component, component: component, title: title, name: String(name).toUpperCase(), code: code, router, breadcrumb_array, ChildComponent: InputComponent });
+  //     const res = createTab({
+  //       is_reload_component: props.location.is_reload_component
+  //       , component: component
+  //       , title: title
+  //       , name: String(name).toUpperCase()
+  //       , code: code, router, breadcrumb_array
+  //       , ChildComponent: InputComponent
+  //     });
   //     setTabRender(res)
   //   }, []);
 
@@ -83,6 +101,7 @@ function ComponentWrapper(name, code, component, router, title, InputComponent, 
 
   //   );
   // }
+
 }
 
 const buildTreeMenu = (
