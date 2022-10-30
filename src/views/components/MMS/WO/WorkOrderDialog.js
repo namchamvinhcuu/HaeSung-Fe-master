@@ -38,6 +38,8 @@ const WorkOrderDialog = (props) => {
         valueOption,
     } = props;
 
+
+
     const intl = useIntl();
     const [dialogState, setDialogState] = useState({
         ...initModal,
@@ -52,62 +54,72 @@ const WorkOrderDialog = (props) => {
             .number()
             .nullable(),
         Week: yup
-            .number()
-            .integer()
+            .string()
             .nullable()
             .when("FPoMasterId", (val) => {
-                if (val > 0) {
+                if (val && val > 0) {
                     return yup
                         .number()
+                        .typeError(intl.formatMessage({ id: "general.field_invalid" }))
                         .required(intl.formatMessage({ id: "general.field_required" }))
                         .integer()
                         .min(curWeek, intl.formatMessage({ id: "general.field_min" }, { min: curWeek }))
                         .max(52, intl.formatMessage({ id: "general.field_max" }, { max: 52 }))
                 }
                 else {
-                    return yup.number().notRequired();
+                    return yup.number().nullable();
                 }
             }),
         Year: yup
-            .number()
-            .integer()
+            .string()
             .nullable()
             .when("FPoMasterId", (val) => {
-                if (val > 0) {
+                if (val && val > 0) {
                     return yup
                         .number()
+                        .typeError(intl.formatMessage({ id: "general.field_invalid" }))
                         .required(intl.formatMessage({ id: "general.field_required" }))
                         .integer()
                         .min(curYear, intl.formatMessage({ id: "general.field_min" }, { min: curYear }))
                         .max(2050, intl.formatMessage({ id: "general.field_max" }, { max: 2050 }))
                 }
                 else {
-                    return yup.number().notRequired();
+                    return yup.number().nullable();
                 }
             }),
-        BuyerId: yup
+        FPOId: yup
             .number()
             .nullable()
             .when("FPoMasterId", (val) => {
-                if (val > 0) {
+                if (val && val > 0) {
                     return yup
                         .number()
-                        .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 }))
+                        .required(intl.formatMessage({ id: "general.field_required" }))
+                        .min(1, intl.formatMessage({ id: "general.field_required" }))
                 }
                 else {
-                    return yup.number().notRequired();
+                    return yup.number().nullable();
                 }
             }),
         MaterialId: yup
             .number()
             .nullable()
-            .required(intl.formatMessage({ id: "general.field_required" }))
-            .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
+            .when("FPoMasterId", (val) => {
+                if (val === 0) {
+                    return yup
+                        .number()
+                        .required(intl.formatMessage({ id: "general.field_required" }))
+                        .min(1, intl.formatMessage({ id: "general.field_required" }))
+                }
+                else {
+                    return yup.number().notRequired();
+                }
+            }),
         BomId: yup
             .number()
             .nullable()
             .required(intl.formatMessage({ id: "general.field_required" }))
-            .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
+            .min(1, intl.formatMessage({ id: "general.field_required" })),
         WoCode: yup
             .string()
             .required(intl.formatMessage({ id: "general.field_required" }))
@@ -162,35 +174,38 @@ const WorkOrderDialog = (props) => {
         setDialogState({ ...dialogState, isSubmit: true });
 
         if (mode == CREATE_ACTION) {
-            // const res = await workOrderService.create(data);
-            // if (res && isRendered) {
-            //     if (res.HttpResponseCode === 200 && res.Data) {
-            //         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-            //         setNewData({ ...res.Data });
-            //         setDialogState({ ...dialogState, isSubmit: false });
-            //         // handleReset();
-            //     } else {
-            //         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-            //         setDialogState({ ...dialogState, isSubmit: false });
-            //     }
-            // }
+            console.log(data);
+
+            const res = await workOrderService.create(data);
+            if (res && isRendered) {
+                if (res.HttpResponseCode === 200 && res.Data) {
+                    SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                    setNewData({ ...res.Data });
+
+                    // handleReset();
+                } else {
+                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                }
+            }
+            else {
+                ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+            }
+            setDialogState({ ...dialogState, isSubmit: false });
         } else {
-            // const res = await workOrderService.modify(data);
-            // if (res) {
-            //     if (res.HttpResponseCode === 200) {
-            //         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-            //         setUpdateData({ ...res.Data });
-            //         setDialogState({ ...dialogState, isSubmit: false });
-            //         handleReset();
-            //         handleCloseDialog();
-            //     } else {
-            //         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-            //         setDialogState({ ...dialogState, isSubmit: false });
-            //     }
-            // } else {
-            //     ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
-            //     setDialogState({ ...dialogState, isSubmit: false });
-            // }
+            const res = await workOrderService.modify(data);
+            if (res && isRendered) {
+                if (res.HttpResponseCode === 200 && res.Data) {
+                    SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                    setUpdateData({ ...res.Data });
+                    setDialogState({ ...dialogState, isSubmit: false });
+                    handleReset();
+                    handleCloseDialog();
+                } else {
+                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                }
+            } else {
+                ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+            }
         }
         setDialogState({ ...dialogState, isSubmit: false });
     };
@@ -200,14 +215,14 @@ const WorkOrderDialog = (props) => {
     };
 
     const getMaterials = async () => {
-        if (values.FPoMasterId !== 0)
+        if (values.FPoMasterId && values.FPoMasterId !== 0)
             return await workOrderService.getMaterialArrByForecastPOMaster(values);
         else
             return await workOrderService.getSearchMaterialArr(0, 0);
     };
 
     const getBomArr = async () => {
-
+        return await workOrderService.getBom(values);
     };
 
     const getLineArr = async () => {
@@ -245,16 +260,22 @@ const WorkOrderDialog = (props) => {
                                         displayValue="FPoMasterId"
                                         displayLabel="FPoMasterCode"
                                         value={
-                                            values.FPoMasterId !== 0
+                                            values.FPoMasterId && values.FPoMasterId !== 0
                                                 ? {
                                                     FPoMasterId: values.FPoMasterId,
                                                     FPoMasterCode: values.FPoMasterCode
                                                 }
                                                 : null
                                         }
-                                        onChange={(e, value) => {
-                                            setFieldValue("FPoMasterId", value?.FPoMasterId || 0);
-                                            setFieldValue("FPoMasterCode", value?.FPoMasterCode || "");
+                                        onChange={(e, item) => {
+                                            setFieldValue("FPoMasterId", item?.FPoMasterId || 0);
+                                            setFieldValue("FPoMasterCode", item?.FPoMasterCode || "");
+                                            setFieldValue("FPOId", item?.FPOId || 0);
+                                            setFieldValue("MaterialBuyerCode", item?.MaterialBuyerCode || "");
+                                            setFieldValue("MaterialId", item?.MaterialId || 0);
+                                            setFieldValue("MaterialCode", item?.MaterialCode || "");
+                                            setFieldValue("BomId", item?.BomId || 0);
+                                            setFieldValue("BomVersion", item?.BomVersion || "");
                                         }}
                                         error={touched.FPoMasterId && Boolean(errors.FPoMasterId)}
                                         helperText={touched.FPoMasterId && errors.FPoMasterId}
@@ -270,7 +291,7 @@ const WorkOrderDialog = (props) => {
                                         })}
                                         type="number"
                                         name="Year"
-                                        value={values.Year}
+                                        value={values.Year ?? ""}
                                         onChange={handleChange}
                                         error={touched.Year && Boolean(errors.Year)}
                                         helperText={touched.Year && errors.Year}
@@ -286,7 +307,7 @@ const WorkOrderDialog = (props) => {
                                         })}
                                         type="number"
                                         name="Week"
-                                        value={values.Week}
+                                        value={values.Week ?? ""}
                                         onChange={handleChange}
                                         error={touched.Week && Boolean(errors.Week)}
                                         helperText={touched.Week && errors.Week}
@@ -298,9 +319,8 @@ const WorkOrderDialog = (props) => {
                         <Grid item xs={12}>
                             <Grid container spacing={2}>
                                 {/* Material */}
-
                                 <Grid item xs={6}>
-                                    {values.FPoMasterId !== 0
+                                    {values.FPoMasterId && values.FPoMasterId !== 0
                                         ? <MuiAutoComplete
                                             label={intl.formatMessage({
                                                 id: "work_order.MaterialCode",
@@ -311,16 +331,18 @@ const WorkOrderDialog = (props) => {
                                             displayLabel="MaterialBuyerCode"
                                             displayGroup="GroupMaterial"
                                             value={
-                                                values.FPOId !== 0
+                                                values.FPOId && values.FPOId !== 0
                                                     ? {
                                                         FPOId: values.FPOId,
                                                         MaterialBuyerCode: values.MaterialBuyerCode
                                                     }
                                                     : null
                                             }
-                                            onChange={(e, value) => {
-                                                setFieldValue("FPOId", value?.FPOId || 0);
-                                                setFieldValue("MaterialBuyerCode", value?.MaterialBuyerCode || "");
+                                            onChange={(e, item) => {
+                                                setFieldValue("FPOId", item?.FPOId || 0);
+                                                setFieldValue("MaterialBuyerCode", item?.MaterialBuyerCode || "");
+                                                setFieldValue("BomId", item?.BomId || 0);
+                                                setFieldValue("BomVersion", item?.BomVersion || "");
                                             }}
                                             error={touched.FPOId && Boolean(errors.FPOId)}
                                             helperText={touched.FPOId && errors.FPOId}
@@ -332,7 +354,7 @@ const WorkOrderDialog = (props) => {
                                             displayValue="MaterialId"
                                             displayGroup="GroupMaterial"
                                             value={
-                                                values.MaterialId !== 0
+                                                values.MaterialId && values.MaterialId !== 0
                                                     ? {
                                                         MaterialId: values.MaterialId,
                                                         MaterialCode: values.MaterialCode,
@@ -340,8 +362,10 @@ const WorkOrderDialog = (props) => {
                                                     : null
                                             }
                                             onChange={(e, item) => {
-                                                setFieldValue("MaterialId", value?.MaterialId || 0);
-                                                setFieldValue("MaterialCode", value?.MaterialCode || "");
+                                                setFieldValue("MaterialId", item?.MaterialId || 0);
+                                                setFieldValue("MaterialCode", item?.MaterialCode || "");
+                                                setFieldValue("BomId", item?.BomId || 0);
+                                                setFieldValue("BomVersion", item?.BomVersion || "");
                                             }}
                                             error={touched.MaterialId && Boolean(errors.MaterialId)}
                                             helperText={touched.MaterialId && errors.MaterialId}
@@ -360,16 +384,16 @@ const WorkOrderDialog = (props) => {
                                         displayValue="BomId"
                                         displayLabel="BomVersion"
                                         value={
-                                            values.FPOId !== 0
+                                            values.BomId && values.BomId !== 0
                                                 ? {
                                                     BomId: values.BomId,
-                                                    BomVersion: values.BomVersion
+                                                    BomVersion: values.BomVersion,
                                                 }
                                                 : null
                                         }
-                                        onChange={(e, value) => {
-                                            setFieldValue("BomId", value?.BomId || 0);
-                                            setFieldValue("BomVersion", value?.BomVersion || "");
+                                        onChange={(e, item) => {
+                                            setFieldValue("BomId", item?.BomId || 0);
+                                            setFieldValue("BomVersion", item?.BomVersion || "");
                                         }}
                                         error={touched.BomId && Boolean(errors.BomId)}
                                         helperText={touched.BomId && errors.BomId}
@@ -405,7 +429,7 @@ const WorkOrderDialog = (props) => {
                                         displayValue="LineId"
                                         displayLabel="LineName"
                                         value={
-                                            values.LineId !== 0
+                                            values.LineId && values.LineId !== 0
                                                 ? {
                                                     LineId: values.LineId,
                                                     LineName: values.LineName
@@ -428,6 +452,7 @@ const WorkOrderDialog = (props) => {
                                     <MuiTextField
                                         required
                                         disabled={dialogState.isSubmit}
+                                        type="number"
                                         label={intl.formatMessage({ id: "work_order.OrderQty" })}
                                         name="OrderQty"
                                         value={values.OrderQty}

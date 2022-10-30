@@ -47,19 +47,18 @@ export const getMaterialArrByForecastPOMaster = async (params) => {
   }
 };
 
-// export const getBomVersion = async (params) => {
-//   try {
-//     return await axios.get(`${API}/get-material-by-forecastPOMaster`, {
-//       params: {
-//         FPoMasterId: params.FPoMasterId,
-//         Week: params.Week,
-//         Year: params.Year,
-//       },
-//     });
-//   } catch (error) {
-//     console.log(`ERROR: ${error}`);
-//   }
-// };
+export const getBom = async (params) => {
+  try {
+    return await axios.get(`${API}/get-bom`, {
+      params: {
+        FPOId: params.FPOId,
+        MaterialId: params.MaterialId,
+      },
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
 
 export const getLineArr = async () => {
   try {
