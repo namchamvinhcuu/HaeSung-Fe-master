@@ -52,10 +52,10 @@ const ForecastDetailDialog = (props) => {
       .number()
       .nullable()
       .required(intl.formatMessage({ id: "forecast.BuyerId_required" })),
-    LineId: yup
-      .number()
-      .nullable()
-      .required(intl.formatMessage({ id: "forecast.LineId_required" })),
+    // LineId: yup
+    //   .number()
+    //   .nullable()
+    //   .required(intl.formatMessage({ id: "forecast.LineId_required" })),
     FPoCode: yup.string().required(intl.formatMessage({ id: "forecast.FPoCode_required" })).nullable()
       .length(10, intl.formatMessage({ id: "forecast.FPoCode_required_length_10" })),
     Week: yup
@@ -108,7 +108,7 @@ const ForecastDetailDialog = (props) => {
     resetForm,
   } = formik;
   const onSubmit = async (data) => {
-    console.log(data);
+
     setDialogState({ ...dialogState, isSubmit: true });
     if (mode == CREATE_ACTION) {
       const res = await forecastService.createForecast(data);
@@ -116,7 +116,7 @@ const ForecastDetailDialog = (props) => {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
         setNewData({ ...res.Data });
         setDialogState({ ...dialogState, isSubmit: false });
-        handleReset();
+        // handleReset();
       } else {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         setDialogState({ ...dialogState, isSubmit: false });
