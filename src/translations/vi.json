@@ -325,7 +325,7 @@
         "Total_Order_Qty": "Số lượng đơn đặt hàng",
         "FPO_Code_required": " FPO Master Code không được để trống",
         "duplicated_code_master": "FPO Master Code đã tồn tại",
-        "FPoCode":"Mã FPO",
+        "FPoCode": "Mã FPO",
         "FPoCode_required": "FPO Code không được để trống",
         "FPoCode_required_length_10": "FPO Code phải có độ dài bằng 10 ký tự",
         "FPo_code_duplicated": "FPO Code đã tồn tại"
@@ -333,6 +333,8 @@
     "delivery_order": {
         "DoCode": "DO Code",
         "PoCode": "PO Code",
+        "FPoCode": "ForcastPO Code",
+        "FPoMasterCode": "Plan",
         "MaterialCode": "Assy Code",
         "OrderQty": "Order Qty",
         "RemainQty": "Remain Qty",
@@ -343,6 +345,8 @@
         "DeliveryTime": "Delivery Time",
         "Remark": "Note",
         "Truck": "Truck",
+        "Year": "Năm",
+        "Week": "Tuần",
         "DoCode_required": "DO Code không được để trống",
         "DoCode_length": "DO Code must be 12 characters",
         "OrderQty_required": "Order Qty không được để trống",

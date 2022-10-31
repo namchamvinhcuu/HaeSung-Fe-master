@@ -41,11 +41,7 @@ const DeliveryOrder = (props) => {
     page: 1,
     pageSize: 20,
     searchData: {
-      DoCode: "",
-      PoId: 0,
-      PoCode: "",
-      MaterialId: 0,
-      MaterialCode: "",
+      ...DeliveryOrderDto,
       ETDLoad: initETDLoad,
       DeliveryTime: addDays(initETDLoad, 1),
     },
@@ -129,9 +125,9 @@ const DeliveryOrder = (props) => {
       case "DeliveryTime":
         newSearchData[inputName] = e;
         break;
-      case "PoId":
-        newSearchData[inputName] = e ? e.PoId : DeliveryOrderDto.PoId;
-        newSearchData["PoCode"] = e ? e.PoCode : DeliveryOrderDto.PoCode;
+      case "FPoMasterId":
+        newSearchData[inputName] = e ? e.FPoMasterId : DeliveryOrderDto.FPoMasterId;
+        newSearchData["FPoMasterCode"] = e ? e.FPoMasterCode : DeliveryOrderDto.FPoMasterCode;
         newSearchData.MaterialId = 0;
         newSearchData.MaterialCode = "";
         break;
@@ -154,8 +150,8 @@ const DeliveryOrder = (props) => {
     });
   };
 
-  const getPoArr = async () => {
-    return await deliveryOrderService.getPoArr();
+  const getPoMasterArr = async () => {
+    return await deliveryOrderService.getPoMasterArr();
   };
 
   const getMaterialArr = async (poId) => {
@@ -340,7 +336,7 @@ const DeliveryOrder = (props) => {
     },
 
     {
-      field: "PoCode",
+      field: "FPoCode",
       headerName: intl.formatMessage({ id: "delivery_order.PoCode" }),
       /*flex: 0.7,*/ width: 120,
     },
@@ -534,28 +530,28 @@ const DeliveryOrder = (props) => {
           />
         </Grid>
 
-        <Grid item xs>
+        {/* <Grid item xs>
           <MuiAutoComplete
             label={intl.formatMessage({ id: "delivery_order.PoCode" })}
-            fetchDataFunc={getPoArr}
-            displayLabel="PoCode"
-            displayValue="PoId"
+            fetchDataFunc={getPoMasterArr}
+            displayLabel="FPoMasterCode"
+            displayValue="FPoMasterId"
             value={
-              deliveryOrderState.searchData.PoId !== 0
+              deliveryOrderState.searchData.FPoMasterId !== 0
                 ? {
-                    PoId: deliveryOrderState.searchData.PoId,
-                    PoCode: deliveryOrderState.searchData.PoCode,
-                  }
+                  FPoMasterId: deliveryOrderState.searchData.FPoMasterId,
+                  FPoMasterCode: deliveryOrderState.searchData.FPoMasterCode,
+                }
                 : null
             }
             onChange={(e, item) => {
-              changeSearchData(item ?? null, "PoId");
+              changeSearchData(item ?? null, "FPoMasterId");
             }}
             variant="standard"
           />
-        </Grid>
+        </Grid> */}
 
-        <Grid item xs>
+        {/* <Grid item xs>
           <MuiSelectField
             label={intl.formatMessage({ id: "delivery_order.MaterialCode" })}
             options={materialArr}
@@ -564,9 +560,9 @@ const DeliveryOrder = (props) => {
             value={
               deliveryOrderState.searchData.MaterialId !== 0
                 ? {
-                    MaterialId: deliveryOrderState.searchData.MaterialId,
-                    MaterialCode: deliveryOrderState.searchData.MaterialCode,
-                  }
+                  MaterialId: deliveryOrderState.searchData.MaterialId,
+                  MaterialCode: deliveryOrderState.searchData.MaterialCode,
+                }
                 : null
             }
             onChange={(e, item) => {
@@ -574,7 +570,7 @@ const DeliveryOrder = (props) => {
             }}
             variant="standard"
           />
-        </Grid>
+        </Grid> */}
 
         <Grid item xs>
           <MuiDateTimeField

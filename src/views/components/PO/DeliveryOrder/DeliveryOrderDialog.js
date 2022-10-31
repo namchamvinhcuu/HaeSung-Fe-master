@@ -1,23 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
 import {
-  MuiDialog,
+  MuiAutoComplete, MuiDateTimeField, MuiDialog,
   MuiResetButton,
-  MuiSubmitButton,
-  MuiDateTimeField,
-  MuiSelectField,
-  MuiAutoComplete,
-  MuiTextField,
+  MuiSubmitButton, MuiTextField
 } from "@controls";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Checkbox, FormControlLabel, Grid, TextField } from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
-import { useIntl } from "react-intl";
-import * as yup from "yup";
+import { Grid } from "@mui/material";
 import { deliveryOrderService } from "@services";
 import { ErrorAlert, SuccessAlert } from "@utils";
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
 import { useFormik } from "formik";
 import moment from "moment";
+import React, { useEffect, useRef, useState } from "react";
+import { useIntl } from "react-intl";
+import * as yup from "yup";
 
 const DeliveryOrderDialog = (props) => {
   const {
@@ -38,16 +32,16 @@ const DeliveryOrderDialog = (props) => {
   });
 
   const schema = yup.object().shape({
-    PoId: yup
+    FPoMasterId: yup
       .number()
       .nullable()
       .required(intl.formatMessage({ id: "general.field_required" }))
       .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
-    MaterialId: yup
+    FPOId: yup
       .number()
       .nullable()
       .required(intl.formatMessage({ id: "general.field_required" }))
-      .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
+      .min(1, intl.formatMessage({ id: "general.field_required" })),
     DoCode: yup
       .string()
       .required(intl.formatMessage({ id: "general.field_required" }))
@@ -150,12 +144,12 @@ const DeliveryOrderDialog = (props) => {
     }
   };
 
-  const getPoArr = async () => {
-    return await deliveryOrderService.getPoArr();
+  const getPoMasterArr = async () => {
+    return await deliveryOrderService.getPoMasterArr();
   };
 
   const getMaterialArr = async () => {
-    return await deliveryOrderService.getMaterialArr(values.PoId);
+    return await deliveryOrderService.getMaterialArr(values);
   };
 
   useEffect(() => {
@@ -184,53 +178,58 @@ const DeliveryOrderDialog = (props) => {
           >
             <Grid item xs={12}>
               <Grid container spacing={2}>
-                <Grid item xs>
+                <Grid item xs={6}>
                   <MuiAutoComplete
-                    label={intl.formatMessage({ id: "delivery_order.PoCode" })}
-                    fetchDataFunc={getPoArr}
-                    displayLabel="PoCode"
-                    displayValue="PoId"
+                    label={intl.formatMessage({ id: "delivery_order.FPoMasterCode" })}
+                    fetchDataFunc={getPoMasterArr}
+                    displayValue="FPoMasterId"
+                    displayLabel="FPoMasterCode"
                     value={
-                      values.PoId !== 0
+                      values.FPoMasterId !== 0
                         ? {
-                          PoId: values.PoId,
-                          PoCode: values.PoCode,
+                          FPoMasterId: values.FPoMasterId,
+                          FPoMasterCode: values.FPoMasterCode,
                         }
                         : null
                     }
                     onChange={(e, value) => {
-                      setFieldValue("PoCode", value?.PoCode || "");
-                      setFieldValue("PoId", value?.PoId || 0);
-
-                      setFieldValue("MaterialCode", "");
+                      setFieldValue("FPoMasterId", value?.FPoMasterId || 0);
+                      setFieldValue("FPoMasterCode", value?.FPoMasterCode || "");
                       setFieldValue("MaterialId", 0);
+                      setFieldValue("MaterialBuyerCode", "");
                     }}
-                    error={touched.PoId && Boolean(errors.PoId)}
-                    helperText={touched.PoId && errors.PoId}
+                    error={touched.FPoMasterId && Boolean(errors.FPoMasterId)}
+                    helperText={touched.FPoMasterId && errors.FPoMasterId}
                   />
                 </Grid>
-                <Grid item xs>
-                  <MuiAutoComplete
-                    label={intl.formatMessage({
-                      id: "delivery_order.MaterialCode",
-                    })}
-                    fetchDataFunc={getMaterialArr}
-                    displayLabel="MaterialCode"
-                    displayValue="MaterialId"
-                    value={
-                      values.MaterialId !== 0
-                        ? {
-                          MaterialId: values.MaterialId,
-                          MaterialCode: values.MaterialCode,
-                        }
-                        : null
-                    }
+                <Grid item xs={3}>
+                  <MuiTextField
+                    label={intl.formatMessage({ id: "delivery_order.Year" })}
+                    type="number"
+                    name="Year"
+                    value={values.Year}
                     onChange={(e, value) => {
-                      setFieldValue("MaterialCode", value?.MaterialCode || "");
-                      setFieldValue("MaterialId", value?.MaterialId || 0);
+                      setFieldValue("Year", e.target.value);
+                      setFieldValue("MaterialId", 0);
+                      setFieldValue("MaterialBuyerCode", "");
                     }}
-                    error={touched.MaterialId && Boolean(errors.MaterialId)}
-                    helperText={touched.MaterialId && errors.MaterialId}
+                  // error={touched.Year && Boolean(errors.Year)}
+                  // helperText={touched.Year && errors.Year}
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <MuiTextField
+                    label={intl.formatMessage({ id: "delivery_order.Week" })}
+                    type="number"
+                    name="Week"
+                    value={values.Week}
+                    onChange={(e, value) => {
+                      setFieldValue("Week", e.target.value);
+                      setFieldValue("MaterialId", 0);
+                      setFieldValue("MaterialBuyerCode", "");
+                    }}
+                  // error={touched.Week && Boolean(errors.Week)}
+                  // helperText={touched.Week && errors.Week}
                   />
                 </Grid>
               </Grid>
@@ -238,6 +237,30 @@ const DeliveryOrderDialog = (props) => {
 
             <Grid item xs={12}>
               <Grid container spacing={2}>
+                <Grid item xs>
+                  <MuiAutoComplete
+                    label={intl.formatMessage({
+                      id: "delivery_order.MaterialCode",
+                    })}
+                    fetchDataFunc={getMaterialArr}
+                    displayValue="FPOId"
+                    displayLabel="MaterialBuyerCode"
+                    value={
+                      values.FPOId !== 0
+                        ? {
+                          FPOId: values.FPOId,
+                          MaterialBuyerCode: values.MaterialBuyerCode,
+                        }
+                        : null
+                    }
+                    onChange={(e, value) => {
+                      setFieldValue("FPOId", value?.FPOId || 0);
+                      setFieldValue("MaterialBuyerCode", value?.MaterialBuyerCode || "");
+                    }}
+                    error={touched.FPOId && Boolean(errors.FPOId)}
+                    helperText={touched.FPOId && errors.FPOId}
+                  />
+                </Grid>
                 <Grid item xs>
                   <MuiTextField
                     required
@@ -252,21 +275,7 @@ const DeliveryOrderDialog = (props) => {
                     helperText={touched.DoCode && errors.DoCode}
                   />
                 </Grid>
-                <Grid item xs>
-                  <MuiTextField
-                    required
-                    type="number"
-                    disabled={dialogState.isSubmit}
-                    label={intl.formatMessage({
-                      id: "delivery_order.OrderQty",
-                    })}
-                    name="OrderQty"
-                    value={values.OrderQty}
-                    onChange={handleChange}
-                    error={touched.OrderQty && Boolean(errors.OrderQty)}
-                    helperText={touched.OrderQty && errors.OrderQty}
-                  />
-                </Grid>
+
               </Grid>
             </Grid>
 
@@ -304,6 +313,21 @@ const DeliveryOrderDialog = (props) => {
               <Grid container spacing={2}>
                 <Grid item xs>
                   <MuiTextField
+                    required
+                    type="number"
+                    disabled={dialogState.isSubmit}
+                    label={intl.formatMessage({
+                      id: "delivery_order.OrderQty",
+                    })}
+                    name="OrderQty"
+                    value={values.OrderQty}
+                    onChange={handleChange}
+                    error={touched.OrderQty && Boolean(errors.OrderQty)}
+                    helperText={touched.OrderQty && errors.OrderQty}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <MuiTextField
                     name="PackingNote"
                     disabled={dialogState.isSubmit}
                     value={values.PackingNote}
@@ -313,17 +337,7 @@ const DeliveryOrderDialog = (props) => {
                     })}
                   />
                 </Grid>
-                <Grid item xs>
-                  <MuiTextField
-                    name="InvoiceNo"
-                    disabled={dialogState.isSubmit}
-                    value={values.InvoiceNo}
-                    onChange={handleChange}
-                    label={intl.formatMessage({
-                      id: "delivery_order.InvoiceNo",
-                    })}
-                  />
-                </Grid>
+
               </Grid>
             </Grid>
             <Grid item xs={12}>
@@ -353,15 +367,31 @@ const DeliveryOrderDialog = (props) => {
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              <MuiTextField
-                name="Remark"
-                disabled={dialogState.isSubmit}
-                value={values.Remark}
-                onChange={handleChange}
-                label={intl.formatMessage({
-                  id: "delivery_order.Remark",
-                })}
-              />
+              <Grid container spacing={2}>
+
+                <Grid item xs>
+                  <MuiTextField
+                    name="InvoiceNo"
+                    disabled={dialogState.isSubmit}
+                    value={values.InvoiceNo}
+                    onChange={handleChange}
+                    label={intl.formatMessage({
+                      id: "delivery_order.InvoiceNo",
+                    })}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <MuiTextField
+                    name="Remark"
+                    disabled={dialogState.isSubmit}
+                    value={values.Remark}
+                    onChange={handleChange}
+                    label={intl.formatMessage({
+                      id: "delivery_order.Remark",
+                    })}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item xs={12}>
               <Grid container direction="row-reverse">

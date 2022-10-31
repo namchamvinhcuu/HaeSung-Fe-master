@@ -299,7 +299,7 @@
         "Total_Order_Qty": "Total Order Quantity",
         "FPO_Code_required": " FPO Master Code is required",
         "duplicated_code_master": "FPO Master Code is exist",
-        "FPoCode":" FPO Code",
+        "FPoCode": " FPO Code",
         "FPoCode_required": "FPO Code is required",
         "FPoCode_required_length_10": "FPO Code must lenght is 10 character",
         "FPo_code_duplicated": "FPO Code is exist"
@@ -333,6 +333,8 @@
     "delivery_order": {
         "DoCode": "DO Code",
         "PoCode": "PO Code",
+        "FPoCode": "ForcastPO Code",
+        "FPoMasterCode": "Plan",
         "MaterialCode": "Assy Code",
         "OrderQty": "Order Qty",
         "RemainQty": "Remain Qty",
@@ -343,6 +345,8 @@
         "DeliveryTime": "Delivery Time",
         "Remark": "Note",
         "Truck": "Truck",
+        "Year": "Year",
+        "Week": "Week",
         "DoCode_required": "DO Code is required",
         "DoCode_length": "DO Code must be 12 characters",
         "OrderQty_required": "Order Qty is required",

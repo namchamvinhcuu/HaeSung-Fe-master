@@ -40,22 +40,22 @@ const FixedPO = (props) => {
     },
   });
 
-  const [mode, setMode] = useState(CREATE_ACTION);
+  // const [mode, setMode] = useState(CREATE_ACTION);
   const [newData, setNewData] = useState({ ...ForecastPODto });
   const [selectedRow, setSelectedRow] = useState({
     ...ForecastPODto,
   });
-  const [isOpenDialog, setIsOpenDialog] = useState(false);
+  // const [isOpenDialog, setIsOpenDialog] = useState(false);
   const [showActivedData, setShowActivedData] = useState(true);
 
-  const toggleDialog = (mode) => {
-    if (mode === CREATE_ACTION) {
-      setMode(CREATE_ACTION);
-    } else {
-      setMode(UPDATE_ACTION);
-    }
-    setIsOpenDialog(!isOpenDialog);
-  };
+  // const toggleDialog = (mode) => {
+  //   if (mode === CREATE_ACTION) {
+  //     setMode(CREATE_ACTION);
+  //   } else {
+  //     setMode(UPDATE_ACTION);
+  //   }
+  //   setIsOpenDialog(!isOpenDialog);
+  // };
 
   const handleshowActivedData = async (event) => {
     setShowActivedData(event.target.checked);
@@ -132,24 +132,11 @@ const FixedPO = (props) => {
     return res;
   };
 
-  // const handleRowUpdate = React.useCallback(
-  //   async (newRow) => {
-  //     // Make the HTTP request to save in the backend
-  //     console.log('[newRow]', newRow);
-  //     const response = await fixedPOService.modify(newRow);
-  //     if (isRendered && response && response.Data) {
-  //         setSelectedRow({ ...response.Data });
-  //     }
-  //     else{
-
-  //     }
-  //   },
-  //   // [selectedRow],
-  // );
   const handleRowUpdate = async (newRow) => {
     const res = await fixedPOService.modify(newRow);
-    if (res && res.HttpResponseCode === 200) {
+    if (res && res.HttpResponseCode === 200 && isRendered) {
       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      setSelectedRow(res.Data);
       return res.Data;
     }
     else {

@@ -12,18 +12,22 @@ export const get = async (params) => {
   }
 };
 
-export const getPoArr = async () => {
+export const getPoMasterArr = async () => {
   try {
-    return await axios.get(`${API}/get-purchase-orders`);
+    return await axios.get(`${API}/get-forecastPO-master`);
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }
 };
 
-export const getMaterialArr = async (poId) => {
+export const getMaterialArr = async (params) => {
   try {
-    return await axios.get(`${API}/get-products-by-po`, {
-      params: { poId: poId },
+    return await axios.get(`${API}/get-products-by-poMaster`, {
+      params: {
+        FPoMasterId: params.FPoMasterId,
+        Year: params.Year,
+        Week: params.Week,
+      },
     });
   } catch (error) {
     console.log(`ERROR: ${error}`);
