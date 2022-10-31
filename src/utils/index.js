@@ -19,7 +19,7 @@ import {
 } from "./callApi_preventDoubleClick";
 
 import { historyApp, historyDashboard } from "./history";
-import { calDateAgo, toCamel, dateToTicks, addDays, minusDays } from "./Utils";
+import { calDateAgo, toCamel, dateToTicks, addDays, minusDays, getCurrentWeek } from "./Utils";
 import {
   GetLocalStorage,
   SetLocalStorage,
@@ -56,6 +56,7 @@ export {
   dateToTicks,
   addDays,
   minusDays,
+  getCurrentWeek,
   GetLocalStorage,
   SetLocalStorage,
   RemoveLocalStorage,

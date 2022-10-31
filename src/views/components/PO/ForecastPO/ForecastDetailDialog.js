@@ -12,9 +12,9 @@ import * as yup from "yup";
 import { Grid, TextField } from "@mui/material";
 import { CREATE_ACTION } from "@constants/ConfigConstants";
 import { forecastService } from "@services";
-import { ErrorAlert, SuccessAlert } from "@utils";
+import { ErrorAlert, SuccessAlert, getCurrentWeek } from "@utils";
 
-const ForecastDialog = (props) => {
+const ForecastDetailDialog = (props) => {
   const {
     initModal,
     isOpen,
@@ -23,25 +23,35 @@ const ForecastDialog = (props) => {
     setUpdateData,
     mode,
     valueOption,
+    FPoMasterId
   } = props;
- 
+
   const intl = useIntl();
   const defaultValue = {
     MaterialId: null,
+    BuyerId: null,
     LineId: null,
-    Week: undefined,
-    Year: undefined,
-    Amount: undefined,
+    Week: getCurrentWeek(),
+    Year: new Date().getFullYear(),
+    Amount: 0,
+    FPoMasterId:FPoMasterId
   };
   const [dialogState, setDialogState] = useState({
     isSubmit: false,
   });
-  useEffect(() => {}, []);
+  useEffect(() => {
+ 
+  }, []);
+
   const schema = yup.object().shape({
     MaterialId: yup
       .number()
       .nullable()
       .required(intl.formatMessage({ id: "forecast.MaterialId_required" })),
+    BuyerId: yup
+      .number()
+      .nullable()
+      .required(intl.formatMessage({ id: "forecast.BuyerId_required" })),
     LineId: yup
       .number()
       .nullable()
@@ -96,6 +106,7 @@ const ForecastDialog = (props) => {
     resetForm,
   } = formik;
   const onSubmit = async (data) => {
+    console.log(data);
     setDialogState({ ...dialogState, isSubmit: true });
     if (mode == CREATE_ACTION) {
       const res = await forecastService.createForecast(data);
@@ -178,6 +189,38 @@ const ForecastDialog = (props) => {
           <Grid item xs={12}>
             <MuiSelectField
               value={
+                values.BuyerId
+                  ? {
+                    BuyerId: values.BuyerId,
+                    BuyerCode: values.BuyerCode,
+                    }
+                  : null
+              }
+              disabled={dialogState.isSubmit}
+              label={intl.formatMessage({ id: "forecast.BuyerId" }) + " *"}
+              options={valueOption.BuyerList}
+              displayLabel="BuyerCode"
+              displayValue="BuyerId"
+              onChange={(e, value) => {
+                setFieldValue("BuyerCode", value?.BuyerCode || "");
+                setFieldValue("BuyerId", value?.BuyerId || "");
+              }}
+              defaultValue={
+                mode == CREATE_ACTION
+                  ? null
+                  : {
+                    BuyerId: initModal.BuyerId,
+                    BuyerCode: initModal.BuyerCode,
+                    }
+              }
+              error={touched.BuyerId && Boolean(errors.BuyerId)}
+              helperText={touched.BuyerId && errors.BuyerId}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <MuiSelectField
+              value={
                 values.LineId
                   ? { LineId: values.LineId, LineName: values.LineName }
                   : null
@@ -256,4 +299,4 @@ const ForecastDialog = (props) => {
     </MuiDialog>
   );
 };
-export default ForecastDialog;
+export default ForecastDetailDialog;

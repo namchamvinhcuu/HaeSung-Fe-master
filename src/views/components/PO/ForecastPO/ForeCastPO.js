@@ -1,59 +1,39 @@
-import React, { useState, useEffect, useRef } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
-import { User_Operations } from "@appstate/user";
-import { Store } from "@appstate";
-import {
-  Box,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  IconButton,
-  Input,
-  InputLabel,
-  Switch,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
+import ForeCastPODetail from "./ForeCastPODetail";
+import { useIntl } from "react-intl";
+import EditIcon from "@mui/icons-material/Edit";
+import UndoIcon from "@mui/icons-material/Undo";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   MuiButton,
   MuiDataGrid,
   MuiSearchField,
   MuiSelectField,
 } from "@controls";
-import { useIntl } from "react-intl";
-import EditIcon from "@mui/icons-material/Edit";
-import UndoIcon from "@mui/icons-material/Undo";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ForecastDialog from "./ForecastDialog";
-import { ForecastPODto } from "@models";
-import { useModal } from "@basesShared";
-import { ErrorAlert, SuccessAlert } from "@utils";
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import { forecastService } from "@services";
+import {
+  Box,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  Switch,
+} from "@mui/material";
+import { ForecastPOMasterDto } from "@models";
+import { forecastMasterService } from "@services";
 import moment from "moment";
+import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
+import { useModal } from "@basesShared";
+import ForecastMasterDialog from "./ForecastMasterDialog";
+import { ErrorAlert, SuccessAlert, getCurrentWeek } from "@utils";
 
-const min = 1;
-const max = 52;
-const todaydate = new Date();  
-const  oneJan =  new Date(todaydate.getFullYear(), 0, 1);   
-const  numberOfDays =  Math.floor((todaydate - oneJan) / (24 * 60 * 60 * 1000));   
-const  curWeek = Math.ceil(( todaydate.getDay() + 1 + numberOfDays) / 7);     
-const ForecastPO = (props) => {
+export default function ForecastPOMaster(props) {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
-  const [MaterialList, setMaterialList] = useState([]);
-  const [LineList, setLineList] = useState([]);
-  const [newData, setNewData] = useState({ ...ForecastPODto });
-  const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
   const { isShowing, toggle } = useModal();
-  const [yearList, setYearList] = useState([]);
-  const [currentWeek, setCurrentWeek] = useState(curWeek);
-  const [forecastState, setForecastState] = useState({
+  const [FPoMasterId, setFPOMasterId] = useState(null);
+  const [newDataChild, setNewDataChild] = useState({})
+  const [forecastMasterState, setForecastMasterState] = useState({
     isLoading: false,
     data: [],
     totalRow: 0,
@@ -61,16 +41,30 @@ const ForecastPO = (props) => {
     pageSize: 20,
     searchData: {
       keyWord: "",
-      keyWordWeekStart: 0,
-      keyWordWeekEnd: curWeek,
-      keyWordYear: new Date().getFullYear(),
       showDelete: true,
     },
   });
+  const [newData, setNewData] = useState({ ...ForecastPOMasterDto });
+  const [updateData, setUpdateData] = useState({});
+  async function fetchData() {
+    setFPOMasterId(null);
+    setForecastMasterState({ ...forecastMasterState, isLoading: true });
+    const params = {
+      page: forecastMasterState.page,
+      pageSize: forecastMasterState.pageSize,
+      keyWord: forecastMasterState.searchData.keyWord,
+      showDelete: forecastMasterState.searchData.showDelete,
+    };
+    const res = await forecastMasterService.getForecastMasterList(params);
+    if (res && res.Data && isRendered)
+      setForecastMasterState({
+        ...forecastMasterState,
+        data: res.Data ?? [],
+        totalRow: res.TotalRow,
+        isLoading: false,
+      });
+  }
   useEffect(() => {
-    getMaterialList();
-    getLineList();
-    getYearList();
     return () => {
       isRendered = false;
     };
@@ -78,24 +72,24 @@ const ForecastPO = (props) => {
   useEffect(() => {
     fetchData();
   }, [
-    forecastState.page,
-    forecastState.pageSize,
-    forecastState.searchData.showDelete,
+    forecastMasterState.page,
+    forecastMasterState.pageSize,
+    forecastMasterState.searchData.showDelete,
   ]);
   useEffect(() => {
     if (
       !_.isEmpty(newData) &&
       isRendered &&
-      !_.isEqual(newData, ForecastPODto)
+      !_.isEqual(newData, ForecastPOMasterDto)
     ) {
-      const data = [newData, ...forecastState.data];
-      if (data.length > forecastState.pageSize) {
+      const data = [newData, ...forecastMasterState.data];
+      if (data.length > forecastMasterState.pageSize) {
         data.pop();
       }
-      setForecastState({
-        ...forecastState,
+      setForecastMasterState({
+        ...forecastMasterState,
         data: [...data],
-        totalRow: forecastState.totalRow + 1,
+        totalRow: forecastMasterState.totalRow + 1,
       });
     }
   }, [newData]);
@@ -106,17 +100,16 @@ const ForecastPO = (props) => {
       !_.isEqual(updateData, rowData) &&
       isRendered
     ) {
-      let newArr = [...forecastState.data];
+      let newArr = [...forecastMasterState.data];
       const index = _.findIndex(newArr, function (o) {
-        return o.FPOId == updateData.FPOId;
+        return o.FPoMasterId == updateData.FPoMasterId;
       });
       if (index !== -1) {
         newArr[index] = updateData;
       }
-      setForecastState({ ...forecastState, data: [...newArr] });
+      setForecastMasterState({ ...forecastMasterState, data: [...newArr] });
     }
   }, [updateData]);
-
   const handleAdd = () => {
     setMode(CREATE_ACTION);
     setRowData();
@@ -127,18 +120,56 @@ const ForecastPO = (props) => {
     setRowData({ ...row });
     toggle();
   };
-
+  const handleDelete = async (fcM) => {
+    if (
+      window.confirm(
+        intl.formatMessage({
+          id: fcM.isActived
+            ? "general.confirm_delete"
+            : "general.confirm_redo_deleted",
+        })
+      )
+    ) {
+      try {
+        let res = await forecastMasterService.deleteForecastMaster({
+          FPoMasterId: fcM.FPoMasterId,
+          row_version: fcM.row_version,
+        });
+        if (res && res.HttpResponseCode === 200) {
+          SuccessAlert(intl.formatMessage({ id: "general.success" }));
+          await fetchData();
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+  const handleSearch = (e, inputName) => {
+    let newSearchData = { ...forecastMasterState.searchData };
+    newSearchData[inputName] = e;
+    if (inputName == "showDelete") {
+      setForecastMasterState({
+        ...forecastMasterState,
+        page: 1,
+        searchData: { ...newSearchData },
+      });
+    } else {
+      setForecastMasterState({ ...forecastMasterState, searchData: { ...newSearchData } });
+    }
+  };
   const columns = [
-    { field: "FPOId", headerName: "", hide: true },
+    { field: "FPoMasterId", headerName: "", hide: true },
     {
       field: "id",
       headerName: "",
       width: 80,
       filterable: false,
       renderCell: (index) =>
-        index.api.getRowIndex(index.row.FPOId) +
+        index.api.getRowIndex(index.row.FPoMasterId) +
         1 +
-        (forecastState.page - 1) * forecastState.pageSize,
+        (forecastMasterState.page - 1) * forecastMasterState.pageSize,
     },
     {
       field: "action",
@@ -187,58 +218,17 @@ const ForecastPO = (props) => {
       },
     },
     {
-      field: "Inch",
-      headerName: "Inch",
-      width: 100,
-    },
-    {
-      field: "LineName",
-      headerName: intl.formatMessage({ id: "forecast.LineId" }),
+      field: "FPoMasterCode",
+      headerName: "FPO Master Code",
       width: 200,
     },
+
     {
-      field: "MaterialCode",
-      headerName: intl.formatMessage({ id: "forecast.MaterialId" }),
-      width: 200,
-    },
-    {
-      field: "DescriptionMaterial",
-      headerName: intl.formatMessage({ id: "forecast.Desciption" }),
-      width: 300,
-      renderCell: (params) => {
-        return (
-          <Tooltip
-            title={params.row.DescriptionMaterial ?? ""}
-            className="col-text-elip"
-          >
-            <Typography sx={{ fontSize: 14, maxWidth: 300 }}>
-              {params.row.DescriptionMaterial}
-            </Typography>
-          </Tooltip>
-        );
-      },
-    },
-    {
-      field: "Description",
-      headerName: "Desc 2",
-      width: 180,
-    },
-    {
-      field: "Week",
-      headerName: intl.formatMessage({ id: "forecast.Week" }),
+      field: "TotalOrderQty",
+      headerName: "Total Order",
       width: 100,
     },
-    {
-      field: "Year",
-      headerName: intl.formatMessage({ id: "forecast.Year" }),
-      width: 100,
-    },
-    {
-      field: "Amount",
-      headerName: intl.formatMessage({ id: "forecast.Amount" }),
-      width: 100,
-    },
-  
+
     {
       field: "createdName",
       headerName: intl.formatMessage({ id: "general.createdName" }),
@@ -274,211 +264,19 @@ const ForecastPO = (props) => {
       },
     },
   ];
-  const getMaterialList = async () => {
-    const res = await forecastService.getMaterialModel();
-    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-      setMaterialList([...res.Data]);
-    }
-  };
-  const getLineList = async () => {
-    const res = await forecastService.getLineModel();
-    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-      setLineList([...res.Data]);
-    }
-  };
-  const getYearList = async () => {
-    const res = await forecastService.getYearModel();
-    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-      setYearList([...res.Data]);
-    }
-  };
-  async function fetchData() {
-    if (
-      forecastState.searchData.keyWordWeekStart >
-        forecastState.searchData.keyWordWeekEnd &&
-      forecastState.searchData.keyWordWeekEnd != 0
-    ) {
-      ErrorAlert(intl.formatMessage({ id: "forecast.Start_end_week_error" }));
-    }
-    setForecastState({ ...forecastState, isLoading: true });
-    const params = {
-      page: forecastState.page,
-      pageSize: forecastState.pageSize,
-      keyWord: forecastState.searchData.keyWord,
-      keyWordWeekStart: forecastState.searchData.keyWordWeekStart,
-      keyWordWeekEnd: forecastState.searchData.keyWordWeekEnd,
-      keyWordYear: forecastState.searchData.keyWordYear,
-      showDelete: forecastState.searchData.showDelete,
-    };
-    const res = await forecastService.getForecastList(params);
-    if (res && res.Data && isRendered)
-      setForecastState({
-        ...forecastState,
-        data: res.Data ?? [],
-        totalRow: res.TotalRow,
-        isLoading: false,
-      });
-  }
-
-  const handleSearch = (e, inputName) => {
-    let newSearchData = { ...forecastState.searchData };
-    newSearchData[inputName] = e;
-    if (inputName == "showDelete") {
-      setForecastState({
-        ...forecastState,
-        page: 1,
-        searchData: { ...newSearchData },
-      });
-    } else {
-      setForecastState({ ...forecastState, searchData: { ...newSearchData } });
-    }
-  };
-
-  const handleDelete = async (forecast) => {
-    if (
-      window.confirm(
-        intl.formatMessage({
-          id: forecast.isActived
-            ? "general.confirm_delete"
-            : "general.confirm_redo_deleted",
-        })
-      )
-    ) {
-      try {
-        let res = await forecastService.deleteForecast({
-          FPOId: forecast.FPOId,
-          row_version: forecast.row_version,
-        });
-        if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: "general.success" }));
-          await fetchData();
-        } else {
-          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
-  const [valueStart, setValueStart] = useState("");
-  const [valueEnd, setValueEnd] = useState("");
-
   return (
-    <React.Fragment>
-      <Grid
+    <>
+    <Grid
         container
         direction="row"
         justifyContent="space-between"
         alignItems="flex-end"
       >
-        <Grid item xs={5}>
-          <MuiButton text="create" color="success" onClick={handleAdd} />
+        <Grid item xs={8}>
+          <MuiButton text="create" color="success" onClick={handleAdd}/>
         </Grid>
         <Grid item>
           <Box display="flex">
-          <Box sx={{ mx: 3, maxWidth: "120px" }}>
-              <FormControl sx={{marginTop:"3px"}}>
-                <MuiSelectField
-                  label={intl.formatMessage({ id: "forecast.Year" })}
-                  options={yearList}
-                  defaultValue={{ YearId: new Date().getFullYear() ||"", YearName: `${new Date().getFullYear()+ ""}` || "" }}
-                  displayLabel="YearName"
-                  displayValue="YearId"
-                  onChange={(e, item) =>
-                    handleSearch(
-                      item ? item.YearId ?? null : null,
-                      "keyWordYear"
-                    )
-                  }
-                  variant="standard"
-                  sx={{ width: 120 }}
-                />
-              </FormControl>
-
-              {/* <TextField
-                label={intl.formatMessage({ id: "forecast.Year" })}
-                variant="standard"
-                type="number"
-                sx={{ width: "120px" }}
-                value={valueYear}
-                inputProps={{ minyear, maxyear }}
-                onChange={(e) => {
-                  var value = parseInt(e.target.value, 10);
-                  if (value > maxyear) value = maxyear;
-                  // if (value < minyear) value = minyear;
-                  setValueYear(value || "");
-                  handleSearch(value || 0, "keyWordYear");
-                }}
-              /> */}
-              {/* <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
-                <InputLabel>
-                  {intl.formatMessage({ id: "forecast.Year" })}
-                </InputLabel>
-                <Input
-                  type="number"
-                  onChange={(e) =>
-                    handleSearch(e.target.value || 0, "keyWordYear")
-                  }
-                />
-              </FormControl> */}
-            </Box>
-            <Box sx={{ maxWidth: "120px", mr: 3 }}>
-              <TextField
-                label={intl.formatMessage({ id: "forecast.Week_start" })}
-                variant="standard"
-                type="number"
-                sx={{ width: "120px" }}
-                value={valueStart}
-                inputProps={{ min, max }}
-                onChange={(e) => {
-                  var value = parseInt(e.target.value, 10);
-                  if (value > max) value = max;
-                  if (value < min) value = min;
-                  setValueStart(value || "");
-                  handleSearch(value || 0, "keyWordWeekStart");
-                }}
-              />
-              {/* <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
-                         <InputLabel>{intl.formatMessage({ id: "forecast.Week_start" })}</InputLabel>
-                         <Input
-                           type="number"
-                           onChange={(e) => handleSearch(e.target.value || 0, "keyWordWeekStart")}
-                         />
-               </FormControl> */}
-            </Box>
-            <Box sx={{ maxWidth: "120px", mr: 3 }}>
-              <TextField
-                label={intl.formatMessage({ id: "forecast.Week_end" })}
-                variant="standard"
-                type="number"
-                sx={{ width: "120px" }}
-                value={valueEnd || currentWeek}
-              
-                // inputProps={{ min, max }}
-                onChange={(e) => {
-                  var value = parseInt(e.target.value, 10);
-                  if (value > max) value = max;
-                  if (value < min) value = min;
-                  setCurrentWeek(value || "")
-                  setValueEnd(value || "");
-                  handleSearch(value || 0, "keyWordWeekEnd");
-                }}
-              />
-              {/* <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
-                <InputLabel>
-                  {intl.formatMessage({ id: "forecast.Week_end" })}
-                </InputLabel>
-                <Input
-                  type="number"
-                  onChange={(e) =>
-                    handleSearch(e.target.value || 0, "keyWordWeekEnd")
-                  }
-                />
-              </FormControl> */}
-            </Box>
-         
-
             <Box>
               <MuiSearchField
                 label="general.name"
@@ -503,7 +301,7 @@ const ForecastPO = (props) => {
               />
             }
             label={intl.formatMessage({
-              id: forecastState.searchData.showDelete
+              id: forecastMasterState.searchData.showDelete
                 ? "general.data_actived"
                 : "general.data_deleted",
             })}
@@ -511,25 +309,23 @@ const ForecastPO = (props) => {
         </Grid>
       </Grid>
       <MuiDataGrid
-        showLoading={forecastState.isLoading}
+        showLoading={forecastMasterState.isLoading}
         isPagingServer={true}
         headerHeight={45}
         // rowHeight={30}
-        gridHeight={736}
+        gridHeight={350}
         columns={columns}
-        rows={forecastState.data}
-        page={forecastState.page - 1}
-        pageSize={forecastState.pageSize}
-        rowCount={forecastState.totalRow}
+        rows={forecastMasterState.data}
+        page={forecastMasterState.page - 1}
+        pageSize={forecastMasterState.pageSize}
+        rowCount={forecastMasterState.totalRow}
         // rowsPerPageOptions={[5, 10, 20, 30]}
 
         onPageChange={(newPage) => {
-          setForecastState({ ...forecastState, page: newPage + 1 });
+          setForecastMasterState({ ...forecastMasterState, page: newPage + 1 });
         }}
-        // onPageSizeChange={(newPageSize) => {
-        //     setLineState({ ...lineState, pageSize: newPageSize, page: 1 });
-        // }}
-        getRowId={(rows) => rows.FPOId}
+        onSelectionModelChange={(newSelectedRowId) => setFPOMasterId(newSelectedRowId[0])}
+        getRowId={(rows) => rows.FPoMasterId}
         // onSelectionModelChange={(newSelectedRowId) => {
         //   handleRowSelection(newSelectedRowId);
         // }}
@@ -540,37 +336,16 @@ const ForecastPO = (props) => {
           }
         }}
       />
-      <ForecastDialog
+      <ForecastMasterDialog
         initModal={rowData}
-        valueOption={{ MaterialList: MaterialList, LineList: LineList }}
+        // valueOption={{ MaterialList: MaterialList, LineList: LineList }}
         setNewData={setNewData}
         setUpdateData={setUpdateData}
         isOpen={isShowing}
         onClose={toggle}
         mode={mode}
       />
-    </React.Fragment>
+    <ForeCastPODetail FPoMasterId={FPoMasterId} newDataChild={newDataChild}/>
+    </>
   );
-};
-
-User_Operations.toString = function () {
-  return "User_Operations";
-};
-
-const mapStateToProps = (state) => {
-  const {
-    User_Reducer: { language },
-  } = CombineStateToProps(state.AppReducer, [[Store.User_Reducer]]);
-
-  return { language };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  const {
-    User_Operations: { changeLanguage },
-  } = CombineDispatchToProps(dispatch, bindActionCreators, [[User_Operations]]);
-
-  return { changeLanguage };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ForecastPO);
+}

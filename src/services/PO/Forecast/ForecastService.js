@@ -58,7 +58,13 @@ const getYearModel = async () => {
   }
 };
 
-
+const getBuyerModel = async () => {
+  try {
+    return await axios.get(`${apiName}/get-select-buyer`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
 export {
   getMaterialModel,
   getLineModel,
@@ -66,5 +72,6 @@ export {
   modifyForecast,
   getForecastList,
   deleteForecast,
-  getYearModel
+  getYearModel,
+  getBuyerModel,
 };

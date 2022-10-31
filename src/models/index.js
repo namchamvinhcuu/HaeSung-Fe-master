@@ -13,6 +13,7 @@ import PODetailDto from "./PoDetailDto";
 import ForecastPODto from "./ForecastPODto";
 import DeliveryOrderDto from "./DeliveryOrderDto";
 import WorkOrderDto from "./WorkOrderDto";
+import ForecastPOMasterDto from "./ForecastPOMasterDto";
 export {
   SupplierDto,
   ProductDto,
@@ -29,4 +30,5 @@ export {
   ForecastPODto,
   DeliveryOrderDto,
   WorkOrderDto,
+  ForecastPOMasterDto,
 };

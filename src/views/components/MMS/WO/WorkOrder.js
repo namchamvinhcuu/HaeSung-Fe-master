@@ -26,7 +26,7 @@ import { addDays, ErrorAlert } from "@utils";
 import _ from "lodash";
 import moment from "moment";
 import { useIntl } from "react-intl";
-import { getLineArr } from "../../../../services/mms/work-order/WorkOrderService";
+import WorkOrderDialog from "./WorkOrderDialog";
 
 const WorkOrder = (props) => {
   let isRendered = useRef(true);
@@ -126,24 +126,13 @@ const WorkOrder = (props) => {
       case "EndSearchingDate":
         newSearchData[inputName] = e;
         break;
-      case "FPoMasterId":
-        newSearchData[inputName] = e ? e.FPoMasterId : WorkOrderDto.FPoMasterId;
-        newSearchData["FPoMasterCode"] = e
-          ? e.FPoMasterCode
-          : WorkOrderDto.FPoMasterCode;
-        newSearchData.MaterialId = 0;
-        newSearchData.MaterialCode = "";
-        break;
       case "MaterialId":
         newSearchData[inputName] = e ? e.MaterialId : WorkOrderDto.MaterialId;
         newSearchData["MaterialCode"] = e
           ? e.MaterialCode
           : WorkOrderDto.MaterialCode;
         break;
-      case "LineId":
-        newSearchData[inputName] = e ? e.LineId : WorkOrderDto.LineId;
-        newSearchData["LineName"] = e ? e.LineName : WorkOrderDto.LineName;
-        break;
+
       default:
         newSearchData[inputName] = e.target.value;
         break;
@@ -155,15 +144,8 @@ const WorkOrder = (props) => {
     });
   };
 
-  const getPoMasterArr = async () => {
-    const res = await workOrderService.getPoMasterArr();
-    return res;
-  };
-
-  const getMaterialArr = async () => {
-    const res = await workOrderService.getMaterialArr(
-      workOrderState.searchData.FPoMasterId
-    );
+  const getSearchMaterialArr = async () => {
+    const res = await workOrderService.getSearchMaterialArr(0, 0);
     return res;
   };
 
@@ -191,7 +173,7 @@ const WorkOrder = (props) => {
       }
     });
 
-    if (flag) {
+    if (flag && isRendered) {
       setWorkOrderState({
         ...workOrderState,
         isLoading: true,
@@ -201,9 +183,7 @@ const WorkOrder = (props) => {
         page: workOrderState.page,
         pageSize: workOrderState.pageSize,
         WoCode: workOrderState.searchData.WoCode.trim(),
-        FPoMasterId: workOrderState.searchData.FPoMasterId,
         MaterialId: workOrderState.searchData.MaterialId,
-        LineId: workOrderState.searchData.LineId,
         StartSearchingDate: workOrderState.searchData.StartSearchingDate,
         EndSearchingDate: workOrderState.searchData.EndSearchingDate,
         isActived: showActivedData,
@@ -411,8 +391,13 @@ const WorkOrder = (props) => {
 
   return (
     <React.Fragment>
-      <Grid container>
-        <Grid item xs={2}>
+      <Grid
+        container
+        spacing={2}
+        justifyContent="flex-end"
+        alignItems="flex-end"
+      >
+        <Grid item xs={1.5}>
           <MuiButton
             text="create"
             color="success"
@@ -434,122 +419,82 @@ const WorkOrder = (props) => {
                     onChange={(e) => changeSearchData(e, "WoCode")}
                   />
                 </Grid>
-
-                <Grid item xs={2} sm={3}>
-                  <MuiAutoComplete
-                    label={intl.formatMessage({
-                      id: "work_order.FPoMasterCode",
-                    })}
-                    fetchDataFunc={getPoMasterArr}
-                    displayLabel="FPoMasterCode"
-                    displayValue="FPoMasterId"
-                    value={
-                      workOrderState.searchData.FPoMasterId !== 0
-                        ? {
-                            FPoMasterId: workOrderState.searchData.FPoMasterId,
-                            FPoMasterCode:
-                              workOrderState.searchData.FPoMasterCode,
-                          }
-                        : null
-                    }
-                    onChange={(e, item) => {
-                      changeSearchData(item ?? null, "FPoMasterId");
-                    }}
-                    variant="standard"
-                  />
-                </Grid>
-
-                <Grid item xs={2} sm={3}>
-                  <MuiAutoComplete
-                    label={intl.formatMessage({
-                      id: "work_order.MaterialCode",
-                    })}
-                    fetchDataFunc={getMaterialArr}
-                    displayLabel="MaterialCode"
-                    displayValue="MaterialId"
-                    value={
-                      workOrderState.searchData.MaterialId !== 0
-                        ? {
-                            MaterialId: workOrderState.searchData.MaterialId,
-                            MaterialCode:
-                              workOrderState.searchData.MaterialCode,
-                          }
-                        : null
-                    }
-                    onChange={(e, item) => {
-                      changeSearchData(item ?? null, "MaterialId");
-                    }}
-                    variant="standard"
-                  />
-                </Grid>
-
-                <Grid item xs={2} sm={3}>
-                  <MuiAutoComplete
-                    label={intl.formatMessage({ id: "work_order.LineName" })}
-                    fetchDataFunc={getLineArr}
-                    displayLabel="LineName"
-                    displayValue="LineId"
-                    value={
-                      workOrderState.searchData.LineId !== 0
-                        ? {
-                            MaterLineIdialId: workOrderState.searchData.LineId,
-                            LineName: workOrderState.searchData.LineName,
-                          }
-                        : null
-                    }
-                    onChange={(e, item) => {
-                      changeSearchData(item ?? null, "LineId");
-                    }}
-                    variant="standard"
-                  />
-                </Grid>
               </Grid>
             </Grid>
+          </Grid>
 
-            <Grid item xs={12}>
-              <Grid container spacing={2} justifyContent="flex-end">
-                <Grid item xs={4} sm={3}>
-                  <MuiDateTimeField
-                    disabled={workOrderState.isLoading}
-                    label={intl.formatMessage({
-                      id: "general.StartSearchingDate",
-                    })}
-                    value={workOrderState.searchData.StartSearchingDate}
-                    onChange={(e) => {
-                      changeSearchData(e, "StartSearchingDate");
-                    }}
-                    variant="standard"
-                  />
-                </Grid>
+          <Grid item xs>
+            <MuiAutoComplete
+              label={intl.formatMessage({ id: "work_order.MaterialCode" })}
+              fetchDataFunc={getSearchMaterialArr}
+              displayLabel="MaterialCode"
+              displayValue="MaterialId"
+              displayGroup="GroupMaterial"
+              value={
+                workOrderState.searchData.MaterialId !== 0
+                  ? {
+                    MaterialId: workOrderState.searchData.MaterialId,
+                    MaterialCode: workOrderState.searchData.MaterialCode,
+                  }
+                  : null
+              }
+              onChange={(e, item) => {
+                changeSearchData(item ?? null, "MaterialId");
+              }}
+              variant="standard"
+            />
+          </Grid>
 
-                <Grid item xs={4} sm={3}>
-                  <MuiDateTimeField
-                    disabled={workOrderState.isLoading}
-                    label={intl.formatMessage({
-                      id: "general.EndSearchingDate",
-                    })}
-                    value={workOrderState.searchData.EndSearchingDate}
-                    onChange={(e) => {
-                      changeSearchData(e, "EndSearchingDate");
-                    }}
-                    variant="standard"
-                  />
-                </Grid>
+          <Grid item>
+            <MuiDateTimeField
+              disabled={workOrderState.isLoading}
+              label={intl.formatMessage({
+                id: "general.StartSearchingDate",
+              })}
+              value={workOrderState.searchData.StartSearchingDate}
+              onChange={(e) => {
+                changeSearchData(e, "StartSearchingDate");
+              }}
+              variant="standard"
+            />
+          </Grid>
 
-                <Grid item xs={4} sm={3}>
-                  <MuiButton text="search" color="info" onClick={fetchData} />
-                  <FormControlLabel
-                    sx={{ mb: 0, ml: "1px" }}
-                    control={
-                      <Switch
-                        defaultChecked={true}
-                        color="primary"
-                        onChange={(e) => handleshowActivedData(e)}
-                      />
-                    }
-                    label={showActivedData ? "Actived" : "Deleted"}
-                  />
-                </Grid>
+          <Grid item xs={4} sm={3}>
+            <MuiDateTimeField
+              disabled={workOrderState.isLoading}
+              label={intl.formatMessage({
+                id: "general.EndSearchingDate",
+              })}
+              value={workOrderState.searchData.EndSearchingDate}
+              onChange={(e) => {
+                changeSearchData(e, "EndSearchingDate");
+              }}
+              variant="standard"
+            />
+          </Grid>
+
+          <Grid item xs={2.5}>
+            <Grid
+              container
+              justifyContent="space-around"
+              alignItems="flex-end"
+            >
+              <Grid item>
+                <MuiButton text="search" color="info" onClick={fetchData} />
+              </Grid>
+
+              <Grid item>
+                <FormControlLabel
+                  sx={{ mb: 0, ml: "1px" }}
+                  control={
+                    <Switch
+                      defaultChecked={true}
+                      color="primary"
+                      onChange={(e) => handleshowActivedData(e)}
+                    />
+                  }
+                  label={showActivedData ? "Actived" : "Deleted"}
+                />
               </Grid>
             </Grid>
           </Grid>
@@ -570,7 +515,7 @@ const WorkOrder = (props) => {
         onPageChange={(newPage) => {
           setDeliveryOrderState({ ...workOrderState, page: newPage + 1 });
         }}
-        getRowId={(rows) => rows.DoId}
+        getRowId={(rows) => rows.WoId}
         onSelectionModelChange={(newSelectedRowId) =>
           handleRowSelection(newSelectedRowId)
         }
@@ -581,14 +526,14 @@ const WorkOrder = (props) => {
         }}
       />
 
-      {/* <DeliveryOrderDialog
+      <WorkOrderDialog
         setNewData={setNewData}
         setUpdateData={setSelectedRow}
-        initModal={mode === CREATE_ACTION ? DeliveryOrderDto : selectedRow}
+        initModal={mode === CREATE_ACTION ? WorkOrderDto : selectedRow}
         isOpen={isOpenDialog}
         onClose={toggleDialog}
         mode={mode}
-      /> */}
+      />
     </React.Fragment>
   );
 };
