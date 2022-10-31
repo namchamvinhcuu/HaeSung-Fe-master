@@ -4,7 +4,7 @@ import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import UndoIcon from '@mui/icons-material/Undo'
-import { FormControlLabel, Switch } from "@mui/material"
+import { FormControlLabel, Switch, Typography, Tooltip } from "@mui/material"
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS'
@@ -208,7 +208,17 @@ const Line = (props) => {
             },
         },
         { field: 'LineName', headerName: intl.formatMessage({ id: "line.LineName" }), width: 200, },
-        { field: 'Description', headerName: intl.formatMessage({ id: "line.Description" }), width: 500, },
+        { field: 'Description', headerName: intl.formatMessage({ id: "line.Description" }), width: 500, 
+            renderCell: (params) => {
+            return (
+              <Tooltip title={params.row.Description ?? ""} className="col-text-elip">
+                <Typography sx={{ fontSize: 14, maxWidth: 600 }}>
+                  {params.row.Description}
+                </Typography>
+              </Tooltip>
+            );
+          },
+        },
         { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), width: 150, },
         {
             field: 'createdDate', headerName: intl.formatMessage({ id: "general.created_date" }), width: 200, valueFormatter: params => {

@@ -9,6 +9,8 @@ import {
   IconButton,
   Switch,
   TextField,
+  Typography,
+  Tooltip
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { useIntl } from "react-intl";
@@ -168,6 +170,18 @@ export default function Mold() {
       field: "Remark",
       headerName: intl.formatMessage({ id: "mold.Remark" }),
       width: 150,
+      renderCell: (params) => {
+        return (
+          <Tooltip
+            title={params.row.Remark ?? ""}
+            className="col-text-elip"
+          >
+            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>
+              {params.row.Remark}
+            </Typography>
+          </Tooltip>
+        );
+      },
     },
     {
       field: "createdName",
