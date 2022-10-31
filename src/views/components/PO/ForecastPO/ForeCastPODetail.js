@@ -197,6 +197,11 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
       width: 100,
     },
     {
+      field: "FPoCode",
+      headerName: intl.formatMessage({ id: "forecast.FPoCode" }), 
+      width: 120,
+    },
+    {
       field: "LineName",
       headerName: intl.formatMessage({ id: "forecast.LineId" }),
       width: 200,
@@ -435,32 +440,6 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
                 />
               </FormControl>
 
-              {/* <TextField
-                label={intl.formatMessage({ id: "forecast.Year" })}
-                variant="standard"
-                type="number"
-                sx={{ width: "120px" }}
-                value={valueYear}
-                inputProps={{ minyear, maxyear }}
-                onChange={(e) => {
-                  var value = parseInt(e.target.value, 10);
-                  if (value > maxyear) value = maxyear;
-                  // if (value < minyear) value = minyear;
-                  setValueYear(value || "");
-                  handleSearch(value || 0, "keyWordYear");
-                }}
-              /> */}
-              {/* <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
-                <InputLabel>
-                  {intl.formatMessage({ id: "forecast.Year" })}
-                </InputLabel>
-                <Input
-                  type="number"
-                  onChange={(e) =>
-                    handleSearch(e.target.value || 0, "keyWordYear")
-                  }
-                />
-              </FormControl> */}
             </Box>
             <Box sx={{ maxWidth: "120px", mr: 2 }}>
               <TextField
@@ -479,13 +458,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
                   handleSearch(value || 0, "keyWordWeekStart");
                 }}
               />
-              {/* <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
-                         <InputLabel>{intl.formatMessage({ id: "forecast.Week_start" })}</InputLabel>
-                         <Input
-                           type="number"
-                           onChange={(e) => handleSearch(e.target.value || 0, "keyWordWeekStart")}
-                         />
-               </FormControl> */}
+
             </Box>
             <Box sx={{ maxWidth: "120px", mr: 2 }}>
               <TextField
@@ -505,17 +478,6 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
                   handleSearch(value || 0, "keyWordWeekEnd");
                 }}
               />
-              {/* <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
-                <InputLabel>
-                  {intl.formatMessage({ id: "forecast.Week_end" })}
-                </InputLabel>
-                <Input
-                  type="number"
-                  onChange={(e) =>
-                    handleSearch(e.target.value || 0, "keyWordWeekEnd")
-                  }
-                />
-              </FormControl> */}
             </Box>
 
             <Box>

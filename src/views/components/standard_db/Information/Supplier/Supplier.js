@@ -4,7 +4,7 @@ import { MuiButton, MuiDataGrid, MuiSearchField } from "@controls";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import UndoIcon from "@mui/icons-material/Undo";
-import { FormControlLabel, Switch } from "@mui/material";
+import { FormControlLabel, Switch, Typography, Tooltip } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import { CombineDispatchToProps, CombineStateToProps } from "@plugins/helperJS";
@@ -240,6 +240,15 @@ const Supplier = (props) => {
       field: "SupplierContact",
       headerName: intl.formatMessage({ id: "supplier.SupplierContact" }),
       flex: 1,
+      renderCell: (params) => {
+        return (
+          <Tooltip title={params.row.SupplierContact ?? ""} className="col-text-elip">
+            <Typography sx={{ fontSize: 14, maxWidth: 600 }}>
+              {params.row.SupplierContact}
+            </Typography>
+          </Tooltip>
+        );
+      },
     },
     {
       field: "createdDate",

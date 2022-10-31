@@ -298,7 +298,11 @@
         "duplicated_product_buyer": "Material and Buyer is exist",
         "Total_Order_Qty": "Total Order Quantity",
         "FPO_Code_required": " FPO Master Code is required",
-        "duplicated_code_master": "FPO Master Code is exist"
+        "duplicated_code_master": "FPO Master Code is exist",
+        "FPoCode":" FPO Code",
+        "FPoCode_required": "FPO Code is required",
+        "FPoCode_required_length_10": "FPO Code must lenght is 10 character",
+        "FPo_code_duplicated": "FPO Code is exist"
     },
     "document": {
         "menuName": "Menu Name",
