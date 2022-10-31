@@ -23,10 +23,10 @@ const MuiSearchField = (props) => {
   };
 
   return (
-    <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
+    <FormControl sx={{ mb: 0.5, width: "100%" }}   disabled={disabled} variant="standard">
       <InputLabel>{intl.formatMessage({ id: label })}</InputLabel>
       <Input
-        disabled={disabled}
+    
         type="text"
         name={name}
         onKeyDown={keyPress}

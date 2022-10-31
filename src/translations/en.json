@@ -278,7 +278,7 @@
         "Year_required_bigger": "Year must be not less than current year",
         "Week_required_bigger": "Year must be not less 1",
         "Week_required_less": "Year must not be bigger 52",
-        "Amount_required_bigger": "Year must be not less 1",
+        "Amount_required_bigger": "Amount must be not less 1",
         "Required_Int": "Required must is integer",
         "Max_2050": "Year must be less 2050",
         "Desciption": "Desciption",
@@ -289,7 +289,10 @@
         "Start_end_week_error": "Start Week not bigger than End Week",
         "BuyerId": "Buyer Code",
         "BuyerId_required": "Buyer Code is required",
-        "duplicated_product_buyer": "Material and Buyer is exist"
+        "duplicated_product_buyer": "Material and Buyer is exist",
+        "Total_Order_Qty": "Total Order Quantity",
+        "FPO_Code_required": " FPO Master Code is required",
+        "duplicated_code_master": "FPO Master Code is exist"
     },
     "document": {
         "menuName": "Menu Name",

@@ -365,6 +365,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
         let res = await forecastService.deleteForecast({
           FPOId: forecast.FPOId,
           row_version: forecast.row_version,
+          FPoMasterId: FPoMasterId
         });
         if (res && res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: "general.success" }));
@@ -411,7 +412,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
         </Grid>
         <Grid item>
           <Box display="flex">
-            <Box sx={{ mx: 3, maxWidth: "120px" }}>
+            <Box sx={{ mr: 2, maxWidth: "120px" }}>
               <FormControl sx={{ marginTop: "3px" }}>
                 <MuiSelectField
                   disabled={FPoMasterId ? false : true}
@@ -461,7 +462,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
                 />
               </FormControl> */}
             </Box>
-            <Box sx={{ maxWidth: "120px", mr: 3 }}>
+            <Box sx={{ maxWidth: "120px", mr: 2 }}>
               <TextField
                 disabled={FPoMasterId ? false : true}
                 label={intl.formatMessage({ id: "forecast.Week_start" })}
@@ -486,7 +487,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
                          />
                </FormControl> */}
             </Box>
-            <Box sx={{ maxWidth: "120px", mr: 3 }}>
+            <Box sx={{ maxWidth: "120px", mr: 2 }}>
               <TextField
                 disabled={FPoMasterId ? false : true}
                 label={intl.formatMessage({ id: "forecast.Week_end" })}
@@ -522,7 +523,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
                disabled={FPoMasterId ? false : true} 
                 label="general.name"
                 name="LineName"
-                onClick={fetchData}
+                // onClick={fetchData}
                 onChange={(e) => handleSearch(e.target.value, "keyWord")}
               />
             </Box> 
@@ -532,7 +533,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
           <MuiButton
             text="search"
             color="info"
-            onClick={fetchData}
+            onClick={()=>fetchData(FPoMasterId)}
             disabled={FPoMasterId ? false : true}
           />
         </Grid>

@@ -315,7 +315,10 @@
         "Start_end_week_error": "Tuần bắt đầu không lớn hơn tuần kết thúc",
         "BuyerId": "Mã Buyer",
         "BuyerId_required": "Mã Buyer không được để trống",
-        "duplicated_product_buyer": "Đã tồn tại sản phẩm và người mua"
+        "duplicated_product_buyer": "Đã tồn tại sản phẩm và người mua",
+        "Total_Order_Qty": "Số lượng đơn đặt hàng",
+        "FPO_Code_required": " FPO Master Code không được để trống",
+        "duplicated_code_master": "FPO Master Code đã tồn tại"
     },
     "delivery_order": {
         "DoCode": "DO Code",

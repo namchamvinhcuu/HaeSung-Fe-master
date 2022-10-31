@@ -37,7 +37,7 @@ const ForecastMasterDialog = (props) => {
     FPoMasterCode: yup
       .string()
       .nullable()
-      .required("Code required"),
+      .required(intl.formatMessage({ id: "forecast.FPO_Code_required" })),
   });
   const handleReset = () => {
     resetForm();
