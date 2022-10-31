@@ -37,10 +37,7 @@ import moment from "moment";
 
 const min = 1;
 const max = 52;
-// const todaydate = new Date();
-// const  oneJan =  new Date(todaydate.getFullYear(), 0, 1);
-// const  numberOfDays =  Math.floor((todaydate - oneJan) / (24 * 60 * 60 * 1000));
-// const  curWeek = Math.ceil(( todaydate.getDay() + 1 + numberOfDays) / 7);
+
 const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
   const intl = useIntl();
   let isRendered = useRef(true);
@@ -316,10 +313,11 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
   async function fetchData(FPoMasterId) {
     if (
       forecastState.searchData.keyWordWeekStart >
-        forecastState.searchData.keyWordWeekEnd &&
+      forecastState.searchData.keyWordWeekEnd &&
       forecastState.searchData.keyWordWeekEnd != 0
     ) {
       ErrorAlert(intl.formatMessage({ id: "forecast.Start_end_week_error" }));
+      return;
     }
     setForecastState({ ...forecastState, isLoading: true });
     const params = {
