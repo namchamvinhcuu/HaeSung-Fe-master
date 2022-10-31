@@ -318,7 +318,11 @@
         "duplicated_product_buyer": "Đã tồn tại sản phẩm và người mua",
         "Total_Order_Qty": "Số lượng đơn đặt hàng",
         "FPO_Code_required": " FPO Master Code không được để trống",
-        "duplicated_code_master": "FPO Master Code đã tồn tại"
+        "duplicated_code_master": "FPO Master Code đã tồn tại",
+        "FPoCode":"Mã FPO",
+        "FPoCode_required": "FPO Code không được để trống",
+        "FPoCode_required_length_10": "FPO Code phải có độ dài bằng 10 ký tự",
+        "FPo_code_duplicated": "FPO Code đã tồn tại"
     },
     "delivery_order": {
         "DoCode": "DO Code",

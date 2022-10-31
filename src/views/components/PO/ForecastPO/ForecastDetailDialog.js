@@ -29,6 +29,7 @@ const ForecastDetailDialog = (props) => {
   const intl = useIntl();
   const defaultValue = {
     MaterialId: null,
+    FPoCode:"",
     BuyerId: null,
     LineId: null,
     Week: getCurrentWeek(),
@@ -55,6 +56,8 @@ const ForecastDetailDialog = (props) => {
       .number()
       .nullable()
       .required(intl.formatMessage({ id: "forecast.LineId_required" })),
+    FPoCode: yup.string().required(intl.formatMessage({ id: "forecast.FPoCode_required" })).nullable()
+      .length(10, intl.formatMessage({ id: "forecast.FPoCode_required_length_10" })),
     Week: yup
       .number()
       .nullable()
@@ -154,6 +157,48 @@ const ForecastDetailDialog = (props) => {
           rowSpacing={2.5}
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
         >
+            <Grid item xs={12}>
+            <TextField
+              fullWidth
+              type="number"
+              size="small"
+              name="Year"
+              disabled={dialogState.isSubmit}
+              value={values.Year}
+              onChange={handleChange}
+              label={intl.formatMessage({ id: "forecast.Year" }) + " *"}
+              error={touched.Year && Boolean(errors.Year)}
+              helperText={touched.Year && errors.Year}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              type="number"
+              size="small"
+              name="Week"
+              disabled={dialogState.isSubmit}
+              value={values.Week}
+              onChange={handleChange}
+              label={intl.formatMessage({ id: "forecast.Week" }) + " *"}
+              error={touched.Week && Boolean(errors.Week)}
+              helperText={touched.Week && errors.Week}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              size="small"
+              name="FPoCode"
+              disabled={dialogState.isSubmit}
+              value={values.FPoCode || ""}
+              onChange={handleChange}
+              label={intl.formatMessage({ id: "forecast.FPoCode" }) + " *"}
+              error={touched.FPoCode && Boolean(errors.FPoCode)}
+              helperText={touched.FPoCode && errors.FPoCode}
+            />
+          </Grid>
+          
           <Grid item xs={12}>
             <MuiSelectField
               value={
@@ -183,6 +228,20 @@ const ForecastDetailDialog = (props) => {
               }
               error={touched.MaterialId && Boolean(errors.MaterialId)}
               helperText={touched.MaterialId && errors.MaterialId}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              type="number"
+              size="small"
+              name="Amount"
+              disabled={dialogState.isSubmit}
+              value={values.Amount}
+              onChange={handleChange}
+              label={intl.formatMessage({ id: "forecast.Amount" }) + " *"}
+              error={touched.Amount && Boolean(errors.Amount)}
+              helperText={touched.Amount && errors.Amount}
             />
           </Grid>
           <Grid item xs={12}>
@@ -242,48 +301,9 @@ const ForecastDetailDialog = (props) => {
               helperText={touched.LineId && errors.LineId}
             />
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              type="number"
-              size="small"
-              name="Week"
-              disabled={dialogState.isSubmit}
-              value={values.Week}
-              onChange={handleChange}
-              label={intl.formatMessage({ id: "forecast.Week" }) + " *"}
-              error={touched.Week && Boolean(errors.Week)}
-              helperText={touched.Week && errors.Week}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              type="number"
-              size="small"
-              name="Year"
-              disabled={dialogState.isSubmit}
-              value={values.Year}
-              onChange={handleChange}
-              label={intl.formatMessage({ id: "forecast.Year" }) + " *"}
-              error={touched.Year && Boolean(errors.Year)}
-              helperText={touched.Year && errors.Year}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              type="number"
-              size="small"
-              name="Amount"
-              disabled={dialogState.isSubmit}
-              value={values.Amount}
-              onChange={handleChange}
-              label={intl.formatMessage({ id: "forecast.Amount" }) + " *"}
-              error={touched.Amount && Boolean(errors.Amount)}
-              helperText={touched.Amount && errors.Amount}
-            />
-          </Grid>
+         
+        
+          
           <Grid item xs={12}>
             <Grid container direction="row-reverse">
               <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
