@@ -40,8 +40,7 @@ const ForecastDetailDialog = (props) => {
     isSubmit: false,
   });
   useEffect(() => {
- 
-  }, []);
+  }, [FPoMasterId]);
 
   const schema = yup.object().shape({
     MaterialId: yup

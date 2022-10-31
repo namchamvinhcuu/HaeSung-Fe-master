@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import { useIntl } from "react-intl";
 const MuiSearchField = (props) => {
   const intl = useIntl();
-  const { label, name, onClick, onChange } = props;
+  const { label, name, onClick, onChange, disabled } = props;
 
   const handleMouseDown = (event) => {
     event.preventDefault();
@@ -26,6 +26,7 @@ const MuiSearchField = (props) => {
     <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
       <InputLabel>{intl.formatMessage({ id: label })}</InputLabel>
       <Input
+        disabled={disabled}
         type="text"
         name={name}
         onKeyDown={keyPress}

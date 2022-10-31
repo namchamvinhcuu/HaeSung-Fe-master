@@ -37,12 +37,11 @@ import moment from "moment";
 
 const min = 1;
 const max = 52;
-// const todaydate = new Date();  
-// const  oneJan =  new Date(todaydate.getFullYear(), 0, 1);   
-// const  numberOfDays =  Math.floor((todaydate - oneJan) / (24 * 60 * 60 * 1000));   
-// const  curWeek = Math.ceil(( todaydate.getDay() + 1 + numberOfDays) / 7);     
-const ForecastPODetail = ({FPoMasterId, newDataChild}) => {
- 
+// const todaydate = new Date();
+// const  oneJan =  new Date(todaydate.getFullYear(), 0, 1);
+// const  numberOfDays =  Math.floor((todaydate - oneJan) / (24 * 60 * 60 * 1000));
+// const  curWeek = Math.ceil(( todaydate.getDay() + 1 + numberOfDays) / 7);
+const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
@@ -69,7 +68,7 @@ const ForecastPODetail = ({FPoMasterId, newDataChild}) => {
       keyWordYear: new Date().getFullYear(),
       showDelete: true,
     },
-    FPoMasterId: FPoMasterId
+    FPoMasterId: FPoMasterId,
   });
   useEffect(() => {
     getMaterialList();
@@ -130,7 +129,7 @@ const ForecastPODetail = ({FPoMasterId, newDataChild}) => {
   };
   const handleUpdate = (row) => {
     setMode(UPDATE_ACTION);
-    setRowData({ ...row });
+    setRowData({ ...row,FPoMasterId:FPoMasterId });
     toggle();
   };
 
@@ -249,7 +248,7 @@ const ForecastPODetail = ({FPoMasterId, newDataChild}) => {
       headerName: intl.formatMessage({ id: "forecast.Amount" }),
       width: 100,
     },
-  
+
     {
       field: "createdName",
       headerName: intl.formatMessage({ id: "general.createdName" }),
@@ -310,7 +309,6 @@ const ForecastPODetail = ({FPoMasterId, newDataChild}) => {
     }
   };
   async function fetchData(FPoMasterId) {
-    console.log(FPoMasterId)
     if (
       forecastState.searchData.keyWordWeekStart >
         forecastState.searchData.keyWordWeekEnd &&
@@ -327,7 +325,7 @@ const ForecastPODetail = ({FPoMasterId, newDataChild}) => {
       keyWordWeekEnd: forecastState.searchData.keyWordWeekEnd,
       keyWordYear: forecastState.searchData.keyWordYear,
       showDelete: forecastState.searchData.showDelete,
-      FPoMasterId: FPoMasterId
+      FPoMasterId: FPoMasterId,
     };
     const res = await forecastService.getForecastList(params);
     if (res && res.Data && isRendered)
@@ -389,9 +387,9 @@ const ForecastPODetail = ({FPoMasterId, newDataChild}) => {
         data.pop();
       }
       setState({
-        ...forecastState
-        , data: [...data]
-        , totalRow: forecastState.totalRow + 1
+        ...forecastState,
+        data: [...data],
+        totalRow: forecastState.totalRow + 1,
       });
     }
   }, [newDataChild]);
@@ -404,17 +402,25 @@ const ForecastPODetail = ({FPoMasterId, newDataChild}) => {
         alignItems="flex-end"
       >
         <Grid item xs={5}>
-          <MuiButton text="create" color="success" onClick={handleAdd} disabled={FPoMasterId ? false : true}/>
+          <MuiButton
+            text="create"
+            color="success"
+            onClick={handleAdd}
+            disabled={FPoMasterId ? false : true}
+          />
         </Grid>
         <Grid item>
           <Box display="flex">
-          <Box sx={{ mx: 3, maxWidth: "120px" }}>
-              <FormControl sx={{marginTop:"3px"}}>
+            <Box sx={{ mx: 3, maxWidth: "120px" }}>
+              <FormControl sx={{ marginTop: "3px" }}>
                 <MuiSelectField
-                disabled={FPoMasterId ? false : true} 
+                  disabled={FPoMasterId ? false : true}
                   label={intl.formatMessage({ id: "forecast.Year" })}
                   options={yearList}
-                  defaultValue={{ YearId: new Date().getFullYear() ||"", YearName: `${new Date().getFullYear()+ ""}` || "" }}
+                  defaultValue={{
+                    YearId: new Date().getFullYear() || "",
+                    YearName: `${new Date().getFullYear() + ""}` || "",
+                  }}
                   displayLabel="YearName"
                   displayValue="YearId"
                   onChange={(e, item) =>
@@ -457,7 +463,7 @@ const ForecastPODetail = ({FPoMasterId, newDataChild}) => {
             </Box>
             <Box sx={{ maxWidth: "120px", mr: 3 }}>
               <TextField
-              disabled={FPoMasterId ? false : true} 
+                disabled={FPoMasterId ? false : true}
                 label={intl.formatMessage({ id: "forecast.Week_start" })}
                 variant="standard"
                 type="number"
@@ -482,19 +488,18 @@ const ForecastPODetail = ({FPoMasterId, newDataChild}) => {
             </Box>
             <Box sx={{ maxWidth: "120px", mr: 3 }}>
               <TextField
-              disabled={FPoMasterId ? false : true} 
+                disabled={FPoMasterId ? false : true}
                 label={intl.formatMessage({ id: "forecast.Week_end" })}
                 variant="standard"
                 type="number"
                 sx={{ width: "120px" }}
                 value={valueEnd || currentWeek}
-              
                 // inputProps={{ min, max }}
                 onChange={(e) => {
                   var value = parseInt(e.target.value, 10);
                   if (value > max) value = max;
                   if (value < min) value = min;
-                  setCurrentWeek(value || "")
+                  setCurrentWeek(value || "");
                   setValueEnd(value || "");
                   handleSearch(value || 0, "keyWordWeekEnd");
                 }}
@@ -511,7 +516,6 @@ const ForecastPODetail = ({FPoMasterId, newDataChild}) => {
                 />
               </FormControl> */}
             </Box>
-         
 
             <Box>
               <MuiSearchField
@@ -521,18 +525,23 @@ const ForecastPODetail = ({FPoMasterId, newDataChild}) => {
                 onClick={fetchData}
                 onChange={(e) => handleSearch(e.target.value, "keyWord")}
               />
-            </Box>
+            </Box> 
           </Box>
         </Grid>
         <Grid item>
-          <MuiButton text="search" color="info" onClick={fetchData} disabled={FPoMasterId ? false : true} />
+          <MuiButton
+            text="search"
+            color="info"
+            onClick={fetchData}
+            disabled={FPoMasterId ? false : true}
+          />
         </Grid>
         <Grid item>
           <FormControlLabel
             sx={{ marginBottom: "3px" }}
             control={
               <Switch
-              disabled={FPoMasterId ? false : true} 
+                disabled={FPoMasterId ? false : true}
                 defaultChecked={true}
                 color="primary"
                 onChange={(e) => handleSearch(e.target.checked, "showDelete")}
@@ -546,7 +555,7 @@ const ForecastPODetail = ({FPoMasterId, newDataChild}) => {
           />
         </Grid>
       </Grid>
-   
+
       <MuiDataGrid
         showLoading={forecastState.isLoading}
         isPagingServer={true}
@@ -572,14 +581,21 @@ const ForecastPODetail = ({FPoMasterId, newDataChild}) => {
         // }}
         // selectionModel={selectedRow.menuId}
         getRowClassName={(params) => {
-          if (_.isEqual(params.row, newData) ||_.isEqual(params.row, newDataChild)) {
+          if (
+            _.isEqual(params.row, newData) ||
+            _.isEqual(params.row, newDataChild)
+          ) {
             return `Mui-created`;
           }
         }}
       />
       <ForecastDetailDialog
         initModal={rowData}
-        valueOption={{ MaterialList: MaterialList, LineList: LineList, BuyerList: BuyerList }}
+        valueOption={{
+          MaterialList: MaterialList,
+          LineList: LineList,
+          BuyerList: BuyerList,
+        }}
         setNewData={setNewData}
         setUpdateData={setUpdateData}
         isOpen={isShowing}

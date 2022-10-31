@@ -314,7 +314,8 @@
         "Week_end": "Tuần kết thúc",
         "Start_end_week_error": "Tuần bắt đầu không lớn hơn tuần kết thúc",
         "BuyerId": "Mã Buyer",
-        "BuyerId_required": "Mã Buyer không được để trống"
+        "BuyerId_required": "Mã Buyer không được để trống",
+        "duplicated_product_buyer": "Đã tồn tại sản phẩm và người mua"
     },
     "delivery_order": {
         "DoCode": "DO Code",

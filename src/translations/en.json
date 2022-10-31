@@ -288,7 +288,8 @@
         "Week_end": "Week End",
         "Start_end_week_error": "Start Week not bigger than End Week",
         "BuyerId": "Buyer Code",
-        "BuyerId_required": "Buyer Code is required"
+        "BuyerId_required": "Buyer Code is required",
+        "duplicated_product_buyer": "Material and Buyer is exist"
     },
     "document": {
         "menuName": "Menu Name",
