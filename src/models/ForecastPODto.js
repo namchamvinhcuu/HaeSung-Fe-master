@@ -12,6 +12,8 @@ const ForecastPODto = {
 
     FPoMasterCode: "",
     MaterialCode: "",
+    MaterialCode: "",
+    DescriptionMaterial: "",
     BuyerCode: "",
     LineName: "",
 

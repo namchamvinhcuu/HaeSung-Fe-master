@@ -12,13 +12,6 @@ export const get = async (params) => {
     }
 };
 
-// export const getPoMasterArr = async () => {
-//     try {
-//         return await axios.get(`${API}/get-forecast-po-master`);
-//     } catch (error) {
-//         console.log(`ERROR: ${error}`);
-//     }
-// };
 
 export const getSearchMaterialArr = async () => {
     try {
@@ -28,54 +21,9 @@ export const getSearchMaterialArr = async () => {
     }
 };
 
-// export const getMaterialArrByForecastPOMaster = async (params) => {
-//     try {
-//         return await axios.get(`${API}/get-material-by-forecastPOMaster`, {
-//             params: {
-//                 FPoMasterId: params.FPoMasterId,
-//                 Week: params.Week,
-//                 Year: params.Year,
-//             },
-//         });
-//     } catch (error) {
-//         console.log(`ERROR: ${error}`);
-//     }
-// };
-
-// export const getBom = async (params) => {
-//     try {
-//         return await axios.get(`${API}/get-bom`, {
-//             params: {
-//                 FPOId: params.FPOId,
-//                 MaterialId: params.MaterialId,
-//             },
-//         });
-//     } catch (error) {
-//         console.log(`ERROR: ${error}`);
-//     }
-// };
-
-// export const getLineArr = async () => {
-//     try {
-//         return await axios.get(`${API}/get-lines`);
-//     } catch (error) {
-//         console.log(`ERROR: ${error}`);
-//     }
-// };
-
-export const create = async (params) => {
-    try {
-        return await axios.post(`${API}/create-wo`, {
-            ...params,
-        });
-    } catch (error) {
-        console.log(`ERROR: ${error}`);
-    }
-};
-
 export const modify = async (params) => {
     try {
-        return await axios.put(`${API}/modify-wo`, {
+        return await axios.put(`${API}/modify-forecastPo`, {
             ...params,
         });
     } catch (error) {

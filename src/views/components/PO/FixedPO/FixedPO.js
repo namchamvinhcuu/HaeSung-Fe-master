@@ -132,6 +132,36 @@ const FixedPO = (props) => {
     return res;
   };
 
+  // const handleRowUpdate = React.useCallback(
+  //   async (newRow) => {
+  //     // Make the HTTP request to save in the backend
+  //     console.log('[newRow]', newRow);
+  //     const response = await fixedPOService.modify(newRow);
+  //     if (isRendered && response && response.Data) {
+  //         setSelectedRow({ ...response.Data });
+  //     }
+  //     else{
+
+  //     }
+  //   },
+  //   // [selectedRow],
+  // );
+  const handleRowUpdate = async (newRow) => {
+    const res = await fixedPOService.modify(newRow);
+    if (res && res.HttpResponseCode === 200) {
+      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      return res.Data;
+    }
+    else {
+      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      return null;
+    }
+  }
+
+  const handleProcessRowUpdateError = React.useCallback((error) => {
+    ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+  }, []);
+
   const fetchData = async () => {
     let flag = true;
     let message = "";
@@ -139,13 +169,13 @@ const FixedPO = (props) => {
     _.forOwn(checkObj, (value, key) => {
       switch (key) {
         case "Year":
-          if (!value.isInteger() && value > 2022) {
+          if (!Number.isInteger(value) && value > 2022) {
             message = "general.field_invalid";
             flag = false;
           }
           break;
         case "Week":
-          if (!value.isInteger() && value > 0 && value <= 52) {
+          if (!Number.isInteger(value) && value > 0 && value <= 52) {
             message = "general.field_invalid";
             flag = false;
           }
@@ -185,99 +215,57 @@ const FixedPO = (props) => {
     }
   };
 
+  useEffect(() => {
+    fetchData();
+
+    return () => {
+      isRendered = false;
+    };
+  }, [fixedPOState.page, fixedPOState.pageSize, showActivedData]);
+
+  useEffect(() => {
+    if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, ForecastPODto)) {
+      let newArr = [...fixedPOState.data];
+      const index = _.findIndex(newArr, function (o) {
+        return o.FPOId == selectedRow.FPOId;
+      });
+      if (index !== -1) {
+        newArr[index] = selectedRow;
+      }
+
+      setFixedPOState({
+        ...fixedPOState,
+        data: [...newArr],
+      });
+    }
+  }, [selectedRow]);
+
   const columns = [
     { field: "FPOId", headerName: "", hide: true },
-    { field: "id", headerName: "", width: 80, filterable: false, renderCell: (index) => index.api.getRowIndex(index.row.FPOId) + 1 + (fixedPOState.page - 1) * fixedPOState.pageSize, },
     {
-      field: "action",
-      headerName: "",
-      width: 80,
-      disableClickEventBubbling: true,
-      sortable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => {
-        return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Grid item xs={6}>
-              <IconButton
-                aria-label="edit"
-                color="warning"
-                size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
-                onClick={() => {
-                  toggleDialog(UPDATE_ACTION);
-                }}
-              >
-                <EditIcon fontSize="inherit" />
-              </IconButton>
-            </Grid>
-
-            {/* <Grid item xs={6}>
-              <IconButton
-                aria-label="delete"
-                color="error"
-                size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
-                onClick={() => handleDelete(params.row)}
-              >
-                {showActivedData ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
-              </IconButton>
-            </Grid> */}
-          </Grid>
-        );
-      },
-    },
-    {
-      field: "FPoMasterCode", headerName: intl.formatMessage({ id: "purchase_order.PoCode" }), width: 150, renderCell: (params) => {
-        return (<>{params.row.FPOId == RowID &&
-          <TextField
-            value={valueRow.PoCode}
-            label=' '
-            size='small'
-            onChange={(e) => setValueRow({ ...valueRow, PoCode: e.target.value })}
-          />}</>)
-      }
-    },
-    {
-      field: "Amount", headerName: intl.formatMessage({ id: "forecast.Amount" }), width: 150, renderCell: (params) => {
-        return (<>{params.row.FPOId != RowID ? params.row.Amount :
-          <TextField
-            value={valueRow.Amount}
-            label={intl.formatMessage({ id: "forecast.Week" })}
-            size='small'
-            type="number"
-            onChange={(e) => setValueRow({ ...valueRow, Amount: e.target.value })}
-            defaultValue={params.row.Amount}
-          />}</>)
-      }
-    },
-    {
-      field: "Inch",
-      headerName: "Inch",
-      width: 100,
+      field: "id", headerName: "", width: 80, filterable: false,
+      renderCell: (index) => index.api.getRowIndex(index.row.FPOId) + 1 + (fixedPOState.page - 1) * fixedPOState.pageSize,
     },
     {
       field: "LineName",
-      headerName: intl.formatMessage({ id: "forecast.LineId" }),
+      headerName: intl.formatMessage({ id: "forecast.LineName" }),
       width: 200,
+    },
+    {
+      field: "FPoMasterCode",
+      headerName: intl.formatMessage({ id: "forecast.FPoMasterCode" }),
+      type: 'number',
+      width: 140,
     },
     {
       field: "MaterialCode",
-      headerName: intl.formatMessage({ id: "forecast.MaterialId" }),
-      width: 200,
+      headerName: intl.formatMessage({ id: "forecast.MaterialCode" }),
+      width: 150,
     },
+
     {
       field: "DescriptionMaterial",
-      headerName: intl.formatMessage({ id: "forecast.Desciption" }),
+      headerName: intl.formatMessage({ id: "forecast.DescriptionMaterial" }),
       width: 300,
       renderCell: (params) => {
         return (
@@ -293,9 +281,10 @@ const FixedPO = (props) => {
       },
     },
     {
-      field: "Description",
-      headerName: "Desc 2",
-      width: 180,
+      field: "Amount", headerName: intl.formatMessage({ id: "forecast.Amount" }), width: 150,
+    },
+    {
+      field: "OrderQty", headerName: intl.formatMessage({ id: "forecast.OrderQty" }), width: 150, editable: true
     },
     {
       field: "Week",
@@ -414,7 +403,7 @@ const FixedPO = (props) => {
         showLoading={fixedPOState.isLoading}
         isPagingServer={true}
         headerHeight={45}
-        gridHeight={745}
+        // gridHeight={750}
         columns={columns}
         rows={fixedPOState.data}
         page={fixedPOState.page - 1}
@@ -425,8 +414,17 @@ const FixedPO = (props) => {
         onSelectionModelChange={(newSelectedRowId) =>
           handleRowSelection(newSelectedRowId)
         }
+        processRowUpdate={handleRowUpdate}
+        onProcessRowUpdateError={handleProcessRowUpdateError}
+        experimentalFeatures={{ newEditingApi: true }}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;
+        }}
+        getCellClassName={(params) => {
+          if (params.field === 'OrderQty' && params.value && params.value > 0) {
+            return 'hot';
+          }
+          return '';
         }}
       />
 

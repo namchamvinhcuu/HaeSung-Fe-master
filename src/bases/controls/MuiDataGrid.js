@@ -117,7 +117,11 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
         '&:hover': {
             backgroundColor: '#EEE8AA',
         }
-    }
+    },
+    '& .hot': {
+        backgroundColor: '#ff943975',
+        color: '#1a3e72',
+    },
 }));
 
 const mulberry32 = (a) => {
