@@ -253,7 +253,7 @@ export default function QCDetail({ QCMasterId }) {
         </Grid>
         <Grid item>
           <FormControlLabel
-            sx={{ mb: 0 }}
+            sx={{ mt: 1 }}
             control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleSearch(e.target.checked, 'showDelete')} />}
             label={qcDetailState.searchData.showDelete ? "Active Data" : "Delete Data"} />
         </Grid>

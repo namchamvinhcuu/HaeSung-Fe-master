@@ -258,7 +258,7 @@ const Staff = (props) => {
     {
       field: "createdDate",
       headerName: intl.formatMessage({ id: "general.created_date" }),
-      flex: 0.3,
+      flex: 0.5,
       valueFormatter: (params) => {
         if (params.value !== null) {
           return moment(params?.value)
@@ -272,7 +272,7 @@ const Staff = (props) => {
     {
       field: "modifiedDate",
       headerName: intl.formatMessage({ id: "general.modified_date" }),
-      flex: 0.3,
+      flex: 0.5,
       valueFormatter: (params) => {
         if (params.value !== null) {
           return moment(params?.value)

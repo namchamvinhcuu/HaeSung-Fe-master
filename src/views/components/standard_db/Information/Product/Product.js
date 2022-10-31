@@ -20,7 +20,12 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import { MuiButton, MuiDataGrid, MuiSearchField } from "@controls";
+import {
+  MuiButton,
+  MuiDataGrid,
+  MuiSearchField,
+  MuiSelectField,
+} from "@controls";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
@@ -323,105 +328,137 @@ const Product = () => {
         container
         direction="row"
         justifyContent="space-between"
-        alignItems="flex-end"
-        sx={{ mb: 1, pr: 1 }}
+        alignItems="width-end"
       >
-        <Grid item xs={2}>
+        <Grid item xs={3}>
           <MuiButton
             text="create"
             color="success"
             onClick={toggleCreateDialog}
           />
         </Grid>
-        <Grid item>
-          <Autocomplete
-            fullWidth
-            size="small"
-            options={modelArr}
-            autoHighlight
-            openOnFocus
-            getOptionLabel={(option) => option.commonDetailName}
-            isOptionEqualToValue={(option, value) =>
-              option.commonDetailId === value.commonDetailId
-            }
-            onChange={(e, item) =>
-              handleSearch(item ? item.commonDetailId ?? null : null, "Model")
-            }
-            renderInput={(params) => {
-              return (
-                <TextField
-                  {...params}
-                  label={intl.formatMessage({ id: "product.Model" })}
-                  variant="standard"
-                  sx={{ width: 200 }}
-                />
-              );
-            }}
-          />
-        </Grid>
-        <Grid item>
-          <Autocomplete
-            fullWidth
-            size="small"
-            options={productTypeArr}
-            autoHighlight
-            openOnFocus
-            getOptionLabel={(option) => option.commonDetailName}
-            isOptionEqualToValue={(option, value) =>
-              option.commonDetailId === value.commonDetailId
-            }
-            onChange={(e, item) =>
-              handleSearch(
-                item ? item.commonDetailId ?? null : null,
-                "ProductType"
-              )
-            }
-            renderInput={(params) => {
-              return (
-                <TextField
-                  {...params}
-                  label={intl.formatMessage({ id: "product.product_type" })}
-                  variant="standard"
-                  sx={{ width: 200 }}
-                />
-              );
-            }}
-          />
-        </Grid>
-        <Grid item>
-          <MuiSearchField
-            sx={{ width: 200 }}
-            fullWidth
-            variant="MaterialCode"
-            size="small"
-            label="product.product_code"
-            onClick={fetchData}
-            onChange={(e) => handleSearch(e.target.value, "MaterialCode")}
-          />
+        <Grid item xs>
+          <Grid
+            container
+            columnSpacing={2}
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="flex-end"
+          >
+            {/* <Grid item style={{ width: "21%" }}>
+              <Autocomplete
+                options={modelArr}
+                autoHighlight
+                openOnFocus
+                getOptionLabel={(option) => option.commonDetailName}
+                isOptionEqualToValue={(option, value) =>
+                  option.commonDetailId === value.commonDetailId
+                }
+                onChange={(e, item) =>
+                  handleSearch(
+                    item ? item.commonDetailId ?? null : null,
+                    "Model"
+                  )
+                }
+                renderInput={(params) => {
+                  return (
+                    <TextField
+                      {...params}
+                      label={intl.formatMessage({ id: "product.Model" })}
+                      variant="standard"
+                    />
+                  );
+                }}
+              />
+            </Grid> */}
+            {/* <Grid item style={{ width: "21%"}}>
+              <Autocomplete
+                fullWidth
+                options={productTypeArr}
+                autoHighlight
+                openOnFocus
+                getOptionLabel={(option) => option.commonDetailName}
+                isOptionEqualToValue={(option, value) =>
+                  option.commonDetailId === value.commonDetailId
+                }
+                onChange={(e, item) =>
+                  handleSearch(
+                    item ? item.commonDetailId ?? null : null,
+                    "ProductType"
+                  )
+                }
+                renderInput={(params) => {
+                  return (
+                    <TextField
+                      {...params}
+                      label={intl.formatMessage({ id: "product.product_type" })}
+                      variant="standard"
+                    />
+                  );
+                }}
+              />
+            </Grid> */}
+            <Grid item style={{ width: "21%" }}>
+              <MuiSelectField
+                label={intl.formatMessage({ id: "product.Model" })}
+                options={modelArr}
+                displayLabel="commonDetailName"
+                displayValue="commonDetailId"
+                onChange={(e, item) =>
+                  handleSearch(
+                    item ? item.commonDetailId ?? null : null,
+                    "Model"
+                  )
+                }
+                variant="standard"
+              />
+            </Grid>
+            <Grid item style={{ width: "21%" }}>
+              <MuiSearchField
+                variant="MaterialCode"
+                label="product.product_code"
+                onClick={fetchData}
+                onChange={(e) => handleSearch(e.target.value, "MaterialCode")}
+              />
+            </Grid>
+            <Grid item style={{ width: "21%" }}>
+              <MuiSelectField
+                label={intl.formatMessage({ id: "product.product_type" })}
+                options={productTypeArr}
+                displayLabel="commonDetailName"
+                displayValue="commonDetailId"
+                onChange={(e, item) =>
+                  handleSearch(
+                    item ? item.commonDetailId ?? null : null,
+                    "ProductType"
+                  )
+                }
+                variant="standard"
+              />
+            </Grid>
+
+            <Grid item style={{ width: "21%" }}>
+              <MuiSearchField
+                variant="Description"
+                label="product.Description"
+                onClick={fetchData}
+                onChange={(e) => handleSearch(e.target.value, "Description")}
+              />
+            </Grid>
+            <Grid item style={{}}>
+              <MuiButton
+                text="search"
+                color="info"
+                onClick={fetchData}
+                sx={{ mr: 3, mb: 1 }}
+              />
+            </Grid>
+          </Grid>
         </Grid>
 
         <Grid item>
-          <MuiSearchField
-            sx={{ width: 200 }}
-            fullWidth
-            variant="Description"
-            size="small"
-            label="product.Description"
-            onClick={fetchData}
-            onChange={(e) => handleSearch(e.target.value, "Description")}
-          />
-        </Grid>
-        <Grid item>
-          <MuiButton
-            text="search"
-            color="info"
-            onClick={fetchData}
-            sx={{ m: 0 }}
-          />
-        </Grid>
-        <Grid item>
           <FormControlLabel
-            sx={{ mb: 0 }}
+            sx={{ mt: 1 }}
             control={
               <Switch
                 defaultChecked={true}

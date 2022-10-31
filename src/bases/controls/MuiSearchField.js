@@ -11,7 +11,6 @@ import { useIntl } from "react-intl";
 const MuiSearchField = (props) => {
   const intl = useIntl();
   const {
-    variant,
     label,
     name,
     type,
@@ -33,7 +32,7 @@ const MuiSearchField = (props) => {
   };
 
   return (
-    // <FormControl sx={{ mb: 0.5, width: "100%" }} variant="standard">
+    // <FormControl sx={{ mb: 0.5, width: "100%" }} disabled={disabled} variant="standard">
     //   <InputLabel>{intl.formatMessage({ id: label })}</InputLabel>
     //   <Input
     //     // sx={{ pb: "3px" }}

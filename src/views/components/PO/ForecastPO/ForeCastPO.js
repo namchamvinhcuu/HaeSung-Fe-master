@@ -225,8 +225,8 @@ export default function ForecastPOMaster(props) {
 
     {
       field: "TotalOrderQty",
-      headerName: "Total Order",
-      width: 100,
+      headerName: intl.formatMessage({ id: "forecast.Total_Order_Qty" }),
+      width: 170,
     },
 
     {
