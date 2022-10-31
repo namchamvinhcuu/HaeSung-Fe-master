@@ -229,7 +229,7 @@ const Buyer = (props) => {
         { field: 'Contact', headerName: intl.formatMessage({ id: "buyer.Contact" }), flex: 1, renderCell: (params) => {
             return (
               <Tooltip title={params.row.Contact ?? ""} className="col-text-elip">
-                <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.Contact}</Typography>
+                <Typography sx={{ fontSize: 14, maxWidth: 300 }}>{params.row.Contact}</Typography>
               </Tooltip>
             )
           }
@@ -237,7 +237,7 @@ const Buyer = (props) => {
         { field: 'Description', headerName: intl.formatMessage({ id: "buyer.Description" }), flex: 1, renderCell: (params) => {
             return (
               <Tooltip title={params.row.Description ?? ""} className="col-text-elip">
-                <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.Description}</Typography>
+                <Typography sx={{ fontSize: 14, maxWidth: 300 }}>{params.row.Description}</Typography>
               </Tooltip>
             )
           }},

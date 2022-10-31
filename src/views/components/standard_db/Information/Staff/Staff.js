@@ -20,7 +20,7 @@ import moment from "moment";
 import CreateStaffDialog from "./CreateStaffDialog";
 import ModifyStaffDialog from "./ModifyStaffDialog";
 import _ from "lodash";
-import { FormControlLabel, Switch } from "@mui/material";
+import { FormControlLabel, Switch,  Typography, Tooltip } from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import { ErrorAlert, SuccessAlert } from "@utils";
 
@@ -247,12 +247,24 @@ const Staff = (props) => {
     {
       field: "StaffName",
       headerName: intl.formatMessage({ id: "staff.StaffName" }),
-      flex: 1,
+      flex: 0.9,
     },
     {
       field: "Contact",
       headerName: intl.formatMessage({ id: "staff.Contact" }),
-      flex: 1,
+      flex: 0.9,
+      renderCell: (params) => {
+        return (
+          <Tooltip
+            title={params.row.Contact ?? ""}
+            className="col-text-elip"
+          >
+            <Typography sx={{ fontSize: 14, maxWidth: 500 }}>
+              {params.row.Contact}
+            </Typography>
+          </Tooltip>
+        );
+      },
     },
     { field: "createdName", headerName: "User Create", width: 150 },
     {
