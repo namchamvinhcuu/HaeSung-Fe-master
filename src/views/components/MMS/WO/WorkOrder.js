@@ -407,95 +407,87 @@ const WorkOrder = (props) => {
           />
         </Grid>
 
-        <Grid item xs={10}>
-          <Grid container>
-            <Grid item xs={12}>
-              <Grid container spacing={2} justifyContent="flex-end">
-                <Grid item xs={2} sm={3}>
-                  <MuiSearchField
-                    label="work_order.WoCode"
-                    name="WoCode"
-                    onClick={fetchData}
-                    onChange={(e) => changeSearchData(e, "WoCode")}
-                  />
-                </Grid>
-              </Grid>
+        <Grid item xs>
+          <MuiSearchField
+            label="work_order.WoCode"
+            name="WoCode"
+            onClick={fetchData}
+            onChange={(e) => changeSearchData(e, "WoCode")}
+          />
+        </Grid>
+
+        <Grid item xs>
+          <MuiAutoComplete
+            label={intl.formatMessage({ id: "work_order.MaterialCode" })}
+            fetchDataFunc={getSearchMaterialArr}
+            displayLabel="MaterialCode"
+            displayValue="MaterialId"
+            displayGroup="GroupMaterial"
+            value={
+              workOrderState.searchData.MaterialId !== 0
+                ? {
+                  MaterialId: workOrderState.searchData.MaterialId,
+                  MaterialCode: workOrderState.searchData.MaterialCode,
+                }
+                : null
+            }
+            onChange={(e, item) => {
+              changeSearchData(item ?? null, "MaterialId");
+            }}
+            variant="standard"
+          />
+        </Grid>
+
+        <Grid item>
+          <MuiDateTimeField
+            disabled={workOrderState.isLoading}
+            label={intl.formatMessage({
+              id: "general.StartSearchingDate",
+            })}
+            value={workOrderState.searchData.StartSearchingDate}
+            onChange={(e) => {
+              changeSearchData(e, "StartSearchingDate");
+            }}
+            variant="standard"
+          />
+        </Grid>
+
+        <Grid item xs>
+          <MuiDateTimeField
+            disabled={workOrderState.isLoading}
+            label={intl.formatMessage({
+              id: "general.EndSearchingDate",
+            })}
+            value={workOrderState.searchData.EndSearchingDate}
+            onChange={(e) => {
+              changeSearchData(e, "EndSearchingDate");
+            }}
+            variant="standard"
+          />
+        </Grid>
+
+        <Grid item xs={2.5}>
+          <Grid
+            container
+            justifyContent="space-around"
+            alignItems="flex-end"
+          >
+            <Grid item>
+              <MuiButton text="search" color="info" onClick={fetchData} />
             </Grid>
-          </Grid>
 
-          <Grid item xs>
-            <MuiAutoComplete
-              label={intl.formatMessage({ id: "work_order.MaterialCode" })}
-              fetchDataFunc={getSearchMaterialArr}
-              displayLabel="MaterialCode"
-              displayValue="MaterialId"
-              displayGroup="GroupMaterial"
-              value={
-                workOrderState.searchData.MaterialId !== 0
-                  ? {
-                    MaterialId: workOrderState.searchData.MaterialId,
-                    MaterialCode: workOrderState.searchData.MaterialCode,
-                  }
-                  : null
-              }
-              onChange={(e, item) => {
-                changeSearchData(item ?? null, "MaterialId");
-              }}
-              variant="standard"
-            />
-          </Grid>
-
-          <Grid item>
-            <MuiDateTimeField
-              disabled={workOrderState.isLoading}
-              label={intl.formatMessage({
-                id: "general.StartSearchingDate",
-              })}
-              value={workOrderState.searchData.StartSearchingDate}
-              onChange={(e) => {
-                changeSearchData(e, "StartSearchingDate");
-              }}
-              variant="standard"
-            />
-          </Grid>
-
-          <Grid item xs={4} sm={3}>
-            <MuiDateTimeField
-              disabled={workOrderState.isLoading}
-              label={intl.formatMessage({
-                id: "general.EndSearchingDate",
-              })}
-              value={workOrderState.searchData.EndSearchingDate}
-              onChange={(e) => {
-                changeSearchData(e, "EndSearchingDate");
-              }}
-              variant="standard"
-            />
-          </Grid>
-
-          <Grid item xs={2.5}>
-            <Grid
-              container
-              justifyContent="space-around"
-              alignItems="flex-end"
-            >
-              <Grid item>
-                <MuiButton text="search" color="info" onClick={fetchData} />
-              </Grid>
-
-              <Grid item>
-                <FormControlLabel
-                  sx={{ mb: 0, ml: "1px" }}
-                  control={
-                    <Switch
-                      defaultChecked={true}
-                      color="primary"
-                      onChange={(e) => handleshowActivedData(e)}
-                    />
-                  }
-                  label={showActivedData ? "Actived" : "Deleted"}
-                />
-              </Grid>
+            <Grid item>
+              <FormControlLabel
+                sx={{ mb: 0, ml: "1px" }}
+                control={
+                  <Switch
+                    defaultChecked={true}
+                    color="primary"
+                    onChange={(e) => handleshowActivedData(e)}
+                  />
+                }
+                label={showActivedData ? "Actived" : "Deleted"}
+              />
             </Grid>
           </Grid>
         </Grid>
@@ -506,7 +498,7 @@ const WorkOrder = (props) => {
         isPagingServer={true}
         headerHeight={45}
         // rowHeight={30}
-        gridHeight={680}
+        gridHeight={736}
         columns={columns}
         rows={workOrderState.data}
         page={workOrderState.page - 1}
