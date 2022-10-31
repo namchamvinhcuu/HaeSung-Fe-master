@@ -61,7 +61,7 @@ const MuiSearchField = (props) => {
       size="small"
       variant="standard"
       label={intl.formatMessage({ id: label })}
-      disabled={disabled}
+      disabled={disabled ?? false}
       name={name}
       value={value}
       onChange={onChange}
