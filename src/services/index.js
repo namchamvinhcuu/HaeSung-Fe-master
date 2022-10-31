@@ -29,6 +29,7 @@ import * as forecastService from "./PO/Forecast/ForecastService";
 import * as forecastMasterService from "./PO/Forecast/ForecastMasterService";
 
 import * as workOrderService from "./mms/work-order/WorkOrderService";
+import * as fixedPOService from "./PO/purchase-order/FixedPOService";
 
 export {
   loginService,
@@ -58,4 +59,5 @@ export {
   forecastService,
   workOrderService,
   forecastMasterService,
+  fixedPOService,
 };
