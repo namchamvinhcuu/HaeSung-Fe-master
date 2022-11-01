@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField } from '@controls'
+import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField, MuiAutoComplete } from '@controls'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Autocomplete, Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
@@ -13,6 +13,7 @@ import { useFormik } from 'formik'
 const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
+  const [SupplierList, setSupplierList] = useState([]);
 
   const schema = yup.object().shape({
     MaterialCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
@@ -42,13 +43,8 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
 
   useEffect(() => {
-    if (mode == CREATE_ACTION) {
-      formik.initialValues = defaultValue
-    }
-    else {
-      formik.initialValues = initModal;
-    }
-  }, [initModal, mode])
+    getSupplier();
+  }, [])
 
   const handleReset = () => {
     resetForm();
@@ -96,6 +92,13 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     }
   };
 
+  const getSupplier = async () => {
+    const res = await materialService.getSupplier();
+    if (res.HttpResponseCode === 200 && res.Data) {
+      setSupplierList([...res.Data]);
+    }
+  };
+
   return (
     <MuiDialog
       maxWidth='sm'
@@ -123,12 +126,13 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
             />
           </Grid>
           <Grid item xs={12}>
-            <MuiSelectField
+            <MuiAutoComplete
               required
               value={values.MaterialType ? { commonDetailId: values.MaterialType, commonDetailName: values.MaterialTypeName } : null}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'material.MaterialType' })}
-              options={valueOption.MaterialTypeList}
+              // options={valueOption.MaterialTypeList}
+              fetchDataFunc={materialService.getMaterialType}
               displayLabel="commonDetailName"
               displayValue="commonDetailId"
               onChange={(e, value) => {
@@ -137,26 +141,27 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                 setFieldValue("MaterialTypeName", value?.commonDetailName || '');
                 setFieldValue("MaterialType", value?.commonDetailId || '');
               }}
-              defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.MaterialType, commonDetailName: initModal.MaterialTypeName }}
+              //defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.MaterialType, commonDetailName: initModal.MaterialTypeName }}
               error={touched.MaterialType && Boolean(errors.MaterialType)}
               helperText={touched.MaterialType && errors.MaterialType}
             />
           </Grid>
           {values.MaterialTypeName != "BARE MATERIAL" &&
             <Grid item xs={12}>
-              <MuiSelectField
+              <MuiAutoComplete
                 required
                 value={values.Unit ? { commonDetailId: values.Unit, commonDetailName: values.UnitName } : null}
                 disabled={dialogState.isSubmit}
                 label={intl.formatMessage({ id: 'material.Unit' })}
-                options={valueOption.UnitList}
+                //options={valueOption.UnitList}
+                fetchDataFunc={materialService.getUnit}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, value) => {
                   setFieldValue("UnitName", value?.commonDetailName || '');
                   setFieldValue("Unit", value?.commonDetailId || '');
                 }}
-                defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.Unit, commonDetailName: initModal.UnitName }}
+                //defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.Unit, commonDetailName: initModal.UnitName }}
                 error={touched.Unit && Boolean(errors.Unit)}
                 helperText={touched.Unit && errors.Unit}
               />
@@ -168,7 +173,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                 multiple
                 fullWidth
                 size='small'
-                options={valueOption.SupplierList}
+                options={SupplierList}
                 disabled={dialogState.isSubmit}
                 autoHighlight
                 openOnFocus
@@ -177,6 +182,9 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                 onChange={(e, item) => {
                   setFieldValue("Suppliers", item ?? []);
                 }}
+                isOptionEqualToValue={(option, value) =>
+                  option.SupplierId === value.SupplierId
+                }
                 disableCloseOnSelect
                 renderInput={(params) => {
                   return <TextField
