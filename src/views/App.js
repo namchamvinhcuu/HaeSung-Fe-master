@@ -5,6 +5,9 @@ import { historyApp } from '@utils';
 import CustomRouter from '@utils/CustomRoutes';
 import { AuthenticateRoute, NotAuthenticateRoute, LogoutRoute } from '@utils/Authenticate';
 import { DashBoard, Login } from '@containers';
+// import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
+
+// const queryClient = new QueryClient()
 
 function RouteWrapperLogin(props) {
     const ComponentWrapper = NotAuthenticateRoute(Login,
@@ -48,6 +51,7 @@ class App extends Component {
     render() {
         return (
             <Fragment>
+                {/* <QueryClientProvider client={queryClient}> */}
                 <CustomRouter history={historyApp}>
                     <Switch>
                         <Route
@@ -65,6 +69,7 @@ class App extends Component {
 
                     </Switch>
                 </CustomRouter>
+                {/* </QueryClientProvider> */}
             </Fragment>
         )
     }

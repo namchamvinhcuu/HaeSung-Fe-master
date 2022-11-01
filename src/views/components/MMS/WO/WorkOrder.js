@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import { Store } from "@appstate";
+import { User_Operations } from "@appstate/user";
+import { CombineDispatchToProps, CombineStateToProps } from "@plugins/helperJS";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
-import { User_Operations } from "@appstate/user";
-import { Store } from "@appstate";
 
 import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
 import {
@@ -11,16 +11,15 @@ import {
   MuiButton,
   MuiDataGrid,
   MuiDateTimeField,
-  MuiSearchField,
-  MuiSelectField,
+  MuiSearchField
 } from "@controls";
+import { WorkOrderDto } from "@models";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import UndoIcon from "@mui/icons-material/Undo";
-import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material";
+import { FormControlLabel, Switch } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import { WorkOrderDto } from "@models";
 import { workOrderService } from "@services";
 import { addDays, ErrorAlert } from "@utils";
 import _ from "lodash";
