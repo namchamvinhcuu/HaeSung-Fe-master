@@ -28,6 +28,7 @@ import {
   MuiDataGrid,
   MuiSelectField,
   MuiSearchField,
+  MuiAutoComplete,
 } from "@controls";
 import { trayService } from "@services";
 import { useModal, useModal2 } from "@basesShared";
@@ -65,6 +66,7 @@ export default function Tray() {
   const QrCode = (params) => {
     toggle2();
   };
+
   const columns = [
     {
       field: "id",
@@ -180,15 +182,12 @@ export default function Tray() {
   ];
 
   //useEffect
-  useEffect(() => {
-    getTrayType();
-    return () => {
-      isRendered = false;
-    };
-  }, []);
 
   useEffect(() => {
     fetchData();
+    return () => {
+      isRendered = false;
+    };
   }, [trayState.page, trayState.pageSize, trayState.searchData.showDelete]);
 
   useEffect(() => {
@@ -292,13 +291,6 @@ export default function Tray() {
       });
   }
 
-  const getTrayType = async () => {
-    const res = await trayService.GetTrayType();
-    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-      setTrayTypeList([...res.Data]);
-    }
-  };
-
   return (
     <React.Fragment>
       <Grid
@@ -338,9 +330,9 @@ export default function Tray() {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiSelectField
+              <MuiAutoComplete
                 label={intl.formatMessage({ id: "tray.TrayType" })}
-                options={TrayTypeList}
+                fetchDataFunc={trayService.GetTrayType}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, item) =>
@@ -395,13 +387,7 @@ export default function Tray() {
         page={trayState.page - 1}
         pageSize={trayState.pageSize}
         rowCount={trayState.totalRow}
-        rowsPerPageOptions={[5, 10, 20]}
-        onPageChange={(newPage) =>
-          setTrayState({ ...trayState, page: newPage + 1 })
-        }
-        onPageSizeChange={(newPageSize) =>
-          setTrayState({ ...trayState, pageSize: newPageSize, page: 1 })
-        }
+        onPageChange={(newPage) => setTrayState({ ...trayState, page: newPage + 1 })}
         getRowId={(rows) => rows.TrayId}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;
@@ -409,7 +395,6 @@ export default function Tray() {
       />
 
       <TrayDialog
-        valueOption={{ TrayTypeList: TrayTypeList }}
         setNewData={setNewData}
         setUpdateData={setUpdateData}
         initModal={rowData}

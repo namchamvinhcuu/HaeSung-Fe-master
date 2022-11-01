@@ -49,9 +49,6 @@ export default function Material() {
   const [newData, setNewData] = useState({});
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
-  // const [MaterialTypeList, setMaterialTypeList] = useState([]);
-  // const [UnitList, setUnitList] = useState([]);
-  // const [SupplierList, setSupplierList] = useState([]);
 
   const columns = [
     {
@@ -192,12 +189,6 @@ export default function Material() {
   ];
 
   //useEffect
-  // useEffect(() => {
-  //   // getMaterialType();
-  //   getUnit();
-  //   getSupplier();
-  // }, []);
-
   useEffect(() => {
     fetchData();
     return () => {
@@ -308,28 +299,6 @@ export default function Material() {
       });
   }
 
-  // const getMaterialType = async () => {
-  //   const res = await materialService.getMaterialType();
-  //   // if (res.HttpResponseCode === 200 && res.Data) {
-  //   //   setMaterialTypeList([...res.Data]);
-  //   // }
-  //   return res;
-  // };
-
-  // const getUnit = async () => {
-  //   const res = await materialService.getUnit();
-  //   if (res.HttpResponseCode === 200 && res.Data) {
-  //     setUnitList([...res.Data]);
-  //   }
-  // };
-
-  // const getSupplier = async () => {
-  //   const res = await materialService.getSupplier();
-  //   if (res.HttpResponseCode === 200 && res.Data) {
-  //     setSupplierList([...res.Data]);
-  //   }
-  // };
-
   return (
     <React.Fragment>
       <Grid
@@ -366,7 +335,6 @@ export default function Material() {
               <MuiAutoComplete
                 label={intl.formatMessage({ id: "material.MaterialType" })}
                 fetchDataFunc={materialService.getMaterialType}
-                // options={MaterialTypeList}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, item) =>
@@ -382,7 +350,6 @@ export default function Material() {
               <MuiAutoComplete
                 label={intl.formatMessage({ id: "material.Unit" })}
                 fetchDataFunc={materialService.getUnit}
-                //options={UnitList}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, item) =>
@@ -398,7 +365,6 @@ export default function Material() {
               <MuiAutoComplete
                 label={intl.formatMessage({ id: "material.SupplierId" })}
                 fetchDataFunc={materialService.getSupplier}
-                //options={SupplierList}
                 displayLabel="SupplierName"
                 displayValue="SupplierId"
                 onChange={(e, item) =>

@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField } from '@controls'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField, MuiAutoComplete } from '@controls'
 import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
-import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 import { trayService } from '@services'
@@ -10,7 +8,7 @@ import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION } from '@constants/ConfigConstants';
 import { useFormik } from 'formik'
 
-const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
+const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
   const defaultValue = { TrayCode: '', IsReuse: false, TrayType: null, TrayTypeName: '' };
@@ -105,18 +103,17 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
             />
           </Grid>
           <Grid item xs={12}>
-            <MuiSelectField
+            <MuiAutoComplete
               value={values.TrayType ? { commonDetailId: values.TrayType, commonDetailName: values.TrayTypeName } : null}
+              fetchDataFunc={trayService.GetTrayType}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'tray.TrayType' }) + ' *'}
-              options={valueOption.TrayTypeList}
-              displayLabel="commonDetailName" 
+              displayLabel="commonDetailName"
               displayValue="commonDetailId"
               onChange={(e, value) => {
                 setFieldValue("TrayTypeName", value?.commonDetailName || '');
                 setFieldValue("TrayType", value?.commonDetailId || "");
               }}
-              defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.TrayType, commonDetailName: initModal.TrayTypeName }}
               error={touched.TrayType && Boolean(errors.TrayType)}
               helperText={touched.TrayType && errors.TrayType}
             />
