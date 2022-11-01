@@ -25,6 +25,7 @@ import {
   MuiDataGrid,
   MuiSearchField,
   MuiSelectField,
+  MuiAutoComplete,
 } from "@controls";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -42,8 +43,8 @@ const Product = () => {
   const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false);
   const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
 
-  const [modelArr, setModelArr] = useState([]); //Model Product
-  const [productTypeArr, setproductTypeArr] = useState([]); //Product Type
+  // const [modelArr, setModelArr] = useState([]); //Model Product
+  // const [productTypeArr, setproductTypeArr] = useState([]); //Product Type
 
   const [productState, setproductState] = useState({
     isLoading: false,
@@ -72,10 +73,10 @@ const Product = () => {
     setIsOpenModifyDialog(!isOpenModifyDialog);
   };
 
-  useEffect(() => {
-    getModel();
-    getproductType();
-  }, []);
+  // useEffect(() => {
+  //   getModel();
+  //   getproductType();
+  // }, []);
 
   useEffect(() => {
     fetchData();
@@ -118,19 +119,11 @@ const Product = () => {
 
   const getModel = async () => {
     const res = await productService.getProductModel();
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setModelArr([...res.Data]);
-    } else {
-      setModelArr([]);
-    }
+    return res;
   };
   const getproductType = async () => {
     const res = await productService.getProductType();
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setproductTypeArr([...res.Data]);
-    } else {
-      setproductTypeArr([]);
-    }
+    return res;
   };
   async function fetchData() {
     setproductState({ ...productState, isLoading: true });
@@ -399,11 +392,19 @@ const Product = () => {
               />
             </Grid> */}
             <Grid item style={{ width: "21%" }}>
-              <MuiSelectField
+              <MuiAutoComplete
                 label={intl.formatMessage({ id: "product.Model" })}
-                options={modelArr}
+                fetchDataFunc={getModel}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
+                // value={
+                //   fixedPOState.searchData.MaterialId !== 0
+                //     ? {
+                //       MaterialId: fixedPOState.searchData.MaterialId,
+                //       MaterialCode: fixedPOState.searchData.MaterialCode,
+                //     }
+                //     : null
+                // }
                 onChange={(e, item) =>
                   handleSearch(
                     item ? item.commonDetailId ?? null : null,
@@ -412,6 +413,7 @@ const Product = () => {
                 }
                 variant="standard"
               />
+       
             </Grid>
             <Grid item style={{ width: "21%" }}>
               <MuiSearchField
@@ -422,9 +424,9 @@ const Product = () => {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiSelectField
+              <MuiAutoComplete
                 label={intl.formatMessage({ id: "product.product_type" })}
-                options={productTypeArr}
+                fetchDataFunc={getproductType}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, item) =>
@@ -435,6 +437,7 @@ const Product = () => {
                 }
                 variant="standard"
               />
+   
             </Grid>
 
             <Grid item style={{ width: "21%" }}>

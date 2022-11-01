@@ -1,4 +1,4 @@
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiSelectField } from '@controls'
+import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiSelectField, MuiAutoComplete } from '@controls'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
     Autocomplete,
@@ -18,8 +18,7 @@ const ModifyProductDialog = (props) => {
 
     const { initModal, isOpen, onClose, setModifyData } = props;
     const clearParent = useRef(null);
-    const [modelArr, setModelArr] = useState([]);
-    const [productTypeArr, setproductTypeArr] = useState([]);
+
     const dataModalRef = useRef({ ...initModal });
     const [dialogState, setDialogState] = useState({
         ...initModal,
@@ -73,13 +72,6 @@ const ModifyProductDialog = (props) => {
         , resetForm
     } = formik;
 
-
-    useEffect(() => {
-        if (isOpen)
-            getModel();
-        getproductType();
-    }, [isOpen])
-
     useEffect(() => {
         resetForm({ ...initModal });
     }, [initModal]);
@@ -94,21 +86,11 @@ const ModifyProductDialog = (props) => {
 
     const getModel = async () => {
         const res = await productService.getProductModel();
-        if (res.HttpResponseCode === 200 && res.Data) {
-            setModelArr([...res.Data])
-        }
-        else {
-            setModelArr([])
-        }
+        return res;
     }
     const getproductType = async () => {
         const res = await productService.getProductType();
-        if (res.HttpResponseCode === 200 && res.Data) {
-            setproductTypeArr([...res.Data])
-        }
-        else {
-            setproductTypeArr([])
-        }
+        return res;
     }
     const handleReset = () => {
         resetForm();
@@ -168,36 +150,48 @@ const ModifyProductDialog = (props) => {
                         <Grid item xs={12}>
                             <Grid container item spacing={2} marginBottom={3}>
                                 <Grid item xs={6} >
-                                    <MuiSelectField
-                                        value={values.Model ? { commonDetailId: values.Model, commonDetailName: values.ModelName } : null}
-                                        disabled={dialogState.isSubmit}
-                                        label={intl.formatMessage({ id: 'product.Model' }) + ' *'}
-                                        options={modelArr}
-                                        displayLabel="commonDetailName"
-                                        displayValue="commonDetailId"
-                                        onChange={(e, value) => {
-                                            setFieldValue("ModelName", value?.commonDetailName || '');
-                                            setFieldValue("Model", value?.commonDetailId || "");
-                                        }}
-                                        error={touched.Model && Boolean(errors.Model)}
-                                        helperText={touched.Model && errors.Model}
-                                    />
+                                <MuiAutoComplete
+                                    label={intl.formatMessage({ id: 'product.Model' }) + ' *'}
+                                    fetchDataFunc={getModel}
+                                    displayLabel="commonDetailName"
+                                    displayValue="commonDetailId"
+                                    // defaultValue={
+                                    // mode == CREATE_ACTION
+                                    //     ? null
+                                    //     : { LineId: initModal.LineId, LineName: initModal.LineName }
+                                    // }
+                                    value={values.Model ? { commonDetailId: values.Model, commonDetailName: values.ModelName } : null}
+                                    disabled={dialogState.isSubmit}
+                                    onChange={(e, value) => {
+                                        setFieldValue("ModelName", value?.commonDetailName || '');
+                                        setFieldValue("Model", value?.commonDetailId || "");
+                                    }}
+                                    error={touched.Model && Boolean(errors.Model)}
+                                    helperText={touched.Model && errors.Model}
+                                    variant="outlined"
+                                />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <MuiSelectField
-                                        value={values.ProductType ? { commonDetailId: values.ProductType, commonDetailName: values.ProductTypeName } : null}
-                                        disabled={dialogState.isSubmit}
-                                        label={intl.formatMessage({ id: 'product.product_type' }) + ' *'}
-                                        options={productTypeArr}
-                                        displayLabel="commonDetailName"
-                                        displayValue="commonDetailId"
-                                        onChange={(e, value) => {
-                                            setFieldValue("ProductTypeName", value?.commonDetailName || '');
-                                            setFieldValue("ProductType", value?.commonDetailId || "");
-                                        }}
-                                        error={touched.ProductType && Boolean(errors.ProductType)}
-                                        helperText={touched.ProductType && errors.ProductType}
-                                    />
+                                <MuiAutoComplete
+                                    label={intl.formatMessage({ id: 'product.product_type' }) + ' *'}
+                                    fetchDataFunc={getproductType}
+                                    displayLabel="commonDetailName"
+                                    displayValue="commonDetailId"
+                                    // defaultValue={
+                                    // mode == CREATE_ACTION
+                                    //     ? null
+                                    //     : { LineId: initModal.LineId, LineName: initModal.LineName }
+                                    // }
+                                    value={values.ProductType ? { commonDetailId: values.ProductType, commonDetailName: values.ProductTypeName } : null}
+                                    disabled={dialogState.isSubmit}
+                                    onChange={(e, value) => {
+                                        setFieldValue("ProductTypeName", value?.commonDetailName || '');
+                                        setFieldValue("ProductType", value?.commonDetailId || "");
+                                    }}
+                                    error={touched.ProductType && Boolean(errors.ProductType)}
+                                    helperText={touched.ProductType && errors.ProductType}
+                                    variant="outlined"
+                                />
                                 </Grid>
                             </Grid>
                         </Grid>

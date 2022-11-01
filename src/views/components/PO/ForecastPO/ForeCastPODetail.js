@@ -37,21 +37,20 @@ import moment from "moment";
 
 const min = 1;
 const max = 52;
-
+const minyear = new Date().getFullYear();
+const maxyear = 2050;
 const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
-  const [MaterialList, setMaterialList] = useState([]);
-  const [LineList, setLineList] = useState([]);
   const [newData, setNewData] = useState({ ...ForecastPODto });
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
   const { isShowing, toggle } = useModal();
   const [yearList, setYearList] = useState([]);
+  const [valueYear, setValueYear] = useState("");
   const curWeek = getCurrentWeek();
   const [currentWeek, setCurrentWeek] = useState(curWeek);
-  const [BuyerList, setBuyerList] = useState([]);
   const [forecastState, setForecastState] = useState({
     isLoading: false,
     data: [],
@@ -62,16 +61,13 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
       keyWord: "",
       keyWordWeekStart: 0,
       keyWordWeekEnd: curWeek,
-      keyWordYear: new Date().getFullYear(),
+      keyWordYear: 0,
       showDelete: true,
     },
     FPoMasterId: FPoMasterId,
   });
   useEffect(() => {
-    getMaterialList();
-    getLineList();
-    getYearList();
-    getBuyerList();
+    // getYearList();
     return () => {
       isRendered = false;
     };
@@ -286,30 +282,14 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
       },
     },
   ];
-  const getMaterialList = async () => {
-    const res = await forecastService.getMaterialModel();
-    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-      setMaterialList([...res.Data]);
-    }
-  };
-  const getLineList = async () => {
-    const res = await forecastService.getLineModel();
-    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-      setLineList([...res.Data]);
-    }
-  };
-  const getYearList = async () => {
-    const res = await forecastService.getYearModel();
-    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-      setYearList([...res.Data]);
-    }
-  };
-  const getBuyerList = async () => {
-    const res = await forecastService.getBuyerModel();
-    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-      setBuyerList([...res.Data]);
-    }
-  };
+ 
+  // const getYearList = async () => {
+  //   const res = await forecastService.getYearModel();
+  //   if (res.HttpResponseCode === 200 && res.Data && isRendered) {
+  //     setYearList([...res.Data]);
+  //   }
+  // };
+ 
   async function fetchData(FPoMasterId) {
     if (
       forecastState.searchData.keyWordWeekStart >
@@ -416,7 +396,27 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
         <Grid item>
           <Box display="flex">
             <Box sx={{ mr: 2, maxWidth: "120px" }}>
-              <FormControl sx={{ marginTop: "3px" }}>
+              
+              <TextField
+                disabled={FPoMasterId ? false : true}
+                label={intl.formatMessage({ id: "forecast.Year" })}
+                variant="standard"
+                type="number"
+                sx={{ width: "120px" }}
+                value={valueYear}
+                // inputProps={{ minyear, maxyear }}
+                onChange={(e) => {
+                  var value = parseInt(e.target.value, 10);
+                  if(e.target.value.length>4) {
+                    return;
+                  }
+                   if (value > maxyear && e.target.value.length===4) value = maxyear;
+                   if (value < minyear && e.target.value.length===4) value = minyear;
+                  setValueYear(value || "");
+                  handleSearch(value || 0, "keyWordYear");
+                }}
+              /> 
+              {/* <FormControl sx={{ marginTop: "3px" }}>
                 <MuiSelectField
                   disabled={FPoMasterId ? false : true}
                   label={intl.formatMessage({ id: "forecast.Year" })}
@@ -436,7 +436,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
                   variant="standard"
                   sx={{ width: 120 }}
                 />
-              </FormControl>
+              </FormControl> */}
 
             </Box>
             <Box sx={{ maxWidth: "120px", mr: 2 }}>
@@ -478,7 +478,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
               />
             </Box>
 
-            <Box>
+            <Box sx={{marginTop:"3px"}}>
               <MuiSearchField
                disabled={FPoMasterId ? false : true} 
                 label="general.name"
@@ -552,11 +552,6 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
       />
       <ForecastDetailDialog
         initModal={rowData}
-        valueOption={{
-          MaterialList: MaterialList,
-          LineList: LineList,
-          BuyerList: BuyerList,
-        }}
         setNewData={setNewData}
         setUpdateData={setUpdateData}
         isOpen={isShowing}

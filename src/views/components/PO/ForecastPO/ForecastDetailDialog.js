@@ -5,6 +5,7 @@ import {
   MuiSubmitButton,
   MuiDateField,
   MuiSelectField,
+  MuiAutoComplete
 } from "@controls";
 import { useIntl } from "react-intl";
 import { useFormik } from "formik";
@@ -22,7 +23,6 @@ const ForecastDetailDialog = (props) => {
     setNewData,
     setUpdateData,
     mode,
-    valueOption,
     FPoMasterId
   } = props;
 
@@ -139,7 +139,21 @@ const ForecastDetailDialog = (props) => {
       }
     }
   };
+  const getMaterialList = async () => {
+    const res = await forecastService.getMaterialModel();
+    return res;
 
+  };
+  const getLineList = async () => {
+    const res = await forecastService.getLineModel();
+    return res;
+  
+  };
+  const getBuyerList = async () => {
+    const res = await forecastService.getBuyerModel();
+    return res;
+  
+  };
   return (
     <MuiDialog
       maxWidth="sm"
@@ -200,35 +214,37 @@ const ForecastDetailDialog = (props) => {
           </Grid>
           
           <Grid item xs={12}>
-            <MuiSelectField
-              value={
-                values.MaterialId
-                  ? {
-                      MaterialId: values.MaterialId,
-                      MaterialCode: values.MaterialCode,
-                    }
-                  : null
-              }
-              disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: "forecast.MaterialId" }) + " *"}
-              options={valueOption.MaterialList}
-              displayLabel="MaterialCode"
-              displayValue="MaterialId"
-              onChange={(e, value) => {
-                setFieldValue("MaterialCode", value?.MaterialCode || "");
-                setFieldValue("MaterialId", value?.MaterialId || "");
-              }}
-              defaultValue={
-                mode == CREATE_ACTION
-                  ? null
-                  : {
-                      MaterialId: initModal.MaterialId,
-                      MaterialCode: initModal.MaterialCode,
-                    }
-              }
-              error={touched.MaterialId && Boolean(errors.MaterialId)}
-              helperText={touched.MaterialId && errors.MaterialId}
-            />
+          <MuiAutoComplete
+            label={intl.formatMessage({ id: "forecast.MaterialId" }) + " *"}
+            fetchDataFunc={getMaterialList}
+            displayLabel="MaterialCode"
+            displayValue="MaterialId"
+            defaultValue={
+              mode == CREATE_ACTION
+                ? null
+                : {
+                    MaterialId: initModal.MaterialId,
+                    MaterialCode: initModal.MaterialCode,
+                  }
+            }
+            value={
+              values.MaterialId
+                ? {
+                    MaterialId: values.MaterialId,
+                    MaterialCode: values.MaterialCode,
+                  }
+                : null
+            }
+            onChange={(e, value) => {
+              setFieldValue("MaterialCode", value?.MaterialCode || "");
+              setFieldValue("MaterialId", value?.MaterialId || "");
+            }}
+            error={touched.MaterialId && Boolean(errors.MaterialId)}
+            helperText={touched.MaterialId && errors.MaterialId}
+            variant="outlined"
+            disabled={dialogState.isSubmit}
+          />
+ 
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -245,65 +261,64 @@ const ForecastDetailDialog = (props) => {
             />
           </Grid>
           <Grid item xs={12}>
-            <MuiSelectField
-              value={
-                values.BuyerId
-                  ? {
-                    BuyerId: values.BuyerId,
-                    BuyerCode: values.BuyerCode,
-                    }
-                  : null
-              }
-              disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: "forecast.BuyerId" }) + " *"}
-              options={valueOption.BuyerList}
-              displayLabel="BuyerCode"
-              displayValue="BuyerId"
-              onChange={(e, value) => {
-                setFieldValue("BuyerCode", value?.BuyerCode || "");
-                setFieldValue("BuyerId", value?.BuyerId || "");
-              }}
-              defaultValue={
-                mode == CREATE_ACTION
-                  ? null
-                  : {
-                    BuyerId: initModal.BuyerId,
-                    BuyerCode: initModal.BuyerCode,
-                    }
-              }
-              error={touched.BuyerId && Boolean(errors.BuyerId)}
+          <MuiAutoComplete
+            label={intl.formatMessage({ id: "forecast.BuyerId" }) + " *"}
+            fetchDataFunc={getBuyerList}
+            displayLabel="BuyerCode"
+            displayValue="BuyerId"
+            defaultValue={
+              mode == CREATE_ACTION
+                ? null
+                : {
+                  BuyerId: initModal.BuyerId,
+                  BuyerCode: initModal.BuyerCode,
+                  }
+            }
+            value={
+              values.BuyerId
+                ? {
+                  BuyerId: values.BuyerId,
+                  BuyerCode: values.BuyerCode,
+                  }
+                : null
+            }
+            disabled={dialogState.isSubmit}
+            onChange={(e, value) => {
+              setFieldValue("BuyerCode", value?.BuyerCode || "");
+              setFieldValue("BuyerId", value?.BuyerId || "");
+            }}
+            error={touched.BuyerId && Boolean(errors.BuyerId)}
               helperText={touched.BuyerId && errors.BuyerId}
-            />
+            variant="outlined"
+          />
           </Grid>
 
           <Grid item xs={12}>
-            <MuiSelectField
-              value={
-                values.LineId
-                  ? { LineId: values.LineId, LineName: values.LineName }
-                  : null
-              }
-              disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: "forecast.LineId" }) + " *"}
-              options={valueOption.LineList}
-              displayLabel="LineName"
-              displayValue="LineId"
-              onChange={(e, value) => {
-                setFieldValue("LineName", value?.LineName || "");
-                setFieldValue("LineId", value?.LineId || "");
-              }}
-              defaultValue={
-                mode == CREATE_ACTION
-                  ? null
-                  : { LineId: initModal.LineId, LineName: initModal.LineName }
-              }
-              error={touched.LineId && Boolean(errors.LineId)}
-              helperText={touched.LineId && errors.LineId}
-            />
+          <MuiAutoComplete
+            label={intl.formatMessage({ id: "forecast.LineId" }) + " *"}
+            fetchDataFunc={getLineList}
+            displayLabel="LineName"
+            displayValue="LineId"
+            defaultValue={
+              mode == CREATE_ACTION
+                ? null
+                : { LineId: initModal.LineId, LineName: initModal.LineName }
+            }
+            value={
+              values.LineId
+                ? { LineId: values.LineId, LineName: values.LineName }
+                : null
+            }
+            disabled={dialogState.isSubmit}
+            onChange={(e, value) => {
+              setFieldValue("LineName", value?.LineName || "");
+              setFieldValue("LineId", value?.LineId || "");
+            }}
+            error={touched.LineId && Boolean(errors.LineId)}
+            helperText={touched.LineId && errors.LineId}
+            variant="outlined"
+          />
           </Grid>
-         
-        
-          
           <Grid item xs={12}>
             <Grid container direction="row-reverse">
               <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
