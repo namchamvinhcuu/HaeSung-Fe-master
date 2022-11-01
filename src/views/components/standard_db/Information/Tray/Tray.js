@@ -425,8 +425,8 @@ const Modal_Qr_Code = ({ isShowing, hide,  rowSelected }) => {
  
   return (
     <Dialog open={isShowing} maxWidth="md" fullWidth 
-    TransitionComponent={Transition_Collapse}
-    transitionDuration={300}
+    // TransitionComponent={Transition_Collapse}
+    // transitionDuration={300}
     >
       <DialogTitle
         sx={{
