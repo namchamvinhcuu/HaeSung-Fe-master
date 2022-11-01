@@ -13,10 +13,12 @@ import {
 } from "@mui/material";
 import { useIntl } from "react-intl";
 import {
+  MuiAutoComplete,
   MuiButton,
   MuiDataGrid,
-  MuiSelectField,
+  MuiDateTimeField,
   MuiSearchField,
+  MuiSelectField,
 } from "@controls";
 import { materialService } from "@services";
 import { useModal } from "@basesShared";
@@ -47,9 +49,9 @@ export default function Material() {
   const [newData, setNewData] = useState({});
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
-  const [MaterialTypeList, setMaterialTypeList] = useState([]);
-  const [UnitList, setUnitList] = useState([]);
-  const [SupplierList, setSupplierList] = useState([]);
+  // const [MaterialTypeList, setMaterialTypeList] = useState([]);
+  // const [UnitList, setUnitList] = useState([]);
+  // const [SupplierList, setSupplierList] = useState([]);
 
   const columns = [
     {
@@ -190,11 +192,11 @@ export default function Material() {
   ];
 
   //useEffect
-  useEffect(() => {
-    getMaterialType();
-    getUnit();
-    getSupplier();
-  }, []);
+  // useEffect(() => {
+  //   // getMaterialType();
+  //   getUnit();
+  //   getSupplier();
+  // }, []);
 
   useEffect(() => {
     fetchData();
@@ -306,26 +308,27 @@ export default function Material() {
       });
   }
 
-  const getMaterialType = async () => {
-    const res = await materialService.getMaterialType();
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setMaterialTypeList([...res.Data]);
-    }
-  };
+  // const getMaterialType = async () => {
+  //   const res = await materialService.getMaterialType();
+  //   // if (res.HttpResponseCode === 200 && res.Data) {
+  //   //   setMaterialTypeList([...res.Data]);
+  //   // }
+  //   return res;
+  // };
 
-  const getUnit = async () => {
-    const res = await materialService.getUnit();
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setUnitList([...res.Data]);
-    }
-  };
+  // const getUnit = async () => {
+  //   const res = await materialService.getUnit();
+  //   if (res.HttpResponseCode === 200 && res.Data) {
+  //     setUnitList([...res.Data]);
+  //   }
+  // };
 
-  const getSupplier = async () => {
-    const res = await materialService.getSupplier();
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setSupplierList([...res.Data]);
-    }
-  };
+  // const getSupplier = async () => {
+  //   const res = await materialService.getSupplier();
+  //   if (res.HttpResponseCode === 200 && res.Data) {
+  //     setSupplierList([...res.Data]);
+  //   }
+  // };
 
   return (
     <React.Fragment>
@@ -360,9 +363,10 @@ export default function Material() {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiSelectField
+              <MuiAutoComplete
                 label={intl.formatMessage({ id: "material.MaterialType" })}
-                options={MaterialTypeList}
+                fetchDataFunc={materialService.getMaterialType}
+                // options={MaterialTypeList}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, item) =>
@@ -375,9 +379,10 @@ export default function Material() {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiSelectField
+              <MuiAutoComplete
                 label={intl.formatMessage({ id: "material.Unit" })}
-                options={UnitList}
+                fetchDataFunc={materialService.getUnit}
+                //options={UnitList}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, item) =>
@@ -390,9 +395,10 @@ export default function Material() {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiSelectField
+              <MuiAutoComplete
                 label={intl.formatMessage({ id: "material.SupplierId" })}
-                options={SupplierList}
+                fetchDataFunc={materialService.getSupplier}
+                //options={SupplierList}
                 displayLabel="SupplierName"
                 displayValue="SupplierId"
                 onChange={(e, item) =>
@@ -456,11 +462,11 @@ export default function Material() {
       />
 
       <MaterialDialog
-        valueOption={{
-          MaterialTypeList: MaterialTypeList,
-          UnitList: UnitList,
-          SupplierList: SupplierList,
-        }}
+        // valueOption={{
+        //   MaterialTypeList: MaterialTypeList,
+        //   UnitList: UnitList,
+        //   SupplierList: SupplierList,
+        // }}
         setNewData={setNewData}
         setUpdateData={setUpdateData}
         initModal={rowData}
