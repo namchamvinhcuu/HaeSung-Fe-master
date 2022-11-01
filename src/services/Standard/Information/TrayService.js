@@ -46,11 +46,21 @@ const GetTrayType = async () => {
     console.log(`ERROR: ${error}`);
   }
 }
+const GetListPrintQR = async (params) =>{
+  console.log(params,'ser');
+  try {
+    return await axios.post(`${apiName}/get-list-print-qr`,params );
+  }
+  catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+}
 
 export {
   getTrayList,
   createTray,
   modifyTray,
   deleteTray,
-  GetTrayType
+  GetTrayType,
+  GetListPrintQR
 }

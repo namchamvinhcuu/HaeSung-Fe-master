@@ -2,12 +2,25 @@ import React, { useEffect, useRef, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import UndoIcon from "@mui/icons-material/Undo";
+import QRCode from "react-qr-code";
 import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControlLabel,
   Grid,
   IconButton,
   Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
   TextField,
+  Typography,
 } from "@mui/material";
 import { useIntl } from "react-intl";
 import {
@@ -17,17 +30,22 @@ import {
   MuiSearchField,
 } from "@controls";
 import { trayService } from "@services";
-import { useModal } from "@basesShared";
+import { useModal, useModal2 } from "@basesShared";
 import { ErrorAlert, SuccessAlert } from "@utils";
 import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
 import moment from "moment";
 import TrayDialog from "./TrayDialog";
+import ReactToPrint from "react-to-print";
+import CloseIcon from "@mui/icons-material/Close";
+import Collapse from '@mui/material/Collapse';
 
 export default function Tray() {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
+  const { isShowing2, toggle2 } = useModal2();
   const { isShowing, toggle } = useModal();
+  const [rowSelected, setRowSelected] = useState([]);
   const [trayState, setTrayState] = useState({
     isLoading: false,
     data: [],
@@ -44,12 +62,14 @@ export default function Tray() {
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
   const [TrayTypeList, setTrayTypeList] = useState([]);
-
+  const QrCode = (params) => {
+    toggle2();
+  };
   const columns = [
     {
       field: "id",
       headerName: "",
-      flex: 0.1,
+      flex: 0.15,
       align: "center",
       filterable: false,
       renderCell: (index) =>
@@ -62,7 +82,7 @@ export default function Tray() {
     {
       field: "action",
       headerName: "",
-      flex: 0.3,
+      flex: 0.2,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
@@ -104,6 +124,14 @@ export default function Tray() {
         );
       },
     },
+    // {
+    //   field: "actionQRCode",
+    //   headerName: "QR Code",
+    //   flex: 0.24,
+    //   renderCell: (params) => {
+    //     return  <Button size="small" variant="contained" color="success" onClick={() => QrCode(params)}>QR CODE</Button>;
+    //   },
+    // },
     {
       field: "TrayCode",
       headerName: intl.formatMessage({ id: "tray.TrayCode" }),
@@ -286,6 +314,11 @@ export default function Tray() {
             onClick={handleAdd}
             sx={{ mt: 1 }}
           />
+           <Button
+           disabled={rowSelected.length>0?false:true}
+           variant="contained"
+            color="secondary"
+            onClick={() => QrCode()} sx={{marginTop:"5px", mx:2}}>Print QR Code</Button>
         </Grid>
         <Grid item xs>
           <Grid
@@ -349,6 +382,10 @@ export default function Tray() {
         </Grid>
       </Grid>
       <MuiDataGrid
+      onSelectionModelChange={(ids) => {
+         setRowSelected(ids)
+      }}
+      checkboxSelection={true}
         showLoading={trayState.isLoading}
         isPagingServer={true}
         headerHeight={45}
@@ -380,6 +417,115 @@ export default function Tray() {
         onClose={toggle}
         mode={mode}
       />
+      {isShowing2 && (
+        <Modal_Qr_Code
+          isShowing={true}
+          hide={toggle2}
+          rowSelected={rowSelected}
+        />
+      )}
     </React.Fragment>
   );
 }
+const Modal_Qr_Code = ({ isShowing, hide,  rowSelected }) => {
+  const Transition_Collapse = React.forwardRef(function Transition(props, ref) {
+    return <Collapse   ref={ref} {...props} />;
+  });
+  const componentPringtRef = React.useRef();
+  const [listPrint, setListPrint] = useState([]);
+  useEffect(async() => {
+    const res =await trayService.GetListPrintQR(rowSelected);
+    setListPrint(res.Data)
+  }, []);
+ 
+  return (
+    <Dialog open={isShowing} maxWidth="md" fullWidth 
+    TransitionComponent={Transition_Collapse}
+    transitionDuration={300}
+    >
+      <DialogTitle
+        sx={{
+          p: 1,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Typography sx={{ fontWeight: 600, fontSize: "22px" }}>
+          QR CODE
+        </Typography>
+        <IconButton
+          aria-label="delete"
+          size="small"
+          onClick={() => hide()}
+          sx={{ backgroundColor: "rgba(0,0,0,0.1)" }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent
+        ref={componentPringtRef}
+        sx={{ display: "flex", justifyContent: "center" }}
+      >
+        <Box>
+          {
+            listPrint?.map((item, index)=>{
+              return (
+                <Box key={`TRAY_${index}`}  sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  mb:4,
+                  borderBottom:"1px solid black",
+                  pb:4
+                }}>
+                <Box sx={{ mr: 2 }}>
+                  <QRCode value={`${item.TrayCode}`} size={155} />
+                </Box>
+                <TableContainer>
+                  <Table>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell sx={{ fontSize: "16px", p: 1 }}>
+                          Tray Code: {item?.TrayCode}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontSize: "16px", p: 1 }}>
+                          Tray Type Name: {item?.TrayTypeName}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontSize: "16px", p: 1 }}>
+                          Created By: {item?.createdName}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontSize: "16px", p: 1 }}>
+                          Created Date: {moment(item?.createdDate).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                </Box>
+              )
+            })
+          }
+        </Box>
+      </DialogContent>
+      <DialogActions sx={{ pt: 0 }}>
+        <ReactToPrint
+          trigger={() => {
+            return (
+              <Button variant="contained" color="primary">
+                Print
+              </Button>
+            );
+          }}
+          content={() => componentPringtRef.current}
+        />
+      </DialogActions>
+    </Dialog>
+  );
+};
