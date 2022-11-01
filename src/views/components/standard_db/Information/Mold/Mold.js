@@ -19,6 +19,7 @@ import {
   MuiDataGrid,
   MuiSelectField,
   MuiSearchField,
+  MuiAutoComplete,
 } from "@controls";
 import { moldService } from "@services";
 import { useModal } from "@basesShared";
@@ -49,9 +50,6 @@ export default function Mold() {
   const [newData, setNewData] = useState({});
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
-  const [PMList, setPMList] = useState([]); // Product Model list
-  const [PTList, setPTList] = useState([]); // Product Type list
-  const [MTList, setMTList] = useState([]); // Machine Type list
 
   const columns = [
     {
@@ -213,13 +211,6 @@ export default function Mold() {
     },
   ];
 
-  //useEffect
-  useEffect(() => {
-    getProductModel();
-    getProductType();
-    getMachineType();
-  }, []);
-
   useEffect(() => {
     fetchData();
     return () => {
@@ -331,27 +322,6 @@ export default function Mold() {
       });
   }
 
-  const getProductModel = async () => {
-    const res = await moldService.getProductModel();
-    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-      setPMList([...res.Data]);
-    }
-  };
-
-  const getProductType = async () => {
-    const res = await moldService.getProductType();
-    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-      setPTList([...res.Data]);
-    }
-  };
-
-  const getMachineType = async () => {
-    const res = await moldService.getMachineType();
-    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-      setMTList([...res.Data]);
-    }
-  };
-
   return (
     <React.Fragment>
       <Grid
@@ -386,9 +356,9 @@ export default function Mold() {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiSelectField
+              <MuiAutoComplete
                 label={intl.formatMessage({ id: "mold.Model" })}
-                options={PMList}
+                fetchDataFunc={moldService.getProductModel}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, item) =>
@@ -401,9 +371,9 @@ export default function Mold() {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiSelectField
+              <MuiAutoComplete
                 label={intl.formatMessage({ id: "mold.MoldType" })}
-                options={PTList}
+                fetchDataFunc={moldService.getProductType}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, item) =>
@@ -415,10 +385,10 @@ export default function Mold() {
                 variant="standard"
               />
             </Grid>
-            <Grid item style={{ width: "21%" }}> 
-              <MuiSelectField
+            <Grid item style={{ width: "21%" }}>
+              <MuiAutoComplete
                 label={intl.formatMessage({ id: "mold.MachineType" })}
-                options={MTList}
+                fetchDataFunc={moldService.getMachineType}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, item) =>
@@ -484,7 +454,6 @@ export default function Mold() {
       />
 
       <MoldDialog
-        valueOption={{ PMList: PMList, PTList: PTList, MTList: MTList }}
         setNewData={setNewData}
         setUpdateData={setUpdateData}
         initModal={rowData}

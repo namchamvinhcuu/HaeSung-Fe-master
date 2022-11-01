@@ -14,6 +14,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
   const [SupplierList, setSupplierList] = useState([]);
+  const [UnitList, setUnitList] = useState([]);
 
   const schema = yup.object().shape({
     MaterialCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
@@ -44,6 +45,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
   useEffect(() => {
     getSupplier();
+    getUnit();
   }, [])
 
   const handleReset = () => {
@@ -60,7 +62,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
     if (mode == CREATE_ACTION) {
       if (data.MaterialTypeName == "BARE MATERIAL") {
-        var unitBare = valueOption.UnitList.filter(x => x.commonDetailName == "PCS");
+        var unitBare = UnitList.filter(x => x.commonDetailName == "PCS");
         data.Unit = unitBare[0].commonDetailId;
       }
 
@@ -96,6 +98,13 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     const res = await materialService.getSupplier();
     if (res.HttpResponseCode === 200 && res.Data) {
       setSupplierList([...res.Data]);
+    }
+  };
+
+  const getUnit = async () => {
+    const res = await materialService.getUnit();
+    if (res.HttpResponseCode === 200 && res.Data) {
+      setUnitList([...res.Data]);
     }
   };
 

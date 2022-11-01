@@ -5,6 +5,7 @@ import {
   MuiSubmitButton,
   MuiDateField,
   MuiSelectField,
+  MuiAutoComplete,
 } from "@controls";
 import { Grid, TextField } from "@mui/material";
 import { useIntl } from "react-intl";
@@ -190,19 +191,19 @@ const MoldDialog = ({
           </Grid>
           <Grid item container spacing={2}>
             <Grid item xs={6}>
-              <MuiSelectField
+              <MuiAutoComplete
                 required
                 value={
                   values.Model
                     ? {
-                        commonDetailId: values.Model,
-                        commonDetailName: values.ModelName,
-                      }
+                      commonDetailId: values.Model,
+                      commonDetailName: values.ModelName,
+                    }
                     : null
                 }
                 disabled={dialogState.isSubmit}
                 label={intl.formatMessage({ id: "mold.Model" })}
-                options={valueOption.PMList}
+                fetchDataFunc={moldService.getProductModel}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, value) => {
@@ -230,19 +231,19 @@ const MoldDialog = ({
           </Grid>
           <Grid item container spacing={2}>
             <Grid item xs={6}>
-              <MuiSelectField
+              <MuiAutoComplete
                 required
                 value={
                   values.MoldType
                     ? {
-                        commonDetailId: values.MoldType,
-                        commonDetailName: values.MoldTypeName,
-                      }
+                      commonDetailId: values.MoldType,
+                      commonDetailName: values.MoldTypeName,
+                    }
                     : null
                 }
                 disabled={dialogState.isSubmit}
                 label={intl.formatMessage({ id: "mold.MoldType" })}
-                options={valueOption.PTList}
+                fetchDataFunc={moldService.getProductType}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, value) => {
@@ -254,19 +255,19 @@ const MoldDialog = ({
               />
             </Grid>
             <Grid item xs={6}>
-              <MuiSelectField
+              <MuiAutoComplete
                 required
                 value={
                   values.MachineType
                     ? {
-                        commonDetailId: values.MachineType,
-                        commonDetailName: values.MachineTypeName,
-                      }
+                      commonDetailId: values.MachineType,
+                      commonDetailName: values.MachineTypeName,
+                    }
                     : null
                 }
                 disabled={dialogState.isSubmit}
                 label={intl.formatMessage({ id: "mold.MachineType" })}
-                options={valueOption.MTList}
+                fetchDataFunc={moldService.getMachineType}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, value) => {
@@ -330,9 +331,9 @@ const MoldDialog = ({
                 value={
                   values.ETAStatus1 != ""
                     ? {
-                        ETAStatus: values.ETAStatus1,
-                        ETAStatusName: values.ETAStatusName,
-                      }
+                      ETAStatus: values.ETAStatus1,
+                      ETAStatusName: values.ETAStatusName,
+                    }
                     : null
                 }
                 disabled={dialogState.isSubmit}
