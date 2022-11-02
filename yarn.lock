@@ -1447,6 +1447,31 @@
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
+"@mui/x-data-grid-pro@^5.17.9":
+  version "5.17.9"
+  resolved "https://registry.yarnpkg.com/@mui/x-data-grid-pro/-/x-data-grid-pro-5.17.9.tgz#cbe5dcd0c79543876dc036f8fd7bfc215835bebb"
+  integrity sha512-GF+xGUQMMDoKqb1WvBedZFZyfKQvgzDQURoj+lJa/gEx9utJzQNskS4gAtKrQb9jyKqt/ed/nk5mWZs0aot3yQ==
+  dependencies:
+    "@babel/runtime" "^7.18.9"
+    "@mui/utils" "^5.10.3"
+    "@mui/x-data-grid" "5.17.9"
+    "@mui/x-license-pro" "5.17.0"
+    "@types/format-util" "^1.0.2"
+    clsx "^1.2.1"
+    prop-types "^15.8.1"
+    reselect "^4.1.6"
+
+"@mui/x-data-grid@5.17.9":
+  version "5.17.9"
+  resolved "https://registry.yarnpkg.com/@mui/x-data-grid/-/x-data-grid-5.17.9.tgz#6016ba37745793e382eca428d3928bef294c6d16"
+  integrity sha512-D87M4BVmbSR0ZRJoev7JS01YUVk2NQPCwseVb/Su0/UScpCfUpKlukmMXx0jJnd3066pjYSKIIdvVit3nQU/UA==
+  dependencies:
+    "@babel/runtime" "^7.18.9"
+    "@mui/utils" "^5.10.3"
+    clsx "^1.2.1"
+    prop-types "^15.8.1"
+    reselect "^4.1.6"
+
 "@mui/x-data-grid@^5.12.2":
   version "5.17.1"
   resolved "https://registry.npmjs.org/@mui/x-data-grid/-/x-data-grid-5.17.1.tgz"
@@ -1476,6 +1501,14 @@
     react-transition-group "^4.4.5"
     rifm "^0.12.1"
 
+"@mui/x-license-pro@5.17.0":
+  version "5.17.0"
+  resolved "https://registry.yarnpkg.com/@mui/x-license-pro/-/x-license-pro-5.17.0.tgz#c8c0749d2f3b58b562656e0b447b1b3375b880d5"
+  integrity sha512-SVn0E1sUSjuvT79mvfFnW1BtwfiQ+yg6hZpTNwS13a9hJLRJYDI+GiEypArsXRHHvs5XL5PVMmfmHs5voQF9Iw==
+  dependencies:
+    "@babel/runtime" "^7.18.9"
+    "@mui/utils" "^5.9.3"
+
 "@popperjs/core@^2.11.6", "@popperjs/core@^2.9.2":
   version "2.11.6"
   resolved "https://registry.npmjs.org/@popperjs/core/-/core-2.11.6.tgz"
@@ -1501,6 +1534,11 @@
   dependencies:
     "@tanstack/query-core" "4.12.0"
     use-sync-external-store "^1.2.0"
+
+"@types/format-util@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@types/format-util/-/format-util-1.0.2.tgz#7d19feb1caf59b6ea99c83dfe795ffa3f06b87d7"
+  integrity sha512-9SrLCpgzWo2yHHhiMOX0WwgDh37nSbDbWUsRc1ss++o8O97E3tB6SJiyUQM21UeUsKvZNuhDCmkRaINZ4uJAfg==
 
 "@types/glob@^7.1.1":
   version "7.2.0"

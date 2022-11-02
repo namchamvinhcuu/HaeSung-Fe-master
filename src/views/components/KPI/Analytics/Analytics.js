@@ -9,13 +9,13 @@ import { FormControlLabel, Grid, IconButton, Switch, TextField, Tooltip, Typogra
 import { useIntl } from "react-intl";
 import { MuiAutoComplete, MuiButton, MuiDataGrid, MuiDateTimeField, MuiSearchField, MuiSelectField, } from "@controls";
 import { useModal } from "@basesShared";
-import { ErrorAlert, SuccessAlert } from "@utils";
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import moment from "moment";
+import { ErrorAlert, SuccessAlert, getCurrentWeek } from "@utils";
 
 const Analytics = (props) => {
   const intl = useIntl();
   let isRendered = useRef(true);
+  const curWeekS = getCurrentWeek() - 5;
+  const curWeekE = getCurrentWeek() + 5;
   const [YearList, setYearList] = useState([]);
   const [state, setState] = useState({
     isLoading: false,
@@ -25,15 +25,26 @@ const Analytics = (props) => {
     pageSize: 20,
     searchData: {
       FPoMasterId: 0,
-      weekStart: 20,
-      weekEnd: 40,
-      Year: 0,
+      weekStart: curWeekS < 1 ? 1 : curWeekS,
+      weekEnd: curWeekE > 52 ? 52 : curWeekE,
+      Year: 2022,
     },
   });
 
   const columns = [
     { field: "MaterialId", hide: true },
-    { field: "MaterialCode", headerName: intl.formatMessage({ id: "material.MaterialCode" }), width: 220 },
+    { field: "MaterialCode", headerName: intl.formatMessage({ id: "forecast.MaterialCode" }), width: 150 },
+    { field: "Year", headerName: intl.formatMessage({ id: "forecast.Year" }), width: 100 },
+    {
+      field: "LineName", headerName: intl.formatMessage({ id: "forecast.LineName" }), width: 200, renderCell: (params) => {
+        return (
+          <Tooltip title={params.row.LineName ?? ""} className="col-text-elip">
+            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.LineName}</Typography>
+          </Tooltip>
+        );
+      },
+    },
+    { field: "Description", headerName: intl.formatMessage({ id: "forecast.Desciption" }), width: 120 },
   ];
 
   const [gridCol, setGridCol] = useState([...columns]);
@@ -56,24 +67,25 @@ const Analytics = (props) => {
     };
 
     const res = await forecastService.getForecastPOReport(params);
-    if (res && res.Data && isRendered) {
-      console.log(res)
-      var obj = res.Data[0]
 
-      let col = [...columns];
-      for (let i = state.searchData.weekStart; i <= state.searchData.weekEnd; i++) {
-        // if (obj["Week" + i] !== undefined)
-        col.push({ field: "Week" + i, headerName: "Week" + i, width: 100 })
-      }
-      setGridCol([...col]);
+    let col = [...columns];
+    for (let i = state.searchData.weekStart; i <= state.searchData.weekEnd; i++) {
+      if (i < 1)
+        continue;
+      if (i > 52)
+        break;
+      col.push({ field: "Week" + i, headerName: "Week" + i, width: 100, align: "right" })
+    }
+    setGridCol([...col]);
+
+    if (isRendered) {
+      setState({
+        ...state,
+        data: res.Data ?? [],
+        totalRow: res.TotalRow,
+        isLoading: false,
+      })
     };
-
-    setState({
-      ...state,
-      data: res.Data ?? [],
-      totalRow: res.TotalRow,
-      isLoading: false,
-    })
   }
 
   const handleSearch = (e, inputName) => {
@@ -91,6 +103,22 @@ const Analytics = (props) => {
     setYearList(yearList);
   };
 
+  const handleDownload = async (e) => {
+    try {
+      const params = {
+        FPoMasterId: state.searchData.FPoMasterId,
+        weekStart: state.searchData.weekStart,
+        weekEnd: state.searchData.weekEnd,
+        Year: state.searchData.Year
+      };
+
+      await forecastService.downloadReport(params);
+    }
+    catch (error) {
+      console.log(`ERROR: ${error}`);
+    }
+  }
+
   return (
     <React.Fragment>
       <Grid container direction="row" justifyContent="space-between" alignItems="width-end" sx={{ mb: 1 }}>
@@ -101,7 +129,7 @@ const Analytics = (props) => {
             label={intl.formatMessage({ id: "forecast.Week_start" })}
             variant="standard"
             type="number"
-            sx={{ width: "210px" }}
+            sx={{ width: "200px" }}
             value={state.searchData.weekStart}
             inputProps={{ min: 1, max: 52 }}
             onChange={(e) => {
@@ -118,30 +146,27 @@ const Analytics = (props) => {
             label={intl.formatMessage({ id: "forecast.Week_end" })}
             variant="standard"
             type="number"
-            sx={{ width: "210px" }}
+            sx={{ width: "200px" }}
             value={state.searchData.weekEnd}
             inputProps={{ min: 1, max: 52 }}
             onChange={(e) => {
-              // var value = parseInt(e.target.value, 10);
-              // if (value > max) value = max;
-              // if (value < min) value = min;
-              // setValueStart(value || "");
-              handleSearch(e.target.value || 0, "weekEnd");
+              var value = parseInt(e.target.value, 10);
+              //value = value > 52 ? 52 : value < state.searchData.weekStart ? state.searchData.weekStart : value
+              // < 1 ? 1 : value;
+              handleSearch(value || 0, "weekEnd");
             }}
           />
         </Grid>
-        <Grid item sx={{ width: "210px" }}>
+        <Grid item sx={{ width: "200px" }}>
           <MuiSelectField
             variant="standard"
             sx={{ mb: 0 }}
-            //value={values.Year ? { YearId: values.Year, YearName: values.Year } : null}
+            value={state.searchData.Year ? { YearId: state.searchData.Year, YearName: state.searchData.Year.toString() } : null}
             label={intl.formatMessage({ id: "forecast.Year" })}
             options={YearList}
             displayLabel="YearName"
             displayValue="YearId"
             onChange={(e, item) => handleSearch(item?.YearId || 0, "Year")}
-          // error={touched.Year && Boolean(errors.Year)}
-          // helperText={touched.Year && errors.Year}
           />
         </Grid>
         <Grid item>
@@ -149,6 +174,11 @@ const Analytics = (props) => {
             text="search"
             color="info"
             onClick={fetchData}
+          />
+          <MuiButton
+            text="excel"
+            color="primary"
+            onClick={handleDownload}
           />
         </Grid>
       </Grid>
@@ -163,7 +193,8 @@ const Analytics = (props) => {
         rowCount={state.totalRow}
         rowsPerPageOptions={[5, 10, 20]}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
-        getRowId={(rows) => rows.MaterialId}
+        getRowId={(rows) => rows.FPOId}
+        initialState={{ pinnedColumns: { left: ['MaterialCode'] } }}
       />
 
     </React.Fragment>

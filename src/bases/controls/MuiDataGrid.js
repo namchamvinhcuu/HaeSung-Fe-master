@@ -3,15 +3,26 @@ import { bindActionCreators } from 'redux'
 import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS'
 import { User_Operations } from '@appstate/user'
 import { Store } from '@appstate'
+
+// import {
+//     DataGrid,
+//     gridPageCountSelector,
+//     gridPageSelector,
+//     useGridApiContext,
+//     useGridSelector,
+//     gridColumnsTotalWidthSelector,
+//     gridColumnPositionsSelector
+// } from "@mui/x-data-grid";
 import {
-    DataGrid,
+    DataGridPro,
     gridPageCountSelector,
     gridPageSelector,
     useGridApiContext,
     useGridSelector,
     gridColumnsTotalWidthSelector,
     gridColumnPositionsSelector
-} from "@mui/x-data-grid";
+} from '@mui/x-data-grid-pro';
+
 import React, { useImperativeHandle } from 'react';
 import { createTheme, ThemeProvider, Box, LinearProgress, CircularProgress, Pagination, PaginationItem, TablePagination, styled, Skeleton } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -19,7 +30,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useIntl } from 'react-intl';
 import bat_ngo from '@static/images/bat_ngo.png'
 
-const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
+const StyledDataGrid = styled(DataGridPro)(({ theme }) => ({
     boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;',
     color:
         theme.palette.mode === 'light' ? 'rgba(0,0,0,.85)' : 'rgba(255,255,255,0.85)',
@@ -91,9 +102,26 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
         },
     },
 
-    '& .MuiDataGrid-columnHeaders': {
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    '& .MuiDataGrid-pinnedColumnHeaders': {
+        // backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        backgroundColor: '#616365',
         color: 'white',
+        fontWeight: 'bold',
+        fontSize: '16px',
+
+        '& .MuiDataGrid-sortIcon': {
+            color: '#fff'
+        },
+
+        '& .MuiDataGrid-columnHeader': {
+            outline: 'none'
+        }
+    },
+
+    '& .MuiDataGrid-columnHeaders': {
+        // backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        backgroundColor: '#616365',
+        color: '#fff',
         fontWeight: 'bold',
         fontSize: '16px',
 
