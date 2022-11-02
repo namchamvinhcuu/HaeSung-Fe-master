@@ -55,7 +55,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
     data: [],
     totalRow: 0,
     page: 1,
-    pageSize: 20,
+    pageSize: 8,
     searchData: {
       keyWord: "",
       keyWordWeekStart: 0,
