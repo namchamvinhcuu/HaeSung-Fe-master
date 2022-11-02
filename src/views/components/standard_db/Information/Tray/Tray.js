@@ -377,6 +377,7 @@ export default function Tray() {
       onSelectionModelChange={(ids) => {
          setRowSelected(ids)
       }}
+        disableSelectionOnClick
         checkboxSelection
         showLoading={trayState.isLoading}
         isPagingServer={true}
