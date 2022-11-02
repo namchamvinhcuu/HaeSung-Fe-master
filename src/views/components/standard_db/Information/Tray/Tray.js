@@ -460,13 +460,14 @@ const Modal_Qr_Code = ({ isShowing, hide,  rowSelected }) => {
           {
             listPrint?.map((item, index)=>{
               return (
-                <Box key={`TRAY_${index}`}  sx={{
+                <Box key={`TRAY_${index}`} sx={{
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  mb:4,
                   borderBottom:"1px solid black",
-                  pb:4
+                  mb:2,
+                  pb:2,
+                  pageBreakAfter:"always"
                 }}>
                 <Box sx={{ mr: 2 }}>
                   <QRCode value={`${item.TrayCode}`} size={155} />
