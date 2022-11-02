@@ -87,4 +87,9 @@ const getCurrentWeek = () => {
   return curWeek;
 };
 
-export { calDateAgo, toCamel, dateToTicks, addDays, minusDays, getCurrentWeek };
+const isNumber = (input) => {
+  if (!input) return false;
+  return isFinite(input);
+};
+
+export { calDateAgo, toCamel, dateToTicks, addDays, minusDays, getCurrentWeek, isNumber };

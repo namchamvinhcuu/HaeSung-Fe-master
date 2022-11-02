@@ -65,7 +65,9 @@
         "StartSearchingDate": "From",
         "StartSearchingDate_invalid": "Start Searching Date format is invalid",
         "EndSearchingDate": "To",
-        "EndSearchingDate_invalid": "End Searching Date format is invalid"
+        "EndSearchingDate_invalid": "End Searching Date format is invalid",
+        "week_invalid": "Week must be integer and between 1 - 52",
+        "year_invalid": "Year must be integer and between 2022 - 2050"
     },
     "login": {
         "account_password_invalid": "Account/Password is invalid",
@@ -283,7 +285,8 @@
         "Year_required_bigger": "Year must be not less than current year",
         "Week_required_bigger": "Year must be not less 1",
         "Week_required_less": "Year must not be bigger 52",
-        "Amount_required_bigger": "Amount must be not less 1",
+        "Amount_required_bigger": "Amount must be integer and greater than 0",
+        "OrderQty_required_bigger": "Order Qty must be integer and greater than 0",
         "Required_Int": "Required must is integer",
         "Max_2050": "Year must be less than 2050",
         "Desciption": "Desciption",

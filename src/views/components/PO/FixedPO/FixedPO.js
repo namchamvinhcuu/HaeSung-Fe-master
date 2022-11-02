@@ -1,29 +1,21 @@
-import React, { useEffect, useState, useRef } from "react";
+import { Store } from "@appstate";
+import { User_Operations } from "@appstate/user";
+import { CombineDispatchToProps, CombineStateToProps } from "@plugins/helperJS";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
-import { User_Operations } from "@appstate/user";
-import { Store } from "@appstate";
 
-import { MuiButton, MuiDataGrid, MuiSearchField, MuiAutocomplete } from "@controls";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import SaveAsIcon from '@mui/icons-material/SaveAs';
-import UndoIcon from "@mui/icons-material/Undo";
-import DoDisturbIcon from '@mui/icons-material/DoDisturb';
-import { FormControlLabel, Switch, TextField, Tooltip, Typography, } from "@mui/material";
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from "@controls";
+import { ForecastPODto } from "@models";
+import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
+import { fixedPOService } from "@services";
+import { ErrorAlert, getCurrentWeek, isNumber, SuccessAlert } from "@utils";
 import _ from "lodash";
 import moment from "moment";
 import { useIntl } from "react-intl";
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import { ForecastPODto } from "@models";
-import { fixedPOService } from "@services";
-import { ErrorAlert, SuccessAlert, getCurrentWeek } from "@utils";
 
 const FixedPO = (props) => {
-  const currentDate = new Date();
   let isRendered = useRef(true);
   const intl = useIntl();
 
@@ -40,22 +32,12 @@ const FixedPO = (props) => {
     },
   });
 
-  // const [mode, setMode] = useState(CREATE_ACTION);
   const [newData, setNewData] = useState({ ...ForecastPODto });
   const [selectedRow, setSelectedRow] = useState({
     ...ForecastPODto,
   });
-  // const [isOpenDialog, setIsOpenDialog] = useState(false);
-  const [showActivedData, setShowActivedData] = useState(true);
 
-  // const toggleDialog = (mode) => {
-  //   if (mode === CREATE_ACTION) {
-  //     setMode(CREATE_ACTION);
-  //   } else {
-  //     setMode(UPDATE_ACTION);
-  //   }
-  //   setIsOpenDialog(!isOpenDialog);
-  // };
+  const [showActivedData, setShowActivedData] = useState(true);
 
   const handleshowActivedData = async (event) => {
     setShowActivedData(event.target.checked);
@@ -79,33 +61,6 @@ const FixedPO = (props) => {
     }
   };
 
-  const handleDelete = async (fixedPO) => {
-    if (
-      window.confirm(
-        intl.formatMessage({
-          id: showActivedData
-            ? "general.confirm_delete"
-            : "general.confirm_redo_deleted",
-        })
-      )
-    ) {
-      try {
-        let res = await fixedPOService.handleDelete(workOrder);
-        if (res) {
-          if (res && res.HttpResponseCode === 200) {
-            await fetchData();
-          } else {
-            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-          }
-        } else {
-          ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
   const changeSearchData = (e, inputName) => {
     let newSearchData = { ...fixedPOState.searchData };
 
@@ -118,7 +73,8 @@ const FixedPO = (props) => {
         break;
 
       default:
-        newSearchData[inputName] = e.target.value;
+
+        newSearchData[inputName] = parseInt(e.target.value, 10);
         break;
     }
     setFixedPOState({
@@ -133,6 +89,13 @@ const FixedPO = (props) => {
   };
 
   const handleRowUpdate = async (newRow) => {
+
+    console.log(newRow)
+    if (!isNumber(newRow.OrderQty) || newRow.OrderQty < 0) {
+      ErrorAlert(intl.formatMessage({ id: "forecast.OrderQty_required_bigger" }));
+      return selectedRow;
+    }
+    newRow = { ...newRow, OrderQty: parseInt(newRow.OrderQty) }
     const res = await fixedPOService.modify(newRow);
     if (res && res.HttpResponseCode === 200 && isRendered) {
       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
@@ -141,7 +104,7 @@ const FixedPO = (props) => {
     }
     else {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-      return null;
+      return selectedRow;
     }
   }
 
@@ -156,14 +119,14 @@ const FixedPO = (props) => {
     _.forOwn(checkObj, (value, key) => {
       switch (key) {
         case "Year":
-          if (!Number.isInteger(value) && value > 2022) {
-            message = "general.field_invalid";
+          if (!Number.isInteger(value) || value < 2022 || value > 2050) {
+            message = "general.year_invalid";
             flag = false;
           }
           break;
         case "Week":
-          if (!Number.isInteger(value) && value > 0 && value <= 52) {
-            message = "general.field_invalid";
+          if (!isNumber(value) || value < 1 || value > 52) {
+            message = "general.week_invalid";
             flag = false;
           }
           break;
@@ -324,7 +287,7 @@ const FixedPO = (props) => {
     <React.Fragment>
       <Grid
         container
-        spacing={2}
+        spacing={1}
         justifyContent="flex-end"
         alignItems="flex-end"
       >
@@ -390,7 +353,7 @@ const FixedPO = (props) => {
         showLoading={fixedPOState.isLoading}
         isPagingServer={true}
         headerHeight={45}
-        // gridHeight={750}
+        // gridHeight={740}
         columns={columns}
         rows={fixedPOState.data}
         page={fixedPOState.page - 1}
