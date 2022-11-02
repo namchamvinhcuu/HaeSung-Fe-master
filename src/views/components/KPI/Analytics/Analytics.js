@@ -164,6 +164,7 @@ const Analytics = (props) => {
         rowsPerPageOptions={[5, 10, 20]}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
         getRowId={(rows) => rows.MaterialId}
+        initialState={{ pinnedColumns: { left: ['MaterialCode'] } }}
       />
 
     </React.Fragment>
