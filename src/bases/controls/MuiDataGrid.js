@@ -474,13 +474,13 @@ const MuiDataGrid = (props) => {
                                 rows={rows}
 
                                 pagination
-                                page={page ?? 1}
+                                // page={page ?? 1}
                                 pageSize={pageSize ?? 0}
-                                rowCount={rowCount ?? 0}
-                                rowsPerPageOptions={rowsPerPageOptions}
+                                // rowCount={rowCount ?? 0}
+                                // rowsPerPageOptions={rowsPerPageOptions}
 
-                                onPageChange={onPageChange}
-                                onPageSizeChange={onPageSizeChange}
+                                // onPageChange={onPageChange}
+                                // onPageSizeChange={onPageSizeChange}
                                 getRowId={getRowId}
 
                                 onSelectionModelChange={onSelectionModelChange}
