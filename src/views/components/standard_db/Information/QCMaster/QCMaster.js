@@ -5,6 +5,7 @@ import {
   MuiDataGrid,
   MuiSearchField,
   MuiSelectField,
+  MuiAutocomplete
 } from "@controls";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -57,8 +58,8 @@ const QCMaster = (props) => {
     },
   });
 
-  const [materialArr, setmaterialArr] = useState([]);
-  const [qcArr, setqcArr] = useState([]);
+  // const [materialArr, setmaterialArr] = useState([]);
+  // const [qcArr, setqcArr] = useState([]);
   const [qcType, setqcType] = useState([""]);
 
   const [selectedRow, setSelectedRow] = useState({
@@ -74,9 +75,9 @@ const QCMaster = (props) => {
     setIsOpenModifyDialog(!isOpenModifyDialog);
   };
 
-  useEffect(() => {
-    getQC();
-  }, []);
+  // useEffect(() => {
+  //   getQC();
+  // }, []);
 
   useEffect(() => {
     fetchData();
@@ -185,25 +186,27 @@ const QCMaster = (props) => {
     }
   };
 
-  useEffect(() => {
-    getMaterial(qcType);
-  }, [qcType]);
+  // useEffect(() => {
+  //   getMaterial(qcType);
+  // }, [qcType]);
 
   const getMaterial = async (qcType) => {
     const res = await qcMasterService.getMaterialForSelect({ qcType: qcType });
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setmaterialArr([...res.Data]);
-    } else {
-      setmaterialArr([]);
-    }
+    return res;
+    // if (res.HttpResponseCode === 200 && res.Data) {
+    //   setmaterialArr([...res.Data]);
+    // } else {
+    //   setmaterialArr([]);
+    // }
   };
   const getQC = async () => {
     const res = await qcMasterService.getQCTypeForSelect();
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setqcArr([...res.Data]);
-    } else {
-      setqcArr([]);
-    }
+    return res;
+    // if (res.HttpResponseCode === 200 && res.Data) {
+    //   setqcArr([...res.Data]);
+    // } else {
+    //   setqcArr([]);
+    // }
   };
   const columns = [
     { field: "QCMasterId", headerName: "", flex: 0.3, hide: true },
@@ -370,7 +373,22 @@ const QCMaster = (props) => {
             </Grid>
 
             <Grid item style={{ width: "21%" }}>
-              <MuiSelectField
+            <MuiAutocomplete
+                    label={intl.formatMessage({ id: "qcMaster.qcType" })}
+                    fetchDataFunc={getQC}
+                    displayLabel="commonDetailName"
+                    displayValue="commonDetailId"
+
+                    onChange={(e, item) => {
+                      handleSearch(
+                        item ? item.commonDetailId ?? null : null,
+                        "QCType"
+                      );
+                      setqcType(item?.commonDetailName || "");
+                    }}
+                    variant="standard"
+                />
+              {/* <MuiSelectField
                 label={intl.formatMessage({ id: "qcMaster.qcType" })}
                 options={qcArr}
                 displayLabel="commonDetailName"
@@ -383,10 +401,24 @@ const QCMaster = (props) => {
                   );
                   setqcType(item?.commonDetailName || "");
                 }}
-              />
+              /> */}
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiSelectField
+                <MuiAutocomplete
+                    label={intl.formatMessage({ id: "material.MaterialCode" })}
+                    fetchDataFunc={()=>getMaterial(qcType)}
+                    displayLabel="MaterialCode"
+                    displayValue="MaterialId"
+                    displayGroup="GroupMaterial"
+                    onChange={(e, item) =>
+                      handleSearch(
+                        item ? item.MaterialId ?? null : null,
+                        "MaterialId"
+                      )
+                    }
+                    variant="standard"
+                />
+              {/* <MuiSelectField
                 label={intl.formatMessage({ id: "material.MaterialCode" })}
                 options={materialArr}
                 displayLabel="MaterialCode"
@@ -399,7 +431,7 @@ const QCMaster = (props) => {
                     "MaterialId"
                   )
                 }
-              />
+              /> */}
             </Grid>
             <Grid item style={{ width: "21%" }}>
               <MuiSearchField

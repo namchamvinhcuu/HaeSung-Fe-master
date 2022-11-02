@@ -1,4 +1,4 @@
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiSelectField} from '@controls'
+import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiSelectField, MuiAutocomplete} from '@controls'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
     Autocomplete,
@@ -19,20 +19,21 @@ const ModifyLocationDialog = (props) => {
     const intl = useIntl();
 
     const { initModal, isOpen, onClose, setModifyData } = props;
-    const [AreaList, setAreaList] = useState([]);
+    // const [AreaList, setAreaList] = useState([]);
     const getArea = async () => {
         const res = await locationService.GetArea();
-        if (res.HttpResponseCode === 200 && res.Data) {
-            setAreaList([...res.Data])
-        }
-        else {
-            setAreaList([])
-        }
+        return res;
+        // if (res.HttpResponseCode === 200 && res.Data) {
+        //     setAreaList([...res.Data])
+        // }
+        // else {
+        //     setAreaList([])
+        // }
     }
-    useEffect(() => {
-        if (isOpen)
-        getArea();
-    }, [isOpen])
+    // useEffect(() => {
+    //     if (isOpen)
+    //     getArea();
+    // }, [isOpen])
 
     const [dialogState, setDialogState] = useState({
         ...initModal,
@@ -113,7 +114,22 @@ const ModifyLocationDialog = (props) => {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <MuiSelectField
+                            <MuiAutocomplete
+                                    label={intl.formatMessage({ id: 'location.AreaId' }) + ' *'}
+                                    fetchDataFunc={getArea}
+                                    displayLabel="commonDetailName"
+                                    displayValue="commonDetailId"
+                                    value={values.AreaId ? { commonDetailId: values.AreaId, commonDetailName: values.AreaName } : null}
+                                    disabled={dialogState.isSubmit}
+                                    onChange={(e, value) => {
+                                        setFieldValue("AreaName", value?.commonDetailName || '');
+                                        setFieldValue("AreaId", value?.commonDetailId || "");
+                                    }}
+                                    error={touched.AreaId && Boolean(errors.AreaId)}
+                                    helperText={touched.AreaId && errors.AreaId}
+                                    variant="outlined"
+                                />
+                                {/* <MuiSelectField
                                     value={values.AreaId ? { commonDetailId: values.AreaId, commonDetailName: values.AreaName } : null}
                                     disabled={dialogState.isSubmit}
                                     label={intl.formatMessage({ id: 'location.AreaId' }) + ' *'}
@@ -126,7 +142,7 @@ const ModifyLocationDialog = (props) => {
                                 }}
                                     error={touched.AreaId && Boolean(errors.AreaId)}
                                     helperText={touched.AreaId && errors.AreaId}
-                                />
+                                /> */}
                             </Grid>
                         </Grid>
                         

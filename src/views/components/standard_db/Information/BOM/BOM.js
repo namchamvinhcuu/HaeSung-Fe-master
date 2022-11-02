@@ -12,7 +12,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useIntl } from "react-intl";
-import { MuiButton, MuiDataGrid, MuiSelectField } from "@controls";
+import { MuiButton, MuiDataGrid, MuiSelectField, MuiAutocomplete } from "@controls";
 import { bomService } from "@services";
 import { useModal, useModal2 } from "@basesShared";
 import { ErrorAlert, SuccessAlert } from "@utils";
@@ -44,7 +44,7 @@ export default function BOM() {
   const [newDataChild, setNewDataChild] = useState({});
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
-  const [MaterialList, setMaterialList] = useState([]);
+  // const [MaterialList, setMaterialList] = useState([]);
   const [BomId, setBomId] = useState(null);
 
   const columns = [
@@ -166,9 +166,9 @@ export default function BOM() {
   ];
 
   //useEffect
-  useEffect(() => {
-    getMaterial();
-  }, []);
+  // useEffect(() => {
+  //   getMaterial();
+  // }, []);
 
   useEffect(() => {
     fetchData();
@@ -282,9 +282,10 @@ export default function BOM() {
 
   const getMaterial = async () => {
     const res = await bomService.getMaterial(-1);
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setMaterialList([...res.Data]);
-    }
+    return res;
+    // if (res.HttpResponseCode === 200 && res.Data) {
+    //   setMaterialList([...res.Data]);
+    // }
   };
 
   return (
@@ -312,7 +313,20 @@ export default function BOM() {
         </Grid>
 
         <Grid item>
-          <MuiSelectField
+              <MuiAutocomplete
+                    label={intl.formatMessage({ id: "bom.MaterialId" })}
+                    fetchDataFunc={getMaterial}
+                    displayLabel="MaterialCode"
+                    displayValue="MaterialId"
+                    displayGroup="GroupMaterial"
+
+                    onChange={(e, item) =>
+                      handleSearch(item ? item.MaterialId ?? null : null, "MaterialId")
+                    }
+                    sx={{ width: 250 }}
+                    variant="standard"
+                />
+          {/* <MuiSelectField
             label={intl.formatMessage({ id: "bom.MaterialId" })}
             options={MaterialList}
             displayLabel="MaterialCode"
@@ -323,7 +337,7 @@ export default function BOM() {
             }
             variant="standard"
             sx={{ width: 250 }}
-          />
+          /> */}
         </Grid>
         <Grid item>
           <MuiButton

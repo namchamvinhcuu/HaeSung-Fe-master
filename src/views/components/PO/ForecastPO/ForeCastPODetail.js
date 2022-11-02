@@ -482,7 +482,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
                disabled={FPoMasterId ? false : true} 
                 label="general.name"
                 name="LineName"
-                // onClick={fetchData}
+                onClick={()=>fetchData(FPoMasterId)}
                 onChange={(e) => handleSearch(e.target.value, "keyWord")}
               />
             </Box> 

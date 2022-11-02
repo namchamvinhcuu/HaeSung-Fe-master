@@ -464,7 +464,7 @@ const Modal_Qr_Code = ({ isShowing, hide,  rowSelected }) => {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  borderBottom:"1px solid black",
+                  // borderBottom:"1px solid black",
                   mb:2,
                   pb:2,
                   pageBreakAfter:"always"

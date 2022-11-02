@@ -15,6 +15,7 @@ import {
   MuiDataGrid,
   MuiSelectField,
   MuiSearchField,
+  MuiAutocomplete
 } from "@controls";
 import { locationService } from "@services";
 import { useModal } from "@basesShared";
@@ -48,7 +49,7 @@ const Location = (props) => {
     ...LocationDto,
   });
   const [newData, setNewData] = useState({ ...LocationDto });
-  const [AreaList, setAreaList] = useState([]); //Area
+  // const [AreaList, setAreaList] = useState([]); //Area
 
   const toggleCreateDialog = () => {
     setIsOpenCreateDialog(!isOpenCreateDialog);
@@ -274,9 +275,10 @@ const Location = (props) => {
 
   const getArea = async () => {
     const res = await locationService.GetArea();
-    if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-      setAreaList([...res.Data]);
-    }
+    return res;
+    // if (res.HttpResponseCode === 200 && res.Data && isRendered) {
+    //   setAreaList([...res.Data]);
+    // }
   };
 
   return (
@@ -314,7 +316,20 @@ const Location = (props) => {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiSelectField
+            <MuiAutocomplete
+                label={intl.formatMessage({ id: "location.AreaId" })}
+                fetchDataFunc={getArea}
+                displayLabel="commonDetailName"
+                displayValue="commonDetailId"
+                onChange={(e, item) =>
+                  handleSearch(
+                    item ? item.commonDetailId ?? null : null,
+                    "AreaId"
+                  )
+                }
+                variant="standard"
+              />
+              {/* <MuiSelectField
                 label={intl.formatMessage({ id: "location.AreaId" })}
                 options={AreaList}
                 displayLabel="commonDetailName"
@@ -327,7 +342,7 @@ const Location = (props) => {
                 }
                 variant="standard"
                 //sx={{ width: 220 }}
-              />
+              /> */}
             </Grid>
             <Grid item>
               <MuiButton
