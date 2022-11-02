@@ -77,6 +77,7 @@ const ForecastDetailDialog = (props) => {
     Amount: yup
       .number()
       .nullable()
+      .integer(intl.formatMessage({ id: "forecast.Required_Int" }))
       .required(intl.formatMessage({ id: "forecast.Amount_required" }))
       .min(1, intl.formatMessage({ id: "forecast.Amount_required_bigger" })),
   });

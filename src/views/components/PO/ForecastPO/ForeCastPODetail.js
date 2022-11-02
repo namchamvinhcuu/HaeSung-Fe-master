@@ -47,7 +47,6 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
   const { isShowing, toggle } = useModal();
-  const [yearList, setYearList] = useState([]);
   const [valueYear, setValueYear] = useState("");
   const curWeek = getCurrentWeek();
   const [currentWeek, setCurrentWeek] = useState(curWeek);
@@ -61,7 +60,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
       keyWord: "",
       keyWordWeekStart: 0,
       keyWordWeekEnd: curWeek,
-      keyWordYear: 0,
+      keyWordYear: new Date().getFullYear(),
       showDelete: true,
     },
     FPoMasterId: FPoMasterId,
@@ -403,7 +402,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
                 variant="standard"
                 type="number"
                 sx={{ width: "120px" }}
-                value={valueYear}
+                value={valueYear || new Date().getFullYear()}
                 // inputProps={{ minyear, maxyear }}
                 onChange={(e) => {
                   var value = parseInt(e.target.value, 10);

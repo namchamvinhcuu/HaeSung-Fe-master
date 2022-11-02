@@ -47,7 +47,6 @@ const GetTrayType = async () => {
   }
 }
 const GetListPrintQR = async (params) =>{
-  console.log(params,'ser');
   try {
     return await axios.post(`${apiName}/get-list-print-qr`,params );
   }

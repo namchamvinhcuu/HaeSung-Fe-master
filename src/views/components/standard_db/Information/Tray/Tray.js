@@ -38,7 +38,6 @@ import moment from "moment";
 import TrayDialog from "./TrayDialog";
 import ReactToPrint from "react-to-print";
 import CloseIcon from "@mui/icons-material/Close";
-import Collapse from '@mui/material/Collapse';
 
 export default function Tray() {
   const intl = useIntl();
@@ -413,21 +412,20 @@ export default function Tray() {
   );
 }
 const Modal_Qr_Code = ({ isShowing, hide,  rowSelected }) => {
-  const Transition_Collapse = React.forwardRef(function Transition(props, ref) {
-    return <Collapse   ref={ref} {...props} />;
-  });
+
   const componentPringtRef = React.useRef();
   const [listPrint, setListPrint] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(async() => {
+    setIsLoading(true)
     const res =await trayService.GetListPrintQR(rowSelected);
     setListPrint(res.Data)
+    setIsLoading(false)
   }, []);
  
   return (
-    <Dialog open={isShowing} maxWidth="md" fullWidth 
-    // TransitionComponent={Transition_Collapse}
-    // transitionDuration={300}
-    >
+    <React.Fragment>
+      {!isLoading&&<Dialog open={isShowing} maxWidth="md" fullWidth >
       <DialogTitle
         sx={{
           p: 1,
@@ -511,6 +509,7 @@ const Modal_Qr_Code = ({ isShowing, hide,  rowSelected }) => {
           content={() => componentPringtRef.current}
         />
       </DialogActions>
-    </Dialog>
+    </Dialog>}
+    </React.Fragment>
   );
 };
