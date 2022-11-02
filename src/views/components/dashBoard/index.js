@@ -51,13 +51,12 @@ class DashBoard extends Component {
   }
 
   componentWillUnmount() {
-    // if (this.newConnection) {
-    //   this.newConnection.stop().then(() => console.log("websocket is disconnected"));
-    //   this.newConnection = null;
-    // }
-
-
+    if (this.newConnection) {
+      this.newConnection.stop().then(() => console.log("websocket is disconnected"));
+      this.newConnection = null;
+    }
   }
+
   componentDidMount() {
 
     (async () => {
