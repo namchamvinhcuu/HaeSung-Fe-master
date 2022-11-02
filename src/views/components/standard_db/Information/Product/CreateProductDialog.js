@@ -1,4 +1,4 @@
-import { MuiDialog, MuiResetButton, MuiSubmitButton,MuiSelectField, MuiAutoComplete  } from '@controls'
+import { MuiDialog, MuiResetButton, MuiSubmitButton,MuiSelectField, MuiAutocomplete  } from '@controls'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
     Autocomplete,
@@ -142,7 +142,7 @@ const CreateDialog = (props) => {
                     <Grid item xs={12}>
                         <Grid container item spacing={2}>
                             <Grid item xs={6} >
-                            <MuiAutoComplete
+                            <MuiAutocomplete
                                     label={intl.formatMessage({ id: 'product.Model' }) + ' *'}
                                     fetchDataFunc={getModel}
                                     displayLabel="commonDetailName"
@@ -165,7 +165,7 @@ const CreateDialog = (props) => {
                       
                             </Grid>
                             <Grid item xs={6}>
-                            <MuiAutoComplete
+                            <MuiAutocomplete
                                     label={intl.formatMessage({ id: 'product.product_type' }) + ' *'}
                                     fetchDataFunc={getproductType}
                                     displayLabel="commonDetailName"

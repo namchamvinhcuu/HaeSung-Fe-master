@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { useIntl } from "react-intl";
 import {
-  MuiAutoComplete,
+  MuiAutocomplete,
   MuiButton,
   MuiDataGrid,
   MuiDateTimeField,
@@ -332,7 +332,7 @@ export default function Material() {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiAutoComplete
+              <MuiAutocomplete
                 label={intl.formatMessage({ id: "material.MaterialType" })}
                 fetchDataFunc={materialService.getMaterialType}
                 displayLabel="commonDetailName"
@@ -347,7 +347,7 @@ export default function Material() {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiAutoComplete
+              <MuiAutocomplete
                 label={intl.formatMessage({ id: "material.Unit" })}
                 fetchDataFunc={materialService.getUnit}
                 displayLabel="commonDetailName"
@@ -362,7 +362,7 @@ export default function Material() {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiAutoComplete
+              <MuiAutocomplete
                 label={intl.formatMessage({ id: "material.SupplierId" })}
                 fetchDataFunc={materialService.getSupplier}
                 displayLabel="SupplierName"

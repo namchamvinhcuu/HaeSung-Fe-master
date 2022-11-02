@@ -7,7 +7,7 @@ import { bindActionCreators } from "redux";
 
 import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
 import {
-  MuiAutoComplete,
+  MuiAutocomplete,
   MuiButton,
   MuiDataGrid,
   MuiDateTimeField,
@@ -416,7 +416,7 @@ const WorkOrder = (props) => {
         </Grid>
 
         <Grid item xs>
-          <MuiAutoComplete
+          <MuiAutocomplete
             label={intl.formatMessage({ id: "work_order.MaterialCode" })}
             fetchDataFunc={getSearchMaterialArr}
             displayLabel="MaterialCode"

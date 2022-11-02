@@ -19,7 +19,7 @@ import {
   MuiDataGrid,
   MuiSelectField,
   MuiSearchField,
-  MuiAutoComplete,
+  MuiAutocomplete,
 } from "@controls";
 import { moldService } from "@services";
 import { useModal } from "@basesShared";
@@ -356,7 +356,7 @@ export default function Mold() {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiAutoComplete
+              <MuiAutocomplete
                 label={intl.formatMessage({ id: "mold.Model" })}
                 fetchDataFunc={moldService.getProductModel}
                 displayLabel="commonDetailName"
@@ -371,7 +371,7 @@ export default function Mold() {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiAutoComplete
+              <MuiAutocomplete
                 label={intl.formatMessage({ id: "mold.MoldType" })}
                 fetchDataFunc={moldService.getProductType}
                 displayLabel="commonDetailName"
@@ -386,7 +386,7 @@ export default function Mold() {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiAutoComplete
+              <MuiAutocomplete
                 label={intl.formatMessage({ id: "mold.MachineType" })}
                 fetchDataFunc={moldService.getMachineType}
                 displayLabel="commonDetailName"

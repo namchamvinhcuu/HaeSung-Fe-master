@@ -5,7 +5,7 @@ import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
 import { User_Operations } from "@appstate/user";
 import { Store } from "@appstate";
 
-import { MuiButton, MuiDataGrid, MuiSearchField, MuiAutoComplete } from "@controls";
+import { MuiButton, MuiDataGrid, MuiSearchField, MuiAutocomplete } from "@controls";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveAsIcon from '@mui/icons-material/SaveAs';
@@ -349,7 +349,7 @@ const FixedPO = (props) => {
           />
         </Grid>
         <Grid item xs={4} sm={3} md={2}>
-          <MuiAutoComplete
+          <MuiAutocomplete
             label={intl.formatMessage({ id: 'forecast.MaterialId' })}
             fetchDataFunc={getSearchMaterialArr}
             displayLabel="MaterialCode"

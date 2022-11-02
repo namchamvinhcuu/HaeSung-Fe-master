@@ -11,7 +11,7 @@ import moment from "moment";
 import { useIntl } from "react-intl";
 import Grid from "@mui/material/Grid";
 import {
-    MuiAutoComplete,
+    MuiAutocomplete,
     MuiButton,
     MuiDataGrid,
     MuiDateTimeField,

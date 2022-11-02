@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField, MuiAutoComplete } from '@controls'
+import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField, MuiAutocomplete } from '@controls'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Autocomplete, Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
@@ -135,7 +135,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
             />
           </Grid>
           <Grid item xs={12}>
-            <MuiAutoComplete
+            <MuiAutocomplete
               required
               value={values.MaterialType ? { commonDetailId: values.MaterialType, commonDetailName: values.MaterialTypeName } : null}
               disabled={dialogState.isSubmit}
@@ -157,7 +157,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           </Grid>
           {values.MaterialTypeName != "BARE MATERIAL" &&
             <Grid item xs={12}>
-              <MuiAutoComplete
+              <MuiAutocomplete
                 required
                 value={values.Unit ? { commonDetailId: values.Unit, commonDetailName: values.UnitName } : null}
                 disabled={dialogState.isSubmit}

@@ -5,7 +5,7 @@ import {
   MuiSubmitButton,
   MuiDateField,
   MuiSelectField,
-  MuiAutoComplete
+  MuiAutocomplete
 } from "@controls";
 import { useIntl } from "react-intl";
 import { useFormik } from "formik";
@@ -215,7 +215,7 @@ const ForecastDetailDialog = (props) => {
           </Grid>
           
           <Grid item xs={12}>
-          <MuiAutoComplete
+          <MuiAutocomplete
             label={intl.formatMessage({ id: "forecast.MaterialId" }) + " *"}
             fetchDataFunc={getMaterialList}
             displayLabel="MaterialCode"
@@ -262,7 +262,7 @@ const ForecastDetailDialog = (props) => {
             />
           </Grid>
           <Grid item xs={12}>
-          <MuiAutoComplete
+          <MuiAutocomplete
             label={intl.formatMessage({ id: "forecast.BuyerId" }) + " *"}
             fetchDataFunc={getBuyerList}
             displayLabel="BuyerCode"
@@ -295,7 +295,7 @@ const ForecastDetailDialog = (props) => {
           </Grid>
 
           <Grid item xs={12}>
-          <MuiAutoComplete
+          <MuiAutocomplete
             label={intl.formatMessage({ id: "forecast.LineId" }) + " *"}
             fetchDataFunc={getLineList}
             displayLabel="LineName"

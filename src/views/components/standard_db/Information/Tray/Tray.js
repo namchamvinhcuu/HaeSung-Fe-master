@@ -29,7 +29,7 @@ import {
   MuiDataGrid,
   MuiSelectField,
   MuiSearchField,
-  MuiAutoComplete,
+  MuiAutocomplete,
 } from "@controls";
 import { trayService } from "@services";
 import { useModal, useModal2 } from "@basesShared";
@@ -330,7 +330,7 @@ export default function Tray() {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiAutoComplete
+              <MuiAutocomplete
                 label={intl.formatMessage({ id: "tray.TrayType" })}
                 fetchDataFunc={trayService.GetTrayType}
                 displayLabel="commonDetailName"

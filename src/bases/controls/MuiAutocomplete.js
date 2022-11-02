@@ -3,7 +3,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
 import React from "react";
 
-const MuiAutoComplete = ({ ...props }) => {
+const MuiAutocomplete = ({ ...props }) => {
   const {
     value,
     fetchDataFunc,
@@ -187,4 +187,4 @@ const MuiAutoComplete = ({ ...props }) => {
   );
 };
 
-export default MuiAutoComplete;
+export default MuiAutocomplete;

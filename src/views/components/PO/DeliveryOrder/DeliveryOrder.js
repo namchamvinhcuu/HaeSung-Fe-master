@@ -7,7 +7,7 @@ import { bindActionCreators } from "redux";
 
 import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
 import {
-  MuiAutoComplete,
+  MuiAutocomplete,
   MuiButton,
   MuiDataGrid,
   MuiDateTimeField,
@@ -531,7 +531,7 @@ const DeliveryOrder = (props) => {
         </Grid>
 
         {/* <Grid item xs>
-          <MuiAutoComplete
+          <MuiAutocomplete
             label={intl.formatMessage({ id: "delivery_order.PoCode" })}
             fetchDataFunc={getPoMasterArr}
             displayLabel="FPoMasterCode"

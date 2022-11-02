@@ -1,6 +1,6 @@
 import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
 import {
-  MuiAutoComplete, MuiDateTimeField, MuiDialog,
+  MuiAutocomplete, MuiDateTimeField, MuiDialog,
   MuiResetButton,
   MuiSubmitButton, MuiTextField
 } from "@controls";
@@ -179,7 +179,7 @@ const DeliveryOrderDialog = (props) => {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item xs={6}>
-                  <MuiAutoComplete
+                  <MuiAutocomplete
                     label={intl.formatMessage({ id: "delivery_order.FPoMasterCode" })}
                     fetchDataFunc={getPoMasterArr}
                     displayValue="FPoMasterId"
@@ -238,7 +238,7 @@ const DeliveryOrderDialog = (props) => {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item xs>
-                  <MuiAutoComplete
+                  <MuiAutocomplete
                     label={intl.formatMessage({
                       id: "delivery_order.MaterialCode",
                     })}

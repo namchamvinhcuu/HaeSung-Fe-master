@@ -7,7 +7,7 @@ import MuiSearchField from "./MuiSearchField";
 import MuiDateField from "./MuiDateField";
 import MuiDateTimeField from "./MuiDateTimeField";
 import MuiSelectField from "./MuiSelectField";
-import MuiAutoComplete from "./MuiAutoComplete";
+import MuiAutocomplete from "./MuiAutocomplete";
 import MuiTextField from "./MuiTextField";
 
 export {
@@ -20,6 +20,6 @@ export {
   MuiDateField,
   MuiDateTimeField,
   MuiSelectField,
-  MuiAutoComplete,
+  MuiAutocomplete,
   MuiTextField,
 };

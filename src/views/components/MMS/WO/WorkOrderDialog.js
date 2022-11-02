@@ -10,7 +10,7 @@ import {
     MuiResetButton,
     MuiSubmitButton,
     MuiDateTimeField,
-    MuiAutoComplete,
+    MuiAutocomplete,
     MuiTextField,
 } from "@controls";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -251,7 +251,7 @@ const WorkOrderDialog = (props) => {
                             <Grid container spacing={2}>
                                 {/* ForecastPOMaster - Autocomplete*/}
                                 <Grid item xs={4}>
-                                    <MuiAutoComplete
+                                    <MuiAutocomplete
                                         label={intl.formatMessage({
                                             id: "work_order.FPoMasterCode",
                                         })}
@@ -321,7 +321,7 @@ const WorkOrderDialog = (props) => {
                                 {/* Material */}
                                 <Grid item xs={6}>
                                     {values.FPoMasterId && values.FPoMasterId !== 0
-                                        ? <MuiAutoComplete
+                                        ? <MuiAutocomplete
                                             label={intl.formatMessage({
                                                 id: "work_order.MaterialCode",
                                             })}
@@ -347,7 +347,7 @@ const WorkOrderDialog = (props) => {
                                             error={touched.FPOId && Boolean(errors.FPOId)}
                                             helperText={touched.FPOId && errors.FPOId}
                                         />
-                                        : <MuiAutoComplete
+                                        : <MuiAutocomplete
                                             label={intl.formatMessage({ id: "work_order.MaterialCode" })}
                                             fetchDataFunc={getMaterials}
                                             displayLabel="MaterialCode"
@@ -375,7 +375,7 @@ const WorkOrderDialog = (props) => {
 
                                 {/* Bom - Version */}
                                 <Grid item xs={6}>
-                                    <MuiAutoComplete
+                                    <MuiAutocomplete
                                         label={intl.formatMessage({
                                             id: "work_order.BomVersion",
                                         })}
@@ -420,7 +420,7 @@ const WorkOrderDialog = (props) => {
 
                                 {/* Line */}
                                 <Grid item xs>
-                                    <MuiAutoComplete
+                                    <MuiAutocomplete
                                         label={intl.formatMessage({
                                             id: "work_order.LineName",
                                         })}

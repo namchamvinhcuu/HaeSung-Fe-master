@@ -7,7 +7,7 @@ import { forecastService } from "@services";
 import { Store } from '@appstate'
 import { FormControlLabel, Grid, IconButton, Switch, TextField, Tooltip, Typography, } from "@mui/material";
 import { useIntl } from "react-intl";
-import { MuiAutoComplete, MuiButton, MuiDataGrid, MuiDateTimeField, MuiSearchField, MuiSelectField, } from "@controls";
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateTimeField, MuiSearchField, MuiSelectField, } from "@controls";
 import { useModal } from "@basesShared";
 import { ErrorAlert, SuccessAlert, getCurrentWeek } from "@utils";
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField, MuiAutoComplete } from '@controls'
+import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField, MuiAutocomplete } from '@controls'
 import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
@@ -103,7 +103,7 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
             />
           </Grid>
           <Grid item xs={12}>
-            <MuiAutoComplete
+            <MuiAutocomplete
               value={values.TrayType ? { commonDetailId: values.TrayType, commonDetailName: values.TrayTypeName } : null}
               fetchDataFunc={trayService.GetTrayType}
               disabled={dialogState.isSubmit}

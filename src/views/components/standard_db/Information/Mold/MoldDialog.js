@@ -5,7 +5,7 @@ import {
   MuiSubmitButton,
   MuiDateField,
   MuiSelectField,
-  MuiAutoComplete,
+  MuiAutocomplete,
 } from "@controls";
 import { Grid, TextField } from "@mui/material";
 import { useIntl } from "react-intl";
@@ -191,7 +191,7 @@ const MoldDialog = ({
           </Grid>
           <Grid item container spacing={2}>
             <Grid item xs={6}>
-              <MuiAutoComplete
+              <MuiAutocomplete
                 required
                 value={
                   values.Model
@@ -231,7 +231,7 @@ const MoldDialog = ({
           </Grid>
           <Grid item container spacing={2}>
             <Grid item xs={6}>
-              <MuiAutoComplete
+              <MuiAutocomplete
                 required
                 value={
                   values.MoldType
@@ -255,7 +255,7 @@ const MoldDialog = ({
               />
             </Grid>
             <Grid item xs={6}>
-              <MuiAutoComplete
+              <MuiAutocomplete
                 required
                 value={
                   values.MachineType

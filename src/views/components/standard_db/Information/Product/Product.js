@@ -25,7 +25,7 @@ import {
   MuiDataGrid,
   MuiSearchField,
   MuiSelectField,
-  MuiAutoComplete,
+  MuiAutocomplete,
 } from "@controls";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -392,7 +392,7 @@ const Product = () => {
               />
             </Grid> */}
             <Grid item style={{ width: "21%" }}>
-              <MuiAutoComplete
+              <MuiAutocomplete
                 label={intl.formatMessage({ id: "product.Model" })}
                 fetchDataFunc={getModel}
                 displayLabel="commonDetailName"
@@ -424,7 +424,7 @@ const Product = () => {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-              <MuiAutoComplete
+              <MuiAutocomplete
                 label={intl.formatMessage({ id: "product.product_type" })}
                 fetchDataFunc={getproductType}
                 displayLabel="commonDetailName"
