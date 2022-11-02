@@ -13,6 +13,7 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
+  Zoom,
   Switch,
   Table,
   TableBody,
@@ -376,7 +377,7 @@ export default function Tray() {
       onSelectionModelChange={(ids) => {
          setRowSelected(ids)
       }}
-      checkboxSelection={true}
+        checkboxSelection
         showLoading={trayState.isLoading}
         isPagingServer={true}
         headerHeight={45}
@@ -411,8 +412,12 @@ export default function Tray() {
     </React.Fragment>
   );
 }
+
 const Modal_Qr_Code = ({ isShowing, hide,  rowSelected }) => {
 
+  const DialogTransition = React.forwardRef(function DialogTransition(props, ref){
+    return  <Zoom direction="up" ref={ref} {...props} />;
+  })
   const componentPringtRef = React.useRef();
   const [listPrint, setListPrint] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -422,10 +427,10 @@ const Modal_Qr_Code = ({ isShowing, hide,  rowSelected }) => {
     setListPrint(res.Data)
     setIsLoading(false)
   }, []);
- 
+
   return (
     <React.Fragment>
-      {!isLoading&&<Dialog open={isShowing} maxWidth="md" fullWidth >
+      {!isLoading && <Dialog open={isShowing} maxWidth="md" fullWidth   TransitionComponent={DialogTransition} transitionDuration={300}>
       <DialogTitle
         sx={{
           p: 1,
