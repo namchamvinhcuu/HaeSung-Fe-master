@@ -1,5 +1,7 @@
 import { axios } from "@utils";
 const apiName = "/api/forecast-po";
+import * as ConfigConstants from '@constants/ConfigConstants';
+import { GetLocalStorage } from '@utils'
 
 const getForecastList = async (params) => {
   try {
@@ -76,7 +78,6 @@ const getForecastPOReport = async (params) => {
 
 const downloadReport = async (params) => {
   try {
-
     const token = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
     const options = {
       method: 'GET',
@@ -86,13 +87,12 @@ const downloadReport = async (params) => {
         'Authorization': `Bearer ${token}`
       },
     }
-
+    console.log(params)
     fetch(`${ConfigConstants.API_URL}forecast-po/download-excel?
     FPoMasterId=${params.FPoMasterId}
-    &keyWord=${keyWord.keyWord}
-    &keyWordWeekStart=${params.keyWordWeekStart}
-    &keywordweekend=${params.keywordweekend}
-    &isActived=${params.showDelete}`, options)
+    &weekStart=${params.weekStart}
+    &weekEnd=${params.weekEnd}
+    &Year=${params.Year}`, options)
       .then(response => {
         response.blob().then(blob => {
           let url = URL.createObjectURL(blob);
@@ -106,7 +106,6 @@ const downloadReport = async (params) => {
           URL.revokeObjectURL(url);
         });
       });
-
 
   } catch (error) {
     console.log(`ERROR: ${error}`);
