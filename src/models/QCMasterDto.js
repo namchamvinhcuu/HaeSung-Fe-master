@@ -2,6 +2,7 @@ import moment from "moment";
 const QCMasterDto= {
     QCMasterId: 0
     ,QCMasterCode: ''
+    ,MaterialTypeName: ""
     ,Description: ''
     ,MaterialId: 0
     ,MaterialCode: null

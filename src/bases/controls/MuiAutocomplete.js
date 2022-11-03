@@ -114,6 +114,7 @@ const MuiAutocomplete = React.forwardRef(({ ...props }, ref) => {
               />
             );
           }}
+          ref={ref}
         />
       ) : (
         <Autocomplete
@@ -182,6 +183,7 @@ const MuiAutocomplete = React.forwardRef(({ ...props }, ref) => {
               </div>
             );
           }}
+          ref={ref}
         />
       )}
     </React.Fragment>

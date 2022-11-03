@@ -17,9 +17,6 @@ const CreateDialog = (props) => {
     const intl = useIntl();
     const { initModal, isOpen, onClose, setNewData } = props;
 
-    // const [materialArr, setmaterialArr] = useState([initModal]);
-    // const [qcArr, setqcArr] = useState([]);
-
     const [qcType, setqcType] = useState([""]);
 
     const dataModalRef = useRef({ ...initModal });
@@ -29,7 +26,7 @@ const CreateDialog = (props) => {
     const schema = yup.object().shape({
 
         QCMasterCode: yup.string().trim().required(intl.formatMessage({ id: 'general.field_required' })),
-        MaterialId: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
+        MaterialTypeId: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
         QCType: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
         Description: yup.string().trim()
 
@@ -39,7 +36,7 @@ const CreateDialog = (props) => {
         validationSchema: schema,
         initialValues: { ...initModal },
         onSubmit: async values => {
-           
+            console.log("RUNN")
             const res = await qcMasterService.create(values);
             if (res.HttpResponseCode === 200) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -68,39 +65,16 @@ const CreateDialog = (props) => {
         , resetForm
     } = formik;
 
-    // useEffect(() => {
-    //     if (isOpen)
-    //        getQC();
-    // }, [isOpen])
-
-
-    // useEffect(() => {
-    //     getMaterial(qcType);
-    // }, [qcType])
-
-
     const getMaterial = async (qcType) => {
     
         const res = await qcMasterService.getMaterialForSelect({qcType : qcType});
         return res;
-        // if (res.HttpResponseCode === 200 && res.Data) {
-        //     setmaterialArr([...res.Data])
-          
-        // }
-        // else {
-        //     setmaterialArr([])
-        // }
+   
     }
     const getQC = async () => {
         const res = await qcMasterService.getQCTypeForSelect();
         return res;
-        // if (res.HttpResponseCode === 200 && res.Data) {
-        //     setqcArr([...res.Data])
-            
-        // }
-        // else {
-        //     setqcArr([])
-        // }
+   
     }
     useEffect(() => {
         setqcType("");
@@ -159,8 +133,8 @@ const CreateDialog = (props) => {
                                     value={values.QCType ? { commonDetailId: values.QCType, commonDetailName: values.QCTypeName } : null}
                                     disabled={dialogState.isSubmit}
                                     onChange={(e, value) => {
-                                        setFieldValue("MaterialCode", "");
-                                        setFieldValue("MaterialId",  0);
+                                        setFieldValue("MaterialTypeName", "");
+                                        setFieldValue("MaterialTypeId",  0);
                                         setqcType(value?.commonDetailName || "");
                                         
                                         setFieldValue("QCTypeName", value?.commonDetailName || '');
@@ -170,61 +144,24 @@ const CreateDialog = (props) => {
                                     error={touched.QCType && Boolean(errors.QCType)}
                                     helperText={touched.QCType && errors.QCType}
                                 />
-                                {/* <MuiSelectField
-                                    value={values.QCType ? { commonDetailId: values.QCType, commonDetailName: values.QCTypeName } : null}
-                                    disabled={dialogState.isSubmit}
-                                    label={intl.formatMessage({ id: 'qcMaster.qcType' }) + ' *'}
-                                    options={qcArr}
-                                    displayLabel="commonDetailName"
-                                    displayValue="commonDetailId"
-                               
-                                    onChange={(e, value) => {
-                                        setFieldValue("MaterialCode", "");
-                                        setFieldValue("MaterialId",  0);
-                                        setqcType(value?.commonDetailName || "");
-                                        
-                                        setFieldValue("QCTypeName", value?.commonDetailName || '');
-                                        setFieldValue("QCType", value?.commonDetailId || "");
-                                        
-                                    }}
-                                    error={touched.QCType && Boolean(errors.QCType)}
-                                    helperText={touched.QCType && errors.QCType}
-                               
-                                /> */}
+                           
                             </Grid>
                             <Grid item xs={12}>
-                                <MuiAutocomplete
+                            <MuiAutocomplete
                                     label={intl.formatMessage({ id: 'material.MaterialCode' }) + ' *'}
                                     fetchDataFunc={()=>getMaterial(qcType)}
-                                    displayLabel="MaterialCode"
-                                    displayValue="MaterialId"
-                                    displayGroup="GroupMaterial"
-                                    value={values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null}
+                                    displayLabel="MaterialTypeName"
+                                    displayValue="MaterialTypeId"
+                                    value={values.MaterialTypeId ? { MaterialTypeId: values.MaterialTypeId, MaterialTypeName: values.MaterialTypeName } : null}
                                     disabled={dialogState.isSubmit}
                                     onChange={(e, value) => {
-                                        setFieldValue("MaterialCode", value?.MaterialCode || '');
-                                        setFieldValue("MaterialId", value?.MaterialId || "");
-                                      
+                                        setFieldValue("MaterialTypeName", value?.MaterialTypeName || '');
+                                        setFieldValue("MaterialTypeId", value?.MaterialTypeId || "");
                                     }}
-                                    error={touched.MaterialId && Boolean(errors.MaterialId)}
-                                    helperText={touched.MaterialId && errors.MaterialId}
+                                    error={touched.MaterialTypeId && Boolean(errors.MaterialTypeId)}
+                                    helperText={touched.MaterialTypeId && errors.MaterialTypeId}
                                 />
-                                {/* <MuiSelectField
-                                    value={values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null}
-                                    disabled={dialogState.isSubmit}
-                                    label={intl.formatMessage({ id: 'material.MaterialCode' }) + ' *'}
-                                    options={materialArr}
-                                    displayLabel="MaterialCode"
-                                    displayValue="MaterialId"
-                                    displayGroup="GroupMaterial"
-                                    onChange={(e, value) => {
-                                        setFieldValue("MaterialCode", value?.MaterialCode || '');
-                                        setFieldValue("MaterialId", value?.MaterialId || "");
-                                      
-                                    }}
-                                    error={touched.MaterialId && Boolean(errors.MaterialId)}
-                                    helperText={touched.MaterialId && errors.MaterialId}
-                                /> */}
+                         
                             </Grid>
                         </Grid>
                     </Grid>
