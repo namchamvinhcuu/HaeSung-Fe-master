@@ -74,6 +74,15 @@ const getSupplierById = async (id) => {
   }
 }
 
+const getQCMasterByMaterialType = async (materialTypeId) => {
+  try {
+    return await axios.get(`${apiName}/get-QCMaster/${materialTypeId}`);
+  }
+  catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+}
+
 export {
   getMaterialList,
   createMaterial,
@@ -83,5 +92,6 @@ export {
   getMaterialType,
   getUnit,
   getSupplier,
-  getSupplierById
+  getSupplierById,
+  getQCMasterByMaterialType,
 }

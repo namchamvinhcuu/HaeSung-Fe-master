@@ -15,11 +15,7 @@ import { WorkOrderDto } from "@models";
 import { workOrderService } from "@services";
 import { BASE_URL, TOKEN_ACCESS } from "@constants/ConfigConstants";
 import { GetLocalStorage } from '@utils'
-
-//chart-material-ui
 import Paper from '@mui/material/Paper';
-import { Chart, ArgumentAxis, ValueAxis, BarSeries, Title, Legend } from '@devexpress/dx-react-chart-material-ui';
-import { Stack, Animation } from '@devexpress/dx-react-chart';
 
 //Highcharts
 import Highcharts from 'highcharts'
@@ -173,44 +169,7 @@ const KPIDashboard = (props) => {
 		};
 	}, [])
 
-
-	//chart-material-ui
-	const Root = props => {
-		return <Legend.Root {...props} sx={{ display: 'flex', margin: 'auto', flexDirection: 'row' }} />
-	};
-	const Label = props => {
-		return <Legend.Label {...props} sx={{ whiteSpace: 'nowrap' }} />
-	};
-
-	const getPath = (x, width, y, y1) => `M ${x} ${y1}
-	L ${width + x} ${y1}
-	L ${width + x} ${y}
-	L ${x} ${y}
-	L ${x} ${y}
-	Z`;
-
-	const BarWithLabel = ({
-		arg, barWidth, maxBarWidth, val, startVal, color, value, style,
-	}) => {
-		const width = maxBarWidth * barWidth;
-		return (
-			<React.Fragment>
-				<path d={getPath(arg - width / 2, width, val, startVal)} fill={color} style={style} />
-				<Chart.Label
-					x={arg}
-					y={(val + startVal) / 2}
-					dominantBaseline="middle"
-					textAnchor="middle"
-					style={{ fill: 'black' }}
-				>
-					{value}
-				</Chart.Label>
-			</React.Fragment>
-		);
-	};
-
 	//Highcharts
-
 	const handleHighcharts = (workOrders) => {
 		const categoryList = [];
 		const ActualQtyList = [];
@@ -278,7 +237,7 @@ const KPIDashboard = (props) => {
 					}
 				},
 				title: {
-					text: 'Efficiency',
+					text: intl.formatMessage({ id: "work_order.Efficiency" }),
 					style: {
 						color: Highcharts.getOptions().colors[1]
 					}

@@ -19,14 +19,12 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   const schema = yup.object().shape({
     MaterialCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
     MaterialType: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-
     Unit: yup.number().nullable().
       when("MaterialTypeName", (MaterialTypeName) => {
         if (MaterialTypeName !== "BARE MATERIAL")
           return yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
       }),
-
-
+    QCMasterId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
     Suppliers: yup.array().nullable()
       .when("MaterialTypeName", (MaterialTypeName) => {
         if (MaterialTypeName !== "BARE MATERIAL")
@@ -140,21 +138,40 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               value={values.MaterialType ? { commonDetailId: values.MaterialType, commonDetailName: values.MaterialTypeName } : null}
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'material.MaterialType' })}
-              // options={valueOption.MaterialTypeList}
               fetchDataFunc={materialService.getMaterialType}
               displayLabel="commonDetailName"
               displayValue="commonDetailId"
               onChange={(e, value) => {
                 if (value?.commonDetailName == "BARE MATERIAL")
                   setFieldValue("Suppliers", []);
+                setFieldValue("QCMasterCode", '');
+                setFieldValue("QCMasterId", null);
                 setFieldValue("MaterialTypeName", value?.commonDetailName || '');
                 setFieldValue("MaterialType", value?.commonDetailId || '');
               }}
-              //defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.MaterialType, commonDetailName: initModal.MaterialTypeName }}
               error={touched.MaterialType && Boolean(errors.MaterialType)}
               helperText={touched.MaterialType && errors.MaterialType}
             />
           </Grid>
+          {values.MaterialType &&
+            <Grid item xs={12}>
+              <MuiAutocomplete
+                required
+                value={values.QCMasterId ? { QCMasterId: values.QCMasterId, QCMasterCode: values.QCMasterCode } : null}
+                disabled={dialogState.isSubmit}
+                label={intl.formatMessage({ id: 'material.QCMasterId' })}
+                fetchDataFunc={() => materialService.getQCMasterByMaterialType(values.MaterialType)}
+                displayLabel="QCMasterCode"
+                displayValue="QCMasterId"
+                onChange={(e, value) => {
+                  setFieldValue("QCMasterCode", value?.QCMasterCode || '');
+                  setFieldValue("QCMasterId", value?.QCMasterId || '');
+                }}
+                error={touched.QCMasterId && Boolean(errors.QCMasterId)}
+                helperText={touched.QCMasterId && errors.QCMasterId}
+              />
+            </Grid>
+          }
           {values.MaterialTypeName != "BARE MATERIAL" &&
             <Grid item xs={12}>
               <MuiAutocomplete
@@ -162,7 +179,6 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                 value={values.Unit ? { commonDetailId: values.Unit, commonDetailName: values.UnitName } : null}
                 disabled={dialogState.isSubmit}
                 label={intl.formatMessage({ id: 'material.Unit' })}
-                //options={valueOption.UnitList}
                 fetchDataFunc={materialService.getUnit}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
@@ -170,7 +186,6 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                   setFieldValue("UnitName", value?.commonDetailName || '');
                   setFieldValue("Unit", value?.commonDetailId || '');
                 }}
-                //defaultValue={mode == CREATE_ACTION ? null : { commonDetailId: initModal.Unit, commonDetailName: initModal.UnitName }}
                 error={touched.Unit && Boolean(errors.Unit)}
                 helperText={touched.Unit && errors.Unit}
               />
@@ -241,6 +256,8 @@ const defaultValue = {
   UnitName: '',
   SupplierId: null,
   SupplierName: '',
+  QCMasterId: null,
+  QCMasterCode: '',
   Description: '',
   Suppliers: [],
 };

@@ -83,7 +83,7 @@ const Analytics = (props) => {
         continue;
       if (i > 52)
         break;
-      col.push({ field: "Week" + i, headerName: "Week " + i, width: 100, align: "right" })
+      col.push({ field: "Week" + i, headerName: intl.formatMessage({ id: "forecast.Week_number" }, { number: i }), width: 100, align: "right" })
     }
     setGridCol([...col]);
 

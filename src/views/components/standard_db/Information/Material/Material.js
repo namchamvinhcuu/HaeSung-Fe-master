@@ -112,7 +112,7 @@ export default function Material() {
     {
       field: "MaterialCode",
       headerName: intl.formatMessage({ id: "material.MaterialCode" }),
-      flex: 0.5,
+      flex: 0.4,
     },
     {
       field: "MaterialTypeName",
@@ -122,7 +122,12 @@ export default function Material() {
     {
       field: "UnitName",
       headerName: intl.formatMessage({ id: "material.Unit" }),
-      flex: 0.5,
+      flex: 0.4,
+    },
+    {
+      field: "QCMasterCode",
+      headerName: intl.formatMessage({ id: "material.QCMasterId" }),
+      flex: 0.4,
     },
     {
       field: "SupplierNames",
