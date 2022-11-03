@@ -296,7 +296,7 @@ const ForecastDetailDialog = (props) => {
 
           <Grid item xs={12}>
           <MuiAutocomplete
-            label={intl.formatMessage({ id: "forecast.LineId" }) + " *"}
+            label={intl.formatMessage({ id: "forecast.LineId" })}
             fetchDataFunc={getLineList}
             displayLabel="LineName"
             displayValue="LineId"

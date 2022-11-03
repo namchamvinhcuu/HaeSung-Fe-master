@@ -305,7 +305,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
       keyWord: forecastState.searchData.keyWord,
       keyWordWeekStart: forecastState.searchData.keyWordWeekStart,
       keyWordWeekEnd: forecastState.searchData.keyWordWeekEnd,
-      keyWordYear: forecastState.searchData.keyWordYear,
+      keyWordYear: forecastState.searchData.keyWordYear===0?new Date().getFullYear():forecastState.searchData.keyWordYear,
       showDelete: forecastState.searchData.showDelete,
       FPoMasterId: FPoMasterId,
     };
