@@ -3,7 +3,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
 import React from "react";
 
-const MuiAutocomplete = ({ ...props }) => {
+// const MuiDataGrid = React.forwardRef((props, ref) => {
+const MuiAutocomplete = React.forwardRef(({ ...props }, ref) => {
   const {
     value,
     fetchDataFunc,
@@ -185,6 +186,6 @@ const MuiAutocomplete = ({ ...props }) => {
       )}
     </React.Fragment>
   );
-};
+});
 
 export default MuiAutocomplete;
