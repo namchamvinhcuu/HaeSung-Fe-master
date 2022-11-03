@@ -372,6 +372,7 @@
         "StartDate": "Working Date",
         "Week": "Week",
         "Year": "Year",
+        "Efficiency": "Efficiency",
         "WoCode_required": "WO Code is required",
         "WoCode_length": "WO Code must be {length} characters",
         "OrderQty_required": "Order Qty is required",

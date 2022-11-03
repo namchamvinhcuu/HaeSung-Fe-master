@@ -5,46 +5,37 @@ import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS'
 import { User_Operations } from '@appstate/user'
 import { Store } from '@appstate'
 
-import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
-
 import { HubConnectionBuilder, LogLevel, HttpTransportType } from "@microsoft/signalr";
 import moment from "moment";
 
 import { useIntl } from "react-intl";
 import Grid from "@mui/material/Grid";
-import {
-    MuiAutocomplete,
-	MuiButton,
-	MuiDataGrid,
-	MuiDateTimeField,
-	MuiSearchField
-} from "@controls";
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateTimeField, MuiSearchField } from "@controls";
 import { WorkOrderDto } from "@models";
 import { workOrderService } from "@services";
 import { BASE_URL, TOKEN_ACCESS } from "@constants/ConfigConstants";
 import { GetLocalStorage } from '@utils'
-require('highcharts-exporting');
+
+//chart-material-ui
 import Paper from '@mui/material/Paper';
-import {
-	Chart,
-	ArgumentAxis,
-	ValueAxis,
-	BarSeries,
-	Title,
-	Legend,
-} from '@devexpress/dx-react-chart-material-ui';
+import { Chart, ArgumentAxis, ValueAxis, BarSeries, Title, Legend } from '@devexpress/dx-react-chart-material-ui';
 import { Stack, Animation } from '@devexpress/dx-react-chart';
 
+//Highcharts
+import Highcharts from 'highcharts'
+import HighchartsReact from 'highcharts-react-official'
+import exporting from 'highcharts/modules/exporting.js';
 
 const KPIDashboard = (props) => {
 	let isRendered = useRef(true);
 	const intl = useIntl();
+	exporting(Highcharts);
 	const [isLoading, setIsLoading] = useState(false);
 	const [page, setPage] = useState(1);
 	const [pageSize, setPageSize] = useState(5);
 	const [selectedRow, setSelectedRow] = useState({});
 	const [workOrders, setWorkOrders] = useState([]);
+	const [chartOption, setChartOption] = useState({});
 	const [connection, setConnection] = useState(
 		new HubConnectionBuilder()
 			.withUrl(
@@ -63,21 +54,13 @@ const KPIDashboard = (props) => {
 			.build()
 	);
 
-	const options = {
-		title: {
-			text: 'My chart'
-		},
-		series: [{
-			data: [1, 2, 3]
-		}]
-	}
 	const startConnection = async () => {
 		try {
 			connection.on("ReceivedWorkOrders", (data) => {
 				if (data && data.length > 0) {
 					setWorkOrders([...data]);
 					setSelectedRow({ ...data[0] });
-					CreateHighcharts([...data]);
+					handleHighcharts([...data]);
 				}
 			});
 			connection.onclose(e => {
@@ -190,6 +173,8 @@ const KPIDashboard = (props) => {
 		};
 	}, [])
 
+
+	//chart-material-ui
 	const Root = props => {
 		return <Legend.Root {...props} sx={{ display: 'flex', margin: 'auto', flexDirection: 'row' }} />
 	};
@@ -203,7 +188,6 @@ const KPIDashboard = (props) => {
 	L ${x} ${y}
 	L ${x} ${y}
 	Z`;
-
 
 	const BarWithLabel = ({
 		arg, barWidth, maxBarWidth, val, startVal, color, value, style,
@@ -225,11 +209,13 @@ const KPIDashboard = (props) => {
 		);
 	};
 
-	const CreateHighcharts = (workOrders) => {
+	//Highcharts
 
+	const handleHighcharts = (workOrders) => {
 		const categoryList = [];
 		const ActualQtyList = [];
 		const OrderQtyList = [];
+		const EfficiencyList = [];
 
 		if (workOrders.length > 0) {
 			for (let i = 0; i < workOrders.length; i++) {
@@ -237,10 +223,16 @@ const KPIDashboard = (props) => {
 				categoryList.push(item.woCode);
 				ActualQtyList.push(item.actualQty);
 				OrderQtyList.push(item.orderQty);
+				if (item.orderQty != 0) {
+					let efficiency = Math.round((item.actualQty / item.orderQty) * 100);
+					EfficiencyList.push(efficiency > 100 ? 100 : efficiency);
+				}
+				else
+					EfficiencyList.push(0)
 			}
 		}
 
-		Highcharts.chart('highcharts2', {
+		setChartOption({
 			chart: {
 				navigation: {
 					buttonOptions: {
@@ -248,6 +240,7 @@ const KPIDashboard = (props) => {
 					}
 				},
 				type: 'column',
+				zoomType: 'xy',
 				// styledMode: true,
 				// options3d: {
 				// 	enabled: true,
@@ -271,12 +264,27 @@ const KPIDashboard = (props) => {
 				categories: categoryList,
 				crosshair: true
 			},
-			// yAxis: {
-			// 	title: {
-			// 		useHTML: true,
-			// 		text: 'Million tonnes CO<sub>2</sub>-equivalents'
-			// 	}
-			// },
+			yAxis: [{
+				title: {
+					useHTML: true,
+					text: 'Quantity'
+				}
+			},
+			{
+				labels: {
+					format: '{value}%',
+					style: {
+						color: Highcharts.getOptions().colors[1]
+					}
+				},
+				title: {
+					text: 'Efficiency',
+					style: {
+						color: Highcharts.getOptions().colors[1]
+					}
+				},
+				opposite: true
+			}],
 			credits: {
 				enabled: false
 			},
@@ -298,19 +306,36 @@ const KPIDashboard = (props) => {
 				}
 			},
 			series: [{
-				name: 'OrderQty',
+				name: intl.formatMessage({ id: "work_order.OrderQty" }),
 				data: OrderQtyList,
-				color: '#ffd700'
+				color: '#ffd700',
+				yAxis: 0,
 			}, {
-				name: 'ActualQty',
+				name: intl.formatMessage({ id: "work_order.ActualQty" }),
 				data: ActualQtyList,
-				color: '#c0c0c0'
+				color: '#c0c0c0',
+				yAxis: 0,
+			}, {
+				name: intl.formatMessage({ id: "work_order.Efficiency" }),
+				type: 'spline',
+				data: EfficiencyList,
+				tooltip: {
+					valueSuffix: '%'
+				},
+				yAxis: 1,
 			}]
-		});
+		})
 	}
 
 	return (
 		<React.Fragment>
+
+			<Paper sx={{ mb: 2, p: 3 }}>
+				<HighchartsReact
+					highcharts={Highcharts}
+					options={chartOption}
+				/>
+			</Paper>
 			<MuiDataGrid
 				showLoading={isLoading}
 				// isPagingServer={true}
@@ -336,39 +361,6 @@ const KPIDashboard = (props) => {
 				}}
 			/>
 
-
-			<Paper sx={{ mt: 2 }}>
-				<Chart data={workOrders}>
-					<ArgumentAxis />
-					<ValueAxis />
-					<BarSeries
-						name={intl.formatMessage({ id: "work_order.OrderQty" })}
-						valueField="orderQty"
-						argumentField="woCode"
-						color="#ffd700"
-						//rotated
-						pointComponent={BarWithLabel}
-					/>
-					<BarSeries
-						name={intl.formatMessage({ id: "work_order.ActualQty" })}
-						valueField="actualQty"
-						argumentField="woCode"
-						color="#c0c0c0"
-						//rotated
-						pointComponent={BarWithLabel}
-					/>
-					<Animation />
-					<Legend position="bottom" rootComponent={Root} labelComponent={Label} />
-					<Title text="Work Order Dashboard" />
-					<Stack />
-				</Chart>
-			</Paper>
-			<div id="highcharts2" style={{ width: '50%' }}></div>
-
-			<HighchartsReact
-				highcharts={Highcharts}
-				options={options}
-			/>
 		</React.Fragment>
 	)
 }

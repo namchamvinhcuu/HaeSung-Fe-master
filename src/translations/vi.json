@@ -372,6 +372,7 @@
         "StartDate": "Ngày bắt đầu",
         "Week": "Tuần",
         "Year": "Năm",
+        "Efficiency": "Efficiency",
         "WoCode_required": "WO Code không được để trống",
         "WoCode_length": "WO Code phải có {length} ký tự",
         "OrderQty_required": "SL yêu cầu không được để trống",
