@@ -116,13 +116,13 @@ const QCMaster = (props) => {
   }, [selectedRow]);
 
   async function fetchData() {
-   
+
     setqCMasterState({ ...qCMasterState, isLoading: true });
     const params = {
       page: qCMasterState.page,
       pageSize: qCMasterState.pageSize,
       QCMasterCode: qCMasterState.searchData.QCMasterCode,
-      MaterialTypeId: qCMasterState.searchData.QCType!==null?qCMasterState.searchData.MaterialTypeId:0,
+      MaterialTypeId: qCMasterState.searchData.QCType !== null ? qCMasterState.searchData.MaterialTypeId : 0,
       QCType: qCMasterState.searchData.QCType,
       Description: qCMasterState.searchData.Description,
       showDelete: qCMasterState.searchData.showDelete,
@@ -147,20 +147,18 @@ const QCMaster = (props) => {
     }
   };
   const handleSearch = (e, inputName) => {
-  
+
     let newSearchData = { ...qCMasterState.searchData };
     newSearchData[inputName] = e;
     if (inputName == "showDelete") {
-      //  console.log(qCMasterState, inputName)
       setqCMasterState({
         ...qCMasterState,
         page: 1,
         searchData: { ...newSearchData },
       });
-    } 
-    if(inputName =="QCType")
-    {
-      newSearchData = {...newSearchData, MaterialTypeId:0}
+    }
+    if (inputName == "QCType") {
+      newSearchData = { ...newSearchData, MaterialTypeId: 0 }
       setqCMasterState({ ...qCMasterState, searchData: { ...newSearchData } })
     }
     else {
@@ -209,7 +207,7 @@ const QCMaster = (props) => {
     {
       field: "id",
       headerName: "",
-      flex: 0.1,
+      flex: 0.2,
       filterable: false,
       renderCell: (index) =>
         index.api.getRowIndex(index.row.QCMasterId) +
@@ -276,11 +274,6 @@ const QCMaster = (props) => {
       headerName: intl.formatMessage({ id: "qcMaster.MaterialTypeName" }),
       flex: 0.3,
     },
-    // {
-    //   field: "MaterialCode",
-    //   headerName: intl.formatMessage({ id: "material.MaterialCode" }),
-    //   flex: 0.3,
-    // },
     {
       field: "Description",
       headerName: intl.formatMessage({ id: "general.description" }),
@@ -367,48 +360,39 @@ const QCMaster = (props) => {
             </Grid>
 
             <Grid item style={{ width: "21%" }}>
-            <MuiAutocomplete
-                    label={intl.formatMessage({ id: "qcMaster.qcType" })}
-                    fetchDataFunc={getQC}
-                    displayLabel="commonDetailName"
-                    displayValue="commonDetailId"
-                    onChange={(e, item) => {
-                      //handleSearch(null,"MaterialTypeId");
-                      handleSearch(
-                        item ? item.commonDetailId ?? null : null,
-                        "QCType"
-                        
-                      );
-                      setqcType(item?.commonDetailName || "");
-                   
-                    }}
-                    variant="standard"
-                />
-      
+              <MuiAutocomplete
+                label={intl.formatMessage({ id: "qcMaster.qcType" })}
+                fetchDataFunc={getQC}
+                displayLabel="commonDetailName"
+                displayValue="commonDetailId"
+                onChange={(e, item) => {
+                  handleSearch(
+                    item ? item.commonDetailId ?? null : null,
+                    "QCType"
+                  );
+                  setqcType(item?.commonDetailName || "");
+
+                }}
+                variant="standard"
+              />
+
             </Grid>
             <Grid item style={{ width: "21%" }}>
-                <MuiAutocomplete
-                    // value={qCMasterState.searchData.MaterialTypeId}
-                    label={intl.formatMessage({ id: "material.MaterialType" })}
-                    fetchDataFunc={()=>getMaterial(qcType)}
-                    displayLabel="MaterialTypeName"
-                    displayValue="MaterialTypeId"
-                    key={qcType}
-                    // displayGroup="GroupMaterial"
-                    onChange={(e, item) =>
-                      handleSearch(
-                        item ? item.MaterialTypeId ?? null : null,
-                        "MaterialTypeId"
-                      )
-                      // setqCMasterState(preState=>(
+              <MuiAutocomplete
+                label={intl.formatMessage({ id: "material.MaterialType" })}
+                fetchDataFunc={() => getMaterial(qcType)}
+                displayLabel="MaterialTypeName"
+                displayValue="MaterialTypeId"
+                key={qcType}
+                onChange={(e, item) =>
+                  handleSearch(
+                    item ? item.MaterialTypeId ?? null : null,
+                    "MaterialTypeId"
+                  )
+                }
+                variant="standard"
+              />
 
-                      //   ...preState,
-                      // )
-                      // )
-                    }
-                    variant="standard"
-                />
-  
             </Grid>
             <Grid item style={{ width: "21%" }}>
               <MuiSearchField
@@ -475,7 +459,7 @@ const QCMaster = (props) => {
             return `Mui-created`;
           }
         }}
-        // onRowClick={(rowData) => master_row_click(rowData.row.QCMasterId)}
+        initialState={{ pinnedColumns: { right: ['action'] } }}
       />
       <CreateDialog
         initModal={QCMasterDto}
