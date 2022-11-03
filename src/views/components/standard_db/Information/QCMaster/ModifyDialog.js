@@ -18,8 +18,7 @@ const ModifyDialog = (props) => {
 
     const { initModal, isOpen, onClose, setModifyData } = props;
     const clearParent = useRef(null);
-
-    const [qcType, setqcType] = useState([""]);
+    const [qcType, setqcType] = useState("");
 
     const dataModalRef = useRef({ ...initModal });
     const [dialogState, setDialogState] = useState({
@@ -39,7 +38,6 @@ const ModifyDialog = (props) => {
         initialValues: { ...initModal },
         enableReinitialize: true,
         onSubmit: async values => {
-            console.log(values, "RRR")
             const res = await qcMasterService.modify(values);
             if (res.HttpResponseCode === 200) {
                 SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
@@ -69,9 +67,8 @@ const ModifyDialog = (props) => {
     } = formik;
 
     useEffect(() => {
-
         formik.initialValues = initModal;
-
+        setqcType(initModal.QCTypeName)
     }, [initModal])
 
     const handleCloseDialog = () => {
