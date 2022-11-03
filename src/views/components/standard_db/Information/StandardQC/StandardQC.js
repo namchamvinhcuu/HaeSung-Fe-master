@@ -119,15 +119,12 @@ const StandardQC = (props) => {
         }
     }
     const handleSearch = (e, inputName) => {
-        console.log('a', inputName)
         let newSearchData = { ...standardQCState.searchData };
         newSearchData[inputName] = e;
         if (inputName == 'showDelete') {
-            //  console.log(standardQCState, inputName)
             setstandardQCState({ ...standardQCState, page: 1, searchData: { ...newSearchData } })
         }
         else {
-
             setstandardQCState({ ...standardQCState, searchData: { ...newSearchData } })
         }
     }

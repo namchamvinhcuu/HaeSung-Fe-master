@@ -176,7 +176,7 @@ export default function QCDetail({ QCMasterId }) {
       renderCell: (params) => {
         return (
           <Grid container spacing={1} alignItems="center" justifyContent="center">
-  
+
             <Grid item xs={6} style={{ textAlign: "center" }}>
               <IconButton
                 aria-label="edit"
@@ -279,6 +279,7 @@ export default function QCDetail({ QCMasterId }) {
         onSelectionModelChange={(newSelectedRowId) => {
           handleRowSelection(newSelectedRowId)
         }}
+        initialState={{ pinnedColumns: { right: ['action'] } }}
       />
       <CreateQCDetailDialog
         initModal={{ ...QCDetailDto, QCMasterId: QCMasterId }}
