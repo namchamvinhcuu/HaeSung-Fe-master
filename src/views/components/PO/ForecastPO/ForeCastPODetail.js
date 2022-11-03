@@ -121,7 +121,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
   };
   const handleUpdate = (row) => {
     setMode(UPDATE_ACTION);
-    setRowData({ ...row,FPoMasterId:FPoMasterId });
+    setRowData({ ...row, FPoMasterId: FPoMasterId });
     toggle();
   };
 
@@ -190,7 +190,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
     },
     {
       field: "FPoCode",
-      headerName: intl.formatMessage({ id: "forecast.FPoCode" }), 
+      headerName: intl.formatMessage({ id: "forecast.FPoCode" }),
       width: 120,
     },
     {
@@ -281,14 +281,14 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
       },
     },
   ];
- 
+
   // const getYearList = async () => {
   //   const res = await forecastService.getYearModel();
   //   if (res.HttpResponseCode === 200 && res.Data && isRendered) {
   //     setYearList([...res.Data]);
   //   }
   // };
- 
+
   async function fetchData(FPoMasterId) {
     if (
       forecastState.searchData.keyWordWeekStart >
@@ -395,7 +395,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
         <Grid item>
           <Box display="flex">
             <Box sx={{ mr: 2, maxWidth: "120px" }}>
-              
+
               <TextField
                 disabled={FPoMasterId ? false : true}
                 label={intl.formatMessage({ id: "forecast.Year" })}
@@ -406,15 +406,15 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
                 // inputProps={{ minyear, maxyear }}
                 onChange={(e) => {
                   var value = parseInt(e.target.value, 10);
-                  if(e.target.value.length>4) {
+                  if (e.target.value.length > 4) {
                     return;
                   }
-                   if (value > maxyear && e.target.value.length===4) value = maxyear;
-                   if (value < minyear && e.target.value.length===4) value = minyear;
+                  if (value > maxyear && e.target.value.length === 4) value = maxyear;
+                  if (value < minyear && e.target.value.length === 4) value = minyear;
                   setValueYear(value || "");
                   handleSearch(value || 0, "keyWordYear");
                 }}
-              /> 
+              />
               {/* <FormControl sx={{ marginTop: "3px" }}>
                 <MuiSelectField
                   disabled={FPoMasterId ? false : true}
@@ -477,22 +477,22 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
               />
             </Box>
 
-            <Box sx={{marginTop:"3px"}}>
+            <Box sx={{ marginTop: "3px" }}>
               <MuiSearchField
-               disabled={FPoMasterId ? false : true} 
+                disabled={FPoMasterId ? false : true}
                 label="general.name"
                 name="LineName"
-                onClick={()=>fetchData(FPoMasterId)}
+                onClick={() => fetchData(FPoMasterId)}
                 onChange={(e) => handleSearch(e.target.value, "keyWord")}
               />
-            </Box> 
+            </Box>
           </Box>
         </Grid>
         <Grid item>
           <MuiButton
             text="search"
             color="info"
-            onClick={()=>fetchData(FPoMasterId)}
+            onClick={() => fetchData(FPoMasterId)}
             disabled={FPoMasterId ? false : true}
           />
         </Grid>
@@ -548,6 +548,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
             return `Mui-created`;
           }
         }}
+        initialState={{ pinnedColumns: { left: ['id', 'FPoCode', 'MaterialCode', 'BuyerCode'], right: ['action'] } }}
       />
       <ForecastDetailDialog
         initModal={rowData}

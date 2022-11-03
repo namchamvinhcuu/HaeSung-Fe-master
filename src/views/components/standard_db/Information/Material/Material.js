@@ -54,7 +54,7 @@ export default function Material() {
     {
       field: "id",
       headerName: "",
-      flex: 0.1,
+      flex: 0.2,
       align: "center",
       filterable: false,
       renderCell: (index) =>
@@ -406,6 +406,7 @@ export default function Material() {
           />
         </Grid>
       </Grid>
+
       <MuiDataGrid
         showLoading={state.isLoading}
         isPagingServer={true}
@@ -425,6 +426,7 @@ export default function Material() {
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;
         }}
+        initialState={{ pinnedColumns: { left: ['id', 'MaterialCode'], right: ['action'] } }}
       />
 
       <MaterialDialog

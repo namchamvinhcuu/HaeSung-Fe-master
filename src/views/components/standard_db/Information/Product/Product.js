@@ -195,7 +195,7 @@ const Product = () => {
     {
       field: "id",
       headerName: "",
-      flex: 0.1,
+      width: 70,
       filterable: false,
       renderCell: (index) =>
         index.api.getRowIndex(index.row.MaterialId) +
@@ -205,7 +205,7 @@ const Product = () => {
     {
       field: "action",
       headerName: "",
-      flex: 0.2,
+      width: 80,
       // headerAlign: 'center',
       disableClickEventBubbling: true,
       sortable: false,
@@ -250,20 +250,20 @@ const Product = () => {
     {
       field: "ModelName",
       headerName: intl.formatMessage({ id: "product.Model" }),
-      flex: 0.3,
+      width: 90,
     },
-    { field: "Model", headerName: "Model", flex: 0.3, hide: true },
-    { field: "MaterialCode", headerName: "Product Code", flex: 0.3 },
-    { field: "ProductType", headerName: "Product Type", flex: 0.3, hide: true },
+    // { field: "Model", headerName: "Model", hide: true },
+    { field: "MaterialCode", headerName: "Product Code", width: 150, },
+    // { field: "ProductType", headerName: "Product Type", hide: true },
     {
       field: "ProductTypeName",
       headerName: intl.formatMessage({ id: "product.product_type" }),
-      flex: 0.3,
+      width: 100,
     },
     {
       field: "Description",
       headerName: intl.formatMessage({ id: "product.Description" }),
-      flex: 0.3,
+      width: 400,
       renderCell: (params) => {
         return (
           <Tooltip title={params.row.Description} className="col-text-elip">
@@ -277,19 +277,19 @@ const Product = () => {
     {
       field: "Inch",
       headerName: intl.formatMessage({ id: "product.Inch" }),
-      flex: 0.3,
+      width: 100,
     },
     {
       field: "UnitName",
       headerName: intl.formatMessage({ id: "product.Unit" }),
-      flex: 0.3,
+      width: 80,
     },
 
-    { field: "isActived", headerName: "isActived", flex: 0.3, hide: true },
+    // { field: "isActived", headerName: "isActived", flex: 0.3, hide: true },
     {
       field: "createdDate",
       headerName: "Created Date",
-      flex: 0.3,
+      width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
           return moment(params?.value)
@@ -298,11 +298,11 @@ const Product = () => {
         }
       },
     },
-    { field: "createdName", headerName: "Created By", flex: 0.3 },
+    { field: "createdName", headerName: "Created By", width: 150 },
     {
       field: "modifiedDate",
       headerName: "Modified Date",
-      flex: 0.3,
+      width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
           return moment(params?.value)
@@ -312,7 +312,7 @@ const Product = () => {
       },
     },
 
-    { field: "modifiedName", headerName: "Modified By", flex: 0.3 },
+    { field: "modifiedName", headerName: "Modified By", width: 150 },
   ];
 
   return (
@@ -413,7 +413,7 @@ const Product = () => {
                 }
                 variant="standard"
               />
-       
+
             </Grid>
             <Grid item style={{ width: "21%" }}>
               <MuiSearchField
@@ -437,7 +437,7 @@ const Product = () => {
                 }
                 variant="standard"
               />
-   
+
             </Grid>
 
             <Grid item style={{ width: "21%" }}>
@@ -502,6 +502,7 @@ const Product = () => {
             return `Mui-created`;
           }
         }}
+        initialState={{ pinnedColumns: { left: ['id', 'DoCode', 'FPoCode', 'MaterialCode'], right: ['action'] } }}
       />
 
       <CreateDialog

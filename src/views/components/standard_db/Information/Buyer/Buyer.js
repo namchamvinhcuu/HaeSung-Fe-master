@@ -29,7 +29,7 @@ const Buyer = (props) => {
     let isRendered = useRef(false);
     const intl = useIntl();
 
-    
+
     const [newData, setNewData] = useState({ ...BuyerDto });
 
     const [selectedRow, setSelectedRow] = useState({
@@ -37,9 +37,9 @@ const Buyer = (props) => {
     })
 
 
-     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
-     const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
-     const [showActivedData, setShowActivedData] = useState(true);
+    const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false)
+    const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
+    const [showActivedData, setShowActivedData] = useState(true);
 
     const toggleCreateDialog = () => {
 
@@ -70,11 +70,11 @@ const Buyer = (props) => {
         });
         if (rowSelected && rowSelected.length > 0) {
             setSelectedRow({ ...rowSelected[0] });
-           
+
         }
         else {
             setSelectedRow({ ...BuyerDto });
-           
+
         }
 
     }
@@ -100,15 +100,15 @@ const Buyer = (props) => {
             isActived: showActivedData,
         }
         //console.log(params,'dsds');
-       const res = await buyerService.getBuyerList(params);
-     
-       if (res && isRendered)
-        setbuyerState({
-           ...buyerState
-           , data: !res.Data ? [] : [...res.Data]
-           , totalRow: res.TotalRow
-           , isLoading: false
-       });
+        const res = await buyerService.getBuyerList(params);
+
+        if (res && isRendered)
+            setbuyerState({
+                ...buyerState
+                , data: !res.Data ? [] : [...res.Data]
+                , totalRow: res.TotalRow
+                , isLoading: false
+            });
     }
 
     const handleDeleteBuyer = async (buyer) => {
@@ -147,7 +147,7 @@ const Buyer = (props) => {
         return () => {
             isRendered = false
         }
-    }, [buyerState.page, buyerState.pageSize,showActivedData]); //, 
+    }, [buyerState.page, buyerState.pageSize, showActivedData]); //, 
 
     useEffect(() => {
         if (!_.isEmpty(newData) && !_.isEqual(newData, BuyerDto)) {
@@ -180,16 +180,16 @@ const Buyer = (props) => {
     }, [selectedRow]);
 
     const columns = [
-        { field: 'BuyerId', headerName: '', hide: true},
+        { field: 'BuyerId', headerName: '', hide: true },
         {
-            field: 'id', headerName: '', flex: 0.01,
+            field: 'id', headerName: '', width: 70,
             filterable: false,
             renderCell: (index) => index.api.getRowIndex(index.row.BuyerId) + 1,
         },
         {
             field: "action",
             headerName: "",
-            width: 100,
+            width: 80,
             // headerAlign: 'center',
             disableClickEventBubbling: true,
             sortable: false,
@@ -215,9 +215,9 @@ const Buyer = (props) => {
                                 color="error"
                                 size="small"
                                 sx={[{ '&:hover': { border: '1px solid red', }, }]}
-                               onClick={() => handleDeleteBuyer(params.row)}
+                                onClick={() => handleDeleteBuyer(params.row)}
                             >
-                               {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
+                                {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
                             </IconButton>
                         </Grid>
                     </Grid>
@@ -225,22 +225,27 @@ const Buyer = (props) => {
             },
         },
         { field: 'BuyerCode', headerName: intl.formatMessage({ id: "buyer.BuyerCode" }), /*flex: 0.7,*/  width: 150, },
-        { field: 'BuyerName', headerName: intl.formatMessage({ id: "buyer.BuyerName" }), flex: 1 },
-        { field: 'Contact', headerName: intl.formatMessage({ id: "buyer.Contact" }), flex: 1, renderCell: (params) => {
-            return (
-              <Tooltip title={params.row.Contact ?? ""} className="col-text-elip">
-                <Typography sx={{ fontSize: 14, maxWidth: 300 }}>{params.row.Contact}</Typography>
-              </Tooltip>
-            )
-          }
+        { field: 'BuyerName', headerName: intl.formatMessage({ id: "buyer.BuyerName" }), width: 300 },
+        {
+            field: 'Contact', headerName: intl.formatMessage({ id: "buyer.Contact" }), width: 300,
+            // renderCell: (params) => {
+            //     return (
+            //         <Tooltip title={params.row.Contact ?? ""} className="col-text-elip">
+            //             <Typography sx={{ fontSize: 14, maxWidth: 300 }}>{params.row.Contact}</Typography>
+            //         </Tooltip>
+            //     )
+            // }
         },
-        { field: 'Description', headerName: intl.formatMessage({ id: "buyer.Description" }), flex: 1, renderCell: (params) => {
-            return (
-              <Tooltip title={params.row.Description ?? ""} className="col-text-elip">
-                <Typography sx={{ fontSize: 14, maxWidth: 300 }}>{params.row.Description}</Typography>
-              </Tooltip>
-            )
-          }},
+        {
+            field: 'Description', headerName: intl.formatMessage({ id: "buyer.Description" }), width: 300,
+            renderCell: (params) => {
+                return (
+                    <Tooltip title={params.row.Description ?? ""} className="col-text-elip">
+                        <Typography sx={{ fontSize: 14, maxWidth: 300 }}>{params.row.Description}</Typography>
+                    </Tooltip>
+                )
+            }
+        },
         { field: 'createdName', headerName: 'User Create', width: 150, },
         {
             field: 'createdDate', headerName: intl.formatMessage({ id: "general.created_date" }), width: 150, valueFormatter: params => {
@@ -249,7 +254,7 @@ const Buyer = (props) => {
                 }
             },
         },
-        
+
         { field: 'modifiedName', headerName: 'User Update', width: 150, },
         {
             field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modified_date" }), width: 150, valueFormatter: params => {
@@ -279,23 +284,23 @@ const Buyer = (props) => {
                         onClick={toggleCreateDialog}
                     />
                 </Grid>
-                
+
                 <Grid item xs>
-                        <MuiSearchField
-                            label='general.code'
-                            name='BuyerCode'
-                            onClick={fetchData}
-                            onChange={(e) => changeSearchData(e, 'BuyerCode')}
-                        />
+                    <MuiSearchField
+                        label='general.code'
+                        name='BuyerCode'
+                        onClick={fetchData}
+                        onChange={(e) => changeSearchData(e, 'BuyerCode')}
+                    />
                 </Grid>
 
                 <Grid item xs>
-                        <MuiSearchField
-                            label='general.name'
-                            name='BuyerName'
-                            onClick={fetchData}
-                            onChange={(e) => changeSearchData(e, 'BuyerName')}
-                        />
+                    <MuiSearchField
+                        label='general.name'
+                        name='BuyerName'
+                        onClick={fetchData}
+                        onChange={(e) => changeSearchData(e, 'BuyerName')}
+                    />
                 </Grid>
 
                 <Grid item xs sx={{ display: 'flex', justifyContent: 'right' }}>
@@ -307,9 +312,9 @@ const Buyer = (props) => {
                     <FormControlLabel
                         sx={{ mb: 0, ml: '1px' }}
                         control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleshowActivedData(e)} />}
-                        label={showActivedData ? "Actived" : "Deleted"} 
-                            
-                        />
+                        label={showActivedData ? "Actived" : "Deleted"}
+
+                    />
                 </Grid>
 
             </Grid>
@@ -345,6 +350,7 @@ const Buyer = (props) => {
                         return `Mui-created`
                     }
                 }}
+                initialState={{ pinnedColumns: { left: ['id', 'BuyerCode', 'BuyerName'], right: ['action'] } }}
             />
 
             <CreateBuyerDialog

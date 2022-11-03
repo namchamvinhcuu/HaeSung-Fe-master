@@ -165,7 +165,7 @@ const Line = (props) => {
     const columns = [
         { field: 'LineId', headerName: '', hide: true },
         {
-            field: 'id', headerName: '', width: 20,
+            field: 'id', headerName: '', width: 70,
             filterable: false,
             renderCell: (index) => (index.api.getRowIndex(index.row.LineId) + 1) + (lineState.page - 1) * lineState.pageSize,
         },
@@ -207,21 +207,22 @@ const Line = (props) => {
                 );
             },
         },
-        { field: 'LineName', headerName: intl.formatMessage({ id: "line.LineName" }), width: 200, },
-        { field: 'Description', headerName: intl.formatMessage({ id: "line.Description" }), width: 500, 
+        { field: 'LineName', headerName: intl.formatMessage({ id: "line.LineName" }), width: 300, },
+        {
+            field: 'Description', headerName: intl.formatMessage({ id: "line.Description" }), width: 500,
             renderCell: (params) => {
-            return (
-              <Tooltip title={params.row.Description ?? ""} className="col-text-elip">
-                <Typography sx={{ fontSize: 14, maxWidth: 600 }}>
-                  {params.row.Description}
-                </Typography>
-              </Tooltip>
-            );
-          },
+                return (
+                    <Tooltip title={params.row.Description ?? ""} className="col-text-elip">
+                        <Typography sx={{ fontSize: 14, maxWidth: 600 }}>
+                            {params.row.Description}
+                        </Typography>
+                    </Tooltip>
+                );
+            },
         },
         { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), width: 150, },
         {
-            field: 'createdDate', headerName: intl.formatMessage({ id: "general.created_date" }), width: 200, valueFormatter: params => {
+            field: 'createdDate', headerName: intl.formatMessage({ id: "general.created_date" }), width: 150, valueFormatter: params => {
                 if (params.value !== null) {
                     return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
                 }
@@ -229,7 +230,7 @@ const Line = (props) => {
         },
         { field: 'modifiedName', headerName: intl.formatMessage({ id: "general.modifiedName" }), width: 150, },
         {
-            field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modified_date" }), width: 200, valueFormatter: params => {
+            field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modified_date" }), width: 150, valueFormatter: params => {
                 if (params.value !== null) {
                     return moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
                 }
@@ -305,6 +306,7 @@ const Line = (props) => {
                         return `Mui-created`
                     }
                 }}
+                initialState={{ pinnedColumns: { left: ['id', 'LineName'], right: ['action'] } }}
             />
 
             <CreateLineDialog

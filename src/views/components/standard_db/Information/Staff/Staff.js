@@ -20,7 +20,7 @@ import moment from "moment";
 import CreateStaffDialog from "./CreateStaffDialog";
 import ModifyStaffDialog from "./ModifyStaffDialog";
 import _ from "lodash";
-import { FormControlLabel, Switch,  Typography, Tooltip } from "@mui/material";
+import { FormControlLabel, Switch, Typography, Tooltip } from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import { ErrorAlert, SuccessAlert } from "@utils";
 
@@ -188,7 +188,7 @@ const Staff = (props) => {
     {
       field: "id",
       headerName: "",
-      flex: 0.01,
+      width: 70,
       filterable: false,
       renderCell: (index) => index.api.getRowIndex(index.row.StaffId) + 1,
     },
@@ -247,12 +247,12 @@ const Staff = (props) => {
     {
       field: "StaffName",
       headerName: intl.formatMessage({ id: "staff.StaffName" }),
-      flex: 0.9,
+      width: 200,
     },
     {
       field: "Contact",
       headerName: intl.formatMessage({ id: "staff.Contact" }),
-      flex: 0.9,
+      width: 300,
       renderCell: (params) => {
         return (
           <Tooltip
@@ -270,7 +270,7 @@ const Staff = (props) => {
     {
       field: "createdDate",
       headerName: intl.formatMessage({ id: "general.created_date" }),
-      flex: 0.5,
+      width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
           return moment(params?.value)
@@ -284,7 +284,7 @@ const Staff = (props) => {
     {
       field: "modifiedDate",
       headerName: intl.formatMessage({ id: "general.modified_date" }),
-      flex: 0.5,
+      width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
           return moment(params?.value)
@@ -293,8 +293,6 @@ const Staff = (props) => {
         }
       },
     },
-    //{ field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), width: 150, },
-    //{ field: 'modifiedBy', headerName: 'Modified By', flex: 0.3},
   ];
 
   return (
@@ -331,7 +329,7 @@ const Staff = (props) => {
             onChange={(e) => changeSearchData(e, "StaffName")}
           />
         </Grid>
-        
+
 
         <Grid item xs sx={{ display: "flex", justifyContent: "right" }}>
           <MuiButton text="search" color="info" onClick={fetchData} />
@@ -377,6 +375,7 @@ const Staff = (props) => {
             return `Mui-created`;
           }
         }}
+        initialState={{ pinnedColumns: { left: ['id', 'StaffCode', 'StaffName'], right: ['action'] } }}
       />
 
       <CreateStaffDialog

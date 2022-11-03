@@ -55,7 +55,7 @@ export default function Mold() {
     {
       field: "id",
       headerName: "",
-      width: 50,
+      width: 70,
       align: "center",
       filterable: false,
       renderCell: (index) =>
@@ -429,6 +429,7 @@ export default function Mold() {
           />
         </Grid>
       </Grid>
+
       <MuiDataGrid
         showLoading={moldState.isLoading}
         isPagingServer={true}
@@ -451,6 +452,7 @@ export default function Mold() {
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;
         }}
+        initialState={{ pinnedColumns: { left: ['id', 'MoldSerial', 'MoldCode'], right: ['action'] } }}
       />
 
       <MoldDialog

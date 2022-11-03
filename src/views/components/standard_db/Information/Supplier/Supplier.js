@@ -355,6 +355,7 @@ const Supplier = (props) => {
             return `Mui-created`;
           }
         }}
+        initialState={{ pinnedColumns: { left: ['id', 'SupplierCode', 'SupplierName'], right: ['action'] } }}
       />
 
       <CreateSupplierDialog

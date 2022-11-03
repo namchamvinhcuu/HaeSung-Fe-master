@@ -515,6 +515,7 @@ const WorkOrder = (props) => {
             return `Mui-created`;
           }
         }}
+        initialState={{ pinnedColumns: { right: ['action'] } }}
       />
 
       <WorkOrderDialog

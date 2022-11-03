@@ -376,6 +376,7 @@ const FixedPO = (props) => {
           }
           return '';
         }}
+        initialState={{ pinnedColumns: { left: ['id', 'LineName', 'FPoMasterCode', 'MaterialCode'], right: ['action'] } }}
       />
 
     </React.Fragment>

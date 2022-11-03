@@ -23,6 +23,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { GRID_CHECKBOX_SELECTION_COL_DEF } from '@mui/x-data-grid-pro';
 import { useIntl } from "react-intl";
 import {
   MuiButton,
@@ -71,7 +72,7 @@ export default function Tray() {
     {
       field: "id",
       headerName: "",
-      flex: 0.15,
+      width: 70,
       align: "center",
       filterable: false,
       renderCell: (index) =>
@@ -80,11 +81,11 @@ export default function Tray() {
         (trayState.page - 1) * trayState.pageSize,
     },
     { field: "TrayId", hide: true },
-    { field: "row_version", hide: true },
+    // { field: "row_version", hide: true },
     {
       field: "action",
       headerName: "",
-      flex: 0.2,
+      width: 80,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
@@ -126,40 +127,32 @@ export default function Tray() {
         );
       },
     },
-    // {
-    //   field: "actionQRCode",
-    //   headerName: "QR Code",
-    //   flex: 0.24,
-    //   renderCell: (params) => {
-    //     return  <Button size="small" variant="contained" color="success" onClick={() => QrCode(params)}>QR CODE</Button>;
-    //   },
-    // },
     {
       field: "TrayCode",
       headerName: intl.formatMessage({ id: "tray.TrayCode" }),
-      flex: 0.5,
+      width: 150,
     },
     {
       field: "TrayTypeName",
       headerName: intl.formatMessage({ id: "tray.TrayType" }),
-      flex: 0.5,
+      width: 150,
     },
     {
       field: "IsReuse",
       headerName: intl.formatMessage({ id: "tray.IsReuse" }),
-      flex: 0.5,
+      width: 80,
       align: "center",
       renderCell: (params) => (params.row.IsReuse ? "Y" : "N"),
     },
     {
       field: "createdName",
       headerName: intl.formatMessage({ id: "general.createdName" }),
-      flex: 0.5,
+      width: 150,
     },
     {
       field: "createdDate",
       headerName: intl.formatMessage({ id: "general.createdDate" }),
-      flex: 0.5,
+      width: 150,
       valueFormatter: (params) =>
         params?.value
           ? moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")
@@ -168,12 +161,12 @@ export default function Tray() {
     {
       field: "modifiedName",
       headerName: intl.formatMessage({ id: "general.modifiedName" }),
-      flex: 0.5,
+      width: 150,
     },
     {
       field: "modifiedDate",
       headerName: intl.formatMessage({ id: "general.modifiedDate" }),
-      flex: 0.5,
+      width: 150,
       valueFormatter: (params) =>
         params?.value
           ? moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")
@@ -306,11 +299,11 @@ export default function Tray() {
             onClick={handleAdd}
             sx={{ mt: 1 }}
           />
-           <Button
-           disabled={rowSelected.length>0?false:true}
-           variant="contained"
+          <Button
+            disabled={rowSelected.length > 0 ? false : true}
+            variant="contained"
             color="secondary"
-            onClick={() => QrCode()} sx={{marginTop:"5px", mx:2}}>Print QR Code</Button>
+            onClick={() => QrCode()} sx={{ marginTop: "5px", mx: 2 }}>Print QR Code</Button>
         </Grid>
         <Grid item xs>
           <Grid
@@ -374,9 +367,9 @@ export default function Tray() {
         </Grid>
       </Grid>
       <MuiDataGrid
-      onSelectionModelChange={(ids) => {
-         setRowSelected(ids)
-      }}
+        onSelectionModelChange={(ids) => {
+          setRowSelected(ids)
+        }}
         disableSelectionOnClick
         checkboxSelection
         showLoading={trayState.isLoading}
@@ -393,6 +386,7 @@ export default function Tray() {
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;
         }}
+        initialState={{ pinnedColumns: { left: [GRID_CHECKBOX_SELECTION_COL_DEF.field, 'id', 'TrayCode', 'TrayTypeName'], right: ['action'] } }}
       />
 
       <TrayDialog
@@ -414,109 +408,109 @@ export default function Tray() {
   );
 }
 
-const Modal_Qr_Code = ({ isShowing, hide,  rowSelected }) => {
+const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
 
-  const DialogTransition = React.forwardRef(function DialogTransition(props, ref){
-    return  <Zoom direction="up" ref={ref} {...props} />;
+  const DialogTransition = React.forwardRef(function DialogTransition(props, ref) {
+    return <Zoom direction="up" ref={ref} {...props} />;
   })
   const componentPringtRef = React.useRef();
   const [listPrint, setListPrint] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  useEffect(async() => {
+  useEffect(async () => {
     setIsLoading(true)
-    const res =await trayService.GetListPrintQR(rowSelected);
+    const res = await trayService.GetListPrintQR(rowSelected);
     setListPrint(res.Data)
     setIsLoading(false)
   }, []);
 
   return (
     <React.Fragment>
-      {!isLoading && <Dialog open={isShowing} maxWidth="md" fullWidth   TransitionComponent={DialogTransition} transitionDuration={300}>
-      <DialogTitle
-        sx={{
-          p: 1,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Typography sx={{ fontWeight: 600, fontSize: "22px" }}>
-          QR CODE
-        </Typography>
-        <IconButton
-          aria-label="delete"
-          size="small"
-          onClick={() => hide()}
-          sx={{ backgroundColor: "rgba(0,0,0,0.1)" }}
-        >
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent
-        ref={componentPringtRef}
-        sx={{ display: "flex", justifyContent: "center" }}
-      >
-        <Box>
-          {
-            listPrint?.map((item, index)=>{
-              return (
-                <Box key={`TRAY_${index}`} sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  // borderBottom:"1px solid black",
-                  mb:2,
-                  pb:2,
-                  pageBreakAfter:"always"
-                }}>
-                <Box sx={{ mr: 2 }}>
-                  <QRCode value={`${item.TrayCode}`} size={155} />
-                </Box>
-                <TableContainer>
-                  <Table>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell sx={{ fontSize: "16px", p: 1 }}>
-                          Tray Code: {item?.TrayCode}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontSize: "16px", p: 1 }}>
-                          Tray Type Name: {item?.TrayTypeName}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontSize: "16px", p: 1 }}>
-                          Created By: {item?.createdName}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell sx={{ fontSize: "16px", p: 1 }}>
-                          Created Date: {moment(item?.createdDate).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")}
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                </Box>
-              )
-            })
-          }
-        </Box>
-      </DialogContent>
-      <DialogActions sx={{ pt: 0 }}>
-        <ReactToPrint
-          trigger={() => {
-            return (
-              <Button variant="contained" color="primary">
-                Print
-              </Button>
-            );
+      {!isLoading && <Dialog open={isShowing} maxWidth="md" fullWidth TransitionComponent={DialogTransition} transitionDuration={300}>
+        <DialogTitle
+          sx={{
+            p: 1,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
-          content={() => componentPringtRef.current}
-        />
-      </DialogActions>
-    </Dialog>}
+        >
+          <Typography sx={{ fontWeight: 600, fontSize: "22px" }}>
+            QR CODE
+          </Typography>
+          <IconButton
+            aria-label="delete"
+            size="small"
+            onClick={() => hide()}
+            sx={{ backgroundColor: "rgba(0,0,0,0.1)" }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent
+          ref={componentPringtRef}
+          sx={{ display: "flex", justifyContent: "center" }}
+        >
+          <Box>
+            {
+              listPrint?.map((item, index) => {
+                return (
+                  <Box key={`TRAY_${index}`} sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    // borderBottom:"1px solid black",
+                    mb: 2,
+                    pb: 2,
+                    pageBreakAfter: "always"
+                  }}>
+                    <Box sx={{ mr: 2 }}>
+                      <QRCode value={`${item.TrayCode}`} size={155} />
+                    </Box>
+                    <TableContainer>
+                      <Table>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell sx={{ fontSize: "16px", p: 1 }}>
+                              Tray Code: {item?.TrayCode}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell sx={{ fontSize: "16px", p: 1 }}>
+                              Tray Type Name: {item?.TrayTypeName}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell sx={{ fontSize: "16px", p: 1 }}>
+                              Created By: {item?.createdName}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell sx={{ fontSize: "16px", p: 1 }}>
+                              Created Date: {moment(item?.createdDate).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")}
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Box>
+                )
+              })
+            }
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ pt: 0 }}>
+          <ReactToPrint
+            trigger={() => {
+              return (
+                <Button variant="contained" color="primary">
+                  Print
+                </Button>
+              );
+            }}
+            content={() => componentPringtRef.current}
+          />
+        </DialogActions>
+      </Dialog>}
     </React.Fragment>
   );
 };

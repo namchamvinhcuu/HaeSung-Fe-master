@@ -639,7 +639,7 @@ const DeliveryOrder = (props) => {
             return `Mui-created`;
           }
         }}
-        initialState={{ pinnedColumns: { left: ['id', 'action', 'DoCode', 'FPoCode', 'MaterialCode'] } }}
+        initialState={{ pinnedColumns: { left: ['id', 'DoCode', 'FPoCode', 'MaterialCode'], right: ['action'] } }}
       />
 
       <DeliveryOrderDialog
