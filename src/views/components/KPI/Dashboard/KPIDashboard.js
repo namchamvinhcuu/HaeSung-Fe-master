@@ -223,34 +223,35 @@ const KPIDashboard = (props) => {
 				categories: categoryList,
 				crosshair: true
 			},
-			yAxis: [{
-				title: {
-					useHTML: true,
-					text: 'Quantity'
+			yAxis: [
+				{
+					title: {
+						useHTML: true,
+						text: 'Quantity'
+					}
+				},
+				{
+					labels: {
+						format: '{value}%',
+						style: {
+							color: Highcharts.getOptions().colors[1]
+						}
+					},
+					title: {
+						text: intl.formatMessage({ id: "work_order.Efficiency" }),
+						style: {
+							color: Highcharts.getOptions().colors[1]
+						}
+					},
+					opposite: true
 				}
-			},
-			{
-				labels: {
-					format: '{value}%',
-					style: {
-						color: Highcharts.getOptions().colors[1]
-					}
-				},
-				title: {
-					text: intl.formatMessage({ id: "work_order.Efficiency" }),
-					style: {
-						color: Highcharts.getOptions().colors[1]
-					}
-				},
-				opposite: true
-			}],
+			],
 			credits: {
 				enabled: false
 			},
 			tooltip: {
 				headerFormat: '<span style="font-size:10px">Wo code: {point.key}</span><table>',
-				pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-					'<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+				pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td><td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
 				footerFormat: '</table>',
 				shared: true,
 				useHTML: true
@@ -264,25 +265,29 @@ const KPIDashboard = (props) => {
 					}
 				}
 			},
-			series: [{
-				name: intl.formatMessage({ id: "work_order.OrderQty" }),
-				data: OrderQtyList,
-				color: '#ffd700',
-				yAxis: 0,
-			}, {
-				name: intl.formatMessage({ id: "work_order.ActualQty" }),
-				data: ActualQtyList,
-				color: '#c0c0c0',
-				yAxis: 0,
-			}, {
-				name: intl.formatMessage({ id: "work_order.Efficiency" }),
-				type: 'spline',
-				data: EfficiencyList,
-				tooltip: {
-					valueSuffix: '%'
+			series: [
+				{
+					name: intl.formatMessage({ id: "work_order.OrderQty" }),
+					data: OrderQtyList,
+					color: '#ffd700',
+					yAxis: 0,
 				},
-				yAxis: 1,
-			}]
+				{
+					name: intl.formatMessage({ id: "work_order.ActualQty" }),
+					data: ActualQtyList,
+					color: '#c0c0c0',
+					yAxis: 0,
+				},
+				{
+					name: intl.formatMessage({ id: "work_order.Efficiency" }),
+					type: 'spline',
+					data: EfficiencyList,
+					tooltip: {
+						valueSuffix: '%'
+					},
+					yAxis: 1,
+				}
+			]
 		})
 	}
 
@@ -313,6 +318,13 @@ const KPIDashboard = (props) => {
 				onSelectionModelChange={(newSelectedRowId) =>
 					handleRowSelection(newSelectedRowId)
 				}
+				initialState={{
+					aggregation: {
+						model: {
+							orderQty: 'sum',
+						},
+					},
+				}}
 				getRowClassName={(params) => {
 					// if (_.isEqual(params.row, newData)) {
 					//     return `Mui-created`;

@@ -14,7 +14,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
   const [SupplierList, setSupplierList] = useState([]);
-  // const [UnitList, setUnitList] = useState([]);
+  const [UnitList, setUnitList] = useState([]);
 
   const schema = yup.object().shape({
     MaterialCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
@@ -43,7 +43,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
   useEffect(() => {
     getSupplier();
-    // getUnit();
+    getUnit();
   }, [])
 
   const handleReset = () => {
@@ -99,12 +99,12 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     }
   };
 
-  // const getUnit = async () => {
-  //   const res = await materialService.getUnit();
-  //   if (res.HttpResponseCode === 200 && res.Data) {
-  //     setUnitList([...res.Data]);
-  //   }
-  // };
+  const getUnit = async () => {
+    const res = await materialService.getUnit();
+    if (res.HttpResponseCode === 200 && res.Data) {
+      setUnitList([...res.Data]);
+    }
+  };
 
   return (
     <MuiDialog
