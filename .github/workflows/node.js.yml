@@ -21,7 +21,7 @@ jobs:
       uses: garygrossgarten/github-action-scp@release
       with:
         local: D:\AUTONSI\Projects\Hanlim\HaeSung-Fe-master\public
-        remote: D:\Autonsi Cloud Backup\Solution\Hanlim
+        remote: D:\Autonsi Cloud Backup\Solution\test
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         password: ${{ secrets.PASS }}
