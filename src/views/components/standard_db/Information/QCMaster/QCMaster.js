@@ -24,7 +24,7 @@ import IconButton from "@mui/material/IconButton";
 import { CombineDispatchToProps, CombineStateToProps } from "@plugins/helperJS";
 import _ from "lodash";
 import moment from "moment";
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -39,7 +39,7 @@ import QCDetail from "./QCDetail.js";
 
 const QCMaster = (props) => {
   const intl = useIntl();
-  const clearParent = useRef(null);
+
   const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false);
   const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
 
@@ -122,7 +122,7 @@ const QCMaster = (props) => {
       page: qCMasterState.page,
       pageSize: qCMasterState.pageSize,
       QCMasterCode: qCMasterState.searchData.QCMasterCode,
-      MaterialTypeId: qCMasterState.searchData.MaterialTypeId,
+      MaterialTypeId: qCMasterState.searchData.QCType!==null?qCMasterState.searchData.MaterialTypeId:0,
       QCType: qCMasterState.searchData.QCType,
       Description: qCMasterState.searchData.Description,
       showDelete: qCMasterState.searchData.showDelete,
@@ -157,7 +157,13 @@ const QCMaster = (props) => {
         page: 1,
         searchData: { ...newSearchData },
       });
-    } else {
+    } 
+    if(inputName =="QCType")
+    {
+      newSearchData = {...newSearchData, MaterialTypeId:0}
+      setqCMasterState({ ...qCMasterState, searchData: { ...newSearchData } })
+    }
+    else {
       setqCMasterState({ ...qCMasterState, searchData: { ...newSearchData } });
     }
   };
@@ -367,16 +373,14 @@ const QCMaster = (props) => {
                     displayLabel="commonDetailName"
                     displayValue="commonDetailId"
                     onChange={(e, item) => {
+                      //handleSearch(null,"MaterialTypeId");
                       handleSearch(
                         item ? item.commonDetailId ?? null : null,
                         "QCType"
                         
                       );
                       setqcType(item?.commonDetailName || "");
-                      const ele = clearParent.current.getElementsByClassName(
-                        "MuiAutocomplete-clearIndicator"
-                      )[0];
-                      if (ele) ele.click();
+                   
                     }}
                     variant="standard"
                 />
@@ -385,26 +389,23 @@ const QCMaster = (props) => {
             <Grid item style={{ width: "21%" }}>
                 <MuiAutocomplete
                     // value={qCMasterState.searchData.MaterialTypeId}
-                    ref = {clearParent}
                     label={intl.formatMessage({ id: "material.MaterialType" })}
                     fetchDataFunc={()=>getMaterial(qcType)}
                     displayLabel="MaterialTypeName"
                     displayValue="MaterialTypeId"
-                    // key={qcType}
+                    key={qcType}
                     // displayGroup="GroupMaterial"
-                    onChange={(e, item) =>{
+                    onChange={(e, item) =>
                       handleSearch(
                         item ? item.MaterialTypeId ?? null : null,
                         "MaterialTypeId"
                       )
-                     
                       // setqCMasterState(preState=>(
 
                       //   ...preState,
                       // )
                       // )
                     }
-                  }
                     variant="standard"
                 />
   
