@@ -33,8 +33,6 @@ const Analytics = (props) => {
 
   const columns = [
     { field: "MaterialId", hide: true },
-    { field: "MaterialCode", headerName: intl.formatMessage({ id: "forecast.MaterialCode" }), width: 150 },
-    { field: "Year", headerName: intl.formatMessage({ id: "forecast.Year" }), width: 100 },
     {
       field: "LineName", headerName: intl.formatMessage({ id: "forecast.LineName" }), width: 200, renderCell: (params) => {
         return (
@@ -44,7 +42,18 @@ const Analytics = (props) => {
         );
       },
     },
+    { field: "MaterialCode", headerName: intl.formatMessage({ id: "forecast.MaterialCode" }), width: 120 },
+    {
+      field: "DescriptionMaterial", headerName: intl.formatMessage({ id: "forecast.DescriptionMaterial" }), width: 200, renderCell: (params) => {
+        return (
+          <Tooltip title={params.row.DescriptionMaterial ?? ""} className="col-text-elip">
+            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.DescriptionMaterial}</Typography>
+          </Tooltip>
+        );
+      },
+    },
     { field: "Description", headerName: intl.formatMessage({ id: "forecast.Desciption" }), width: 120 },
+    { field: "Year", headerName: intl.formatMessage({ id: "forecast.Year" }), width: 100 },
   ];
 
   const [gridCol, setGridCol] = useState([...columns]);
@@ -194,7 +203,7 @@ const Analytics = (props) => {
         rowsPerPageOptions={[5, 10, 20]}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
         getRowId={(rows) => rows.FPOId}
-        initialState={{ pinnedColumns: { left: ['MaterialCode'] } }}
+        initialState={{ pinnedColumns: { left: ['LineName', 'MaterialCode'] } }}
       />
 
     </React.Fragment>
