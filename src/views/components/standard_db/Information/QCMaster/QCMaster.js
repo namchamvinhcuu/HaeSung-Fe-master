@@ -378,39 +378,21 @@ const QCMaster = (props) => {
 
             </Grid>
             <Grid item style={{ width: "21%" }}>
-<<<<<<< HEAD
-                <MuiAutocomplete
-                disabled={qcType ? false : true}
-                    // value={qCMasterState.searchData.MaterialTypeId}
-                    label={intl.formatMessage({ id: "material.MaterialType" })}
-                    fetchDataFunc={()=>getMaterial(qcType)}
-                    displayLabel="MaterialTypeName"
-                    displayValue="MaterialTypeId"
-                    key={qcType}
-                    // displayGroup="GroupMaterial"
-                    onChange={(e, item) =>
-                      handleSearch(
-                        item ? item.MaterialTypeId ?? null : null,
-                        "MaterialTypeId"
-                      )
-                      // setqCMasterState(preState=>(
-=======
-              <MuiAutocomplete
-                label={intl.formatMessage({ id: "material.MaterialType" })}
-                fetchDataFunc={() => getMaterial(qcType)}
-                displayLabel="MaterialTypeName"
-                displayValue="MaterialTypeId"
-                key={qcType}
-                onChange={(e, item) =>
-                  handleSearch(
-                    item ? item.MaterialTypeId ?? null : null,
-                    "MaterialTypeId"
-                  )
-                }
-                variant="standard"
-              />
->>>>>>> 7c006415be6e2912e57c01187605dd9ea56536ee
-
+                        <MuiAutocomplete
+                        disabled={qcType ? false : true}
+                        label={intl.formatMessage({ id: "material.MaterialType" })}
+                        fetchDataFunc={() => getMaterial(qcType)}
+                        displayLabel="MaterialTypeName"
+                        displayValue="MaterialTypeId"
+                        key={qcType}
+                        onChange={(e, item) =>
+                          handleSearch(
+                            item ? item.MaterialTypeId ?? null : null,
+                            "MaterialTypeId"
+                          )
+                        }
+                        variant="standard"
+                      />
             </Grid>
             <Grid item style={{ width: "21%" }}>
               <MuiSearchField
