@@ -60,7 +60,7 @@ const QCMaster = (props) => {
 
   // const [materialArr, setmaterialArr] = useState([]);
   // const [qcArr, setqcArr] = useState([]);
-  const [qcType, setqcType] = useState([""]);
+  const [qcType, setqcType] = useState(0);
 
   const [selectedRow, setSelectedRow] = useState({
     ...QCMasterDto,
@@ -388,6 +388,7 @@ const QCMaster = (props) => {
             </Grid>
             <Grid item style={{ width: "21%" }}>
                 <MuiAutocomplete
+                disabled={qcType ? false : true}
                     // value={qCMasterState.searchData.MaterialTypeId}
                     label={intl.formatMessage({ id: "material.MaterialType" })}
                     fetchDataFunc={()=>getMaterial(qcType)}
