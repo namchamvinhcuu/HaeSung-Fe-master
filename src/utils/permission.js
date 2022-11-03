@@ -45,7 +45,8 @@ function ComponentWrapper(name, code, component, router, title, InputComponent, 
           , title: title
           , name: String(name).toUpperCase()
           , code: code
-          , router, breadcrumb_array
+          , router
+          , breadcrumb_array
           , ChildComponent: InputComponent
         })
       }
@@ -134,13 +135,13 @@ const buildTreeMenu = (
 
         //   breadcrumb_array = [];
         // }
-        // breadcrumb_array = [item.menuName];
-        breadcrumb_array = [<FormattedMessage id={item.languageKey} />]
+        breadcrumb_array = [item.menuName];
+        // breadcrumb_array = [<FormattedMessage id={item.languageKey} />]
       }
       else {
 
-        // breadcrumb_array.push(item.menuName);
-        breadcrumb_array.push(<FormattedMessage id={item.languageKey} />);
+        breadcrumb_array.push(item.menuName);
+        // breadcrumb_array.push(<FormattedMessage id={item.languageKey} />);
       }
 
       // breadcrumb_array.push(<FormattedMessage id={item.languageKey} />);

@@ -111,6 +111,7 @@ const DeliveryOrder = (props) => {
         }
       } catch (error) {
         console.log(error);
+        console.log('aaaaa');
       }
     }
   };
@@ -154,8 +155,8 @@ const DeliveryOrder = (props) => {
     return await deliveryOrderService.getPoMasterArr();
   };
 
-  const getMaterialArr = async (poId) => {
-    const res = await deliveryOrderService.getMaterialArr(poId);
+  const getMaterialArr = async (fPoMasterId) => {
+    const res = await deliveryOrderService.getMaterialArr(fPoMasterId);
     if (res && isRendered) {
       setMaterialArr(!res.Data ? [] : [...res.Data]);
     }
@@ -195,7 +196,7 @@ const DeliveryOrder = (props) => {
         page: deliveryOrderState.page,
         pageSize: deliveryOrderState.pageSize,
         DoCode: deliveryOrderState.searchData.DoCode.trim(),
-        PoId: deliveryOrderState.searchData.PoId,
+        FPoMasterId: deliveryOrderState.searchData.FPoMasterId,
         MaterialId: deliveryOrderState.searchData.MaterialId,
         ETDLoad: deliveryOrderState.searchData.ETDLoad,
         DeliveryTime: deliveryOrderState.searchData.DeliveryTime,
@@ -218,12 +219,12 @@ const DeliveryOrder = (props) => {
 
   useEffect(() => {
     if (isRendered)
-      if (deliveryOrderState.searchData.PoId !== 0) {
-        getMaterialArr(deliveryOrderState.searchData.PoId);
+      if (deliveryOrderState.searchData.FPoMasterId !== 0) {
+        getMaterialArr(deliveryOrderState.searchData.FPoMasterId);
       } else {
         setMaterialArr([]);
       }
-  }, [deliveryOrderState.searchData.PoId]);
+  }, [deliveryOrderState.searchData.FPoMasterId]);
 
   useEffect(() => {
     fetchData();
