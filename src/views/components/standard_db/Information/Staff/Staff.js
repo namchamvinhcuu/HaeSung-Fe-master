@@ -190,7 +190,10 @@ const Staff = (props) => {
       headerName: "",
       width: 70,
       filterable: false,
-      renderCell: (index) => index.api.getRowIndex(index.row.StaffId) + 1,
+      renderCell: (index) =>
+        index.api.getRowIndex(index.row.StaffId) +
+        1 +
+        (staffState.page - 1) * staffState.pageSize,
     },
     {
       field: "action",
@@ -255,11 +258,8 @@ const Staff = (props) => {
       width: 300,
       renderCell: (params) => {
         return (
-          <Tooltip
-            title={params.row.Contact ?? ""}
-            className="col-text-elip"
-          >
-            <Typography sx={{ fontSize: 14, maxWidth: 500 }}>
+          <Tooltip title={params.row.Contact ?? ""} className="col-text-elip">
+            <Typography sx={{ fontSize: 14, maxWidth: 5000}}>
               {params.row.Contact}
             </Typography>
           </Tooltip>
@@ -330,7 +330,6 @@ const Staff = (props) => {
           />
         </Grid>
 
-
         <Grid item xs sx={{ display: "flex", justifyContent: "right" }}>
           <MuiButton text="search" color="info" onClick={fetchData} />
           <FormControlLabel
@@ -375,7 +374,12 @@ const Staff = (props) => {
             return `Mui-created`;
           }
         }}
-        initialState={{ pinnedColumns: { left: ['id', 'StaffCode', 'StaffName'], right: ['action'] } }}
+        initialState={{
+          pinnedColumns: {
+            left: ["id", "StaffCode", "StaffName"],
+            right: ["action"],
+          },
+        }}
       />
 
       <CreateStaffDialog
