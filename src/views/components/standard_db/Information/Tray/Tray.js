@@ -452,7 +452,7 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
         >
           <Box>
             {
-              listPrint?.map((item, index) => {
+              listPrint?.reverse()?.map((item, index) => {
                 return (
                   <Box key={`TRAY_${index}`} sx={{
                     display: "flex",
