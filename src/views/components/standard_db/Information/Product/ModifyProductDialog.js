@@ -208,7 +208,7 @@ const ModifyProductDialog = (props) => {
                                         value={values.Description}
                                         onChange={handleChange}
                                         label={intl.formatMessage({ id: 'general.description' })}
-                                        error={touched.Description && Boolean(errors.MaterialCode)}
+                                        error={touched.Description && Boolean(errors.Description)}
                                         helperText={touched.Description && errors.Description}
                                     />
                                 </Grid>
