@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField, MuiAutocomplete } from '@controls'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { Autocomplete, Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
-import { Controller, useForm } from 'react-hook-form'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 import { materialService } from '@services'
@@ -17,7 +15,8 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   const [UnitList, setUnitList] = useState([]);
 
   const schema = yup.object().shape({
-    MaterialCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
+    MaterialCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+      .matches(/(\w{4})-(\w{6})/, intl.formatMessage({ id: "general.field_format" }, { format: '****-******' })),
     MaterialType: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
     Unit: yup.number().nullable().
       when("MaterialTypeName", (MaterialTypeName) => {
@@ -243,7 +242,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           </Grid>
         </Grid>
       </form>
-    </MuiDialog>
+    </MuiDialog >
   )
 }
 

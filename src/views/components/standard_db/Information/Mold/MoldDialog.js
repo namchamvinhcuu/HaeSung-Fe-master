@@ -37,7 +37,8 @@ const MoldDialog = ({
       .required(intl.formatMessage({ id: "mold.MoldSerial_required" })),
     MoldCode: yup
       .string()
-      .required(intl.formatMessage({ id: "mold.MoldCode_required" })),
+      .required(intl.formatMessage({ id: "mold.MoldCode_required" }))
+      .matches(/(\w{4})-(\w{6})/, intl.formatMessage({ id: "general.field_format" }, { format: '****-******' })),
     Inch: yup
       .number()
       .nullable()

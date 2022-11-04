@@ -49,6 +49,7 @@
         "field_length": "Length is {length} characters",
         "field_min": "Value must be greater than or equal {min}",
         "field_max": "Value must be less than or equal {max}",
+        "field_format": "Value is not format ({format})",
         "one_data_at_least": "Please choose one option",
         "confirm_redo_deleted": "Confirm to redo deleted",
         "description": "Description",
