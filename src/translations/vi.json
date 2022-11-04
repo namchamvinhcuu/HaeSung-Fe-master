@@ -146,7 +146,8 @@
         "productCode_required": "Product Code: không được để trống",
         "model_required": "Model: không được để trống",
         "ProductType_required": "Product Type: không được để trống",
-        "Unit": "Unit"
+        "Unit": "Unit",
+        "Not_match_code": "Mã không đúng định dạng"
     },
     "supplier": {
         "SupplierContact": "Liên hệ",

@@ -16,14 +16,15 @@ import { useFormik } from 'formik'
 const CreateDialog = (props) => {
     const intl = useIntl();
     const { initModal, isOpen, onClose, setNewData } = props;
-
+    const regex = /(\w{4})-(\w{6})/;
     const dataModalRef = useRef({ ...initModal });
     const [dialogState, setDialogState] = useState({
         isSubmit: false
     })
     const schema = yup.object().shape({
 
-        MaterialCode: yup.string().trim().required(intl.formatMessage({ id: 'general.field_required' })),
+        MaterialCode: yup.string().trim().required(intl.formatMessage({ id: 'general.field_required' }))
+        .matches(regex,intl.formatMessage({ id: 'product.Not_match_code' })),
         ProductType: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
         Model: yup.number().min(1,intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
         Description: yup.string().trim(),

@@ -146,7 +146,8 @@
         "productCode_required": "Product Code is required",
         "model_required": "Model is required",
         "ProductType_required": "Product Type is required",
-        "Unit": "Unit"
+        "Unit": "Unit",
+        "Not_match_code": "Code is not format"
     },
     "supplier": {
         "SupplierContact": "Contact",
