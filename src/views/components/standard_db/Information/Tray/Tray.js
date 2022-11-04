@@ -425,7 +425,7 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
 
   return (
     <React.Fragment>
-      {!isLoading && <Dialog open={isShowing} maxWidth="md" fullWidth TransitionComponent={DialogTransition} transitionDuration={300}>
+      {!isLoading && <Dialog open={isShowing} maxWidth="sm" fullWidth TransitionComponent={DialogTransition} transitionDuration={300}>
         <DialogTitle
           sx={{
             p: 1,
@@ -458,34 +458,33 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    // borderBottom:"1px solid black",
-                    mb: 2,
-                    pb: 2,
+                    mb: 1,
+                    pb: 1,
                     pageBreakAfter: "always"
                   }}>
                     <Box sx={{ mr: 2 }}>
-                      <QRCode value={`${item.TrayCode}`} size={155} />
+                      <QRCode value={`${item.TrayCode}`} size={80} />
                     </Box>
                     <TableContainer>
                       <Table>
                         <TableBody>
                           <TableRow>
-                            <TableCell sx={{ fontSize: "16px", p: 1 }}>
+                            <TableCell sx={{ fontSize: "12px", border:"none", padding:"2px 0px 2px 0px" }}>
                               Tray Code: {item?.TrayCode}
                             </TableCell>
                           </TableRow>
                           <TableRow>
-                            <TableCell sx={{ fontSize: "16px", p: 1 }}>
+                            <TableCell sx={{ fontSize: "12px",  border:"none", padding:"2px 0px 2px 0px" }}>
                               Tray Type Name: {item?.TrayTypeName}
                             </TableCell>
                           </TableRow>
                           <TableRow>
-                            <TableCell sx={{ fontSize: "16px", p: 1 }}>
+                            <TableCell sx={{ fontSize: "12px",  border:"none", padding:"2px 0px 2px 0px" }}>
                               Created By: {item?.createdName}
                             </TableCell>
                           </TableRow>
                           <TableRow>
-                            <TableCell sx={{ fontSize: "16px", p: 1 }}>
+                            <TableCell sx={{ fontSize: "12px",  border:"none", padding:"2px 0px 2px 0px" }}>
                               Created Date: {moment(item?.createdDate).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")}
                             </TableCell>
                           </TableRow>
