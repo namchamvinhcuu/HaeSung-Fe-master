@@ -12,7 +12,6 @@ import { supplierService } from '@services'
 const CreateSupplierDialog = (props) => {
     const intl = useIntl();
     let isRendered = useRef(true);
-
     const { initModal, isOpen, onClose, setNewData } = props;
 
     const [dialogState, setDialogState] = useState({
@@ -29,6 +28,7 @@ const CreateSupplierDialog = (props) => {
         validationSchema: schema,
         initialValues: { ...initModal },
         onSubmit: async values => {
+            console.log(values,"VALUESSS")
             const res = await supplierService.create(values);
 
             if (res && isRendered)
@@ -96,7 +96,7 @@ const CreateSupplierDialog = (props) => {
                             value={values.SupplierCode}
                             onChange={handleChange}
                             error={touched.SupplierCode && Boolean(errors.SupplierCode)}
-                            helperText={touched.SupplierName && errors.SupplierCode}
+                            helperText={touched.SupplierCode && errors.SupplierCode}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -110,6 +110,20 @@ const CreateSupplierDialog = (props) => {
                             onChange={handleChange}
                             error={touched.SupplierName && Boolean(errors.SupplierName)}
                             helperText={touched.SupplierName && errors.SupplierName}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            autoFocus
+                            fullWidth
+                            size='small'
+                            disabled={dialogState.isSubmit}
+                            label="ResinULCode"
+                            name='ResinULCode'
+                            value={values.ResinULCode}
+                            onChange={handleChange}
+                            error={touched.ResinULCode && Boolean(errors.ResinULCode)}
+                            helperText={touched.ResinULCode && errors.ResinULCode}
                         />
                     </Grid>
                     <Grid item xs={12}>

@@ -14,7 +14,6 @@ const ModifySupplierDialog = (props) => {
     let isRendered = useRef(true);
 
     const { initModal, isOpen, onClose, setModifyData } = props;
-
     const [dialogState, setDialogState] = useState({
         ...initModal,
         isSubmit: false,
@@ -111,6 +110,20 @@ const ModifySupplierDialog = (props) => {
                             onChange={handleChange}
                             error={touched.SupplierName && Boolean(errors.SupplierName)}
                             helperText={touched.SupplierName && errors.SupplierName}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            autoFocus
+                            fullWidth
+                            size='small'
+                            disabled={dialogState.isSubmit}
+                            label="ResinULCode"
+                            name='ResinULCode'
+                            value={values.ResinULCode}
+                            onChange={handleChange}
+                            error={touched.ResinULCode && Boolean(errors.ResinULCode)}
+                            helperText={touched.ResinULCode && errors.ResinULCode}
                         />
                     </Grid>
                     <Grid item xs={12}>

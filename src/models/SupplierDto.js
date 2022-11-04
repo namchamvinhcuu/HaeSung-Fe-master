@@ -3,6 +3,7 @@ import moment from "moment";
 const SupplierDto = {
     SupplierId: 0
     , SupplierCode: ''
+    , ResinULCode: ''
     , SupplierName: ''
     , SupplierContact: ''
     , isActived: true

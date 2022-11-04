@@ -37,7 +37,7 @@ import moment from "moment";
 
 const min = 1;
 const max = 52;
-const minyear = new Date().getFullYear();
+const minyear = 2022;
 const maxyear = 2050;
 const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
   const intl = useIntl();

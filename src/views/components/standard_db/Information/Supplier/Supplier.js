@@ -237,6 +237,11 @@ const Supplier = (props) => {
       flex: 1,
     },
     {
+      field: "ResinULCode",
+      headerName: "ResinULCode",
+      /*flex: 0.7,*/ width: 150,
+    },
+    {
       field: "SupplierContact",
       headerName: intl.formatMessage({ id: "supplier.SupplierContact" }),
       flex: 1,

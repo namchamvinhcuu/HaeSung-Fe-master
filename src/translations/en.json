@@ -155,7 +155,9 @@
         "SupplierCode": "Supplier Code",
         "SupplierName": "Supplier Name",
         "SupplierCode_required": "Supplier Code cannot be blank",
-        "SupplierName_required": "Supplier Name cannot be blank"
+        "SupplierName_required": "Supplier Name cannot be blank",
+        "duplicated_code_resin": "ResinULCode duplicated",
+        "duplicated_code": "Supplier Code duplicated"
     },
     "mold": {
         "MoldSerial": "Mold Serial",

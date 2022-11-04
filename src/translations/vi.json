@@ -155,7 +155,9 @@
         "SupplierCode": "Mã",
         "SupplierName": "Tên",
         "SupplierCode_required": "Mã không được để trống",
-        "SupplierName_required": "Tên không được để trống"
+        "SupplierName_required": "Tên không được để trống",
+        "duplicated_code_resin": "ResinULCode đã tồn tại",
+        "duplicated_code": "Supplier Code đã tồn tại"
     },
     "mold": {
         "MoldSerial": "Mold Serial",
