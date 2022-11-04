@@ -54,7 +54,7 @@ export default function Material() {
     {
       field: "id",
       headerName: "",
-      flex: 0.2,
+      width: 70,
       align: "center",
       filterable: false,
       renderCell: (index) =>
@@ -67,7 +67,7 @@ export default function Material() {
     {
       field: "action",
       headerName: "",
-      flex: 0.3,
+      width: 80,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
@@ -112,35 +112,35 @@ export default function Material() {
     {
       field: "MaterialCode",
       headerName: intl.formatMessage({ id: "material.MaterialCode" }),
-      flex: 0.4,
+      width: 150,
     },
     {
       field: "MaterialTypeName",
       headerName: intl.formatMessage({ id: "material.MaterialType" }),
-      flex: 0.5,
+      width: 150,
     },
     {
       field: "UnitName",
       headerName: intl.formatMessage({ id: "material.Unit" }),
-      flex: 0.4,
+      width: 120,
     },
     {
       field: "QCMasterCode",
       headerName: intl.formatMessage({ id: "material.QCMasterId" }),
-      flex: 0.4,
+      width: 150,
     },
     {
-      field: "SupplierNames",
+      field: "SupplierName",
       headerName: intl.formatMessage({ id: "material.SupplierId" }),
-      flex: 0.7,
+      width: 200,
       renderCell: (params) => {
         return (
           <Tooltip
-            title={params.row.SupplierNames ?? ""}
+            title={params.row.SupplierName ?? ""}
             className="col-text-elip"
           >
             <Typography sx={{ fontSize: 14, maxWidth: 200 }}>
-              {params.row.SupplierNames}
+              {params.row.SupplierName}
             </Typography>
           </Tooltip>
         );
@@ -149,7 +149,7 @@ export default function Material() {
     {
       field: "Description",
       headerName: intl.formatMessage({ id: "material.Description" }),
-      flex: 0.7,
+      width: 200,
       renderCell: (params) => {
         return (
           <Tooltip
@@ -164,14 +164,33 @@ export default function Material() {
       },
     },
     {
+      field: "Grade",
+      headerName: intl.formatMessage({ id: "material.Grade" }),
+      width: 120,
+    }, {
+      field: "Color",
+      headerName: intl.formatMessage({ id: "material.Color" }),
+      width: 120,
+    },
+    {
+      field: "ResinType",
+      headerName: intl.formatMessage({ id: "material.ResinType" }),
+      width: 120,
+    },
+    {
+      field: "FlameClass",
+      headerName: intl.formatMessage({ id: "material.FlameClass" }),
+      width: 120,
+    },
+    {
       field: "createdName",
       headerName: intl.formatMessage({ id: "general.createdName" }),
-      flex: 0.5,
+      width: 120,
     },
     {
       field: "createdDate",
       headerName: intl.formatMessage({ id: "general.createdDate" }),
-      flex: 0.5,
+      width: 150,
       valueFormatter: (params) =>
         params?.value
           ? moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")
@@ -180,12 +199,12 @@ export default function Material() {
     {
       field: "modifiedName",
       headerName: intl.formatMessage({ id: "general.modifiedName" }),
-      flex: 0.5,
+      width: 120,
     },
     {
       field: "modifiedDate",
       headerName: intl.formatMessage({ id: "general.modifiedDate" }),
-      flex: 0.5,
+      width: 150,
       valueFormatter: (params) =>
         params?.value
           ? moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")
