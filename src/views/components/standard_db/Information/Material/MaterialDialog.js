@@ -18,16 +18,16 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     MaterialCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
       .matches(/(\w{4})-(\w{6})/, intl.formatMessage({ id: "general.field_format" }, { format: '****-******' })),
     MaterialType: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    Unit: yup.number().nullable().
-      when("MaterialTypeName", (MaterialTypeName) => {
+    Unit: yup.number().nullable()
+      .when("MaterialTypeName", (MaterialTypeName) => {
         if (MaterialTypeName !== "BARE MATERIAL")
           return yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
       }),
     QCMasterId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    Suppliers: yup.array().nullable()
+    SupplierId: yup.number().nullable()
       .when("MaterialTypeName", (MaterialTypeName) => {
         if (MaterialTypeName !== "BARE MATERIAL")
-          return yup.array().nullable().min(1, intl.formatMessage({ id: 'general.field_required' }))
+          return yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
       }),
   });
 
@@ -107,7 +107,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
   return (
     <MuiDialog
-      maxWidth='sm'
+      maxWidth='md'
       title={intl.formatMessage({ id: mode == CREATE_ACTION ? 'general.create' : 'general.modify' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
@@ -116,7 +116,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     >
       <form onSubmit={handleSubmit} >
         <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <TextField
               autoFocus
               fullWidth
@@ -131,7 +131,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               helperText={touched.MaterialCode && errors.MaterialCode}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <MuiAutocomplete
               required
               value={values.MaterialType ? { commonDetailId: values.MaterialType, commonDetailName: values.MaterialTypeName } : null}
@@ -141,8 +141,14 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               displayLabel="commonDetailName"
               displayValue="commonDetailId"
               onChange={(e, value) => {
-                if (value?.commonDetailName == "BARE MATERIAL")
-                  setFieldValue("Suppliers", []);
+                if (value?.commonDetailName == "BARE MATERIAL") {
+                  setFieldValue("SupplierName", '');
+                  setFieldValue("SupplierId", null);
+                  var unitBare = UnitList.filter(x => x.commonDetailName == "PCS");
+                  setFieldValue("UnitName", unitBare[0].commonDetailName);
+                  setFieldValue("Unit", unitBare[0].commonDetailId);
+                }
+
                 setFieldValue("QCMasterCode", '');
                 setFieldValue("QCMasterId", null);
                 setFieldValue("MaterialTypeName", value?.commonDetailName || '');
@@ -152,12 +158,29 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               helperText={touched.MaterialType && errors.MaterialType}
             />
           </Grid>
-          {values.MaterialType &&
-            <Grid item xs={12}>
+          <Grid item container spacing={2}>
+            <Grid item xs={6}>
+              <MuiAutocomplete
+                required
+                value={values.SupplierId ? { SupplierId: values.SupplierId, SupplierName: values.SupplierName } : null}
+                disabled={values.MaterialTypeName == "BARE MATERIAL" || values.MaterialType == null ? true : dialogState.isSubmit}
+                label={intl.formatMessage({ id: 'material.SupplierId' })}
+                fetchDataFunc={materialService.getSupplier}
+                displayLabel="SupplierName"
+                displayValue="SupplierId"
+                onChange={(e, value) => {
+                  setFieldValue("SupplierName", value?.SupplierName || '');
+                  setFieldValue("SupplierId", value?.SupplierId || '');
+                }}
+                error={touched.SupplierId && Boolean(errors.SupplierId)}
+                helperText={touched.SupplierId && errors.SupplierId}
+              />
+            </Grid>
+            <Grid item xs={6}>
               <MuiAutocomplete
                 required
                 value={values.QCMasterId ? { QCMasterId: values.QCMasterId, QCMasterCode: values.QCMasterCode } : null}
-                disabled={dialogState.isSubmit}
+                disabled={values.MaterialType == null ? true : dialogState.isSubmit}
                 label={intl.formatMessage({ id: 'material.QCMasterId' })}
                 fetchDataFunc={() => materialService.getQCMasterByMaterialType(values.MaterialType)}
                 displayLabel="QCMasterCode"
@@ -170,60 +193,25 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                 helperText={touched.QCMasterId && errors.QCMasterId}
               />
             </Grid>
-          }
-          {values.MaterialTypeName != "BARE MATERIAL" &&
-            <Grid item xs={12}>
-              <MuiAutocomplete
-                required
-                value={values.Unit ? { commonDetailId: values.Unit, commonDetailName: values.UnitName } : null}
-                disabled={dialogState.isSubmit}
-                label={intl.formatMessage({ id: 'material.Unit' })}
-                fetchDataFunc={materialService.getUnit}
-                displayLabel="commonDetailName"
-                displayValue="commonDetailId"
-                onChange={(e, value) => {
-                  setFieldValue("UnitName", value?.commonDetailName || '');
-                  setFieldValue("Unit", value?.commonDetailId || '');
-                }}
-                error={touched.Unit && Boolean(errors.Unit)}
-                helperText={touched.Unit && errors.Unit}
-              />
-            </Grid>
-          }
-          {values.MaterialTypeName != "BARE MATERIAL" &&
-            <Grid item xs={12}>
-              <Autocomplete
-                multiple
-                fullWidth
-                size='small'
-                options={SupplierList}
-                disabled={dialogState.isSubmit}
-                autoHighlight
-                openOnFocus
-                value={values.Suppliers}
-                getOptionLabel={option => option.SupplierName}
-                onChange={(e, item) => {
-                  setFieldValue("Suppliers", item ?? []);
-                }}
-                isOptionEqualToValue={(option, value) =>
-                  option.SupplierId === value.SupplierId
-                }
-                disableCloseOnSelect
-                renderInput={(params) => {
-                  return <TextField
-                    {...params}
-                    label={intl.formatMessage({ id: 'material.SupplierId' }) + ' *'}
-                    error={touched.Suppliers && Boolean(errors.Suppliers)}
-                    helperText={touched.Suppliers && errors.Suppliers}
-                  />
-                }}
-              />
-
-            </Grid>
-
-          }
-
-          <Grid item xs={12}>
+          </Grid>
+          <Grid item xs={6}>
+            <MuiAutocomplete
+              required
+              value={values.Unit ? { commonDetailId: values.Unit, commonDetailName: values.UnitName } : null}
+              disabled={values.MaterialTypeName == "BARE MATERIAL" ? true : dialogState.isSubmit}
+              label={intl.formatMessage({ id: 'material.Unit' })}
+              fetchDataFunc={materialService.getUnit}
+              displayLabel="commonDetailName"
+              displayValue="commonDetailId"
+              onChange={(e, value) => {
+                setFieldValue("UnitName", value?.commonDetailName || '');
+                setFieldValue("Unit", value?.commonDetailId || '');
+              }}
+              error={touched.Unit && Boolean(errors.Unit)}
+              helperText={touched.Unit && errors.Unit}
+            />
+          </Grid>
+          <Grid item xs={6}>
             <TextField
               fullWidth
               size='small'
@@ -232,6 +220,50 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               value={values.Description}
               onChange={handleChange}
               label={intl.formatMessage({ id: 'material.Description' })}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              size='small'
+              name='Grade'
+              disabled={dialogState.isSubmit}
+              value={values.Grade}
+              onChange={handleChange}
+              label={intl.formatMessage({ id: 'material.Grade' })}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              size='small'
+              name='Color'
+              disabled={dialogState.isSubmit}
+              value={values.Color}
+              onChange={handleChange}
+              label={intl.formatMessage({ id: 'material.Color' })}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              size='small'
+              name='ResinType'
+              disabled={dialogState.isSubmit}
+              value={values.ResinType}
+              onChange={handleChange}
+              label={intl.formatMessage({ id: 'material.ResinType' })}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              size='small'
+              name='FlameClass'
+              disabled={dialogState.isSubmit}
+              value={values.FlameClass}
+              onChange={handleChange}
+              label={intl.formatMessage({ id: 'material.FlameClass' })}
             />
           </Grid>
           <Grid item xs={12}>
@@ -259,6 +291,10 @@ const defaultValue = {
   QCMasterCode: '',
   Description: '',
   Suppliers: [],
+  Grade: '',
+  Color: '',
+  ResinType: '',
+  FlameClass: '',
 };
 
 export default MaterialDialog
