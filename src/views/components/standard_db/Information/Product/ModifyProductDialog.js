@@ -18,7 +18,7 @@ const ModifyProductDialog = (props) => {
 
     const { initModal, isOpen, onClose, setModifyData } = props;
     const clearParent = useRef(null);
-
+    const regex = /^([a-z0-9]{4})-([a-z0-9]{6})+$/gi;
     const dataModalRef = useRef({ ...initModal });
     const [dialogState, setDialogState] = useState({
         ...initModal,
@@ -27,7 +27,8 @@ const ModifyProductDialog = (props) => {
 
     const schema = yup.object().shape({
 
-        MaterialCode: yup.string().trim().required(intl.formatMessage({ id: 'general.field_required' })),
+        MaterialCode: yup.string().trim().required(intl.formatMessage({ id: 'general.field_required' }))
+        .matches(regex,intl.formatMessage({ id: 'product.Not_match_code' })),
         ProductType: yup.number().min(1, intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
         Model: yup.number().min(1, intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
         Description: yup.string().trim(),

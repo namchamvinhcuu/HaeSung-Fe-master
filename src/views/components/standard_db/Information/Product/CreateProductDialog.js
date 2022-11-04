@@ -16,7 +16,7 @@ import { useFormik } from 'formik'
 const CreateDialog = (props) => {
     const intl = useIntl();
     const { initModal, isOpen, onClose, setNewData } = props;
-    const regex = /(\w{4})-(\w{6})/;
+    const regex = /^([a-z0-9]{4})-([a-z0-9]{6})+$/gi;
     const dataModalRef = useRef({ ...initModal });
     const [dialogState, setDialogState] = useState({
         isSubmit: false
