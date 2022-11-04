@@ -21,6 +21,7 @@ import {
 import * as ConfigConstants from "@constants/ConfigConstants";
 
 import { Document, Page } from "react-pdf/dist/esm/entry.webpack";
+import { HubConnectionBuilder, LogLevel, HttpTransportType } from "@microsoft/signalr";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -33,6 +34,7 @@ import { withTranslation } from "react-i18next";
 import NotifyUnread from "./NotifyUnread";
 import { ChangeLanguage } from "@containers";
 import { loginService, documentService } from "@services";
+// import { BASE_URL, TOKEN_ACCESS, CURRENT_USER } from "@constants/ConfigConstants";
 
 const styles = (theme) => ({
   tabs: {
@@ -79,12 +81,60 @@ class NavBar extends Component {
       pdfURL: "",
       title_guide: "",
       showNotifyPopup: false,
+      onlineUsers: [],
+      connection: new HubConnectionBuilder()
+        .withUrl(
+          `${ConfigConstants.BASE_URL}/signalr`, {
+          accessTokenFactory: () => GetLocalStorage(ConfigConstants.TOKEN_ACCESS),
+          skipNegotiation: true,
+          transport: HttpTransportType.WebSockets
+        })
+        .configureLogging(LogLevel.None)
+        .withAutomaticReconnect({
+          nextRetryDelayInMilliseconds: retryContext => {
+            //reconnect after 5-20s
+            return 5000 + (Math.random() * 15000);
+          }
+        })
+        .build(),
     };
+
+    this._isMounted = false;
 
     // this.props.i18n.on('languageChanged', (lng)=> {
     //     alert(lng)
     // })
   }
+
+  startConnection = async () => {
+    try {
+      this.state.connection.on("ReceivedOnlineUsers", (data) => {
+        if (data && data.length > 0) {
+          this._isMounted && this.setState({
+            onlineUsers: [...data],
+          });
+        }
+      });
+      this.state.connection.onclose(e => {
+        this._isMounted && this.setState({
+          connection: null,
+        });
+      });
+      await this.state.connection.start();
+      await this.state.connection.invoke("SendOnlineUsers");
+
+    } catch (error) {
+      console.log("websocket connect error")
+    }
+  }
+
+  closeConnection = async () => {
+    try {
+      await this.state.connection.stop();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   handleChange(event, newValue) {
     const { HistoryElementTabs } = this.props;
@@ -201,11 +251,42 @@ class NavBar extends Component {
     this.setState({ isShowing: !this.state.isShowing });
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     // $('#notify_dropdown').on('show.bs.dropdown', () => {
     //   const { updateTimeAgo } = this.props
     //   updateTimeAgo();
     // });
+    this._isMounted = true;
+    await this.startConnection();
+  }
+
+  componentDidUpdate = async () => {
+    // $('#notify_dropdown').on('show.bs.dropdown', () => {
+    //   const { updateTimeAgo } = this.props
+    //   updateTimeAgo();
+    // });
+
+    const currentUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
+    const uArr = this.state.onlineUsers.filter(function (item) {
+      return item.userId === currentUser.userId && item.lastLoginOnWeb === currentUser.lastLoginOnWeb;
+    });
+
+    if (uArr.length === 0) {
+
+      const { deleteAll } = this.props;
+      deleteAll();
+      await this.closeConnection();
+      RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
+      RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
+      RemoveLocalStorage(ConfigConstants.CURRENT_USER);
+      historyApp.push("/logout");
+    }
+    // await this.signOut()
+    // console.log('onlineUsers', this.state.onlineUsers)
+  }
+
+  componentWillUnmount = async () => {
+    this._isMounted = false;
   }
 
   handleClick_See_All_Notifies(e, self) {

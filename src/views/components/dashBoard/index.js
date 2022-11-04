@@ -70,27 +70,27 @@ class DashBoard extends Component {
       });
       Treeview_slideMenu.init();
 
-      this.newConnection = new SignalR.HubConnectionBuilder()
-        .withUrl(
-          // ConfigConstants.BASE_URL + `hubs/userhub`, {
-          ConfigConstants.BASE_URL + `/notification`, {
-          accessTokenFactory: () => this.access_token,
-          skipNegotiation: true,
-          transport: SignalR.HttpTransportType.WebSockets
-        })
-        .configureLogging(SignalR.LogLevel.None)
-        .withAutomaticReconnect({
-          nextRetryDelayInMilliseconds: retryContext => {
-            //lien tuc reconnect  moi lan trong khoang 5-20s
-            return 5000 + (Math.random() * 15000);
-          }
-        })
-        .build();
+      // this.newConnection = new SignalR.HubConnectionBuilder()
+      //   .withUrl(
+      //     // ConfigConstants.BASE_URL + `hubs/userhub`, {
+      //     ConfigConstants.BASE_URL + `/notification`, {
+      //     accessTokenFactory: () => this.access_token,
+      //     skipNegotiation: true,
+      //     transport: SignalR.HttpTransportType.WebSockets
+      //   })
+      //   .configureLogging(SignalR.LogLevel.None)
+      //   .withAutomaticReconnect({
+      //     nextRetryDelayInMilliseconds: retryContext => {
+      //       //lien tuc reconnect  moi lan trong khoang 5-20s
+      //       return 5000 + (Math.random() * 15000);
+      //     }
+      //   })
+      //   .build();
 
-      await this.newConnection.start();
-      console.log("websocket is connected to server")
+      // await this.newConnection.start();
+      // console.log("websocket is connected to server")
 
-      await this.newConnection.invoke("JoinRoom", { user: "nam", room: "room" });
+      // await this.newConnection.invoke("JoinRoom", { user: "nam", room: "room" });
       // this.newConnection.on("ReceiveMessage", (user, message) =>{})")
 
       // this.newConnection.onreconnected(() => {
