@@ -21,7 +21,7 @@ import {
 import * as ConfigConstants from "@constants/ConfigConstants";
 
 import { Document, Page } from "react-pdf/dist/esm/entry.webpack";
-import { HubConnectionBuilder, LogLevel, HttpTransportType } from "@microsoft/signalr";
+import { HubConnectionBuilder, LogLevel, HttpTransportType, HubConnectionState } from "@microsoft/signalr";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -34,7 +34,7 @@ import { withTranslation } from "react-i18next";
 import NotifyUnread from "./NotifyUnread";
 import { ChangeLanguage } from "@containers";
 import { loginService, documentService } from "@services";
-// import { BASE_URL, TOKEN_ACCESS, CURRENT_USER } from "@constants/ConfigConstants";
+import { BASE_URL, TOKEN_ACCESS, CURRENT_USER } from "@constants/ConfigConstants";
 
 const styles = (theme) => ({
   tabs: {
@@ -82,10 +82,22 @@ class NavBar extends Component {
       title_guide: "",
       showNotifyPopup: false,
       onlineUsers: [],
-      connection: new HubConnectionBuilder()
+
+    };
+    this.connection = null;
+    this._isMounted = false;
+
+    // this.props.i18n.on('languageChanged', (lng)=> {
+    //     alert(lng)
+    // })
+  }
+
+  startConnection = async () => {
+    try {
+      this.connection = new HubConnectionBuilder()
         .withUrl(
-          `${ConfigConstants.BASE_URL}/signalr`, {
-          accessTokenFactory: () => GetLocalStorage(ConfigConstants.TOKEN_ACCESS),
+          `${BASE_URL}/signalr`, {
+          // accessTokenFactory: () => GetLocalStorage(ConfigConstants.TOKEN_ACCESS),
           skipNegotiation: true,
           transport: HttpTransportType.WebSockets
         })
@@ -96,41 +108,37 @@ class NavBar extends Component {
             return 5000 + (Math.random() * 15000);
           }
         })
-        .build(),
-    };
+        .build();
 
-    this._isMounted = false;
+      await this.connection.start();
+      console.log("websocket is connected to server");
+      await this.connection.invoke("SendOnlineUsers");
 
-    // this.props.i18n.on('languageChanged', (lng)=> {
-    //     alert(lng)
-    // })
-  }
-
-  startConnection = async () => {
-    try {
-      this.state.connection.on("ReceivedOnlineUsers", (data) => {
+      this.connection.on("ReceivedOnlineUsers", (data) => {
         if (data && data.length > 0) {
           this._isMounted && this.setState({
             onlineUsers: [...data],
           });
         }
       });
-      this.state.connection.onclose(e => {
-        this._isMounted && this.setState({
-          connection: null,
-        });
+
+      this.connection.onclose(e => {
+        this.connection = null;
       });
-      await this.state.connection.start();
-      await this.state.connection.invoke("SendOnlineUsers");
+
+      // await this.connection.invoke("SendOnlineUsers");
 
     } catch (error) {
-      console.log("websocket connect error")
+      console.log("websocket connect error", error)
     }
   }
 
   closeConnection = async () => {
     try {
-      await this.state.connection.stop();
+      await this.connection.stop();
+      this.setState({
+        connection: null,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -146,6 +154,7 @@ class NavBar extends Component {
   signOut = async (e) => {
     e.preventDefault();
     try {
+      await this.closeConnection();
       const res = await loginService.handleLogout();
       if (
         res.HttpResponseCode === 200 &&
@@ -251,11 +260,28 @@ class NavBar extends Component {
     this.setState({ isShowing: !this.state.isShowing });
   }
 
+  forceLogout = async () => {
+    const currentUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
+    const uArr = this.state.onlineUsers.filter(function (item) {
+      return item.userId === currentUser.userId && item.lastLoginOnWeb === currentUser.lastLoginOnWeb;
+    });
+
+    if (uArr.length === 0) {
+
+      const { deleteAll } = this.props;
+      deleteAll();
+
+      RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
+      RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
+      RemoveLocalStorage(ConfigConstants.CURRENT_USER);
+      await this.connection.stop();
+      console.log("websocket is disconnected");
+      this._isMounted = false;
+      historyApp.push("/logout");
+    }
+  }
+
   componentDidMount = async () => {
-    // $('#notify_dropdown').on('show.bs.dropdown', () => {
-    //   const { updateTimeAgo } = this.props
-    //   updateTimeAgo();
-    // });
     this._isMounted = true;
     await this.startConnection();
   }
@@ -266,26 +292,24 @@ class NavBar extends Component {
     //   updateTimeAgo();
     // });
 
-    const currentUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
-    const uArr = this.state.onlineUsers.filter(function (item) {
-      return item.userId === currentUser.userId && item.lastLoginOnWeb === currentUser.lastLoginOnWeb;
-    });
-
-    if (uArr.length === 0) {
-
-      const { deleteAll } = this.props;
-      deleteAll();
-      await this.closeConnection();
-      RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
-      RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
-      RemoveLocalStorage(ConfigConstants.CURRENT_USER);
-      historyApp.push("/logout");
+    if (this.connection && this.connection.state === HubConnectionState.Connected) {
+      if (!this.state.onlineUsers.length)
+        await this.connection.invoke("SendOnlineUsers");
     }
-    // await this.signOut()
-    // console.log('onlineUsers', this.state.onlineUsers)
+    else {
+      await this.startConnection();
+    }
+
+    this.forceLogout();
   }
 
   componentWillUnmount = async () => {
+    if (this.connection) {
+      await this.connection.stop()
+      console.log("websocket is disconnected");
+      this.connection = null;
+    }
+
     this._isMounted = false;
   }
 
@@ -479,7 +503,6 @@ class NavBar extends Component {
 const PDFModal = ({ isShowing, hide, pdfURL, title }) => {
   // useEffect(() => { }, [data]);
 
-  console.log(pdfURL);
   const [numPages, setNumPages] = React.useState(null);
   const [pageNumber, setPageNumber] = React.useState(1);
   function onDocumentLoadSuccess({ numPages }) {
