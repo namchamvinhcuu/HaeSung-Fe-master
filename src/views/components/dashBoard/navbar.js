@@ -34,7 +34,6 @@ import { withTranslation } from "react-i18next";
 import NotifyUnread from "./NotifyUnread";
 import { ChangeLanguage } from "@containers";
 import { loginService, documentService } from "@services";
-import { BASE_URL, TOKEN_ACCESS, CURRENT_USER } from "@constants/ConfigConstants";
 
 const styles = (theme) => ({
   tabs: {
@@ -96,22 +95,21 @@ class NavBar extends Component {
     try {
       this.connection = new HubConnectionBuilder()
         .withUrl(
-          `${BASE_URL}/signalr`, {
+          `${ConfigConstants.BASE_URL}/signalr`, {
           // accessTokenFactory: () => GetLocalStorage(ConfigConstants.TOKEN_ACCESS),
           skipNegotiation: true,
           transport: HttpTransportType.WebSockets
         })
         .configureLogging(LogLevel.None)
-        // .withAutomaticReconnect({
-        //   nextRetryDelayInMilliseconds: retryContext => {
-        //     //reconnect after 5-20s
-        //     return 5000 + (Math.random() * 15000);
-        //   }
-        // })
+        .withAutomaticReconnect({
+          nextRetryDelayInMilliseconds: retryContext => {
+            //reconnect after 5-20s
+            return 5000 + (Math.random() * 15000);
+          }
+        })
         .build();
 
-      await this.connection.start();
-      console.log("websocket is connected to server");
+      await this.connection.start()
       await this.connection.invoke("SendOnlineUsers");
 
       this.connection.on("ReceivedOnlineUsers", (data) => {
@@ -123,7 +121,7 @@ class NavBar extends Component {
       });
 
       this.connection.onclose(e => {
-        this.connection = null;
+        // this.connection = null;
       });
 
     } catch (error) {
@@ -134,7 +132,6 @@ class NavBar extends Component {
   closeConnection = async () => {
     try {
       await this.connection.stop();
-      this.connection = null;
     } catch (error) {
       console.log(error);
     }
@@ -272,25 +269,43 @@ class NavBar extends Component {
       RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
       RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
       RemoveLocalStorage(ConfigConstants.CURRENT_USER);
-      this.connection.stop().then(() => {
-        console.log("websocket is disconnected");
-        historyApp.push("/logout");
-      });
+      await this.connection.stop();
+      console.log("websocket is disconnected");
+      historyApp.push("/logout");
+
+    }
+  }
+
+  reConnectToServer = async () => {
+    if (this.connection) {
+      if (this.connection.state === HubConnectionState.Connected) {
+        if (this.state.onlineUsers.length === 0) {
+          console.log('connected to server');
+          this._isMounted && await this.connection.invoke("SendOnlineUsers");
+        }
+      }
+
+      if (this.connection.state === HubConnectionState.Disconnected) {
+        console.log('disconnected to server');
+
+        if (this._isMounted) {
+          await this.connection.start();
+          await this.connection.invoke("SendOnlineUsers");
+        }
+      }
+    }
+
+    else {
+      await this.startConnection();
     }
   }
 
   componentDidMount = async () => {
     this._isMounted = true;
 
-    if (this.connection && this.connection.state === HubConnectionState.Connected) {
-      if (!this.state.onlineUsers.length) {
-        console.log('componentDidMount');
-        this._isMounted && await this.connection.invoke("SendOnlineUsers");
-      }
-    }
-    else {
-      await this.startConnection();
-    }
+    console.log('run when component is mounted');
+    await this.startConnection();
+    // await this.reConnectToServer();
   }
 
   componentDidUpdate = async () => {
@@ -299,26 +314,21 @@ class NavBar extends Component {
     //   updateTimeAgo();
     // });
 
-    if (this.connection && this.connection.state === HubConnectionState.Connected) {
-      if (!this.state.onlineUsers.length) {
-        console.log('componentDidUpdate');
-        this._isMounted && await this.connection.invoke("SendOnlineUsers");
-      }
-    }
-    else {
-      await this.startConnection();
-    }
-
-    this.forceLogout();
+    console.log('run when component is updated');
+    await this.reConnectToServer();
+    await this.forceLogout();
   }
 
   componentWillUnmount = async () => {
     if (this.connection && this.connection.state === HubConnectionState.Connected) {
+      // this.connection.stop().then(() => {
+      //   console.log("websocket is disconnected");
+      // });
       await this.connection.stop();
       console.log("websocket is disconnected");
-      this.connection = null;
-    }
 
+    }
+    this.connection = null;
     this._isMounted = false;
   }
 
