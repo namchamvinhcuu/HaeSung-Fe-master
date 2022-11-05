@@ -109,6 +109,9 @@ class NavBar extends Component {
         })
         .build();
 
+      if (this.connection.state === HubConnectionState.Disconnected) {
+        console.log('begin start connection')
+      }
       await this.connection.start()
       await this.connection.invoke("SendOnlineUsers");
 
@@ -224,44 +227,18 @@ class NavBar extends Component {
 
   // }
 
-  // handleGuide(e) {
-
-  //   e.preventDefault();
-  //   const { HistoryElementTabs, index_tab_active_array } = this.props
-  //   var tab = HistoryElementTabs[index_tab_active_array];
-
-  //   //language
-  //   var curlang = window?.i18n.language;
-  //   var guid_lang = "";
-  //   if (curlang == 'vi') {
-  //     guid_lang = "vietnam"
-  //   } else if (curlang == 'en') {
-  //     guid_lang = "english"
-  //   } else if (curlang == 'zh') {
-  //     guid_lang = "china"
-  //   }
-  //   api_get("EquipmentManagerApi/get-document_by_code/" + tab.code + "/" + guid_lang).then(res => {
-
-  //     if (res) {
-  //       var url_file = ConfigConstants.BASE_URL + "document/" + res.url_file
-  //       this.setState({ isShowing: true, pdfURL: url_file, title_guide: res.title });
-  //     } else {
-  //       ErrorAlert("Chưa có hướng dẫn cho màn này")
-  //     }
-  //   });
-  // }
-
   toggle() {
     this.setState({ isShowing: !this.state.isShowing });
   }
 
   forceLogout = async () => {
     const currentUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
+    console.log(currentUser)
     const uArr = this.state.onlineUsers.filter(function (item) {
       return item.userId === currentUser.userId && item.lastLoginOnWeb === currentUser.lastLoginOnWeb;
     });
 
-    if (uArr.length === 0) {
+    if (uArr.length === 0 && currentUser) {
 
       const { deleteAll } = this.props;
       deleteAll();
@@ -281,7 +258,7 @@ class NavBar extends Component {
       if (this.connection.state === HubConnectionState.Connected) {
         if (this.state.onlineUsers.length === 0) {
           console.log('connected to server');
-          this._isMounted && await this.connection.invoke("SendOnlineUsers");
+          await this.connection.invoke("SendOnlineUsers");
         }
       }
 
@@ -296,6 +273,7 @@ class NavBar extends Component {
     }
 
     else {
+      console.log("reconnect fail")
       await this.startConnection();
     }
   }
@@ -303,30 +281,30 @@ class NavBar extends Component {
   componentDidMount = async () => {
     this._isMounted = true;
 
-    console.log('run when component is mounted');
+    if (this.connection && this.connection.state === HubConnectionState.Connected) {
+      await this.connection.stop();
+    }
     await this.startConnection();
-    // await this.reConnectToServer();
+    // await this.forceLogout();
   }
 
-  componentDidUpdate = async () => {
-    // $('#notify_dropdown').on('show.bs.dropdown', () => {
-    //   const { updateTimeAgo } = this.props
-    //   updateTimeAgo();
-    // });
+  // componentDidUpdate = async (prevProps, prevState) => {
+  //   // $('#notify_dropdown').on('show.bs.dropdown', () => {
+  //   //   const { updateTimeAgo } = this.props
+  //   //   updateTimeAgo();
+  //   // });
 
-    console.log('run when component is updated');
-    await this.reConnectToServer();
-    await this.forceLogout();
-  }
+
+  //   console.log('run when component is updated');
+
+  //   await this.reConnectToServer();
+  //   await this.forceLogout();
+  // }
 
   componentWillUnmount = async () => {
     if (this.connection && this.connection.state === HubConnectionState.Connected) {
-      // this.connection.stop().then(() => {
-      //   console.log("websocket is disconnected");
-      // });
       await this.connection.stop();
-      console.log("websocket is disconnected");
-
+      console.log("run when component is unmounted");
     }
     this.connection = null;
     this._isMounted = false;
@@ -353,7 +331,7 @@ class NavBar extends Component {
       notify_list,
       total_notify,
     } = this.props;
-    const { langselected } = this.state;
+    // const { langselected } = this.state;
     // var flag = ""
     // if (this.props.language == "EN") flag = "flag-icon-us"
     // else if (this.props.language == "VI") flag = "flag-icon-vi"
