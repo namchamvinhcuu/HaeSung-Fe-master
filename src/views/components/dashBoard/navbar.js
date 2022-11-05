@@ -248,6 +248,8 @@ class NavBar extends Component {
       RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
       RemoveLocalStorage(ConfigConstants.CURRENT_USER);
       await this.connection.stop();
+      this.connection = null;
+      this._isMounted = false;
       console.log("websocket is disconnected");
       historyApp.push("/logout");
 
@@ -303,7 +305,8 @@ class NavBar extends Component {
   }
 
   componentWillUnmount = async () => {
-    if (this.connection && this.connection.state === HubConnectionState.Connected) {
+    // if (this.connection && this.connection.state === HubConnectionState.Connected) {
+    if (this.connection) {
       await this.connection.stop();
       console.log("run when component is unmounted");
     }
