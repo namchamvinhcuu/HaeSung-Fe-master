@@ -102,12 +102,12 @@ class NavBar extends Component {
           transport: HttpTransportType.WebSockets
         })
         .configureLogging(LogLevel.None)
-        .withAutomaticReconnect({
-          nextRetryDelayInMilliseconds: retryContext => {
-            //reconnect after 5-20s
-            return 5000 + (Math.random() * 15000);
-          }
-        })
+        // .withAutomaticReconnect({
+        //   nextRetryDelayInMilliseconds: retryContext => {
+        //     //reconnect after 5-20s
+        //     return 5000 + (Math.random() * 15000);
+        //   }
+        // })
         .build();
 
       await this.connection.start();
@@ -283,7 +283,15 @@ class NavBar extends Component {
 
   componentDidMount = async () => {
     this._isMounted = true;
-    await this.startConnection();
+
+    if (this.connection && this.connection.state === HubConnectionState.Connected) {
+      if (!this.state.onlineUsers.length)
+        await this.connection.invoke("SendOnlineUsers");
+    }
+    else {
+      await this.startConnection();
+    }
+    // await this.startConnection();
   }
 
   componentDidUpdate = async () => {
@@ -325,6 +333,7 @@ class NavBar extends Component {
       updatenotify(datagrid.rows, datagrid.total);
     }
   }
+
   render() {
     const { classes } = this.props;
     const {
