@@ -126,19 +126,15 @@ class NavBar extends Component {
         this.connection = null;
       });
 
-      // await this.connection.invoke("SendOnlineUsers");
-
     } catch (error) {
-      console.log("websocket connect error", error)
+      console.log("websocket error", error)
     }
   }
 
   closeConnection = async () => {
     try {
       await this.connection.stop();
-      this.setState({
-        connection: null,
-      });
+      this.connection = null;
     } catch (error) {
       console.log(error);
     }
@@ -190,22 +186,24 @@ class NavBar extends Component {
   handleRefreshTab(e) {
     e.preventDefault();
     const { HistoryElementTabs, index_tab_active_array } = this.props;
-    var tab = HistoryElementTabs[index_tab_active_array];
-    // console.log(tab);
-    var funcRefreshChange = tab?.ref?.componentRefreshChange;
+
+    let tab = HistoryElementTabs[index_tab_active_array];
+
+    let funcRefreshChange = tab?.ref?.componentRefreshChange;
+
     funcRefreshChange && funcRefreshChange();
   }
 
   handleGuide = async (e) => {
     e.preventDefault();
     const { HistoryElementTabs, index_tab_active_array } = this.props;
-    var tab = HistoryElementTabs[index_tab_active_array];
-    var res = await documentService.downloadDocument(
+    let tab = HistoryElementTabs[index_tab_active_array];
+    let res = await documentService.downloadDocument(
       tab.component,
       this.props.language
     );
     if (res.Data) {
-      var url_file = `${ConfigConstants.BASE_URL}/document/${res.Data.language}/${res.Data.urlFile}`;
+      let url_file = `${ConfigConstants.BASE_URL}/document/${res.Data.language}/${res.Data.urlFile}`;
       this.setState({
         isShowing: true,
         pdfURL: url_file,
@@ -274,10 +272,10 @@ class NavBar extends Component {
       RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
       RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
       RemoveLocalStorage(ConfigConstants.CURRENT_USER);
-      await this.connection.stop();
-      console.log("websocket is disconnected");
-      this._isMounted = false;
-      historyApp.push("/logout");
+      this.connection.stop().then(() => {
+        console.log("websocket is disconnected");
+        historyApp.push("/logout");
+      });
     }
   }
 
@@ -285,13 +283,14 @@ class NavBar extends Component {
     this._isMounted = true;
 
     if (this.connection && this.connection.state === HubConnectionState.Connected) {
-      if (!this.state.onlineUsers.length)
-        await this.connection.invoke("SendOnlineUsers");
+      if (!this.state.onlineUsers.length) {
+        console.log('componentDidMount');
+        this._isMounted && await this.connection.invoke("SendOnlineUsers");
+      }
     }
     else {
       await this.startConnection();
     }
-    // await this.startConnection();
   }
 
   componentDidUpdate = async () => {
@@ -301,8 +300,10 @@ class NavBar extends Component {
     // });
 
     if (this.connection && this.connection.state === HubConnectionState.Connected) {
-      if (!this.state.onlineUsers.length)
-        await this.connection.invoke("SendOnlineUsers");
+      if (!this.state.onlineUsers.length) {
+        console.log('componentDidUpdate');
+        this._isMounted && await this.connection.invoke("SendOnlineUsers");
+      }
     }
     else {
       await this.startConnection();
@@ -312,8 +313,8 @@ class NavBar extends Component {
   }
 
   componentWillUnmount = async () => {
-    if (this.connection) {
-      await this.connection.stop()
+    if (this.connection && this.connection.state === HubConnectionState.Connected) {
+      await this.connection.stop();
       console.log("websocket is disconnected");
       this.connection = null;
     }
