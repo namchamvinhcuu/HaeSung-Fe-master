@@ -295,7 +295,6 @@ class NavBar extends Component {
     //   updateTimeAgo();
     // });
 
-    // await this.reConnectToServer();
     if (!_.isEqual(prevState.onlineUsers, this.state.onlineUsers)) {
       console.log('run when component is updated');
       await this.reConnectToServer();
