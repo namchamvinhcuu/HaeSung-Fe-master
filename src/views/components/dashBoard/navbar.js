@@ -3,6 +3,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import CloseIcon from "@mui/icons-material/Close";
 import { withStyles } from "@mui/styles";
+import _ from 'lodash'
 import {
   historyDashboard,
   historyApp,
@@ -110,9 +111,9 @@ class NavBar extends Component {
         .build();
 
       if (this.connection.state === HubConnectionState.Disconnected) {
-        console.log('begin start connection')
+        await this.connection.start();
       }
-      await this.connection.start()
+
       await this.connection.invoke("SendOnlineUsers");
 
       this.connection.on("ReceivedOnlineUsers", (data) => {
@@ -233,7 +234,7 @@ class NavBar extends Component {
 
   forceLogout = async () => {
     const currentUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
-    console.log(currentUser)
+
     const uArr = this.state.onlineUsers.filter(function (item) {
       return item.userId === currentUser.userId && item.lastLoginOnWeb === currentUser.lastLoginOnWeb;
     });
@@ -288,18 +289,19 @@ class NavBar extends Component {
     // await this.forceLogout();
   }
 
-  // componentDidUpdate = async (prevProps, prevState) => {
-  //   // $('#notify_dropdown').on('show.bs.dropdown', () => {
-  //   //   const { updateTimeAgo } = this.props
-  //   //   updateTimeAgo();
-  //   // });
+  componentDidUpdate = async (prevProps, prevState) => {
+    // $('#notify_dropdown').on('show.bs.dropdown', () => {
+    //   const { updateTimeAgo } = this.props
+    //   updateTimeAgo();
+    // });
 
-
-  //   console.log('run when component is updated');
-
-  //   await this.reConnectToServer();
-  //   await this.forceLogout();
-  // }
+    // await this.reConnectToServer();
+    if (!_.isEqual(prevState.onlineUsers, this.state.onlineUsers)) {
+      console.log('run when component is updated');
+      await this.reConnectToServer();
+      await this.forceLogout();
+    }
+  }
 
   componentWillUnmount = async () => {
     if (this.connection && this.connection.state === HubConnectionState.Connected) {
