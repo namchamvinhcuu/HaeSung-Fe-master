@@ -39,7 +39,7 @@ const min = 1;
 const max = 52;
 const minyear = 2022;
 const maxyear = 2050;
-const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
+const ForecastPODetail = ({ FPoMasterId }) => {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
@@ -72,7 +72,7 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
     };
   }, []);
   useEffect(() => {
-    fetchData(FPoMasterId);
+    FPoMasterId && fetchData(FPoMasterId);
   }, [
     forecastState.page,
     forecastState.pageSize,
@@ -363,19 +363,19 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
 
   const [valueStart, setValueStart] = useState("");
   const [valueEnd, setValueEnd] = useState("");
-  useEffect(() => {
-    if (!_.isEmpty(newDataChild)) {
-      const data = [newDataChild, ...forecastState.data];
-      if (data.length > forecastState.pageSize) {
-        data.pop();
-      }
-      setState({
-        ...forecastState,
-        data: [...data],
-        totalRow: forecastState.totalRow + 1,
-      });
-    }
-  }, [newDataChild]);
+  // useEffect(() => {
+  //   if (!_.isEmpty(newDataChild)) {
+  //     const data = [newDataChild, ...forecastState.data];
+  //     if (data.length > forecastState.pageSize) {
+  //       data.pop();
+  //     }
+  //     setState({
+  //       ...forecastState,
+  //       data: [...data],
+  //       totalRow: forecastState.totalRow + 1,
+  //     });
+  //   }
+  // }, [newDataChild]);
   return (
     <React.Fragment>
       <Grid
@@ -542,8 +542,9 @@ const ForecastPODetail = ({ FPoMasterId, newDataChild }) => {
         // selectionModel={selectedRow.menuId}
         getRowClassName={(params) => {
           if (
-            _.isEqual(params.row, newData) ||
-            _.isEqual(params.row, newDataChild)
+            _.isEqual(params.row, newData) 
+            // ||
+            // _.isEqual(params.row, newDataChild)
           ) {
             return `Mui-created`;
           }

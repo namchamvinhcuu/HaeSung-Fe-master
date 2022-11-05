@@ -156,7 +156,7 @@ const Location = (props) => {
   ];
 
   useEffect(() => {
-    getArea();
+    // getArea();
     return () => {
       isRendered = false;
     };
