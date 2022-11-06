@@ -129,7 +129,7 @@ class NavBar extends Component {
       });
 
     } catch (error) {
-      console.log("websocket error", error)
+      console.log("[websocket error] :", error)
     }
   }
 
@@ -137,7 +137,7 @@ class NavBar extends Component {
     try {
       await this.connection.stop();
     } catch (error) {
-      console.log(error);
+      console.log("[close connection errors] :", error);
     }
   };
 
@@ -167,7 +167,7 @@ class NavBar extends Component {
         ErrorAlert("System error");
       }
     } catch (error) {
-      console.log(`logout error: ${error}`);
+      console.log("[logout error]: ", error);
     }
     // window.location.reload(true);
   };
@@ -250,7 +250,7 @@ class NavBar extends Component {
       await this.connection.stop();
       this.connection = null;
       this._isMounted = false;
-      console.log("websocket is disconnected");
+      // console.log("websocket is disconnected");
       historyApp.push("/logout");
 
     }
@@ -260,14 +260,13 @@ class NavBar extends Component {
     if (this.connection) {
       if (this.connection.state === HubConnectionState.Connected) {
         if (this.state.onlineUsers.length === 0) {
-          console.log('connected to server');
+          // console.log('connected to server');
           await this.connection.invoke("SendOnlineUsers");
         }
       }
 
       if (this.connection.state === HubConnectionState.Disconnected) {
-        console.log('disconnected to server');
-
+        // console.log('disconnected to server');
         if (this._isMounted) {
           await this.connection.start();
           await this.connection.invoke("SendOnlineUsers");
@@ -276,7 +275,7 @@ class NavBar extends Component {
     }
 
     else {
-      console.log("reconnect fail")
+      console.log("[reconnect fail]")
       await this.startConnection();
     }
   }
@@ -298,7 +297,7 @@ class NavBar extends Component {
     // });
 
     if (!_.isEqual(prevState.onlineUsers, this.state.onlineUsers)) {
-      console.log('run when component is updated');
+      // console.log('run when component is updated');
       await this.reConnectToServer();
       await this.forceLogout();
     }
@@ -308,7 +307,7 @@ class NavBar extends Component {
     // if (this.connection && this.connection.state === HubConnectionState.Connected) {
     if (this.connection) {
       await this.connection.stop();
-      console.log("run when component is unmounted");
+      // console.log("run when component is unmounted");
     }
     this.connection = null;
     this._isMounted = false;
