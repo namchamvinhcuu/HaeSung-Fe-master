@@ -16,7 +16,7 @@ function ChangeLanguage(props) {
     }, [language])
     return (
         <li className="nav-item dropdown">
-            <span className="nav-link" data-toggle="dropdown">
+            <span className="nav-link" data-toggle="dropdown" role="button">
                 <i className={`flag-icon ${flag}`}></i>
             </span>
             <div className="dropdown-menu dropdown-menu-right p-0">
@@ -24,6 +24,7 @@ function ChangeLanguage(props) {
                     // href="#"
                     className={`dropdown-item ${language == "EN" ? "active" : ""}`}
                     onClick={e => changeLanguage('EN')}
+                    role="button"
                 >
                     <i className="flag-icon flag-icon-us mr-2"></i> English
                 </span>
@@ -31,6 +32,7 @@ function ChangeLanguage(props) {
                     // href="#"
                     className={`dropdown-item ${language == "VI" ? "active" : ""}`}
                     onClick={e => changeLanguage('VI')}
+                    role="button"
                 >
                     <i className="flag-icon flag-icon-vi mr-2"></i> Tiếng Việt
                 </span>
