@@ -363,6 +363,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
               pageSize={state.pageSize}
               rowCount={state.totalRow}
               getRowId={(rows) => rows.BomId}
+              initialState={{ pinnedColumns: { right: ['action'] } }}
             />
           </Grid>
         </Grid>

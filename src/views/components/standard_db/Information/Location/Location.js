@@ -316,7 +316,7 @@ const Location = (props) => {
               />
             </Grid>
             <Grid item style={{ width: "21%" }}>
-            <MuiAutocomplete
+              <MuiAutocomplete
                 label={intl.formatMessage({ id: "location.AreaId" })}
                 fetchDataFunc={getArea}
                 displayLabel="commonDetailName"
@@ -401,6 +401,7 @@ const Location = (props) => {
             return `Mui-created`;
           }
         }}
+        initialState={{ pinnedColumns: { right: ['action'] } }}
       />
 
       <CreateLocationDialog

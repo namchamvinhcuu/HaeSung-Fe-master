@@ -335,7 +335,7 @@ export default function ForecastPOMaster(props) {
             return `Mui-created`;
           }
         }}
-      // initialState={{ pinnedColumns: { left: ['id', 'DoCode', 'FPoCode', 'MaterialCode'], right: ['action'] } }}
+        initialState={{ pinnedColumns: { right: ['action'] } }}
       />
       <ForecastMasterDialog
         initModal={rowData}
@@ -346,9 +346,9 @@ export default function ForecastPOMaster(props) {
         onClose={toggle}
         mode={mode}
       />
-      <ForeCastPODetail FPoMasterId={FPoMasterId} 
+      <ForeCastPODetail FPoMasterId={FPoMasterId}
       // newDataChild={newDataChild}
-       />
+      />
     </>
   );
 }

@@ -285,6 +285,7 @@ const StandardQC = (props) => {
                         return `Mui-created`
                     }
                 }}
+                initialState={{ pinnedColumns: { right: ['action'] } }}
             />
             <CreateDialog
                 initModal={StandardQCDto}
@@ -298,7 +299,7 @@ const StandardQC = (props) => {
                 isOpen={isOpenModifyDialog}
                 onClose={toggleModifyDialog}
             />
-        </React.Fragment >
+        </React.Fragment>
     )
 }
 User_Operations.toString = function () {
