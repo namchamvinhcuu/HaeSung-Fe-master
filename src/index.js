@@ -35,6 +35,7 @@ import store, { persistor } from './states/store';
 import App from './views/App';
 
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles'
+import { CssBaseline } from '@mui/material';
 
 // function RouteWrapperLogin(props) {
 //     const ComponentWrapper = NotAuthenticateRoute(Login,
@@ -83,6 +84,7 @@ ReactDOM.render(
                 </CustomRouter> */}
                 <ThemeProvider theme={theme}>
                     <Suspense fallback={<div>Loading...</div>}>
+                        <CssBaseline />
                         <App persistor={persistor} />
                     </Suspense>
                 </ThemeProvider>
