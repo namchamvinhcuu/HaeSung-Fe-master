@@ -37,6 +37,11 @@ import App from './views/App';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles'
 import { CssBaseline } from '@mui/material';
 
+import { LicenseInfo } from '@mui/x-license-pro';
+
+LicenseInfo.setLicenseKey('ce328e61b3cf317e812525f11a07272bTz01Mzg1NCxFPTE2OTk0MTE1NzIxODgsUz1wcm8sTE09c3Vic2NyaXB0aW9uLEtWPTI=');
+
+
 // function RouteWrapperLogin(props) {
 //     const ComponentWrapper = NotAuthenticateRoute(Login,
 //         '/');
