@@ -87,7 +87,6 @@ const ModifySupplierDialog = (props) => {
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                     <Grid item xs={12}>
                         <TextField
-                            autoFocus
                             fullWidth
                             size='small'
                             disabled={dialogState.isSubmit}
@@ -114,7 +113,6 @@ const ModifySupplierDialog = (props) => {
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
-                            autoFocus
                             fullWidth
                             size='small'
                             disabled={dialogState.isSubmit}

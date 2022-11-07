@@ -110,6 +110,7 @@ const CreateDialog = (props) => {
                         <Grid container spacing={2}>
                         <Grid item xs={6} >
                             <TextField
+                                    autoFocus
                                     fullWidth
                                     type="text"
                                     size='small'

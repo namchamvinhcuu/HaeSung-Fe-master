@@ -114,7 +114,6 @@ const CreateSupplierDialog = (props) => {
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
-                            autoFocus
                             fullWidth
                             size='small'
                             disabled={dialogState.isSubmit}
