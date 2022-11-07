@@ -101,15 +101,15 @@ class NavBar extends Component {
           transport: HttpTransportType.WebSockets
         })
         .configureLogging(LogLevel.None)
-        .withAutomaticReconnect({
-          nextRetryDelayInMilliseconds: retryContext => {
-            //reconnect after 5-20s
-            return 5000 + (Math.random() * 15000);
-          }
-        })
+        // .withAutomaticReconnect({
+        //   nextRetryDelayInMilliseconds: retryContext => {
+        //     //reconnect after 5-20s
+        //     return 5000 + (Math.random() * 15000);
+        //   }
+        // })
         .build();
-
-      await this.connection.start()
+      await this.connection.stop();
+      await this.connection.start();
       await this.connection.invoke("SendOnlineUsers");
 
       this.connection.on("ReceivedOnlineUsers", (data) => {
@@ -289,6 +289,7 @@ class NavBar extends Component {
         console.log('disconnected to server');
 
         if (this._isMounted) {
+          await this.connection.stop();
           await this.connection.start();
           await this.connection.invoke("SendOnlineUsers");
         }
@@ -304,8 +305,8 @@ class NavBar extends Component {
     this._isMounted = true;
 
     console.log('run when component is mounted');
-    await this.startConnection();
-    // await this.reConnectToServer();
+    // await this.startConnection();
+    await this.reConnectToServer();
   }
 
   componentDidUpdate = async () => {
@@ -321,13 +322,10 @@ class NavBar extends Component {
 
   componentWillUnmount = async () => {
     if (this.connection && this.connection.state === HubConnectionState.Connected) {
-      // this.connection.stop().then(() => {
-      //   console.log("websocket is disconnected");
-      // });
       await this.connection.stop();
       console.log("websocket is disconnected");
-
     }
+
     this.connection = null;
     this._isMounted = false;
   }
