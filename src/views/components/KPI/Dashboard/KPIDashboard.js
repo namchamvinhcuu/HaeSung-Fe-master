@@ -18,9 +18,12 @@ import { GetLocalStorage } from '@utils'
 import Paper from '@mui/material/Paper';
 
 //Highcharts
-import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+// import highchartsAccessibility from "highcharts/modules/accessibility";
 import exporting from 'highcharts/modules/exporting.js';
+// accessibility module
+require('highcharts/modules/accessibility')(Highcharts);
 
 const KPIDashboard = (props) => {
 	let isRendered = useRef(true);
@@ -207,7 +210,11 @@ const KPIDashboard = (props) => {
 				// 	beta: 15,
 				// 	depth: 50
 				// }
+
 			},
+			// accessibility: {
+			// 	enabled: false
+			// },
 			exporting: {
 				enabled: true
 			},
@@ -287,7 +294,7 @@ const KPIDashboard = (props) => {
 					},
 					yAxis: 1,
 				}
-			]
+			],
 		})
 	}
 
@@ -318,6 +325,10 @@ const KPIDashboard = (props) => {
 				onSelectionModelChange={(newSelectedRowId) =>
 					handleRowSelection(newSelectedRowId)
 				}
+				onPageSizeChange={(newPageSize) => {
+					setPageSize(newPageSize);
+					setPage(1);
+				}}
 				initialState={{
 					aggregation: {
 						model: {
@@ -325,6 +336,7 @@ const KPIDashboard = (props) => {
 						},
 					},
 				}}
+				rowsPerPageOptions={[5, 10, 15]}
 				getRowClassName={(params) => {
 					// if (_.isEqual(params.row, newData)) {
 					//     return `Mui-created`;
