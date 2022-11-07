@@ -190,7 +190,7 @@ const CommonMaster = () => {
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         }
-      } catch (error) {}
+      } catch (error) { }
     }
   };
 
@@ -376,6 +376,7 @@ const CommonMaster = () => {
             return `Mui-created`;
           }
         }}
+        initialState={{ pinnedColumns: { right: ['action'] } }}
       />
 
       <CreateCommonMasterDialog

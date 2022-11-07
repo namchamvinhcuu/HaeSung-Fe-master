@@ -174,7 +174,7 @@ const WorkOrderDialog = (props) => {
         setDialogState({ ...dialogState, isSubmit: true });
 
         if (mode == CREATE_ACTION) {
-            console.log(data);
+            // console.log(data);
 
             const res = await workOrderService.create(data);
             if (res && isRendered) {

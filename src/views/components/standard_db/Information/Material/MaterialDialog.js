@@ -11,7 +11,7 @@ import { useFormik } from 'formik'
 const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
-  const [SupplierList, setSupplierList] = useState([]);
+  // const [SupplierList, setSupplierList] = useState([]);
   const [UnitList, setUnitList] = useState([]);
 
   const schema = yup.object().shape({
@@ -41,7 +41,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
 
   useEffect(() => {
-    getSupplier();
+    // getSupplier();
     getUnit();
   }, [])
 
@@ -93,9 +93,10 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
   const getSupplier = async () => {
     const res = await materialService.getSupplier();
-    if (res.HttpResponseCode === 200 && res.Data) {
-      setSupplierList([...res.Data]);
-    }
+    return res;
+    // if (res.HttpResponseCode === 200 && res.Data) {
+    //   setSupplierList([...res.Data]);
+    // }
   };
 
   const getUnit = async () => {
@@ -165,7 +166,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                 value={values.SupplierId ? { SupplierId: values.SupplierId, SupplierName: values.SupplierName } : null}
                 disabled={values.MaterialTypeName == "BARE MATERIAL" || values.MaterialType == null ? true : dialogState.isSubmit}
                 label={intl.formatMessage({ id: 'material.SupplierId' })}
-                fetchDataFunc={materialService.getSupplier}
+                fetchDataFunc={getSupplier}
                 displayLabel="SupplierName"
                 displayValue="SupplierId"
                 onChange={(e, value) => {

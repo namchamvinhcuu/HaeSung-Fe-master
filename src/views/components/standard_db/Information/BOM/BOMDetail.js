@@ -388,6 +388,7 @@ export default function BOMDetail({ BomId, newDataChild }) {
           )
             return `Mui-created`;
         }}
+        initialState={{ pinnedColumns: { right: ['action'] } }}
       />
 
       <BOMDetailDialog

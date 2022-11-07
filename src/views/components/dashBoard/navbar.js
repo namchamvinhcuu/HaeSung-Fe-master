@@ -3,6 +3,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import CloseIcon from "@mui/icons-material/Close";
 import { withStyles } from "@mui/styles";
+import _ from 'lodash'
 import {
   historyDashboard,
   historyApp,
@@ -108,8 +109,11 @@ class NavBar extends Component {
         //   }
         // })
         .build();
-      await this.connection.stop();
-      await this.connection.start();
+
+      if (this.connection.state === HubConnectionState.Disconnected) {
+        await this.connection.start();
+      }
+
       await this.connection.invoke("SendOnlineUsers");
 
       this.connection.on("ReceivedOnlineUsers", (data) => {
@@ -125,7 +129,7 @@ class NavBar extends Component {
       });
 
     } catch (error) {
-      console.log("websocket error", error)
+      console.log("[websocket error] :", error)
     }
   }
 
@@ -133,7 +137,7 @@ class NavBar extends Component {
     try {
       await this.connection.stop();
     } catch (error) {
-      console.log(error);
+      console.log("[close connection errors] :", error);
     }
   };
 
@@ -163,7 +167,7 @@ class NavBar extends Component {
         ErrorAlert("System error");
       }
     } catch (error) {
-      console.log(`logout error: ${error}`);
+      console.log("[logout error]: ", error);
     }
     // window.location.reload(true);
   };
@@ -224,44 +228,18 @@ class NavBar extends Component {
 
   // }
 
-  // handleGuide(e) {
-
-  //   e.preventDefault();
-  //   const { HistoryElementTabs, index_tab_active_array } = this.props
-  //   var tab = HistoryElementTabs[index_tab_active_array];
-
-  //   //language
-  //   var curlang = window?.i18n.language;
-  //   var guid_lang = "";
-  //   if (curlang == 'vi') {
-  //     guid_lang = "vietnam"
-  //   } else if (curlang == 'en') {
-  //     guid_lang = "english"
-  //   } else if (curlang == 'zh') {
-  //     guid_lang = "china"
-  //   }
-  //   api_get("EquipmentManagerApi/get-document_by_code/" + tab.code + "/" + guid_lang).then(res => {
-
-  //     if (res) {
-  //       var url_file = ConfigConstants.BASE_URL + "document/" + res.url_file
-  //       this.setState({ isShowing: true, pdfURL: url_file, title_guide: res.title });
-  //     } else {
-  //       ErrorAlert("Chưa có hướng dẫn cho màn này")
-  //     }
-  //   });
-  // }
-
   toggle() {
     this.setState({ isShowing: !this.state.isShowing });
   }
 
   forceLogout = async () => {
     const currentUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
+
     const uArr = this.state.onlineUsers.filter(function (item) {
       return item.userId === currentUser.userId && item.lastLoginOnWeb === currentUser.lastLoginOnWeb;
     });
 
-    if (uArr.length === 0) {
+    if (uArr.length === 0 && currentUser) {
 
       const { deleteAll } = this.props;
       deleteAll();
@@ -270,7 +248,9 @@ class NavBar extends Component {
       RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
       RemoveLocalStorage(ConfigConstants.CURRENT_USER);
       await this.connection.stop();
-      console.log("websocket is disconnected");
+      this.connection = null;
+      this._isMounted = false;
+      // console.log("websocket is disconnected");
       historyApp.push("/logout");
 
     }
@@ -280,14 +260,13 @@ class NavBar extends Component {
     if (this.connection) {
       if (this.connection.state === HubConnectionState.Connected) {
         if (this.state.onlineUsers.length === 0) {
-          console.log('connected to server');
-          this._isMounted && await this.connection.invoke("SendOnlineUsers");
+          // console.log('connected to server');
+          await this.connection.invoke("SendOnlineUsers");
         }
       }
 
       if (this.connection.state === HubConnectionState.Disconnected) {
-        console.log('disconnected to server');
-
+        // console.log('disconnected to server');
         if (this._isMounted) {
           await this.connection.stop();
           await this.connection.start();
@@ -297,6 +276,7 @@ class NavBar extends Component {
     }
 
     else {
+      console.log("[reconnect fail]")
       await this.startConnection();
     }
   }
@@ -304,26 +284,31 @@ class NavBar extends Component {
   componentDidMount = async () => {
     this._isMounted = true;
 
-    console.log('run when component is mounted');
-    // await this.startConnection();
-    await this.reConnectToServer();
+    if (this.connection && this.connection.state === HubConnectionState.Connected) {
+      await this.connection.stop();
+    }
+    await this.startConnection();
+    // await this.forceLogout();
   }
 
-  componentDidUpdate = async () => {
+  componentDidUpdate = async (prevProps, prevState) => {
     // $('#notify_dropdown').on('show.bs.dropdown', () => {
     //   const { updateTimeAgo } = this.props
     //   updateTimeAgo();
     // });
 
-    console.log('run when component is updated');
-    await this.reConnectToServer();
-    await this.forceLogout();
+    if (!_.isEqual(prevState.onlineUsers, this.state.onlineUsers)) {
+      // console.log('run when component is updated');
+      await this.reConnectToServer();
+      await this.forceLogout();
+    }
   }
 
   componentWillUnmount = async () => {
-    if (this.connection && this.connection.state === HubConnectionState.Connected) {
+    // if (this.connection && this.connection.state === HubConnectionState.Connected) {
+    if (this.connection) {
       await this.connection.stop();
-      console.log("websocket is disconnected");
+      // console.log("run when component is unmounted");
     }
 
     this.connection = null;
@@ -351,7 +336,7 @@ class NavBar extends Component {
       notify_list,
       total_notify,
     } = this.props;
-    const { langselected } = this.state;
+    // const { langselected } = this.state;
     // var flag = ""
     // if (this.props.language == "EN") flag = "flag-icon-us"
     // else if (this.props.language == "VI") flag = "flag-icon-vi"

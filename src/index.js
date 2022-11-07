@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+// import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { DashBoard, Login } from '@containers';
@@ -26,31 +26,40 @@ import 'jquery';
 import 'jquery-ui';
 import 'bootstrap';
 
-import { historyApp, firstLogin } from '@utils';
-import CustomRouter from '@utils/CustomRoutes';
+// import { historyApp, firstLogin } from '@utils';
+// import CustomRouter from '@utils/CustomRoutes';
 
 import store, { persistor } from './states/store';
 
-import { AuthenticateRoute, NotAuthenticateRoute, LogoutRoute } from '@utils/Authenticate';
+// import { AuthenticateRoute, NotAuthenticateRoute, LogoutRoute } from '@utils/Authenticate';
 import App from './views/App';
 
-function RouteWrapperLogin(props) {
-    const ComponentWrapper = NotAuthenticateRoute(Login,
-        '/');
-    return <ComponentWrapper {...props} />;
-}
+import { createTheme, ThemeProvider, styled } from '@mui/material/styles'
+import { CssBaseline } from '@mui/material';
 
-function RouteWrapperRoot(props) {
-    const ComponentWrapper = AuthenticateRoute(DashBoard,
-        '/login');
+// function RouteWrapperLogin(props) {
+//     const ComponentWrapper = NotAuthenticateRoute(Login,
+//         '/');
+//     return <ComponentWrapper {...props} />;
+// }
 
-    return <ComponentWrapper {...props} />;
-}
+// function RouteWrapperRoot(props) {
+//     const ComponentWrapper = AuthenticateRoute(DashBoard,
+//         '/login');
 
-function RouteWrapperLogout(props) {
-    const ComponentWrapper = LogoutRoute();
-    return <ComponentWrapper {...props} />;
-}
+//     return <ComponentWrapper {...props} />;
+// }
+
+// function RouteWrapperLogout(props) {
+//     const ComponentWrapper = LogoutRoute();
+//     return <ComponentWrapper {...props} />;
+// }
+
+const theme = createTheme({
+    palette: {
+        mode: 'light',
+    }
+});
 
 ReactDOM.render(
     <I18nextProvider i18n={i18n}>
@@ -73,7 +82,13 @@ ReactDOM.render(
 
                     </Switch>
                 </CustomRouter> */}
-                <App persistor={persistor} />
+                <ThemeProvider theme={theme}>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <CssBaseline />
+                        <App persistor={persistor} />
+                    </Suspense>
+                </ThemeProvider>
+
             </IntlProviderWrapper>
         </Provider>
 

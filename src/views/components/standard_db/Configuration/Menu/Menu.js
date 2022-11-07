@@ -297,6 +297,7 @@ const Menu = (props) => {
                         return `Mui-created`
                     }
                 }}
+                initialState={{ pinnedColumns: { right: ['action'] } }}
             />
 
             {/* <CreateMenuDialog

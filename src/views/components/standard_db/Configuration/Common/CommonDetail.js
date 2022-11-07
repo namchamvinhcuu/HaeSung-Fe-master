@@ -248,7 +248,7 @@ const CommonDetail = ({ rowmaster }) => {
                             return `Mui-created`
                         }
                     }}
-
+                    initialState={{ pinnedColumns: { right: ['action'] } }}
                 />
             }
 

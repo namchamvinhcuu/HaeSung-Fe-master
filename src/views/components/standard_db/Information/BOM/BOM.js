@@ -313,19 +313,19 @@ export default function BOM() {
         </Grid>
 
         <Grid item>
-              <MuiAutocomplete
-                    label={intl.formatMessage({ id: "bom.MaterialId" })}
-                    fetchDataFunc={getMaterial}
-                    displayLabel="MaterialCode"
-                    displayValue="MaterialId"
-                    displayGroup="GroupMaterial"
+          <MuiAutocomplete
+            label={intl.formatMessage({ id: "bom.MaterialId" })}
+            fetchDataFunc={getMaterial}
+            displayLabel="MaterialCode"
+            displayValue="MaterialId"
+            displayGroup="GroupMaterial"
 
-                    onChange={(e, item) =>
-                      handleSearch(item ? item.MaterialId ?? null : null, "MaterialId")
-                    }
-                    sx={{ width: 250 }}
-                    variant="standard"
-                />
+            onChange={(e, item) =>
+              handleSearch(item ? item.MaterialId ?? null : null, "MaterialId")
+            }
+            sx={{ width: 250 }}
+            variant="standard"
+          />
           {/* <MuiSelectField
             label={intl.formatMessage({ id: "bom.MaterialId" })}
             options={MaterialList}
@@ -383,6 +383,7 @@ export default function BOM() {
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;
         }}
+        initialState={{ pinnedColumns: { right: ['action'] } }}
       />
 
       <BOMDialog
