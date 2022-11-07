@@ -68,7 +68,8 @@
         "EndSearchingDate": "Đến",
         "EndSearchingDate_invalid": "Ngày kết thúc không đúng định dạng",
         "week_invalid": "Tuần phải là số nguyên dương trong khoảng 1 - 52",
-        "year_invalid": "Năm phải là số nguyên dương trong khoảng 2022 - 2050"
+        "year_invalid": "Năm phải là số nguyên dương trong khoảng 2022 - 2050",
+        "datetime_format_invalid": "Format ngày giờ không hợp lệ"
     },
     "login": {
         "account_password_invalid": "Tài khoản/Mật khẩu không hợp lệ",

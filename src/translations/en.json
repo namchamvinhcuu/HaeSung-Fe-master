@@ -68,7 +68,8 @@
         "EndSearchingDate": "To",
         "EndSearchingDate_invalid": "End Searching Date format is invalid",
         "week_invalid": "Week must be integer and between 1 - 52",
-        "year_invalid": "Year must be integer and between 2022 - 2050"
+        "year_invalid": "Year must be integer and between 2022 - 2050",
+        "datetime_format_invalid": "Date format is invalid"
     },
     "login": {
         "account_password_invalid": "Account/Password is invalid",
