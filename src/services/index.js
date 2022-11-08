@@ -31,6 +31,8 @@ import * as forecastMasterService from "./PO/Forecast/ForecastMasterService";
 import * as workOrderService from "./mms/work-order/WorkOrderService";
 import * as fixedPOService from "./PO/purchase-order/FixedPOService";
 import * as iqcService from "./WMS/Material/IQCService"
+import * as actualService from "./mms/ActualService";
+
 export {
   loginService,
   menuService,
@@ -61,4 +63,5 @@ export {
   forecastMasterService,
   fixedPOService,
   iqcService,
+  actualService,
 };

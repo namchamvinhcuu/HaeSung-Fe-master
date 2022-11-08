@@ -139,7 +139,7 @@ export default function Material() {
             title={params.row.SupplierName ?? ""}
             className="col-text-elip"
           >
-            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>
+            <Typography sx={{ fontSize: 14 }}>
               {params.row.SupplierName}
             </Typography>
           </Tooltip>
@@ -156,7 +156,7 @@ export default function Material() {
             title={params.row.Description ?? ""}
             className="col-text-elip"
           >
-            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>
+            <Typography sx={{ fontSize: 14 }}>
               {params.row.Description}
             </Typography>
           </Tooltip>
@@ -437,7 +437,7 @@ export default function Material() {
         headerHeight={45}
         columns={columns}
         rows={state.data}
-        gridHeight={736}
+
         page={state.page - 1}
         pageSize={state.pageSize}
         rowCount={state.totalRow}

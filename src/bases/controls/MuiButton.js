@@ -7,6 +7,7 @@ import SaveIcon from '@mui/icons-material/Save'
 import SearchIcon from '@mui/icons-material/Search';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 import { styled } from "@mui/material/styles"
 import { FormattedMessage } from 'react-intl'
 
@@ -40,6 +41,8 @@ const MuiButton = React.forwardRef((props, ref) => {
                 return <FileDownloadIcon />
             case 'excel':
                 return <FileDownloadIcon />
+            case 'print':
+                return <LocalPrintshopIcon />
             default:
                 return <DeleteIcon />;
         }

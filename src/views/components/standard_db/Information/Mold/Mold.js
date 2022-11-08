@@ -174,7 +174,7 @@ export default function Mold() {
             title={params.row.Remark ?? ""}
             className="col-text-elip"
           >
-            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>
+            <Typography sx={{ fontSize: 14 }}>
               {params.row.Remark}
             </Typography>
           </Tooltip>

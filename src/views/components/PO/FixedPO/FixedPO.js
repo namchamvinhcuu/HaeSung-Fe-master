@@ -223,7 +223,7 @@ const FixedPO = (props) => {
             title={params.row.DescriptionMaterial ?? ""}
             className="col-text-elip"
           >
-            <Typography sx={{ fontSize: 14, maxWidth: 300 }}>
+            <Typography sx={{ fontSize: 14 }}>
               {params.row.DescriptionMaterial}
             </Typography>
           </Tooltip>
