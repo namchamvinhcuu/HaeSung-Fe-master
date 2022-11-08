@@ -102,12 +102,12 @@ class NavBar extends Component {
           transport: HttpTransportType.WebSockets
         })
         .configureLogging(LogLevel.None)
-        // .withAutomaticReconnect({
-        //   nextRetryDelayInMilliseconds: retryContext => {
-        //     //reconnect after 5-20s
-        //     return 5000 + (Math.random() * 15000);
-        //   }
-        // })
+        .withAutomaticReconnect({
+          nextRetryDelayInMilliseconds: retryContext => {
+            //reconnect after 5-20s
+            return 5000 + (Math.random() * 15000);
+          }
+        })
         .build();
 
       if (this.connection.state === HubConnectionState.Disconnected) {
