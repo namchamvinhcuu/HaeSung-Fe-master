@@ -149,7 +149,10 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                   setFieldValue("UnitName", unitBare[0].commonDetailName);
                   setFieldValue("Unit", unitBare[0].commonDetailId);
                 }
-
+                else {
+                  setFieldValue("UnitName", '');
+                  setFieldValue("Unit", null);
+                }
                 setFieldValue("QCMasterCode", '');
                 setFieldValue("QCMasterId", null);
                 setFieldValue("MaterialTypeName", value?.commonDetailName || '');

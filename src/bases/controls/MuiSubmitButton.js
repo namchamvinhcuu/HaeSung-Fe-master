@@ -14,7 +14,7 @@ const StyledButton = styled(LoadingButton)(({ theme, color }) => ({
 
 const MuiSubmitButton = (props) => {
 
-    const { loading, variant, text, fullWidth } = props;
+    const { loading, variant, text, fullWidth, disabled } = props;
 
     const str = `general.${text}`;
 
@@ -48,6 +48,7 @@ const MuiSubmitButton = (props) => {
             variant={variant ?? "contained"}
             type='submit'
             color={renderColor(text)}
+            disabled={disabled}
             fullWidth={fullWidth ? true : false}
         >
             <FormattedMessage id={str} />

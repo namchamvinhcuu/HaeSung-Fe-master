@@ -13,6 +13,7 @@
         "close": "Đóng",
         "save": "Lưu",
         "copy": "Sao chép",
+        "print" :"Print",
         "cancel": "Hủy",
         "download": "Tải xuống",
         "excel": "Excel",
@@ -390,5 +391,14 @@
         "OrderQty_GreaterThan_0": "SL yêu cầu phải lớn hơn 0",
         "StartDate_required": "Ngày bắt đầu không được để trống",
         "StartDate_invalid": "Ngày bắt đầu không đúng định dạng"
+    },
+    "actual": {
+        "Qty": "Qty",
+        "LotNumber": "Lot Number",
+        "LotSerial": "Lot Serial",
+        "totalQtylot_GreaterThan_ActualQty": "SL vượt quá số lương cho phép",
+        "LotCode":"Lot Code",
+        "MaterialId":"Assy Code",
+        "LotStatus":"Lot Status"
     }
 }

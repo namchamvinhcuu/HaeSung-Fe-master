@@ -13,6 +13,7 @@
         "close": "Close",
         "save": "Save",
         "copy": "Copy",
+        "print" :"Print",
         "cancel": "cancel",
         "download": "download",
         "excel": "Excel",
@@ -390,5 +391,14 @@
         "OrderQty_GreaterThan_0": "Order Qty must be greater than zero",
         "StartDate_required": "Working Date is required",
         "StartDate_invalid": "Working Date format is invalid"
+    },
+    "actual": {
+        "Qty": "Qty",
+        "LotNumber": "Lot Number",
+        "LotSerial": "Lot Serial",
+        "totalQtylot_GreaterThan_ActualQty": "Qty lot greater than actual qty",
+        "LotCode":"Lot Code",
+        "MaterialId":"Assy Code",
+        "LotStatus":"Lot Status"
     }
 }
