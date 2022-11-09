@@ -49,11 +49,18 @@ const MaterialReceiving = (props) => {
     };
 
     const handleReceivingLot = async (inputValue) => {
-        const res = await materialReceivingService.receivingLot(inputValue);
+        const res = await materialReceivingService.receivingLot({ LotCode: inputValue });
         if (res && isRendered) {
             if (res.HttpResponseCode === 200 && res.Data) {
                 setNewData({ ...res.Data });
+                SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
             }
+            else {
+                ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+            }
+        }
+        else {
+            ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
         }
     }
 
