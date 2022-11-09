@@ -22,6 +22,26 @@ export const getByWo = async (params) => {
   }
 };
 
+export const getWoInfo = async (params) => {
+  try {
+    return await axios.get(`${API}/get-wo-info`, {
+      params: { ...params },
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+export const getQcDetail = async (params) => {
+  try {
+    return await axios.get(`${API}/get-qc-detail`, {
+      params: { ...params },
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
 export const createByWo = async (params) => {
   try {
     return await axios.post(`${API}/create-lot`, {
