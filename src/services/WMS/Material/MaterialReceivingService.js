@@ -20,3 +20,13 @@ export const receivingLot = async (params) => {
         console.log(`ERROR: ${error}`);
     }
 };
+
+export const handleDelete = async (params) => {
+    try {
+        return await axios.put(`${API}/delete-lot`, {
+            ...params,
+        });
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+};

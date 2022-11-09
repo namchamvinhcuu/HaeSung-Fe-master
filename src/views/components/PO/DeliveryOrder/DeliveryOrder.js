@@ -111,7 +111,6 @@ const DeliveryOrder = (props) => {
         }
       } catch (error) {
         console.log(error);
-        console.log('aaaaa');
       }
     }
   };

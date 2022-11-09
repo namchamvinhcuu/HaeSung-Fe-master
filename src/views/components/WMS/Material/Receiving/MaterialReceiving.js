@@ -8,6 +8,8 @@ import { Store } from '@appstate'
 import moment from "moment";
 import Grid from "@mui/material/Grid";
 import Typography from '@mui/material/Typography';
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
 import { useIntl } from "react-intl";
 import { ErrorAlert, SuccessAlert } from "@utils";
 import {
@@ -84,6 +86,25 @@ const MaterialReceiving = (props) => {
         }
     };
 
+    const handleDelete = async (lot) => {
+        if (
+            window.confirm(
+                intl.formatMessage({ id: "general.confirm_delete" })
+            )
+        ) {
+            try {
+                let res = await materialReceivingService.handleDelete(lot);
+                if (res && res.HttpResponseCode === 200) {
+                    await fetchData();
+                } else {
+                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    };
+
     const fetchData = async () => {
 
         setMaterialRecevingState({
@@ -121,6 +142,38 @@ const MaterialReceiving = (props) => {
         },
 
         {
+            field: "action",
+            headerName: "",
+            width: 80,
+            // headerAlign: 'center',
+            disableClickEventBubbling: true,
+            sortable: false,
+            disableColumnMenu: true,
+            renderCell: (params) => {
+                return (
+                    <Grid
+                        container
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
+                            <IconButton
+                                aria-label="delete"
+                                color="error"
+                                size="small"
+                                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                                onClick={() => handleDelete(params.row)}
+                            >
+                                <DeleteIcon fontSize="inherit" />
+                            </IconButton>
+                        </Grid>
+                    </Grid>
+                );
+            },
+        },
+
+        {
             field: "LotCode",
             headerName: "Lot Code",
             width: 350,
@@ -154,7 +207,7 @@ const MaterialReceiving = (props) => {
             headerName: "QC Result",
             width: 100,
             renderCell: (params) => {
-                if (params.row.QCResult == true) {
+                if (params.row.QCResult) {
                     return <Typography>OK</Typography>;
                 } else {
                     return <Typography>NG</Typography>;
@@ -266,6 +319,7 @@ const MaterialReceiving = (props) => {
                         return `Mui-created`;
                     }
                 }}
+                initialState={{ pinnedColumns: { right: ['action'] } }}
             />
         </React.Fragment>
     )
