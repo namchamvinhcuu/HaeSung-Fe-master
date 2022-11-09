@@ -28,12 +28,14 @@ const MaterialReceiving = (props) => {
         totalRow: 0,
         page: 1,
         pageSize: 20,
-
     });
 
     const [lotInput, setLotInput] = useState('');
     const [focus, setFocus] = useState(true);
     const [newData, setNewData] = useState({ ...LotDto });
+    const [selectedRow, setSelectedRow] = useState({
+        ...LotDto,
+    });
 
     const handleLotInputChange = (e) => {
         setLotInput(e.target.value)
@@ -46,6 +48,12 @@ const MaterialReceiving = (props) => {
 
             await handleReceivingLot(e.target.value);
         }
+    };
+
+    const scanBtnClick = async () => {
+        setFocus(true);
+        await handleReceivingLot(lotInput);
+        setLotInput('');
     };
 
     const handleReceivingLot = async (inputValue) => {
@@ -76,6 +84,31 @@ const MaterialReceiving = (props) => {
         }
     };
 
+    const fetchData = async () => {
+
+        setMaterialRecevingState({
+            ...materialRecevingState,
+            isLoading: true,
+        });
+
+        const params = {
+            page: materialRecevingState.page,
+            pageSize: materialRecevingState.pageSize,
+            IncomingDate: new Date(),
+        };
+
+        const res = await materialReceivingService.get(params);
+
+        if (res && isRendered)
+            setMaterialRecevingState({
+                ...materialRecevingState,
+                data: !res.Data ? [] : [...res.Data],
+                totalRow: res.TotalRow,
+                isLoading: false,
+            });
+
+    };
+
     const columns = [
         { field: "Id", headerName: "", hide: true },
         {
@@ -94,7 +127,7 @@ const MaterialReceiving = (props) => {
         },
 
         {
-            field: "MaterialCode",
+            field: "MaterialColorCode",
             headerName: "Material Code",
             width: 250,
         },
@@ -142,19 +175,20 @@ const MaterialReceiving = (props) => {
         },
     ];
 
-    // useEffect(() => {
+    useEffect(() => {
+        fetchData();
 
-    //     return () => {
-    //         isRendered = false;
-    //     };
-    // }, []);
+        return () => {
+            isRendered = false;
+        };
+    }, [materialRecevingState.page, materialRecevingState.pageSize]);
 
     useEffect(() => {
         if (!_.isEmpty(newData) && !_.isEqual(newData, LotDto)) {
             const data = [newData, ...materialRecevingState.data];
-            // if (data.length > deliveryOrderState.pageSize) {
-            //     data.pop();
-            // }
+            if (data.length > materialRecevingState.pageSize) {
+                data.pop();
+            }
             if (isRendered)
                 setMaterialRecevingState({
                     ...materialRecevingState,
@@ -163,9 +197,6 @@ const MaterialReceiving = (props) => {
                 });
         }
 
-        return () => {
-            isRendered = false;
-        };
     }, [newData]);
 
     return (
@@ -193,16 +224,13 @@ const MaterialReceiving = (props) => {
                                 value={lotInput}
                                 onChange={handleLotInputChange}
                                 onKeyDown={keyPress}
-                            // sx={{ mb: 0.5 }}
                             />
                         </Grid>
                         <Grid item xs={2.5}>
                             <MuiButton
                                 text="scan"
                                 color="success"
-                                onClick={() => {
-                                    // toggleDialog(CREATE_ACTION);
-                                }}
+                                onClick={scanBtnClick}
                             />
                         </Grid>
                     </Grid>
@@ -211,7 +239,7 @@ const MaterialReceiving = (props) => {
 
             <MuiDataGrid
                 showLoading={materialRecevingState.isLoading}
-                isPagingServer={false}
+                isPagingServer={true}
                 headerHeight={45}
                 // rowHeight={30}
                 // gridHeight={736}

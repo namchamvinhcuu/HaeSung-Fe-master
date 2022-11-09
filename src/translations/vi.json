@@ -401,5 +401,8 @@
         "LotCode": "Lot Code",
         "MaterialId": "Assy Code",
         "LotStatus": "Lot Status"
+    },
+    "lot": {
+        "received": "Đã nhận"
     }
 }
