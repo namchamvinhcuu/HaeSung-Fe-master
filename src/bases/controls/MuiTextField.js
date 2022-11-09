@@ -7,6 +7,7 @@ const MuiTextField = (props) => {
     type,
     name,
     value,
+    autoFocus,
     required,
     disabled,
     onChange,
@@ -22,11 +23,13 @@ const MuiTextField = (props) => {
       size="small"
       label={labelFormat}
       disabled={disabled}
+      autoFocus={autoFocus ?? false}
       name={name}
       value={value}
       onChange={onChange}
       error={error ?? false}
       helperText={helperText ?? ""}
+      {...props}
     />
   );
 };

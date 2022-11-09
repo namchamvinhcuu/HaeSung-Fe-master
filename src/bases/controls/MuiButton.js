@@ -8,8 +8,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
+import CropFreeIcon from '@mui/icons-material/CropFree';
 import { styled } from "@mui/material/styles"
 import { FormattedMessage } from 'react-intl'
+
 
 const StyledButton = styled(Button)(({ theme, color }) => ({
     minWidth: 0,
@@ -43,6 +45,8 @@ const MuiButton = React.forwardRef((props, ref) => {
                 return <FileDownloadIcon />
             case 'print':
                 return <LocalPrintshopIcon />
+            case 'scan':
+                return <CropFreeIcon />
             default:
                 return <DeleteIcon />;
         }
