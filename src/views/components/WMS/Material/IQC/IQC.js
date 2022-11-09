@@ -5,11 +5,23 @@ import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
 import { User_Operations } from "@appstate/user";
 import { Store } from "@appstate";
 import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControlLabel,
   Grid,
   IconButton,
   Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
   Typography,
+  Zoom
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import UndoIcon from "@mui/icons-material/Undo";
@@ -18,24 +30,31 @@ import {
   MuiButton,
   MuiDataGrid,
   MuiSearchField,
+  MuiDateTimeField,
 } from "@controls";
 import { useIntl } from "react-intl";
 import moment from "moment";
 import IQCDialog from "./IQCDialog";
 import { LotDto } from "@models";
 import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import { useModal } from "@basesShared";
+import { useModal, useModal2 } from "@basesShared";
 import { iqcService } from "@services";
-import { ErrorAlert, SuccessAlert } from "@utils";
+import { ErrorAlert, SuccessAlert, addDays } from "@utils";
+import ReactToPrint from "react-to-print";
+import CloseIcon from "@mui/icons-material/Close";
+import QRCode from "react-qr-code";
 
 const IQC = (props) => {
   const intl = useIntl();
   const [mode, setMode] = useState(CREATE_ACTION);
   const [rowData, setRowData] = useState({ ...LotDto });
   const { isShowing, toggle } = useModal();
+  const { isShowing2, toggle2 } = useModal2();
   const [newData, setNewData] = useState({ ...LotDto });
   const [updateData, setUpdateData] = useState({});
   let isRendered = useRef(true);
+  const initETDLoad = new Date();
+  const [rowSelected, setRowSelected] = useState([]);
   const [iqcState, setIQCState] = useState({
     isLoading: false,
     data: [],
@@ -45,6 +64,8 @@ const IQC = (props) => {
     searchData: {
       keyWord: "",
       showDelete: true,
+      searchStartDay: "",
+      searchEndDay: "",
     },
   });
   const columns = [
@@ -139,11 +160,15 @@ const IQC = (props) => {
       headerName: "QC Result",
       width: 100,
       renderCell: (params) => {
-        if (params.row.QCResult == true) {
-          return <Typography>OK</Typography>;
-        } else {
-          return <Typography>NG</Typography>;
-        }
+        return params.row.QCResult == true ? (
+          <Typography sx={{ fontSize: "14px" }}>
+            <b>OK</b>
+          </Typography>
+        ) : (
+          <Typography sx={{ fontSize: "14px" }}>
+            <b>NG</b>
+          </Typography>
+        );
       },
     },
     {
@@ -236,6 +261,8 @@ const IQC = (props) => {
       page: iqcState.page,
       pageSize: iqcState.pageSize,
       keyWord: iqcState.searchData.keyWord,
+      searchStartDay: iqcState.searchData.searchStartDay,
+      searchEndDay: iqcState.searchData.searchEndDay,
       showDelete: iqcState.searchData.showDelete,
     };
     const res = await iqcService.getIQCList(params);
@@ -247,6 +274,22 @@ const IQC = (props) => {
         isLoading: false,
       });
   }
+
+  const handleRowSelection = (arrIds) => {
+    const rowSelected = iqcState.data.filter(function (item) {
+      return arrIds.includes(item.Id);
+      // return _.findIndex(iqcState.data, function(o) { return o.user == 'barney'; });
+    });
+    setRowSelected(rowSelected)
+    // console.log('rowSelected', rowSelected)
+
+    // if (rowSelected && rowSelected.length > 0) {
+    //   setSelectedRow({ ...rowSelected[0] });
+    // } else {
+    //   setSelectedRow({ ...WorkOrderDto });
+    // }
+  };
+
   useEffect(() => {
     return () => {
       isRendered = false;
@@ -285,6 +328,9 @@ const IQC = (props) => {
       setIQCState({ ...iqcState, data: [...newArr] });
     }
   }, [updateData]);
+  const QrCode = () =>{
+    toggle2();
+  }
   return (
     <React.Fragment>
       <Grid
@@ -295,9 +341,36 @@ const IQC = (props) => {
       >
         <Grid item>
           <MuiButton text="create" color="success" onClick={handleAdd} />
+          <Button
+            disabled={rowSelected.length > 0 ? false : true}
+            variant="contained"
+            color="secondary"
+            onClick={() => QrCode()} sx={{ mx: 2 }}>Print QR Code</Button>
         </Grid>
         <Grid item>
           <Grid container spacing={2} justifyContent="center">
+            <Grid item>
+              <MuiDateTimeField
+                disabled={iqcState.isLoading}
+                label="Start QC Day"
+                value={iqcState.searchData.searchStartDay}
+                onChange={(e) => {
+                  handleSearch(e, "searchStartDay");
+                }}
+                variant="standard"
+              />
+            </Grid>
+            <Grid item>
+              <MuiDateTimeField
+                disabled={iqcState.isLoading}
+                label="End QC Day"
+                value={iqcState.searchData.searchEndDay}
+                onChange={(e) => {
+                  handleSearch(e, "searchEndDay");
+                }}
+                variant="standard"
+              />
+            </Grid>
             <Grid item>
               <MuiSearchField
                 label="general.name"
@@ -335,23 +408,21 @@ const IQC = (props) => {
         showLoading={iqcState.isLoading}
         isPagingServer={true}
         headerHeight={45}
-        // rowHeight={30}
+        disableSelectionOnClick
+        checkboxSelection
         columns={columns}
         rows={iqcState.data}
         page={iqcState.page - 1}
         pageSize={iqcState.pageSize}
         rowCount={iqcState.totalRow}
-        // rowsPerPageOptions={[5, 10, 20, 30]}
-
+        onSelectionModelChange={(ids) => {
+          // setRowSelected(ids)
+          handleRowSelection(ids)
+        }}
         onPageChange={(newPage) => {
           setIQCState({ ...iqcState, page: newPage + 1 });
         }}
-        // onSelectionModelChange={(newSelectedRowId) => setFPOMasterId(newSelectedRowId[0])}
         getRowId={(rows) => rows.Id}
-        // onSelectionModelChange={(newSelectedRowId) => {
-        //   handleRowSelection(newSelectedRowId);
-        // }}
-        // selectionModel={selectedRow.menuId}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) {
             return `Mui-created`;
@@ -367,10 +438,137 @@ const IQC = (props) => {
         onClose={toggle}
         mode={mode}
       />
+     {isShowing2 && ( 
+        <Modal_Qr_Code
+          isShowing={true}
+          hide={toggle2}
+          rowSelected={rowSelected}
+        />
+      )} 
     </React.Fragment>
   );
 };
+const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
 
+  const DialogTransition = React.forwardRef(function DialogTransition(props, ref) {
+    return <Zoom direction="up" ref={ref} {...props} />;
+  })
+  const componentPringtRef = React.useRef();
+  const [listPrint, setListPrint] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(async () => {
+    setIsLoading(true)
+    setListPrint(rowSelected)
+    setIsLoading(false)
+  }, []);
+  const style = {
+    styleBorderAndCenter : {
+      borderRight:"1px solid black",
+     textAlign:"center"
+    },
+    borderBot : {
+        borderBottom:"1px solid black"
+    }
+  }
+  const getWeekByCreatedDate = (date) => {
+    let todaydate = new Date(date);
+    let oneJan = new Date(todaydate.getFullYear(), 0, 1);
+    let numberOfDays = Math.floor((todaydate - oneJan) / (24 * 60 * 60 * 1000));
+    let curWeek = Math.ceil((todaydate.getDay() + 1 + numberOfDays) / 7);
+    return curWeek;
+  }
+  return (
+    <React.Fragment>
+      {!isLoading && <Dialog open={isShowing} maxWidth="sm" fullWidth TransitionComponent={DialogTransition} transitionDuration={300}>
+        <DialogTitle
+          sx={{
+            p: 1,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography sx={{ fontWeight: 600, fontSize: "22px" }}>
+            QR CODE
+          </Typography>
+          <IconButton
+            aria-label="delete"
+            size="small"
+            onClick={() => hide()}
+            sx={{ backgroundColor: "rgba(0,0,0,0.1)" }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent
+          ref={componentPringtRef}
+          sx={{ display: "flex", justifyContent: "center" }}
+        >
+          <Box >
+          {
+            listPrint?.map((item, index) =>{
+              return (
+                <Box sx={{border:"1px solid black", mb:2}} key={`IQCQRCODE_${index}`}>
+                <TableContainer sx={{overflowX:"hidden"}}>
+                  <Table>
+                    <TableBody>
+                      <TableRow >
+                          <TableCell style={{...style.styleBorderAndCenter,...style.borderBot}}>CODE</TableCell>
+                          <TableCell colSpan={2} style={{...style.styleBorderAndCenter,...style.borderBot}}>{item?.MaterialColorCode}</TableCell> 
+                           <TableCell rowSpan={2} sx={{ textAlign:"center"}} style={style.borderBot} >
+                           <QRCode value={`${item?.LotCode}`} size={80} />
+                           </TableCell>
+                      </TableRow>
+                      <TableRow>
+                          <TableCell colSpan={3} style={{...style.styleBorderAndCenter,...style.borderBot}}>{item?.Description}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                          <TableCell  style={{...style.styleBorderAndCenter,...style.borderBot}} >QTY</TableCell>
+                          <TableCell  style={{...style.styleBorderAndCenter,...style.borderBot}}>{`${item?.Qty} ${item?.Unit}`} </TableCell>
+                          <TableCell  style={{...style.styleBorderAndCenter,...style.borderBot}}>VENDOR</TableCell>
+                          <TableCell sx={{textAlign:"center"}}  style={style.borderBot}>{item?.SupplierCode}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                          <TableCell style={{...style.styleBorderAndCenter,...style.borderBot}}>LOT No.</TableCell>
+                          <TableCell style={{...style.styleBorderAndCenter,...style.borderBot}} sx={{backgroundColor:"yellow"}}></TableCell>
+                          <TableCell colSpan={2} sx={{textAlign:"center"}}  style={style.borderBot}>20212221</TableCell>
+                      </TableRow>
+                      <TableRow>
+                          <TableCell style={{...style.styleBorderAndCenter,...style.borderBot}}>{moment(item?.createdDate).add(7, "hours").format("YYYY-MM-DD")}</TableCell>
+                          <TableCell rowSpan={2} colSpan={2} sx={{textAlign:"center"}}>
+                            <h3>22330 - 00101010</h3>
+                          </TableCell>
+                      </TableRow>
+                      <TableRow>
+                          <TableCell  style={style.styleBorderAndCenter}>
+                            W{getWeekByCreatedDate(item?.createdDate)} / T{moment(item?.createdDate).add(7, "hours").format("MM")}
+                          </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+             </Box>
+              )
+            })
+          }
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ pt: 1}}>
+          <ReactToPrint
+            trigger={() => {
+              return (
+                <Button variant="contained" color="primary">
+                  Print
+                </Button>
+              );
+            }}
+            content={() => componentPringtRef.current}
+          />
+        </DialogActions>
+      </Dialog>}
+    </React.Fragment>
+  );
+};
 User_Operations.toString = function () {
   return "User_Operations";
 };

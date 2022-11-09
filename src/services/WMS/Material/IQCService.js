@@ -18,7 +18,13 @@ const getMaterialModelTypeRaw = async () => {
     console.log(`ERROR: ${error}`);
   }
 };
-
+const getSelectQC = async (params) => {
+  try {
+    return await axios.get(`${apiName}/get-select-qc`,  { params:  params} );
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
 
 const createIQC = async (params) => {
   try {
@@ -53,4 +59,5 @@ export {
     createIQC,
     modifyIQC,
     deleteIQC,
+    getSelectQC,
 };

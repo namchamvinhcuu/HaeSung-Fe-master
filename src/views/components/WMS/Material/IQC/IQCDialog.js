@@ -9,13 +9,17 @@ import {
 import { useIntl } from "react-intl";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { Grid, TextField } from "@mui/material";
+import { Autocomplete, Grid, TextField } from "@mui/material";
 import { CREATE_ACTION } from "@constants/ConfigConstants";
 import { iqcService } from "@services";
 import { ErrorAlert, SuccessAlert } from "@utils";
+import { useEffect } from "react";
 
 const IQCDialog = (props) => {
   const { initModal, isOpen, onClose, setNewData, setUpdateData, mode } = props;
+  const [materialId, setMaterialId] = useState(0);
+  const [qcList, setQCList] = useState([""]);
+  const [QCResult, setQCResult] = useState("");
   const optionQCResult = [
     { QCResult: "True", QCResultName: "OK" },
     { QCResult: "False", QCResultName: "NG" },
@@ -24,7 +28,14 @@ const IQCDialog = (props) => {
   const [dialogState, setDialogState] = useState({
     isSubmit: false,
   });
-
+  const list =[{
+    id:1,
+    name:"aass"
+  },{
+  id:2,
+  name:"aass111"
+},
+]
   const schema = yup.object().shape({
     MaterialId: yup
       .number()
@@ -32,6 +43,7 @@ const IQCDialog = (props) => {
       .required(intl.formatMessage({ id: "forecast.MaterialId_required" })),
     Qty: yup.number().nullable().required("QTY REQUIRED").min(1, "BIGGER 1"),
     QCResult: yup.string().nullable().required("QC STATUS REQUIRED"),
+    
   });
   const handleReset = () => {
     resetForm();
@@ -94,6 +106,16 @@ const IQCDialog = (props) => {
     return res;
   };
 
+  // const getSelectQC = async () =>{
+  //   const res = await iqcService.getSelectQC(materialId);
+  //   console.log(res,"res")
+  //   return res;
+  // }
+  useEffect(async()=>{
+    const res = await iqcService.getSelectQC({MaterialId:materialId});
+    setQCList(res.Data);
+  },[materialId])
+  
   return (
     <MuiDialog
       maxWidth="sm"
@@ -136,6 +158,8 @@ const IQCDialog = (props) => {
               onChange={(e, value) => {
                 setFieldValue("MaterialCode", value?.MaterialCode);
                 setFieldValue("MaterialId", value?.MaterialId);
+                setMaterialId(value?.MaterialId);
+                setFieldValue("QcIDList",  [])
               }}
               error={touched.MaterialId && Boolean(errors.MaterialId)}
               helperText={touched.MaterialId && errors.MaterialId}
@@ -174,11 +198,39 @@ const IQCDialog = (props) => {
                   "QCResult",
                   item?.QCResult === "True" ? true : false
                 );
+                setQCResult( item?.QCResult === "True" ? true : false)
               }}
               error={touched.QCResult && Boolean(errors.QCResult)}
               helperText={touched.QCResult && errors.QCResult}
             />
           </Grid>
+         {(QCResult===false) &&<Grid item xs={12}>
+              <Autocomplete
+                key={materialId}
+                multiple
+                fullWidth
+                size='small'
+                options={qcList}
+                disabled={dialogState.isSubmit}
+                autoHighlight
+                openOnFocus
+                value={values.qcList}
+                getOptionLabel={option => option.QCCode}
+                onChange={(e, item) => {
+                  // setFieldValue("QcId", item );
+                  setFieldValue("QcIDList", item ?? [])
+                }}
+                disableCloseOnSelect
+                renderInput={(params) => {
+                  return <TextField
+                    {...params}
+                    label="QC *"
+                    error={touched.QcIDList && Boolean(errors.QcIDList)}
+                    helperText={touched.QcIDList && errors.QcIDList}
+                  />
+                }}
+              />
+            </Grid>}
           <Grid item xs={12}>
             <Grid container direction="row-reverse">
               <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
