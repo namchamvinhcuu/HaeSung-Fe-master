@@ -400,7 +400,12 @@
         "totalQtylot_GreaterThan_ActualQty": "Qty lot greater than actual qty",
         "LotCode": "Lot Code",
         "MaterialId": "Assy Code",
-        "LotStatus": "Lot Status"
+        "LotStatus":"Lot Status",
+        "WoOrderQty":"Wo Order Qty",
+        "TotalLotQty":"Total Lot Qty",
+        "Remain":"Remain",
+        "Qc":"QC",
+        "QCResult" : "QC Result"
     },
     "lot": {
         "received": "Received"

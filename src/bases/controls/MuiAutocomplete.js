@@ -21,6 +21,7 @@ const MuiAutocomplete = React.forwardRef(({ ...props }, ref) => {
     helperText,
     variant,
     required,
+    multiple,
   } = props;
 
   let isRendered = React.useRef(true);
@@ -70,6 +71,8 @@ const MuiAutocomplete = React.forwardRef(({ ...props }, ref) => {
     <React.Fragment>
       {!displayGroup ? (
         <Autocomplete
+          multiple={multiple}
+          disableCloseOnSelect={multiple}
           fullWidth
           open={open}
           onOpen={() => {
@@ -89,7 +92,7 @@ const MuiAutocomplete = React.forwardRef(({ ...props }, ref) => {
           isOptionEqualToValue={(option, value) =>
             option[displayValue] === value[displayValue]
           }
-          defaultValue={defaultValue ?? null}
+          defaultValue={defaultValue ?? (multiple ? [] : null)}
           onChange={onChange}
           renderInput={(params) => {
             return (
@@ -118,6 +121,8 @@ const MuiAutocomplete = React.forwardRef(({ ...props }, ref) => {
         />
       ) : (
         <Autocomplete
+          multiple={multiple}
+          disableCloseOnSelect={multiple}
           fullWidth
           open={open}
           onOpen={() => {
@@ -138,7 +143,7 @@ const MuiAutocomplete = React.forwardRef(({ ...props }, ref) => {
           isOptionEqualToValue={(option, value) =>
             option[displayValue] === value[displayValue]
           }
-          defaultValue={defaultValue ?? null}
+          defaultValue={defaultValue ?? (multiple ? [] : null)}
           onChange={onChange}
           renderInput={(params) => {
             return (

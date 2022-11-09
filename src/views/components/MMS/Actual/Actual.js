@@ -286,7 +286,6 @@ const Actual = (props) => {
       />
 
       <ActualDialog
-        initModal={WorkOrderDto}
         isOpen={isShowing}
         onClose={toggle}
         woId={woId}
