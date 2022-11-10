@@ -30,7 +30,7 @@ import {
   MuiButton,
   MuiDataGrid,
   MuiSearchField,
-  MuiDateTimeField,
+  MuiDateField,
 } from "@controls";
 import { useIntl } from "react-intl";
 import moment from "moment";
@@ -43,6 +43,7 @@ import { ErrorAlert, SuccessAlert, addDays } from "@utils";
 import ReactToPrint from "react-to-print";
 import CloseIcon from "@mui/icons-material/Close";
 import QRCode from "react-qr-code";
+import { gridColumnReorderDragColSelector } from "@mui/x-data-grid-pro";
 
 const IQC = (props) => {
   const intl = useIntl();
@@ -64,8 +65,8 @@ const IQC = (props) => {
     searchData: {
       keyWord: "",
       showDelete: true,
-      searchStartDay: "",
-      searchEndDay: "",
+      searchStartDay: addDays(initETDLoad, -1),
+      searchEndDay: initETDLoad,
     },
   });
   const columns = [
@@ -130,6 +131,7 @@ const IQC = (props) => {
       field: "LotCode",
       headerName: "Lot Code",
       width: 200,
+      hide:false
     },
 
     {
@@ -137,7 +139,11 @@ const IQC = (props) => {
       headerName: "Material Code",
       width: 170,
     },
-
+    {
+      field: "LotSerial",
+      headerName: "Lot Serial",
+      width: 170,
+    },
     {
       field: "Qty",
       headerName: "Qty",
@@ -165,7 +171,7 @@ const IQC = (props) => {
             <b>OK</b>
           </Typography>
         ) : (
-          <Typography sx={{ fontSize: "14px" }}>
+          <Typography sx={{ fontSize: "14px", color:"red" }}>
             <b>NG</b>
           </Typography>
         );
@@ -244,6 +250,7 @@ const IQC = (props) => {
   };
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...iqcState.searchData };
+
     newSearchData[inputName] = e;
     if (inputName == "showDelete") {
       setIQCState({
@@ -255,7 +262,17 @@ const IQC = (props) => {
       setIQCState({ ...iqcState, searchData: { ...newSearchData } });
     }
   };
+
+
   async function fetchData() {
+    // if (
+    //   iqcState.searchData.searchStartDay >
+    //   iqcState.searchData.searchEndDay &&
+    //   iqcState.searchData.searchEndDay != null
+    // ) {
+    //   ErrorAlert(intl.formatMessage({ id: "lot.DaySearchNotValid" }));
+    //   return;
+    // }
     setIQCState({ ...iqcState, isLoading: true });
     const params = {
       page: iqcState.page,
@@ -265,6 +282,7 @@ const IQC = (props) => {
       searchEndDay: iqcState.searchData.searchEndDay,
       showDelete: iqcState.searchData.showDelete,
     };
+
     const res = await iqcService.getIQCList(params);
     if (res && res.Data && isRendered)
       setIQCState({
@@ -348,7 +366,7 @@ const IQC = (props) => {
         <Grid item>
           <Grid container spacing={2} justifyContent="center">
             <Grid item>
-              <MuiDateTimeField
+              <MuiDateField
                 disabled={iqcState.isLoading}
                 label="Start QC Date"
                 value={iqcState.searchData.searchStartDay}
@@ -359,7 +377,7 @@ const IQC = (props) => {
               />
             </Grid>
             <Grid item>
-              <MuiDateTimeField
+              <MuiDateField
                 disabled={iqcState.isLoading}
                 label="End QC Date"
                 value={iqcState.searchData.searchEndDay}
@@ -462,10 +480,12 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
   const style = {
     styleBorderAndCenter : {
       borderRight:"1px solid black",
-     textAlign:"center"
+     textAlign:"center",
+
     },
     borderBot : {
-        borderBottom:"1px solid black"
+        borderBottom:"1px solid black",
+        padding:"10px"
     }
   }
   const getWeekByCreatedDate = (date) => {
@@ -477,7 +497,7 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
   }
   return (
     <React.Fragment>
-      {!isLoading && <Dialog open={isShowing} maxWidth="sm" fullWidth TransitionComponent={DialogTransition} transitionDuration={300}>
+      {!isLoading && <Dialog open={isShowing} maxWidth="md" fullWidth TransitionComponent={DialogTransition} transitionDuration={300}>
         <DialogTitle
           sx={{
             p: 1,
@@ -512,7 +532,9 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
                     <TableBody>
                       <TableRow >
                           <TableCell style={{...style.styleBorderAndCenter,...style.borderBot}}>CODE</TableCell>
-                          <TableCell colSpan={2} style={{...style.styleBorderAndCenter,...style.borderBot}}>{item?.MaterialColorCode}</TableCell> 
+                          <TableCell colSpan={2} style={{...style.styleBorderAndCenter,...style.borderBot}}>
+                            <b style={{fontSize:"24px"}}>{item?.MaterialColorCode}</b>
+                            </TableCell> 
                            <TableCell rowSpan={2} sx={{ textAlign:"center"}} style={style.borderBot} >
                            <QRCode value={`${item?.LotCode}`} size={80} />
                            </TableCell>
@@ -522,25 +544,28 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
                       </TableRow>
                       <TableRow>
                           <TableCell  style={{...style.styleBorderAndCenter,...style.borderBot}} >QTY</TableCell>
-                          <TableCell  style={{...style.styleBorderAndCenter,...style.borderBot}}>{`${item?.Qty} ${item?.Unit}`} </TableCell>
+                          <TableCell  style={{...style.styleBorderAndCenter,...style.borderBot}}>
+                            <b style={{fontSize:"24px"}}>{`${item?.Qty} ${item?.Unit}`} </b>
+                            </TableCell>
                           <TableCell  style={{...style.styleBorderAndCenter,...style.borderBot}}>VENDOR</TableCell>
                           <TableCell sx={{textAlign:"center"}}  style={style.borderBot}>{item?.SupplierCode}</TableCell>
                       </TableRow>
                       <TableRow>
                           <TableCell style={{...style.styleBorderAndCenter,...style.borderBot}}>LOT No.</TableCell>
                           <TableCell style={{...style.styleBorderAndCenter,...style.borderBot}} sx={{backgroundColor:"yellow"}}></TableCell>
-                          <TableCell colSpan={2} sx={{textAlign:"center"}}  style={style.borderBot}>20212221</TableCell>
+                          <TableCell style={{...style.styleBorderAndCenter,...style.borderBot}}>20212221</TableCell>
+                          <TableCell  sx={{textAlign:"center"}}  style={style.borderBot}>{item?.QCResult?"OK":"NG"}</TableCell>
                       </TableRow>
                       <TableRow>
                           <TableCell style={{...style.styleBorderAndCenter,...style.borderBot}}>
                             {moment(item?.createdDate).add(7, "hours").format("YYYY-MM-DD")}
                           </TableCell>
                           <TableCell rowSpan={2} colSpan={2} sx={{textAlign:"center"}}>
-                            <h3>22330 - 00101010</h3>
+                          <b style={{fontSize:"24px"}}>{item?.LotSerial}</b>
                           </TableCell>
                       </TableRow>
                       <TableRow>
-                          <TableCell  style={style.styleBorderAndCenter}>
+                          <TableCell  style={style.styleBorderAndCenter} sx={{padding:"10px"}}>
                             W{getWeekByCreatedDate(item?.createdDate)} / T{moment(item?.createdDate).add(7, "hours").format("MM")}
                           </TableCell>
                       </TableRow>

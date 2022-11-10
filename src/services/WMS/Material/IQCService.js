@@ -51,7 +51,13 @@ const deleteIQC = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 }
-
+const getSelectQCByLotId = async (params) => {
+  try {
+    return await axios.get(`${apiName}/get-select-qc-by-lotId`,  { params:  params} );
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
 
 export {
     getIQCList,
@@ -60,4 +66,5 @@ export {
     modifyIQC,
     deleteIQC,
     getSelectQC,
+    getSelectQCByLotId,
 };

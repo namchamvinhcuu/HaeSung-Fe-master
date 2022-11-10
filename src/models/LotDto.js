@@ -25,7 +25,7 @@ const LotDto = {
     modifiedBy: 0,
     modifiedName: "",
     row_version: "",
-    
+    QcIDList:[],
 };
 
 export default LotDto;

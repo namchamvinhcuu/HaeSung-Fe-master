@@ -10,15 +10,15 @@ import { useIntl } from "react-intl";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { Autocomplete, Grid, TextField } from "@mui/material";
-import { CREATE_ACTION } from "@constants/ConfigConstants";
+import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
 import { iqcService } from "@services";
 import { ErrorAlert, SuccessAlert } from "@utils";
 import { useEffect } from "react";
 
 const IQCDialog = (props) => {
   const { initModal, isOpen, onClose, setNewData, setUpdateData, mode } = props;
-  const [materialId, setMaterialId] = useState(0);
-  const [qcList, setQCList] = useState([""]);
+  // const [materialId, setMaterialId] = useState(0);
+  // const [qcList, setQCList] = useState([]);
   const [QCResult, setQCResult] = useState("");
   const optionQCResult = [
     { QCResult: "True", QCResultName: "OK" },
@@ -98,16 +98,19 @@ const IQCDialog = (props) => {
     const res = await iqcService.getMaterialModelTypeRaw();
     return res;
   };
+  useEffect(()=>{
+      // if(mode===UPDATE_ACTION) {
+        getSelectQCByLotId(initModal.Id);
+        // setMaterialId(initModal.MaterialId);
+      // }
+      
+  },[initModal])
+  const getSelectQCByLotId = async (id) => {
+    const res = await iqcService.getSelectQCByLotId({LotId:id});
+    setFieldValue("QcIDList", res.Data)
+    return res;
+  };
 
-  // const getSelectQC = async () =>{
-  //   const res = await iqcService.getSelectQC(materialId);
-  //   console.log(res,"res")
-  //   return res;
-  // }
-  useEffect(async()=>{
-    const res = await iqcService.getSelectQC({MaterialId:materialId});
-    setQCList(res.Data);
-  },[materialId])
   return (
     <MuiDialog
       maxWidth="sm"
@@ -150,7 +153,7 @@ const IQCDialog = (props) => {
               onChange={(e, value) => {
                 setFieldValue("MaterialCode", value?.MaterialCode);
                 setFieldValue("MaterialId", value?.MaterialId);
-                setMaterialId(value?.MaterialId);
+                // setMaterialId(value?.MaterialId);
                 setFieldValue("QcIDList",  [])
               }}
               error={touched.MaterialId && Boolean(errors.MaterialId)}
@@ -197,31 +200,19 @@ const IQCDialog = (props) => {
             />
           </Grid>
          {(QCResult===false || values.QCResult===false) &&<Grid item xs={12}>
-              <Autocomplete
-                key={materialId}
-                multiple
-                fullWidth
-                size='small'
-                options={qcList}
-                disabled={dialogState.isSubmit||materialId?false:true}
-                autoHighlight
-                openOnFocus
-                value={values.qcList}
-                getOptionLabel={option => option.QCCode}
-                onChange={(e, item) => {
-                  // setFieldValue("QcId", item );
-                  setFieldValue("QcIDList", item ?? [])
-                }}
-                disableCloseOnSelect
-                renderInput={(params) => {
-                  return <TextField
-                    {...params}
-                    label="QC"
-                    error={touched.QcIDList && Boolean(errors.QcIDList)}
-                    helperText={touched.QcIDList && errors.QcIDList}
-                  />
-                }}
-              />
+                <MuiAutocomplete
+                  multiple={true}
+                  value={values.QcIDList ? values.QcIDList : []}
+                  disabled={mode==UPDATE_ACTION?true:false}
+                  label={intl.formatMessage({ id: 'actual.Qc' })}
+                  fetchDataFunc={() => iqcService.getSelectQC({ MaterialId: values?.MaterialId })}
+                  displayLabel="QCCode"
+                  displayValue="QcId"
+                  onChange={(e, value) =>{console.log(value); setFieldValue("QcIDList", value || [])}}
+                  error={touched.QcIDList && Boolean(errors.QcIDList)}
+                  helperText={touched.QcIDList && errors.QcIDList}
+                />
+
             </Grid>}
           <Grid item xs={12}>
             <Grid container direction="row-reverse">
