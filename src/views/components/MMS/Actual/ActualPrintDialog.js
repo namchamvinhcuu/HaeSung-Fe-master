@@ -37,11 +37,11 @@ const ActualPrintDialog = ({ listData, isOpen, onClose }) => {
         <DialogContent >
           <div style={{ overflow: 'visible', height: '500px' }} ref={componentPringtRef}>
             {listData.map((item, index) => {
-              return <div key={index}>
+              return <div key={index} style={{ padding: '20px 50px' }}>
                 <table key={index} style={style.table}>
                   <tbody>
                     <tr>
-                      <td style={style.cell}>Code</td>
+                      <td style={style.cell}>CODE</td>
                       <td style={{ ...style.cell, fontWeight: '600' }} colSpan="2">{item.MaterialCode}</td>
                       <td style={style.cell} rowSpan="2"><QRCode value={`${item.LotCode}`} size={80} /></td>
                     </tr>
@@ -49,22 +49,23 @@ const ActualPrintDialog = ({ listData, isOpen, onClose }) => {
                       <td style={style.cell} colSpan="3">Desc: {item.MaterialDescription}</td>
                     </tr>
                     <tr>
-                      <td style={{ ...style.cell, width: '25%' }}>Qty</td>
+                      <td style={{ ...style.cell, width: '25%' }}>QTY</td>
                       <td style={{ ...style.cell, width: '25%', fontWeight: '600' }}>{item.Qty + ' ' + item.UnitName}</td>
                       <td style={{ ...style.cell, width: '25%' }}>Vendor</td>
                       <td style={{ ...style.cell, width: '25%' }}>HANLIM</td>
                     </tr>
                     <tr>
-                      <td style={style.cell}>Lot No.</td>
+                      <td style={style.cell}>LOT No.</td>
                       <td style={style.cell}></td>
-                      <td style={style.cell} colSpan="2"></td>
+                      <td style={style.cell}></td>
+                      <td style={style.cell}>{item.QCResult ? "OK" : "NG"}</td>
                     </tr>
                     <tr>
                       <td style={style.cell}>{moment(item.QCDate).format("YYYY.MM.DD")}</td>
                       <td style={{ ...style.cell, fontSize: '45px', fontWeight: '600' }} colSpan="3" rowSpan="2">{item.LotSerial}</td>
                     </tr>
                     <tr>
-                      <td style={style.cell}>{'M' + moment(item.QCDate).week() + ' / T' + moment(item.QCDate).format("MM")}</td>
+                      <td style={style.cell}>{`W${moment(item.QCDate).week()} / T ${moment(item.QCDate).format("MM")}`}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -86,14 +87,16 @@ const ActualPrintDialog = ({ listData, isOpen, onClose }) => {
 const style = {
   table: {
     width: '100%',
-    marginBottom: '40px',
+    marginTop: '40px',
     textAlign: 'center',
     fontSize: '20px',
-    pageBreakAfter: "always"
+    pageBreakAfter: "always",
+    border: 'black solid 2px',
   },
   cell: {
     border: 'black solid 1px',
-    padding: '10px 0'
+    padding: '15px 0',
+
   },
 }
 
