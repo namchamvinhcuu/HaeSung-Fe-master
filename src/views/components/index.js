@@ -59,6 +59,9 @@ import WIPReceiving from "./WMS/WIP/Receiving/WIPReceiving"
 import WIPReport from "./WMS/WIP/Report/WIPReport"
 import WIPShipping from "./WMS/WIP/Shipping/WIPShipping"
 import WIPStock from "./WMS/WIP/Stock/WIPStock"
+//WMS - FG
+import FGReceiving from "./WMS/FG/Receiving/FGReceiving";
+import FGPackingLot from "./WMS/FG/PackingLot/FGPackingLot";
 
 //PO
 import DeliveryOrder from "./PO/DeliveryOrder/DeliveryOrder";
@@ -132,6 +135,9 @@ export {
   WIPReport,
   WIPShipping,
   WIPStock,
+  //WMS - FG
+  FGReceiving,
+  FGPackingLot,
 
   //PO
   DeliveryOrder,

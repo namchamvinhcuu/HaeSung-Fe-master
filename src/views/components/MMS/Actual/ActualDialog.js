@@ -162,6 +162,8 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
 
   const handleCloseDialog = () => {
     resetForm();
+    setRowSelected([]);
+    setListData([]);
     onClose();
   };
 
@@ -178,11 +180,14 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
   const handleDataDemo = () => {
     let data = [];
     let QcName = '';
-    for (let i = 0; i < values.QCId.length; i++) {
-      QcName += values.QCId[i].QCCode;
-      if (i != values.QCId.length - 1)
-        QcName += ', ';
+    if (values.QCId) {
+      for (let i = 0; i < values.QCId.length; i++) {
+        QcName += values.QCId[i].QCCode;
+        if (i != values.QCId.length - 1)
+          QcName += ', ';
+      }
     }
+
     for (let i = 0; i < values.LotNumber; i++) {
       data.push({ Id: i, MaterialCode: WOInfo.MaterialCode, Qty: values.Qty, QCResult: values.QCResult == "OK" ? true : false, QCCode: QcName })
     }
@@ -212,7 +217,6 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
     }
     setDialogState({ ...dialogState, isSubmit: false });
   };
-
 
   return (
     <React.Fragment>
@@ -269,7 +273,7 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
                   displayValue="QCResult"
                   onChange={(e, value) => {
                     setFieldValue("QCCode", '');
-                    setFieldValue("QCId", null);
+                    setFieldValue("QCId", []);
                     setFieldValue("QCResult", value?.QCResult || '');
                   }}
                   error={touched.QCResult && Boolean(errors.QCResult)}

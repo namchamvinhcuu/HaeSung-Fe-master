@@ -32,6 +32,8 @@ const WorkOrder = (props) => {
   const intl = useIntl();
   const initStartDate = new Date();
 
+  // console.log('re-render')
+
   const [workOrderState, setWorkOrderState] = useState({
     isLoading: false,
     data: [],
