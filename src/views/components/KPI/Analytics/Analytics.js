@@ -47,7 +47,7 @@ const Analytics = (props) => {
       field: "DescriptionMaterial", headerName: intl.formatMessage({ id: "forecast.DescriptionMaterial" }), width: 200, renderCell: (params) => {
         return (
           <Tooltip title={params.row.DescriptionMaterial ?? ""} className="col-text-elip">
-            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.DescriptionMaterial}</Typography>
+            <Typography sx={{ fontSize: 14 }}>{params.row.DescriptionMaterial}</Typography>
           </Tooltip>
         );
       },
