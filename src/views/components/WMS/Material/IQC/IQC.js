@@ -98,6 +98,7 @@ const IQC = (props) => {
           >
             <Grid item xs={6} style={{ textAlign: "center" }}>
               <IconButton
+              disabled={params.row.LotStatus}
                 aria-label="delete"
                 color="error"
                 size="small"
@@ -114,6 +115,7 @@ const IQC = (props) => {
 
             <Grid item xs={6} style={{ textAlign: "center" }}>
               <IconButton
+                 disabled={params.row.LotStatus}
                 aria-label="edit"
                 color="warning"
                 size="small"
@@ -273,6 +275,19 @@ const IQC = (props) => {
     //   ErrorAlert(intl.formatMessage({ id: "lot.DaySearchNotValid" }));
     //   return;
     // }
+    if(iqcState.searchData.searchStartDay == "Invalid date")
+    {
+      ErrorAlert(intl.formatMessage({ id: "general.StartSearchingDate_invalid" }));
+    }
+    else if(iqcState.searchData.searchEndDay == "Invalid date")
+    {
+      ErrorAlert(intl.formatMessage({ id: "general.StartSearchingDate_invalid" }));
+    }
+    
+    else{
+
+    
+
     setIQCState({ ...iqcState, isLoading: true });
     const params = {
       page: iqcState.page,
@@ -291,6 +306,8 @@ const IQC = (props) => {
         totalRow: res.TotalRow,
         isLoading: false,
       });
+    
+    }
   }
 
   const handleRowSelection = (arrIds) => {
@@ -371,7 +388,7 @@ const IQC = (props) => {
                 label="Start QC Date"
                 value={iqcState.searchData.searchStartDay}
                 onChange={(e) => {
-                  handleSearch(e, "searchStartDay");
+                  handleSearch(e ? moment(e).format("YYYY-MM-DD"): null, "searchStartDay");
                 }}
                 variant="standard"
               />
@@ -382,7 +399,7 @@ const IQC = (props) => {
                 label="End QC Date"
                 value={iqcState.searchData.searchEndDay}
                 onChange={(e) => {
-                  handleSearch(e, "searchEndDay");
+                  handleSearch(e ? moment(e).format("YYYY-MM-DD"):null, "searchEndDay");
                 }}
                 variant="standard"
               />
