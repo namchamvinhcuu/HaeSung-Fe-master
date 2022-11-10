@@ -328,9 +328,7 @@ const IQC = (props) => {
       setIQCState({ ...iqcState, data: [...newArr] });
     }
   }, [updateData]);
-  const QrCode = () =>{
-    toggle2();
-  }
+
   return (
     <React.Fragment>
       <Grid
@@ -345,14 +343,14 @@ const IQC = (props) => {
             disabled={rowSelected.length > 0 ? false : true}
             variant="contained"
             color="secondary"
-            onClick={() => QrCode()} sx={{ mx: 2 }}>Print QR Code</Button>
+            onClick={() => toggle2()} sx={{ mx: 2 }}>Print QR Code</Button>
         </Grid>
         <Grid item>
           <Grid container spacing={2} justifyContent="center">
             <Grid item>
               <MuiDateTimeField
                 disabled={iqcState.isLoading}
-                label="Start QC Day"
+                label="Start QC Date"
                 value={iqcState.searchData.searchStartDay}
                 onChange={(e) => {
                   handleSearch(e, "searchStartDay");
@@ -363,7 +361,7 @@ const IQC = (props) => {
             <Grid item>
               <MuiDateTimeField
                 disabled={iqcState.isLoading}
-                label="End QC Day"
+                label="End QC Date"
                 value={iqcState.searchData.searchEndDay}
                 onChange={(e) => {
                   handleSearch(e, "searchEndDay");
@@ -373,8 +371,8 @@ const IQC = (props) => {
             </Grid>
             <Grid item>
               <MuiSearchField
-                label="general.name"
-                name="LineName"
+                label="general.code"
+                name="Code"
                 onClick={fetchData}
                 onChange={(e) => handleSearch(e.target.value, "keyWord")}
               />
@@ -534,7 +532,9 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
                           <TableCell colSpan={2} sx={{textAlign:"center"}}  style={style.borderBot}>20212221</TableCell>
                       </TableRow>
                       <TableRow>
-                          <TableCell style={{...style.styleBorderAndCenter,...style.borderBot}}>{moment(item?.createdDate).add(7, "hours").format("YYYY-MM-DD")}</TableCell>
+                          <TableCell style={{...style.styleBorderAndCenter,...style.borderBot}}>
+                            {moment(item?.createdDate).add(7, "hours").format("YYYY-MM-DD")}
+                          </TableCell>
                           <TableCell rowSpan={2} colSpan={2} sx={{textAlign:"center"}}>
                             <h3>22330 - 00101010</h3>
                           </TableCell>

@@ -408,6 +408,8 @@
         "QCResult" : "QC Result"
     },
     "lot": {
-        "received": "Đã nhận"
+        "received": "Đã nhận",
+        "Qty_required": " Qty không được để trống",
+        "Qty_bigger_1": " Qty không bé hơn 1"
     }
 }

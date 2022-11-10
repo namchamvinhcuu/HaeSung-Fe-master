@@ -28,21 +28,13 @@ const IQCDialog = (props) => {
   const [dialogState, setDialogState] = useState({
     isSubmit: false,
   });
-  const list =[{
-    id:1,
-    name:"aass"
-  },{
-  id:2,
-  name:"aass111"
-},
-]
+
   const schema = yup.object().shape({
     MaterialId: yup
       .number()
-      .nullable()
-      .required(intl.formatMessage({ id: "forecast.MaterialId_required" })),
-    Qty: yup.number().nullable().required("QTY REQUIRED").min(1, "BIGGER 1"),
-    QCResult: yup.string().nullable().required("QC STATUS REQUIRED"),
+      .required(intl.formatMessage({ id: "forecast.MaterialId_required" }))
+      .min(1, intl.formatMessage({ id: "forecast.MaterialId_required" })),
+    Qty: yup.number().nullable().required(intl.formatMessage({ id: "lot.Qty_required" })).min(1, intl.formatMessage({ id: "lot.Qty_bigger_1" })),
     
   });
   const handleReset = () => {
@@ -72,6 +64,7 @@ const IQCDialog = (props) => {
     isValid,
     resetForm,
   } = formik;
+ 
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
     if (mode == CREATE_ACTION) {
@@ -115,7 +108,6 @@ const IQCDialog = (props) => {
     const res = await iqcService.getSelectQC({MaterialId:materialId});
     setQCList(res.Data);
   },[materialId])
-  
   return (
     <MuiDialog
       maxWidth="sm"
@@ -204,14 +196,14 @@ const IQCDialog = (props) => {
               helperText={touched.QCResult && errors.QCResult}
             />
           </Grid>
-         {(QCResult===false) &&<Grid item xs={12}>
+         {(QCResult===false || values.QCResult===false) &&<Grid item xs={12}>
               <Autocomplete
                 key={materialId}
                 multiple
                 fullWidth
                 size='small'
                 options={qcList}
-                disabled={dialogState.isSubmit}
+                disabled={dialogState.isSubmit||materialId?false:true}
                 autoHighlight
                 openOnFocus
                 value={values.qcList}
@@ -224,7 +216,7 @@ const IQCDialog = (props) => {
                 renderInput={(params) => {
                   return <TextField
                     {...params}
-                    label="QC *"
+                    label="QC"
                     error={touched.QcIDList && Boolean(errors.QcIDList)}
                     helperText={touched.QcIDList && errors.QcIDList}
                   />
