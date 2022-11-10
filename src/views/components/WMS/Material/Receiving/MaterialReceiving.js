@@ -1,33 +1,30 @@
-import React, { useState, useRef, useEffect } from "react";
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS'
-import { User_Operations } from '@appstate/user'
-import { Store } from '@appstate'
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
+import React, { useEffect, useRef, useState } from "react";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import moment from "moment";
-import Grid from "@mui/material/Grid";
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import DeleteIcon from "@mui/icons-material/Delete";
-import IconButton from "@mui/material/IconButton";
-import { useIntl } from "react-intl";
-import { ErrorAlert, SuccessAlert } from "@utils";
 import {
     MuiButton,
     MuiDataGrid,
     MuiTextField
 } from "@controls";
 import { LotDto } from "@models";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import Typography from '@mui/material/Typography';
 import { materialReceivingService } from "@services";
+import { ErrorAlert, SuccessAlert } from "@utils";
+import moment from "moment";
+import { useIntl } from "react-intl";
 
 const MaterialReceiving = (props) => {
     let isRendered = useRef(true);
 
     const lotInputRef = useRef(null);
     const intl = useIntl();
-
-    console.log('component re-render')
 
     const [materialRecevingState, setMaterialRecevingState] = useState({
         isLoading: false,
