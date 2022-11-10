@@ -43,7 +43,7 @@ const ActualPrintDialog = ({ listData, isOpen, onClose }) => {
                     <tr>
                       <td style={style.cell}>CODE</td>
                       <td style={{ ...style.cell, fontWeight: '600' }} colSpan="2">{item.MaterialCode}</td>
-                      <td style={style.cell} rowSpan="2"><QRCode value={`${item.LotCode}`} size={80} /></td>
+                      <td style={style.cell} rowSpan="2"><QRCode value={`${item.LotCode}`} size={90} /></td>
                     </tr>
                     <tr>
                       <td style={style.cell} colSpan="3">Desc: {item.MaterialDescription}</td>
@@ -65,7 +65,7 @@ const ActualPrintDialog = ({ listData, isOpen, onClose }) => {
                       <td style={{ ...style.cell, fontSize: '45px', fontWeight: '600' }} colSpan="3" rowSpan="2">{item.LotSerial}</td>
                     </tr>
                     <tr>
-                      <td style={style.cell}>{`W${moment(item.QCDate).week()} / T ${moment(item.QCDate).format("MM")}`}</td>
+                      <td style={style.cell}>{`W${moment(item.QCDate).week()} / T${moment(item.QCDate).format("MM")}`}</td>
                     </tr>
                   </tbody>
                 </table>

@@ -33,6 +33,7 @@ import * as fixedPOService from "./PO/purchase-order/FixedPOService";
 import * as iqcService from "./WMS/Material/IQCService"
 import * as actualService from "./mms/ActualService";
 import * as materialReceivingService from "./WMS/Material/MaterialReceivingService";
+import * as wipReceivingService from "./WMS/WIP/WIPReceivingService";
 
 export {
   loginService,
@@ -66,4 +67,5 @@ export {
   iqcService,
   actualService,
   materialReceivingService,
+  wipReceivingService,
 };
