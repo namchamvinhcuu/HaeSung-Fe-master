@@ -8,6 +8,7 @@ import { Store } from '@appstate'
 import moment from "moment";
 import Grid from "@mui/material/Grid";
 import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import { useIntl } from "react-intl";
@@ -22,7 +23,11 @@ import { materialReceivingService } from "@services";
 
 const MaterialReceiving = (props) => {
     let isRendered = useRef(true);
+
+    const lotInputRef = useRef(null);
     const intl = useIntl();
+
+    console.log('component re-render')
 
     const [materialRecevingState, setMaterialRecevingState] = useState({
         isLoading: false,
@@ -32,7 +37,6 @@ const MaterialReceiving = (props) => {
         pageSize: 20,
     });
 
-    const [lotInput, setLotInput] = useState('');
     const [focus, setFocus] = useState(true);
     const [newData, setNewData] = useState({ ...LotDto });
     const [selectedRow, setSelectedRow] = useState({
@@ -40,22 +44,24 @@ const MaterialReceiving = (props) => {
     });
 
     const handleLotInputChange = (e) => {
-        setLotInput(e.target.value)
+        // setLotInput(e.target.value)
+        lotInputRef.current.value = e.target.value;
     }
 
     const keyPress = async (e) => {
         if (e.key === "Enter") {
-            setLotInput('');
-            setFocus(true);
-
             await handleReceivingLot(e.target.value);
+            lotInputRef.current.value = '';
+            setFocus(true);
         }
     };
 
     const scanBtnClick = async () => {
+
+        await handleReceivingLot(lotInputRef.current.value);
+        // setLotInput('');
+        lotInputRef.current.value = '';
         setFocus(true);
-        await handleReceivingLot(lotInput);
-        setLotInput('');
     };
 
     const handleReceivingLot = async (inputValue) => {
@@ -272,9 +278,10 @@ const MaterialReceiving = (props) => {
                     >
                         <Grid item xs={9.5}>
                             <MuiTextField
+                                ref={lotInputRef}
                                 label="Lot"
                                 autoFocus={focus}
-                                value={lotInput}
+                                // value={lotInputRef.current.value}
                                 onChange={handleLotInputChange}
                                 onKeyDown={keyPress}
                             />

@@ -1,7 +1,7 @@
 import React from "react";
 import TextField from "@mui/material/TextField";
 
-const MuiTextField = (props) => {
+const MuiTextField = React.forwardRef((props, ref) => {
   const {
     label,
     type,
@@ -19,6 +19,7 @@ const MuiTextField = (props) => {
   return (
     <TextField
       fullWidth
+      inputRef={ref}
       type={type ?? "text"}
       size="small"
       label={labelFormat}
@@ -32,6 +33,6 @@ const MuiTextField = (props) => {
       {...props}
     />
   );
-};
+});
 
 export default MuiTextField;
