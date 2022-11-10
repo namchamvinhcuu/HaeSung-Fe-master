@@ -6,8 +6,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateTimeField, MuiSearchField } from "@controls";
-import { WorkOrderDto } from "@models";
-import { FormControlLabel, Switch } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { workOrderService } from "@services";
 import { addDays, ErrorAlert } from "@utils";
@@ -201,7 +199,7 @@ const Actual = (props) => {
         justifyContent="space-between"
         alignItems="width-end"
       >
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <MuiButton
             text="create"
             color="success"
@@ -209,7 +207,7 @@ const Actual = (props) => {
             onClick={() => toggle()}
           />
         </Grid>
-        <Grid item x={{ width: 200 }}>
+        <Grid item x={{ width: 220 }}>
           <MuiSearchField
             label="work_order.WoCode"
             name="WoCode"
@@ -218,18 +216,18 @@ const Actual = (props) => {
             sx={{ width: 200 }}
           />
         </Grid>
-        <Grid item sx={{ width: 200 }}>
+        <Grid item sx={{ width: 220 }}>
           <MuiAutocomplete
             label={intl.formatMessage({ id: "work_order.MaterialCode" })}
             fetchDataFunc={getSearchMaterialArr}
             displayLabel="MaterialCode"
             displayValue="MaterialId"
             displayGroup="GroupMaterial"
-            onChange={(e, item) => handleSearch(item.MaterialId ?? null, "MaterialId")}
+            onChange={(e, item) => handleSearch(item ? item.MaterialId : null, "MaterialId")}
             variant="standard"
           />
         </Grid>
-        <Grid item sx={{ width: 200 }}>
+        <Grid item sx={{ width: 220 }}>
           <MuiDateTimeField
             disabled={state.isLoading}
             label={intl.formatMessage({ id: "general.StartSearchingDate" })}
@@ -238,7 +236,7 @@ const Actual = (props) => {
             variant="standard"
           />
         </Grid>
-        <Grid item sx={{ width: 200 }}>
+        <Grid item sx={{ width: 220 }}>
           <MuiDateTimeField
             disabled={state.isLoading}
             label={intl.formatMessage({ id: "general.EndSearchingDate" })}
@@ -249,19 +247,6 @@ const Actual = (props) => {
         </Grid>
         <Grid item>
           <MuiButton text="search" color="info" onClick={fetchData} />
-        </Grid>
-
-        <Grid item>
-          <FormControlLabel
-            control={
-              <Switch
-                defaultChecked={true}
-                color="primary"
-                onChange={(e) => handleSearch(e.target.checked, "showDelete")}
-              />
-            }
-            label={intl.formatMessage({ id: state.searchData.showDelete ? "general.data_actived" : "general.data_deleted" })}
-          />
         </Grid>
       </Grid>
 
@@ -275,14 +260,9 @@ const Actual = (props) => {
         page={state.page - 1}
         pageSize={state.pageSize}
         rowCount={state.totalRow}
-        onPageChange={(newPage) => {
-          setDeliveryOrderState({ ...state, page: newPage + 1 });
-        }}
+        onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
         getRowId={(rows) => rows.WoId}
-        onSelectionModelChange={(newSelectedRowId) =>
-          setWoId(newSelectedRowId[0])
-        }
-        initialState={{ pinnedColumns: { right: ['action'] } }}
+        onSelectionModelChange={(newSelectedRowId) => setWoId(newSelectedRowId[0])}
       />
 
       <ActualDialog
