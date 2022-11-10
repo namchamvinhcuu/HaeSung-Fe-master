@@ -59,7 +59,7 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
       }),
   });
 
-  const columns = [
+  const demoColumns = [
     {
       field: 'id', headerName: '', flex: 0.1, align: 'center',
       filterable: false,
@@ -74,6 +74,24 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
     },
     { field: 'Qty', headerName: intl.formatMessage({ id: "actual.Qty" }), flex: 0.3, },
     { field: 'QCCode', headerName: intl.formatMessage({ id: "actual.Qc" }), flex: 0.3, },
+  ];
+
+  const columns = [
+    {
+      field: 'id', headerName: '', flex: 0.1, align: 'center',
+      filterable: false,
+      renderCell: (index) => (index.api.getRowIndex(index.row.Id) + 1) + (state.page - 1) * state.pageSize,
+    },
+    { field: 'Id', hide: true },
+    { field: 'LotCode', headerName: intl.formatMessage({ id: "actual.LotCode" }), flex: 0.8, hide: true },
+    { field: 'LotSerial', headerName: intl.formatMessage({ id: "actual.LotSerial" }), flex: 0.5 },
+    { field: 'MaterialCode', headerName: intl.formatMessage({ id: "actual.MaterialId" }), flex: 0.5, },
+    {
+      field: 'QCResult', headerName: intl.formatMessage({ id: "actual.QCResult" }), flex: 0.3,
+      valueFormatter: (params) => params?.value ? "OK" : "NG"
+    },
+    { field: 'Qty', headerName: intl.formatMessage({ id: "actual.Qty" }), flex: 0.3, },
+    { field: 'QCCode', headerName: intl.formatMessage({ id: "actual.Qc" }), flex: 0.4, },
     { field: "createdName", headerName: intl.formatMessage({ id: "general.createdName" }), width: 120, },
     {
       field: "createdDate", headerName: intl.formatMessage({ id: "general.createdDate" }), width: 150,
@@ -136,6 +154,8 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
   }
 
   const handleReset = () => {
+    setRowSelected([]);
+    setListData([]);
     setState({ ...state, dataDemo: [], status: false })
     resetForm();
   };
@@ -157,8 +177,14 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
 
   const handleDataDemo = () => {
     let data = [];
+    let QcName = '';
+    for (let i = 0; i < values.QCId.length; i++) {
+      QcName += values.QCId[i].QCCode;
+      if (i != values.QCId.length - 1)
+        QcName += ', ';
+    }
     for (let i = 0; i < values.LotNumber; i++) {
-      data.push({ Id: i, MaterialCode: WOInfo.MaterialCode, Qty: values.Qty, QCResult: values.QCResult == "OK" ? true : false, QCCode: values.QCCode })
+      data.push({ Id: i, MaterialCode: WOInfo.MaterialCode, Qty: values.Qty, QCResult: values.QCResult == "OK" ? true : false, QCCode: QcName })
     }
     setState({ ...state, dataDemo: data, status: true })
   }
@@ -264,7 +290,6 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
                   helperText={touched.QCId && errors.QCId}
                 />
               </Grid>
-
             </Grid>
             <Grid item xs={12}>
               <MuiSubmitButton text="create" loading={dialogState.isSubmit} disabled={state.status} />
@@ -275,7 +300,7 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
                 showLoading={state.isLoading}
                 isPagingServer={true}
                 headerHeight={45}
-                columns={columns}
+                columns={demoColumns}
                 rows={state.dataDemo}
                 row={[]}
                 gridHeight={200}
@@ -283,6 +308,7 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
                 pageSize={state.pageSize}
                 rowCount={state.totalRow}
                 getRowId={(rows) => rows.Id}
+                hideFooterPagination
               />
             </Grid>
             <Grid item xs={12} >
@@ -306,6 +332,7 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
                 pageSize={state.pageSize}
                 rowCount={state.totalRow}
                 getRowId={(rows) => rows.Id}
+                hideFooterPagination
               />
             </Grid>
             <Grid item container spacing={2} alignItems="width-end">

@@ -34,8 +34,8 @@ const ActualPrintDialog = ({ listData, isOpen, onClose }) => {
         disable_animate={300}
         onClose={handleCloseDialog}
       >
-        <DialogContent ref={componentPringtRef}>
-          <div style={{ overflow: 'visible', height: '500px' }}>
+        <DialogContent >
+          <div style={{ overflow: 'visible', height: '500px' }} ref={componentPringtRef}>
             {listData.map((item, index) => {
               return <div key={index}>
                 <table key={index} style={style.table}>
@@ -55,13 +55,13 @@ const ActualPrintDialog = ({ listData, isOpen, onClose }) => {
                       <td style={{ ...style.cell, width: '25%' }}>HANLIM</td>
                     </tr>
                     <tr>
-                      <td style={style.cell}>Lot No</td>
+                      <td style={style.cell}>Lot No.</td>
                       <td style={style.cell}></td>
                       <td style={style.cell} colSpan="2"></td>
                     </tr>
                     <tr>
                       <td style={style.cell}>{moment(item.QCDate).format("YYYY.MM.DD")}</td>
-                      <td style={{ ...style.cell, fontSize: '45px', fontWeight: '600' }} colSpan="3" rowSpan="2">{moment(item.QCDate).format("YY") + moment(item.QCDate).dayOfYear()}</td>
+                      <td style={{ ...style.cell, fontSize: '45px', fontWeight: '600' }} colSpan="3" rowSpan="2">{item.LotSerial}</td>
                     </tr>
                     <tr>
                       <td style={style.cell}>{'M' + moment(item.QCDate).week() + ' / T' + moment(item.QCDate).format("MM")}</td>
