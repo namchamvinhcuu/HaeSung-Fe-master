@@ -410,6 +410,7 @@
     "lot": {
         "received": "Received",
         "Qty_required": " Qty is required",
-        "Qty_bigger_1": " Qty not less 1"
+        "Qty_bigger_1": " Qty not less 1",
+        "DaySearchNotValid": "Search start date not less end date"
     }
 }

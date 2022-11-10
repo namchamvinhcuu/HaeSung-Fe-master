@@ -410,6 +410,7 @@
     "lot": {
         "received": "Đã nhận",
         "Qty_required": " Qty không được để trống",
-        "Qty_bigger_1": " Qty không bé hơn 1"
+        "Qty_bigger_1": " Qty không bé hơn 1",
+        "DaySearchNotValid": "Tìm kiếm ngày bắt đầu không lớn hơn ngày kết thúc"
     }
 }
