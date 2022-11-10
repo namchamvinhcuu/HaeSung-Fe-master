@@ -8,7 +8,7 @@ import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 
 import { useIntl } from "react-intl";
-const MuiSearchField = (props) => {
+const MuiSearchField = React.forwardRef((props, ref) => {
   const intl = useIntl();
   const {
     label,
@@ -56,6 +56,7 @@ const MuiSearchField = (props) => {
 
     <TextField
       sx={{ paddingBottom: "4px" }}
+      inputRef={ref}
       fullWidth
       type={type ?? "text"}
       size="small"
@@ -69,6 +70,6 @@ const MuiSearchField = (props) => {
 
     />
   );
-};
+});
 
 export default MuiSearchField;
