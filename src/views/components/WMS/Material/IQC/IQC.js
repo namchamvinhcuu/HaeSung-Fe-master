@@ -43,7 +43,6 @@ import { ErrorAlert, SuccessAlert, addDays } from "@utils";
 import ReactToPrint from "react-to-print";
 import CloseIcon from "@mui/icons-material/Close";
 import QRCode from "react-qr-code";
-import { gridColumnReorderDragColSelector } from "@mui/x-data-grid-pro";
 
 const IQC = (props) => {
   const intl = useIntl();
@@ -267,14 +266,14 @@ const IQC = (props) => {
 
 
   async function fetchData() {
-    // if (
-    //   iqcState.searchData.searchStartDay >
-    //   iqcState.searchData.searchEndDay &&
-    //   iqcState.searchData.searchEndDay != null
-    // ) {
-    //   ErrorAlert(intl.formatMessage({ id: "lot.DaySearchNotValid" }));
-    //   return;
-    // }
+    if (
+      iqcState.searchData.searchStartDay >
+      iqcState.searchData.searchEndDay &&
+      iqcState.searchData.searchEndDay != null
+    ) {
+      ErrorAlert(intl.formatMessage({ id: "lot.DaySearchNotValid" }));
+      return;
+    }
     if(iqcState.searchData.searchStartDay == "Invalid date")
     {
       ErrorAlert(intl.formatMessage({ id: "general.StartSearchingDate_invalid" }));
@@ -382,7 +381,7 @@ const IQC = (props) => {
         </Grid>
         <Grid item>
           <Grid container spacing={2} justifyContent="center">
-            <Grid item>
+            <Grid item sx={{width:"170px"}}>
               <MuiDateField
                 disabled={iqcState.isLoading}
                 label="Start QC Date"
@@ -393,7 +392,7 @@ const IQC = (props) => {
                 variant="standard"
               />
             </Grid>
-            <Grid item>
+            <Grid item sx={{width:"170px"}}>
               <MuiDateField
                 disabled={iqcState.isLoading}
                 label="End QC Date"
@@ -404,8 +403,9 @@ const IQC = (props) => {
                 variant="standard"
               />
             </Grid>
-            <Grid item>
+            <Grid item sx={{width:"350px"}}>
               <MuiSearchField
+              
                 label="general.code"
                 name="Code"
                 onClick={fetchData}

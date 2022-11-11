@@ -99,10 +99,10 @@ const IQCDialog = (props) => {
     return res;
   };
   useEffect(()=>{
-      // if(mode===UPDATE_ACTION) {
+       if(mode===UPDATE_ACTION) {
         getSelectQCByLotId(initModal.Id);
         // setMaterialId(initModal.MaterialId);
-      // }
+      }
       
   },[initModal])
   const getSelectQCByLotId = async (id) => {
@@ -203,12 +203,12 @@ const IQCDialog = (props) => {
                 <MuiAutocomplete
                   multiple={true}
                   value={values.QcIDList ? values.QcIDList : []}
-                  // disabled={mode==UPDATE_ACTION?true:false}
+                  disabled={mode===UPDATE_ACTION ? true : false}
                   label={intl.formatMessage({ id: 'actual.Qc' })}
                   fetchDataFunc={() => iqcService.getSelectQC({ MaterialId: values?.MaterialId })}
                   displayLabel="QCCode"
                   displayValue="QcId"
-                  onChange={(e, value) =>{console.log(value); setFieldValue("QcIDList", value || [])}}
+                  onChange={(e, value) =>{setFieldValue("QcIDList", value || [])}}
                   error={touched.QcIDList && Boolean(errors.QcIDList)}
                   helperText={touched.QcIDList && errors.QcIDList}
                 />
