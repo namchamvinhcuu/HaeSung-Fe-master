@@ -46,9 +46,7 @@ const MaterialReceiving = (props) => {
 
     const keyPress = async (e) => {
         if (e.key === "Enter") {
-            await handleReceivingLot(e.target.value);
-            lotInputRef.current.value = '';
-            lotInputRef.current.focus();
+            await scanBtnClick();
         }
     };
 
@@ -174,15 +172,20 @@ const MaterialReceiving = (props) => {
             },
         },
 
-        {
-            field: "LotCode",
-            headerName: "Lot Code",
-            width: 350,
-        },
+        // {
+        //     field: "LotCode",
+        //     headerName: "Lot Code",
+        //     width: 350,
+        // },
 
         {
             field: "MaterialColorCode",
             headerName: "Material Code",
+            width: 250,
+        },
+        {
+            field: "LotSerial",
+            headerName: "Lot Serial",
             width: 250,
         },
 
