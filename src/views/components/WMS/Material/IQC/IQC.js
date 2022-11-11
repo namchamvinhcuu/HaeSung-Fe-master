@@ -415,7 +415,7 @@ const IQC = (props) => {
             <Grid item>
               <MuiButton text="search" color="info" onClick={fetchData} />
             </Grid>
-            <Grid item>
+            {/* <Grid item>
               <FormControlLabel
                 sx={{ mt: 0.5 }}
                 control={
@@ -433,7 +433,7 @@ const IQC = (props) => {
                     : "general.data_deleted",
                 })}
               />
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
       </Grid>
@@ -543,14 +543,14 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
           {
             listPrint?.map((item, index) =>{
               return (
-                <Box sx={{border:"1px solid black", mb:2}} key={`IQCQRCODE_${index}`}>
+                <Box sx={{border:"1px solid black", mb:2, maxWidth:"450px"}} key={`IQCQRCODE_${index}`}>
                 <TableContainer sx={{overflowX:"hidden"}}>
                   <Table>
                     <TableBody>
                       <TableRow >
                           <TableCell style={{...style.styleBorderAndCenter,...style.borderBot}}>CODE</TableCell>
-                          <TableCell colSpan={2} style={{...style.styleBorderAndCenter,...style.borderBot}}>
-                            <b style={{fontSize:"24px"}}>{item?.MaterialColorCode}</b>
+                          <TableCell colSpan={2} style={{...style.styleBorderAndCenter,...style.borderBot}} sx={{padding:"0px 3px !important"}} >
+                            <b style={{fontSize:"22px"}}>{item?.MaterialColorCode}</b>
                             </TableCell> 
                            <TableCell rowSpan={2} sx={{ textAlign:"center"}} style={style.borderBot} >
                            <QRCode value={`${item?.LotCode}`} size={80} />
@@ -561,11 +561,11 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
                       </TableRow>
                       <TableRow>
                           <TableCell  style={{...style.styleBorderAndCenter,...style.borderBot}} >QTY</TableCell>
-                          <TableCell  style={{...style.styleBorderAndCenter,...style.borderBot}}>
-                            <b style={{fontSize:"24px"}}>{`${item?.Qty} ${item?.Unit}`} </b>
+                          <TableCell  style={{...style.styleBorderAndCenter,...style.borderBot}} sx={{padding:"0px 3px !important"}}>
+                            <b style={{fontSize:"22px"}}>{`${item?.Qty} ${item?.Unit}`} </b>
                             </TableCell>
                           <TableCell  style={{...style.styleBorderAndCenter,...style.borderBot}}>VENDOR</TableCell>
-                          <TableCell sx={{textAlign:"center"}}  style={style.borderBot}>{item?.SupplierCode}</TableCell>
+                          <TableCell sx={{textAlign:"center",padding:"5px !important"}}  style={style.borderBot}>{item?.SupplierCode}</TableCell>
                       </TableRow>
                       <TableRow>
                           <TableCell style={{...style.styleBorderAndCenter,...style.borderBot}}>LOT No.</TableCell>
@@ -574,15 +574,15 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
                           <TableCell  sx={{textAlign:"center"}}  style={style.borderBot}>{item?.QCResult?"OK":"NG"}</TableCell>
                       </TableRow>
                       <TableRow>
-                          <TableCell style={{...style.styleBorderAndCenter,...style.borderBot}}>
+                          <TableCell style={{...style.styleBorderAndCenter,...style.borderBot}} sx={{whiteSpace:"nowrap"}}>
                             {moment(item?.createdDate).add(7, "hours").format("YYYY-MM-DD")}
                           </TableCell>
-                          <TableCell rowSpan={2} colSpan={2} sx={{textAlign:"center"}}>
-                          <b style={{fontSize:"24px"}}>{item?.LotSerial}</b>
+                          <TableCell rowSpan={2} colSpan={3} sx={{textAlign:"center"}}>
+                          <b style={{fontSize:"22px"}}>{item?.LotSerial}</b>
                           </TableCell>
                       </TableRow>
                       <TableRow>
-                          <TableCell  style={style.styleBorderAndCenter} sx={{padding:"10px"}}>
+                          <TableCell  style={style.styleBorderAndCenter} sx={{padding:"5px"}}>
                             W{getWeekByCreatedDate(item?.createdDate)} / T{moment(item?.createdDate).add(7, "hours").format("MM")}
                           </TableCell>
                       </TableRow>
