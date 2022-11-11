@@ -21,6 +21,7 @@ import moment from "moment";
 import { useIntl } from "react-intl";
 
 const MaterialReceiving = (props) => {
+
     let isRendered = useRef(true);
 
     const lotInputRef = useRef(null);
@@ -34,14 +35,12 @@ const MaterialReceiving = (props) => {
         pageSize: 20,
     });
 
-    const [focus, setFocus] = useState(true);
     const [newData, setNewData] = useState({ ...LotDto });
     const [selectedRow, setSelectedRow] = useState({
         ...LotDto,
     });
 
     const handleLotInputChange = (e) => {
-        // setLotInput(e.target.value)
         lotInputRef.current.value = e.target.value;
     }
 
@@ -49,16 +48,15 @@ const MaterialReceiving = (props) => {
         if (e.key === "Enter") {
             await handleReceivingLot(e.target.value);
             lotInputRef.current.value = '';
-            setFocus(true);
+            lotInputRef.current.focus();
         }
     };
 
     const scanBtnClick = async () => {
 
         await handleReceivingLot(lotInputRef.current.value);
-        // setLotInput('');
         lotInputRef.current.value = '';
-        setFocus(true);
+        lotInputRef.current.focus();
     };
 
     const handleReceivingLot = async (inputValue) => {
@@ -233,6 +231,7 @@ const MaterialReceiving = (props) => {
 
     useEffect(() => {
         fetchData();
+        lotInputRef.current.focus();
 
         return () => {
             isRendered = false;
@@ -277,7 +276,7 @@ const MaterialReceiving = (props) => {
                             <MuiTextField
                                 ref={lotInputRef}
                                 label="Lot"
-                                autoFocus={focus}
+                                // autoFocus={focus}
                                 // value={lotInputRef.current.value}
                                 onChange={handleLotInputChange}
                                 onKeyDown={keyPress}
