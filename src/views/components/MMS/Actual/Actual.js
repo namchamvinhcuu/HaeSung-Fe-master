@@ -21,6 +21,7 @@ const Actual = (props) => {
   const initStartDate = new Date();
   const { isShowing, toggle } = useModal();
   const [woId, setWoId] = useState(0);
+  const [updateData, setUpdateData] = useState({});
   const [state, setState] = useState({
     isLoading: false,
     data: [],
@@ -121,6 +122,20 @@ const Actual = (props) => {
     fetchData();
     return () => isRendered = false;
   }, [state.page, state.pageSize, state.searchData.showDelete]);
+
+  useEffect(() => {
+    if (!_.isEmpty(updateData)) {
+      let newArr = [...state.data];
+      const index = _.findIndex(newArr, function (o) {
+        return o.WoId == updateData.WoId;
+      });
+      if (index !== -1) {
+        newArr[index] = updateData;
+      }
+
+      setState({ ...state, data: [...newArr] });
+    }
+  }, [updateData]);
 
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...state.searchData };
@@ -269,6 +284,7 @@ const Actual = (props) => {
         isOpen={isShowing}
         onClose={toggle}
         woId={woId}
+        setUpdateData={setUpdateData}
       />
     </React.Fragment>
   )

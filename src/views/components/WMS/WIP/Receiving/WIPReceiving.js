@@ -200,9 +200,8 @@ const WIPReceiving = (props) => {
             <Grid item sx={{ width: '400px', marginBottom: '15px' }}>
               <MuiTextField
                 ref={lotInputRef}
-                label="Lot"
+                label={intl.formatMessage({ id: "actual.LotCode" })}
                 autoFocus={focus}
-                // value={lotInputRef.current.value}
                 onChange={(e) => lotInputRef.current.value = e.target.value}
                 onKeyDown={keyPress}
               />

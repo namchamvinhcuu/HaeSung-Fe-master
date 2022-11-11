@@ -16,7 +16,7 @@ import moment from "moment";
 import ActualPrintDialog from "./ActualPrintDialog";
 import { useModal } from "@basesShared";
 
-const ActualDialog = ({ woId, isOpen, onClose }) => {
+const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
   const intl = useIntl();
   let isRendered = useRef(true);
   const { isShowing, toggle } = useModal();
@@ -123,7 +123,7 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
   useEffect(() => {
     if (isOpen) {
       fetchData(woId);
-      getWoInfo(woId);
+      getWoInfo(woId, false);
     }
     return () => { isRendered = false; }
   }, [isOpen]);
@@ -145,11 +145,13 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
       });
   }
 
-  async function getWoInfo(woId) {
+  async function getWoInfo(woId, isSubmit) {
     const res = await actualService.getWoInfo({ WoId: woId });
     if (res && res.Data && isRendered) {
       let Remain = res.Data.OrderQty - res.Data.TotalLotQty;
       setWOInfo({ ...res.Data, Remain: Remain < 0 ? 0 : Remain })
+      if (isSubmit)
+        setUpdateData(res.Data);
     }
   }
 
@@ -205,7 +207,7 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
         if (res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
           fetchData(woId);
-          getWoInfo(woId);
+          getWoInfo(woId, true);
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
           handleReset();
@@ -272,7 +274,6 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
                   displayLabel="QCResult"
                   displayValue="QCResult"
                   onChange={(e, value) => {
-                    setFieldValue("QCCode", '');
                     setFieldValue("QCId", []);
                     setFieldValue("QCResult", value?.QCResult || '');
                   }}
@@ -312,7 +313,7 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
                 pageSize={state.pageSize}
                 rowCount={state.totalRow}
                 getRowId={(rows) => rows.Id}
-                hideFooterPagination
+                hideFooter
               />
             </Grid>
             <Grid item xs={12} >
@@ -336,7 +337,7 @@ const ActualDialog = ({ woId, isOpen, onClose }) => {
                 pageSize={state.pageSize}
                 rowCount={state.totalRow}
                 getRowId={(rows) => rows.Id}
-                hideFooterPagination
+                hideFooter
               />
             </Grid>
             <Grid item container spacing={2} alignItems="width-end">
