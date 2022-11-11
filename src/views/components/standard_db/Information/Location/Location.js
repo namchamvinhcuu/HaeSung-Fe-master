@@ -1,4 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import {
+  MuiAutocomplete, MuiButton,
+  MuiDataGrid, MuiSearchField
+} from "@controls";
+import { LocationDto } from "@models";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import UndoIcon from "@mui/icons-material/Undo";
@@ -6,22 +10,13 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
-  Switch,
-  TextField,
+  Switch
 } from "@mui/material";
-import { useIntl } from "react-intl";
-import {
-  MuiButton,
-  MuiDataGrid,
-  MuiSelectField,
-  MuiSearchField,
-  MuiAutocomplete
-} from "@controls";
 import { locationService } from "@services";
-import { useModal } from "@basesShared";
 import { ErrorAlert, SuccessAlert } from "@utils";
 import moment from "moment";
-import { LocationDto } from "@models";
+import React, { useEffect, useRef, useState } from "react";
+import { useIntl } from "react-intl";
 import CreateLocationDialog from "./CreateLocationDialog";
 import ModifyLocationDialog from "./ModifyLocationDialog";
 
@@ -373,6 +368,7 @@ const Location = (props) => {
           />
         </Grid>
       </Grid>
+
       <MuiDataGrid
         getData={locationService.getLocationList}
         showLoading={locationState.isLoading}

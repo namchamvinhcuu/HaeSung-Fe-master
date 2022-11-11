@@ -34,6 +34,7 @@ import * as iqcService from "./WMS/Material/IQCService"
 import * as actualService from "./mms/ActualService";
 import * as materialReceivingService from "./WMS/Material/MaterialReceivingService";
 import * as wipReceivingService from "./WMS/WIP/WIPReceivingService";
+import * as wmsLayoutService from "./WMS/WMSLayout/WMSLayoutService";
 
 export {
   loginService,
@@ -68,4 +69,5 @@ export {
   actualService,
   materialReceivingService,
   wipReceivingService,
+  wmsLayoutService,
 };

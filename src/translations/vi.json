@@ -400,17 +400,26 @@
         "totalQtylot_GreaterThan_ActualQty": "SL vượt quá số lương cho phép",
         "LotCode": "Lot Code",
         "MaterialId": "Assy Code",
-        "LotStatus":"Lot Status",
-        "WoOrderQty":"Wo Order Qty",
-        "TotalLotQty":"Total Lot Qty",
-        "Remain":"Remain",
-        "Qc":"QC",
-        "QCResult" : "QC Result"
+        "LotStatus": "Lot Status",
+        "WoOrderQty": "Wo Order Qty",
+        "TotalLotQty": "Total Lot Qty",
+        "Remain": "Remain",
+        "Qc": "QC",
+        "QCResult": "QC Result"
     },
     "lot": {
         "received": "Đã nhận",
         "Qty_required": " Qty không được để trống",
         "Qty_bigger_1": " Qty không bé hơn 1",
         "DaySearchNotValid": "Tìm kiếm ngày bắt đầu không lớn hơn ngày kết thúc"
+    },
+    "wms-layout": {
+        "warehouse": "Kho",
+        "aisle": "Dãy",
+        "shelf": "Kệ",
+        "level": "Tầng",
+        "bin": "Ô",
+        "total_level": "Số tầng",
+        "bin_per_level": "Số ô một tầng"
     }
 }
