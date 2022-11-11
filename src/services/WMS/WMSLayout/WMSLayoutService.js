@@ -10,3 +10,12 @@ export const getAisles = async (commonDetailId) => {
         console.log(`ERROR: ${error}`);
     }
 }
+
+export const createShelf = async (params) => {
+    try {
+        return await axios.post(`${API}/create-shelf`, params);
+    }
+    catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}

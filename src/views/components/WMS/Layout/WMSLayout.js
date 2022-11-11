@@ -75,7 +75,6 @@ const WMSLayout = (props) => {
         // const { [removeProp]: remove, ...rest } = wmsLayoutState;
 
         const {
-            commonDetailId,
             Location,
             ShelfCode,
             TotalLevel,
@@ -83,13 +82,16 @@ const WMSLayout = (props) => {
         } = wmsLayoutState;
 
         const params = {
-            commonDetailId: commonDetailId,
             LocationId: Location.LocationId,
+            LocationCode: Location.LocationCode,
             ShelfCode: ShelfCode,
             TotalLevel: TotalLevel,
             BinPerLevel: BinPerLevel,
         }
-        console.log('[params]', params)
+
+        const res = await wmsLayoutService.createShelf(params);
+
+        console.log(res, '[response]')
     }
 
     useEffect(() => {
