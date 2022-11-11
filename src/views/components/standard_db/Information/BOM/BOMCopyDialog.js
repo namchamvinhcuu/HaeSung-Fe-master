@@ -357,7 +357,6 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
               headerHeight={45}
               columns={columns}
               rows={state.data}
-              row={[]}
               gridHeight={310}
               page={state.page - 1}
               pageSize={state.pageSize}

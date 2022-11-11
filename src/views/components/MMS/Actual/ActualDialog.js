@@ -69,11 +69,11 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
     { field: 'LotCode', headerName: intl.formatMessage({ id: "actual.LotCode" }), flex: 0.8, hide: true },
     { field: 'MaterialCode', headerName: intl.formatMessage({ id: "actual.MaterialId" }), flex: 0.5, },
     {
-      field: 'QCResult', headerName: intl.formatMessage({ id: "actual.QCResult" }), flex: 0.3,
+      field: 'QCResult', headerName: intl.formatMessage({ id: "actual.QCResult" }), flex: 0.4,
       valueFormatter: (params) => params?.value ? "OK" : "NG"
     },
-    { field: 'Qty', headerName: intl.formatMessage({ id: "actual.Qty" }), flex: 0.3, },
-    { field: 'QCCode', headerName: intl.formatMessage({ id: "actual.Qc" }), flex: 0.3, },
+    { field: 'Qty', headerName: intl.formatMessage({ id: "actual.Qty" }), flex: 0.4, },
+    { field: 'QCCode', headerName: intl.formatMessage({ id: "actual.Qc" }), flex: 0.5, },
   ];
 
   const columns = [
@@ -156,8 +156,6 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
   }
 
   const handleReset = () => {
-    setRowSelected([]);
-    setListData([]);
     setState({ ...state, dataDemo: [], status: false })
     resetForm();
   };
@@ -240,6 +238,7 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
             <Grid item container spacing={2} xs={12}>
               <Grid item xs={3}>
                 <MuiTextField
+                  autoFocus
                   required
                   disabled={state.status ? state.status : dialogState.isSubmit}
                   label={intl.formatMessage({ id: "actual.Qty" })}
@@ -307,7 +306,6 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
                 headerHeight={45}
                 columns={demoColumns}
                 rows={state.dataDemo}
-                row={[]}
                 gridHeight={200}
                 page={state.page - 1}
                 pageSize={state.pageSize}
@@ -329,7 +327,6 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
                 headerHeight={45}
                 columns={columns}
                 rows={state.data}
-                row={[]}
                 checkboxSelection
                 onSelectionModelChange={(ids) => setRowSelected(ids)}
                 gridHeight={200}
