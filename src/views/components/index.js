@@ -62,6 +62,8 @@ import WIPStock from "./WMS/WIP/Stock/WIPStock"
 //WMS - FG
 import FGReceiving from "./WMS/FG/Receiving/FGReceiving";
 import FGPackingLot from "./WMS/FG/PackingLot/FGPackingLot";
+//WMS - Layout
+import WMSLayout from "./WMS/Layout/WMSLayout";
 
 //PO
 import DeliveryOrder from "./PO/DeliveryOrder/DeliveryOrder";
@@ -138,6 +140,8 @@ export {
   //WMS - FG
   FGReceiving,
   FGPackingLot,
+  // WMS - Layout
+  WMSLayout,
 
   //PO
   DeliveryOrder,
