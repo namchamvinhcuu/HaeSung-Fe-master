@@ -203,7 +203,6 @@ const IQCDialog = (props) => {
                 <MuiAutocomplete
                   multiple={true}
                   value={values.QcIDList ? values.QcIDList : []}
-                  disabled={mode===UPDATE_ACTION ? true : false}
                   label={intl.formatMessage({ id: 'actual.Qc' })}
                   fetchDataFunc={() => iqcService.getSelectQC({ MaterialId: values?.MaterialId })}
                   displayLabel="QCCode"
