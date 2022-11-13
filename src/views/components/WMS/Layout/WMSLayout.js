@@ -35,7 +35,8 @@ const Item = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(1),
     textAlign: 'center',
     color: theme.palette.text.secondary,
-    height: SCENE_BASE_HEIGHT
+    height: SCENE_BASE_HEIGHT,
+    overflow: 'auto'
 }));
 
 
@@ -167,11 +168,27 @@ const WMSLayout = (props) => {
         );
     };
 
+    const getShortBinCode = (str) => {
+        let parts = str.split('-');
+        let last = parts.pop();
+        let preLast = parts.pop();
+        return preLast.concat('-', last);
+    }
+
+    const getShortAisleCode = (str) => {
+        let parts = str.split('-');
+        // let last = parts.pop();
+        // let preLast = parts.pop();
+        return parts[0].concat('-', parts[1]);
+    }
+
     const drawingMasterFunc = async () => {
         const stage = new Konva.Stage({
             container: 'master-konva',
-            width: area.width,
+            width: area.width + 500,
             height: area.height,
+            // width: 1500,
+            // height: 1500,
         });
         const layer = new Konva.Layer();
 
@@ -180,18 +197,30 @@ const WMSLayout = (props) => {
         if (res && res.Data) {
             for (let i = 0; i < res.Data.length; i++) {
                 let group = new Konva.Group({
-                    x: 20,
-                    y: i * 40 + 20,
+                    x: 30,
+                    y: i * 60 + 30,
                     id: res.Data[i].ShelfId.toString(),
                     name: res.Data[i].ShelfCode
                 });
 
+                group.add(new Konva.Text({
+                    text: `${wmsLayoutState.Location.LocationCode}-${res.Data[i].ShelfCode}`,
+                    fontSize: 24,
+                    fontFamily: 'Calibri',
+                    fill: '#000',
+                    width: 130,
+                    // padding: 5,
+                    // align: 'center',
+                    x: 0,
+                    y: 5
+                }));
+
                 for (let j = 0; j < res.Data[i].BinPerLevel; j++) {
                     let box = new Konva.Rect({
-                        x: j * 100,
+                        x: j * 70 + 130,
                         // y: i * 18,
-                        width: 100,
-                        height: 20,
+                        width: 70,
+                        height: 30,
                         // name: colors[i],
                         fill: 'orange',
                         stroke: 'black',
@@ -201,16 +230,6 @@ const WMSLayout = (props) => {
 
                     group.add(box);
                 }
-
-                group.add(new Konva.Text({
-                    text: res.Data[i].ShelfCode,
-                    fontSize: 18,
-                    fontFamily: 'Calibri',
-                    fill: '#000',
-                    width: 130,
-                    padding: 5,
-                    align: 'center'
-                }));
 
                 group.on('click', () => {
                     setSelectedShelfId(group.attrs.id);
@@ -237,6 +256,7 @@ const WMSLayout = (props) => {
 
             let bin_per_level = res.Data[0].BinPerLevel;
             let total_level = res.Data[0].TotalLevel;
+            let shortAisleCode = getShortAisleCode(res.Data[0].BinCode);
 
             for (let i = 0; i < total_level; i++) {
                 let group = new Konva.Group({
@@ -259,16 +279,35 @@ const WMSLayout = (props) => {
 
                     box.on('click', () => {
                         alert(box.attrs.name)
-                    })
+                    });
 
-                    group.add(box);
+                    let binCodeText = new Konva.Text({
+                        text: getShortBinCode(res.Data[(i * bin_per_level) + j].BinCode),
+                        x: j * 100 + 10,
+                        y: 20,
+                        // width: 220,
+                        // fontFamily: 'sans-serif',
+                        // fontSize: 35,
+                        fill: '#000'
+                    });
+
+                    group.add(box, binCodeText);
                 }
 
                 group.on('click', () => {
                     // setSelectedShelfId(group.attrs.id)
                 });
 
-                layer.add(group);
+                let text = new Konva.Text({
+                    x: 10,
+                    y: 10,
+                    text: shortAisleCode,
+                    fontSize: 30,
+                    fontFamily: 'Calibri',
+                    fill: 'green'
+                });
+
+                layer.add(text, group);
             }
         }
         stage.add(layer);
@@ -350,7 +389,7 @@ const WMSLayout = (props) => {
                                         value={
                                             !_.isEqual(wmsLayoutState.Location, initLocation)
                                                 ? wmsLayoutState.Location
-                                                : initLocation
+                                                : null
                                         }
                                         onChange={(e, item) => {
                                             handleInputChange({ LocationId: item.LocationId, LocationCode: item.LocationCode }, "Location"
@@ -412,7 +451,7 @@ const WMSLayout = (props) => {
 
             <Box sx={{ flexGrow: 1 }}>
                 <Grid container spacing={2}>
-                    <Grid item xs={6}>
+                    <Grid item xs={6} >
                         <h3>Master</h3>
                         <Item id='master-konva' />
                     </Grid>
