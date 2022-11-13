@@ -419,7 +419,7 @@
         "shelf": "Shelf",
         "level": "Level",
         "bin": "Bin",
-        "total_level": "Number of shelf level",
-        "bin_per_level": "Bin per shelf level"
+        "total_level": "Total level(s)",
+        "bin_per_level": "Bin(s) per level"
     }
 }

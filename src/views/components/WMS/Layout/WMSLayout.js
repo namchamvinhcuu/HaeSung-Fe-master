@@ -39,12 +39,12 @@ const Item = styled(Paper)(({ theme }) => ({
     overflow: 'auto'
 }));
 
-
-
 const WMSLayout = (props) => {
 
     let isRendered = useRef(true);
     const intl = useIntl();
+    let masterStage;
+    let detailStage;
 
     const initLocation = {
         LocationId: 0,
@@ -90,8 +90,8 @@ const WMSLayout = (props) => {
 
     };
 
-    const fetchData = async () => {
-        await drawingMasterFunc()
+    const fetchData = async (refresh) => {
+        await drawingMasterFunc(refresh)
     };
 
     const getWarehouses = async () => {
@@ -102,8 +102,11 @@ const WMSLayout = (props) => {
         return await wmsLayoutService.getAisles(wmsLayoutState.commonDetailId);
     }
 
-    const getShelves = async () => {
-        return await wmsLayoutService.getShelves(wmsLayoutState.Location?.LocationId, wmsLayoutState.ShelfCode);
+    const getShelves = async (refresh) => {
+        if (!refresh)
+            return await wmsLayoutService.getShelves(wmsLayoutState.Location?.LocationId, wmsLayoutState.ShelfCode);
+
+        return await wmsLayoutService.getShelves(wmsLayoutState.Location?.LocationId, '');
     }
 
     const getBins = async () => {
@@ -143,7 +146,15 @@ const WMSLayout = (props) => {
 
         const res = await wmsLayoutService.createShelf(params);
 
-        console.log(res, '[response]')
+        if (res !== 'general.success') {
+            ErrorAlert(intl.formatMessage({ id: res }))
+        }
+
+        else {
+            SuccessAlert(intl.formatMessage({ id: res }))
+
+            await fetchData(true);
+        }
     }
 
     const handleDragStart = (e) => {
@@ -177,24 +188,24 @@ const WMSLayout = (props) => {
 
     const getShortAisleCode = (str) => {
         let parts = str.split('-');
-        // let last = parts.pop();
-        // let preLast = parts.pop();
         return parts[0].concat('-', parts[1]);
     }
 
-    const drawingMasterFunc = async () => {
-        const stage = new Konva.Stage({
-            container: 'master-konva',
-            width: area.width + 500,
-            height: area.height,
-            // width: 1500,
-            // height: 1500,
-        });
-        const layer = new Konva.Layer();
+    const drawingMasterFunc = async (refresh) => {
 
-        const res = await getShelves();
+        const res = await getShelves(refresh);
 
         if (res && res.Data) {
+            const masterStage = new Konva.Stage({
+                container: 'master-konva',
+                width: area.width + 500,
+                height: area.height,
+                // width: 1500,
+                // height: 1500,
+            });
+
+            const layer = new Konva.Layer();
+
             for (let i = 0; i < res.Data.length; i++) {
                 let group = new Konva.Group({
                     x: 30,
@@ -238,19 +249,26 @@ const WMSLayout = (props) => {
 
                 layer.add(group);
             }
+
+            masterStage.add(layer);
         }
-        stage.add(layer);
+        else {
+            ErrorAlert(intl.formatMessage({ id: res?.ResponseMessage }))
+        }
     }
 
     const drawingDetailFunc = async () => {
-        const stage = new Konva.Stage({
+        const detailStage = new Konva.Stage({
             container: 'detail-konva',
-            width: area.width,
+            width: area.width + 500,
             height: area.height,
         });
+
         const layer = new Konva.Layer();
 
         const res = await getBins();
+
+        // detailStage.clear();
 
         if (res && res.Data) {
 
@@ -310,11 +328,26 @@ const WMSLayout = (props) => {
                 layer.add(text, group);
             }
         }
-        stage.add(layer);
+        detailStage.add(layer);
     }
 
     useEffect(() => {
         const container = document.querySelector('#master-konva');
+
+        // masterStage = new Konva.Stage({
+        //     container: 'master-konva',
+        //     width: container.offsetWidth - 16,
+        //     height: container.offsetHeight - 80,
+        //     // width: 1500,
+        //     // height: 1500,
+        // });
+
+        // detailStage = new Konva.Stage({
+        //     container: 'detail-konva',
+        //     width: container.offsetWidth - 16,
+        //     height: container.offsetHeight - 80,
+        // });
+
         setArea({
             width: container.offsetWidth - 16,
             height: container.offsetHeight - 80
@@ -442,7 +475,7 @@ const WMSLayout = (props) => {
                             <MuiButton
                                 text="search"
                                 color="info"
-                                onClick={fetchData}
+                                onClick={() => fetchData(false)}
                             />
                         </Grid>
                     </Grid>
