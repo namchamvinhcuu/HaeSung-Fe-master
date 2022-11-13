@@ -17,8 +17,28 @@ import { useIntl } from "react-intl";
 import _ from 'lodash'
 
 import Grid from "@mui/material/Grid";
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import { styled } from '@mui/material/styles';
+
+import Konva from 'konva';
+import { Stage, Layer, Text, Rect, Group } from 'react-konva';
 
 import { locationService, wmsLayoutService } from "@services";
+
+const SCENE_BASE_WIDTH = 1080;
+const SCENE_BASE_HEIGHT = 700;
+
+const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+    height: SCENE_BASE_HEIGHT
+}));
+
+
 
 const WMSLayout = (props) => {
 
@@ -28,6 +48,19 @@ const WMSLayout = (props) => {
     const initLocation = {
         LocationId: 0,
         LocationCode: ""
+    }
+
+    const generateShapes = (num) => {
+        if (num)
+            return [...Array(num)].map((_, i) => ({
+                id: i.toString(),
+                isDragging: false,
+            }));
+        else
+            return [...Array(4)].map((_, i) => ({
+                id: i.toString(),
+                isDragging: false,
+            }));
     }
 
     const [wmsLayoutState, setWMSLayoutState] = useState({
@@ -41,13 +74,23 @@ const WMSLayout = (props) => {
         BinPerLevel: 1,
     });
 
+    const [area, setArea] = useState({
+        width: 0,
+        height: 0
+    });
+
+    const scale = area.width / SCENE_BASE_WIDTH;
+
+    const [rects, setRects] = useState(generateShapes());
+
+    const [selectedShelfId, setSelectedShelfId] = useState(0);
 
     const handleDelete = async (lot) => {
 
     };
 
     const fetchData = async () => {
-
+        await drawingMasterFunc()
     };
 
     const getWarehouses = async () => {
@@ -56,6 +99,14 @@ const WMSLayout = (props) => {
 
     const getAisles = async () => {
         return await wmsLayoutService.getAisles(wmsLayoutState.commonDetailId);
+    }
+
+    const getShelves = async () => {
+        return await wmsLayoutService.getShelves(wmsLayoutState.Location?.LocationId, wmsLayoutState.ShelfCode);
+    }
+
+    const getBins = async () => {
+        return await wmsLayoutService.getBins(selectedShelfId);
     }
 
     const handleInputChange = (e, inputName) => {
@@ -94,12 +145,160 @@ const WMSLayout = (props) => {
         console.log(res, '[response]')
     }
 
+    const handleDragStart = (e) => {
+        const id = e.target.id();
+        setStars(
+            rects.map((rect) => {
+                return {
+                    ...rect,
+                    isDragging: rect.id === id,
+                };
+            })
+        );
+    };
+    const handleDragEnd = (e) => {
+        setStars(
+            rects.map((rect) => {
+                return {
+                    ...rect,
+                    isDragging: false,
+                };
+            })
+        );
+    };
+
+    const drawingMasterFunc = async () => {
+        const stage = new Konva.Stage({
+            container: 'master-konva',
+            width: area.width,
+            height: area.height,
+        });
+        const layer = new Konva.Layer();
+
+        const res = await getShelves();
+
+        if (res && res.Data) {
+            for (let i = 0; i < res.Data.length; i++) {
+                let group = new Konva.Group({
+                    x: 20,
+                    y: i * 40 + 20,
+                    id: res.Data[i].ShelfId.toString(),
+                    name: res.Data[i].ShelfCode
+                });
+
+                for (let j = 0; j < res.Data[i].BinPerLevel; j++) {
+                    let box = new Konva.Rect({
+                        x: j * 100,
+                        // y: i * 18,
+                        width: 100,
+                        height: 20,
+                        // name: colors[i],
+                        fill: 'orange',
+                        stroke: 'black',
+                        strokeWidth: 1,
+
+                    });
+
+                    group.add(box);
+                }
+
+                group.add(new Konva.Text({
+                    text: res.Data[i].ShelfCode,
+                    fontSize: 18,
+                    fontFamily: 'Calibri',
+                    fill: '#000',
+                    width: 130,
+                    padding: 5,
+                    align: 'center'
+                }));
+
+                group.on('click', () => {
+                    setSelectedShelfId(group.attrs.id);
+
+                });
+
+                layer.add(group);
+            }
+        }
+        stage.add(layer);
+    }
+
+    const drawingDetailFunc = async () => {
+        const stage = new Konva.Stage({
+            container: 'detail-konva',
+            width: area.width,
+            height: area.height,
+        });
+        const layer = new Konva.Layer();
+
+        const res = await getBins();
+
+        if (res && res.Data) {
+
+            let bin_per_level = res.Data[0].BinPerLevel;
+            let total_level = res.Data[0].TotalLevel;
+
+            for (let i = 0; i < total_level; i++) {
+                let group = new Konva.Group({
+                    x: 50,
+                    y: i * 50 + 50,
+                });
+
+                for (let j = 0; j < bin_per_level; j++) {
+                    let box = new Konva.Rect({
+                        x: j * 100,
+                        // y: i * 18,
+                        width: 100,
+                        height: 50,
+                        // name: colors[i],
+                        fill: 'lightblue',
+                        stroke: 'black',
+                        strokeWidth: 1,
+                        name: res.Data[(i * bin_per_level) + j].BinCode
+                    });
+
+                    box.on('click', () => {
+                        alert(box.attrs.name)
+                    })
+
+                    group.add(box);
+                }
+
+                group.on('click', () => {
+                    // setSelectedShelfId(group.attrs.id)
+                });
+
+                layer.add(group);
+            }
+        }
+        stage.add(layer);
+    }
+
     useEffect(() => {
+        const container = document.querySelector('#master-konva');
+        setArea({
+            width: container.offsetWidth - 16,
+            height: container.offsetHeight - 80
+        });
+
+        const checkSize = () => {
+            setArea({
+                width: container.offsetWidth - 16,
+                height: container.offsetHeight - 80
+            });
+        };
+
+        window.addEventListener("resize", checkSize);
 
         return () => {
             isRendered = false;
+            window.removeEventListener("resize", checkSize);
         };
-    }, [wmsLayoutState.commonDetailId]);
+    }, [area.width]);
+
+    useEffect(() => {
+        drawingDetailFunc();
+    }, [selectedShelfId]);
 
     return (
         <React.Fragment>
@@ -107,7 +306,7 @@ const WMSLayout = (props) => {
                 container
                 direction="row"
                 justifyContent="space-between"
-                alignItems="width-end"
+                spacing={2}
             >
 
                 <Grid item xs>
@@ -141,7 +340,8 @@ const WMSLayout = (props) => {
                                     />
 
                                 </Grid>
-                                <Grid item style={{ width: "10%" }}>
+
+                                <Grid item style={{ width: "12%" }}>
                                     <MuiAutocomplete
                                         label={intl.formatMessage({ id: "wms-layout.aisle" })}
                                         fetchDataFunc={getAisles}
@@ -160,7 +360,8 @@ const WMSLayout = (props) => {
                                         variant="standard"
                                     />
                                 </Grid>
-                                <Grid item style={{ width: "10%" }}>
+
+                                <Grid item style={{ width: "12%" }}>
                                     <MuiTextField
                                         label={intl.formatMessage({ id: "wms-layout.shelf" })}
                                         variant="standard"
@@ -168,7 +369,8 @@ const WMSLayout = (props) => {
                                         onChange={(e) => { handleInputChange(e.target.value, "ShelfCode") }}
                                     />
                                 </Grid>
-                                <Grid item style={{ width: "10%" }}>
+
+                                <Grid item style={{ width: "12%" }}>
                                     <MuiTextField
                                         label={intl.formatMessage({ id: "wms-layout.total_level" })}
                                         variant="standard"
@@ -177,7 +379,8 @@ const WMSLayout = (props) => {
                                         onChange={(e) => { handleInputChange(e.target.value, "TotalLevel") }}
                                     />
                                 </Grid>
-                                <Grid item style={{ width: "10%" }}>
+
+                                <Grid item style={{ width: "12%" }}>
                                     <MuiTextField
                                         label={intl.formatMessage({ id: "wms-layout.bin_per_level" })}
                                         variant="standard"
@@ -186,7 +389,8 @@ const WMSLayout = (props) => {
                                         onChange={(e) => { handleInputChange(e.target.value, "BinPerLevel") }}
                                     />
                                 </Grid>
-                                <Grid item style={{ width: "10%" }}>
+
+                                <Grid item style={{ width: "12%" }}>
                                     <MuiButton
                                         text="create"
                                         color="success"
@@ -200,14 +404,25 @@ const WMSLayout = (props) => {
                                 text="search"
                                 color="info"
                                 onClick={fetchData}
-                            // sx={{ mt: 1, mr: 3 }}
                             />
                         </Grid>
                     </Grid>
                 </Grid>
-
-
             </Grid>
+
+            <Box sx={{ flexGrow: 1 }}>
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <h3>Master</h3>
+                        <Item id='master-konva' />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <h3>Detail</h3>
+                        <Item id='detail-konva' />
+                    </Grid>
+
+                </Grid>
+            </Box>
         </React.Fragment>
     )
 }

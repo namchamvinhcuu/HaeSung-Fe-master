@@ -19,3 +19,21 @@ export const createShelf = async (params) => {
         console.log(`ERROR: ${error}`);
     }
 }
+
+export const getShelves = async (locationId, shelfCode) => {
+    try {
+        return await axios.get(`${API}/get-shelves?locationId=${locationId}&shelfCode=${shelfCode}`);
+    }
+    catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
+
+export const getBins = async (shelfId) => {
+    try {
+        return await axios.get(`${API}/get-bins?shelfId=${shelfId}`);
+    }
+    catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
