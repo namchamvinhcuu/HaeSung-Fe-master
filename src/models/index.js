@@ -15,6 +15,8 @@ import DeliveryOrderDto from "./DeliveryOrderDto";
 import WorkOrderDto from "./WorkOrderDto";
 import ForecastPOMasterDto from "./ForecastPOMasterDto";
 import LotDto from "./LotDto";
+import MaterialSOMasterDto from "./MaterialSOMasterDto";
+import MaterialSODetailDto from "./MaterialSODetailDto";
 export {
   SupplierDto,
   ProductDto,
@@ -33,4 +35,6 @@ export {
   WorkOrderDto,
   ForecastPOMasterDto,
   LotDto,
+  MaterialSOMasterDto,
+  MaterialSODetailDto,
 };

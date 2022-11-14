@@ -46,6 +46,7 @@
         "root_only": "Root only",
         "sort_order": "Thứ tự",
         "unauthorized": "Bạn không có quyền truy cập",
+        "code_required": "Code không được để trống",
         "field_required": "Không được để trống",
         "field_invalid": "Giá trị không phù hợp",
         "field_length": "Độ dài là {length} ký tự",
@@ -420,6 +421,32 @@
         "level": "Tầng",
         "bin": "Ô",
         "total_level": "Số tầng",
-        "bin_per_level": "Số ô một tầng"
+        "bin_per_level": "Số ô một tầng",
+        "add_total_level": "Thêm số tầng",
+        "add_bin_per_level": "Thêm số ô",
+        "minus_total_level": "Giảm số tầng",
+        "minus_bin_per_level": "Giảm số ô",
+        "error_level_qty":"error_level_qty"
+    },
+    "material-so-master": {
+        "MsoCode": "Mã SO",
+        "MsoStatus": "Trạng thái",
+        "Requester": "Người Y/C",
+        "DueDate": "SO DueDate",
+        "Remark": "Note",
+        "requester_required": "Người yêu cầu không đươc để trống",
+        "DueDate_required": "Due Date không được để trống"
+    },
+    "material-so-detail": {
+        "MsoCode": "Mã SO",
+        "MaterialCode": "Liệu",
+        "MaterialColorCode": "Liệu",
+        "MsoDetailStatus": "Trạng thái",
+        "SOrderQty": "S/L yêu cầu",
+        "MsoId_required": "Shipping Order không đươc để trống",
+        "Material_required": "Liệu không được để trống",
+        "SOrderQty_required": "SL yêu cầu không được để trống",
+        "SOrderQty_GreaterThan_0": "SL yêu cầu phải lớn hơn 0 ",
+        "SQty_Format": "SL yêu cầu sai định dạng (7.3) "
     }
 }

@@ -37,3 +37,21 @@ export const getBins = async (shelfId) => {
         console.log(`ERROR: ${error}`);
     }
 }
+
+export const editShelf = async (params) => {
+    try {
+        return await axios.put(`${API}/edit-shelf`, params);
+    }
+    catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+}
+
+export const getLotByBinId = async (params) => {
+    try {
+        return await axios.get(`${API}/get-lot-by-bin`, { params: { ...params } });
+    }
+    catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+};

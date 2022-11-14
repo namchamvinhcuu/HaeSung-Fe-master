@@ -54,6 +54,8 @@ import MaterialReport from "./WMS/Material/Report/MaterialReport";
 import MaterialShipping from "./WMS/Material/Shipping/MaterialShipping";
 import MaterialSO from "./WMS/Material/ShippingOrder/MaterialSO";
 import MaterialStock from "./WMS/Material/Stock/MaterialStock";
+import MaterialSODetail from "./WMS/Material/ShippingOrder/MaterialSODetail";
+import MaterialSODialog from "./WMS/Material/ShippingOrder/MaterialSODialog";
 //WMS - WIP
 import WIPReceiving from "./WMS/WIP/Receiving/WIPReceiving"
 import WIPReport from "./WMS/WIP/Report/WIPReport"
@@ -132,6 +134,8 @@ export {
   MaterialShipping,
   MaterialSO,
   MaterialStock,
+  MaterialSODetail,
+  MaterialSODialog,
   //WMS - WIP
   WIPReceiving,
   WIPReport,
@@ -151,6 +155,4 @@ export {
   //ACCOUNT MANAGER
   UserList,
   RoleList,
-
-
 };

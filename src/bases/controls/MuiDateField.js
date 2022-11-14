@@ -8,6 +8,7 @@ export default function MuiDateField({
   label,
   value,
   onChange,
+  onBlur,
   sx,
   variant,
   margin,
@@ -32,6 +33,7 @@ export default function MuiDateField({
         label={labelFomart}
         value={value ? value : null}
         onChange={onChange}
+        onBlur={onBlur}
         inputFormat="yyyy-MM-dd"
         renderInput={(params) => (
           <TextField
