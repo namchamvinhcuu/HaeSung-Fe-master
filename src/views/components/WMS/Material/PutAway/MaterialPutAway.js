@@ -147,7 +147,7 @@ const MaterialPutAway = (props) => {
   }, [newData]);
 
   const scanBtnClick = async () => {
-    const lot = lotInputRef.current.value;
+    const lot = lotInputRef.current.value.trim();
     await handlePutAway({ lot, binId });
     lotInputRef.current.value = "";
     lotInputRef.current.focus();
@@ -245,7 +245,7 @@ const MaterialPutAway = (props) => {
 
   const handlePutAway = async (inputValue) => {
     const res = await materialPutAwayService.scanPutAway({
-      LotCode: inputValue.lot,
+      LotCode: inputValue.lot.trim(),
       BinId: inputValue.binId,
     });
 
