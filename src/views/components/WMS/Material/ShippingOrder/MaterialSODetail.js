@@ -28,36 +28,33 @@ import { useIntl } from "react-intl";
 import { materialSOService } from "@services";
 import { MaterialSOMasterDto, MaterialSODetailDto, } from "@models";
 
-import { MaterialSODetail } from '@components'
-
-const MaterialSO = (props) => {
+const MaterialSODetail = (props) => {
     let isRendered = useRef(true);
     const intl = useIntl();
 
-    const [materialSOState, setMaterialSOState] = useState({
+    const [materialSODetailState, setMaterialSODetailState] = useState({
         isLoading: false,
         data: [],
         totalRow: 0,
         page: 1,
         pageSize: 8,
         searchData: {
-            ...MaterialSOMasterDto,
-            EndSearchingDate: addDays(new Date(), 7)
+            ...MaterialSODetailDto,
         }
     });
 
-    const [newData, setNewData] = useState({ ...MaterialSOMasterDto });
+    const [newData, setNewData] = useState({ ...MaterialSODetailDto });
 
     const [isOpenDialog, setIsOpenDialog] = useState(false);
 
     const [showActivedData, setShowActivedData] = useState(true);
 
     const [selectedRow, setSelectedRow] = useState({
-        ...MaterialSOMasterDto,
+        ...MaterialSODetailDto,
     });
 
     const changeSearchData = async (e, inputName) => {
-        let newSearchData = { ...materialSOState.searchData };
+        let newSearchData = { ...materialSODetailState.searchData };
 
         newSearchData[inputName] = e;
 
@@ -71,8 +68,8 @@ const MaterialSO = (props) => {
                 break;
         }
 
-        setMaterialSOState({
-            ...materialSOState,
+        setMaterialSODetailState({
+            ...materialSODetailState,
             searchData: { ...newSearchData },
         });
     };
@@ -80,26 +77,26 @@ const MaterialSO = (props) => {
     const handleshowActivedData = async (event) => {
         setShowActivedData(event.target.checked);
         if (!event.target.checked) {
-            setMaterialSOState({
-                ...materialSOState,
+            setMaterialSODetailState({
+                ...materialSODetailState,
                 page: 1,
             });
         }
     };
 
     const handleRowSelection = (arrIds) => {
-        const rowSelected = materialSOState.data.filter(function (item) {
-            return item.MsoId === arrIds[0];
+        const rowSelected = materialSODetailState.data.filter(function (item) {
+            return item.MsoDetailId === arrIds[0];
         });
 
         if (rowSelected && rowSelected.length > 0) {
             setSelectedRow({ ...rowSelected[0] });
         } else {
-            setSelectedRow({ ...MaterialSOMasterDto });
+            setSelectedRow({ ...MaterialSODetailDto });
         }
     };
 
-    const handleDelete = async (materialSOMaster) => {
+    const handleDelete = async (materialSODetail) => {
         if (
             window.confirm(
                 intl.formatMessage({
@@ -110,7 +107,7 @@ const MaterialSO = (props) => {
             )
         ) {
             try {
-                let res = await materialSOService.handleDelete(materialSOMaster);
+                let res = await materialSOService.handleDeleteSODetail(materialSODetail);
                 if (res) {
                     if (res && res.HttpResponseCode === 200) {
                         await fetchData();
@@ -131,7 +128,9 @@ const MaterialSO = (props) => {
     }
 
     const columns = [
-        { field: "MsoId", headerName: "", hide: true },
+        { field: "MsoDetailId", headerName: "", hide: true },
+        // { field: "MsoId", headerName: "", hide: true },
+        // { field: "MaterialId", headerName: "", hide: true },
 
         {
             field: "id",
@@ -139,9 +138,9 @@ const MaterialSO = (props) => {
             width: 100,
             filterable: false,
             renderCell: (index) =>
-                index.api.getRowIndex(index.row.MsoId) +
+                index.api.getRowIndex(index.row.MsoDetailId) +
                 1 +
-                (materialSOState.page - 1) * materialSOState.pageSize,
+                (materialSODetailState.page - 1) * materialSODetailState.pageSize,
         },
 
         {
@@ -196,78 +195,28 @@ const MaterialSO = (props) => {
 
         {
             field: "MsoCode",
-            headerName: intl.formatMessage({ id: "material-so-master.MsoCode" }),
+            headerName: intl.formatMessage({ id: "material-so-detail.MsoCode" }),
       /*flex: 0.7,*/ width: 150,
         },
 
         {
-            field: "MsoStatus",
-            headerName: intl.formatMessage({ id: "material-so-master.MsoStatus" }),
-      /*flex: 0.7,*/ width: 120,
-        },
-
-        {
-            field: "Requester",
-            headerName: intl.formatMessage({ id: "material-so-master.Requester" }),
+            field: "MaterialColorCode",
+            headerName: intl.formatMessage({ id: "material-so-detail.MaterialColorCode" }),
       /*flex: 0.7,*/ width: 200,
         },
 
         {
-            field: "DueDate",
-            headerName: intl.formatMessage({ id: "material-so-master.DueDate" }),
-            width: 150,
-            valueFormatter: (params) => {
-                if (params.value !== null) {
-                    return moment(params?.value)
-                        .add(7, "hours")
-                        .format("YYYY-MM-DD HH:mm:ss");
-                }
-            },
+            field: "MsoDetailStatus",
+            headerName: intl.formatMessage({ id: "material-so-detail.MsoDetailStatus" }),
+      /*flex: 0.7,*/ width: 120,
         },
 
         {
-            field: "Remark",
-            headerName: intl.formatMessage({ id: "material-so-master.Remark" }),
-      /*flex: 0.7,*/ width: 400,
+            field: "SOrderQty",
+            headerName: intl.formatMessage({ id: "material-so-detail.SOrderQty" }),
+      /*flex: 0.7,*/ width: 150,
         },
 
-        {
-            field: "createdName",
-            headerName: intl.formatMessage({ id: "general.createdName" }),
-            width: 150,
-        },
-
-        {
-            field: "createdDate",
-            headerName: intl.formatMessage({ id: "general.created_date" }),
-            width: 150,
-            valueFormatter: (params) => {
-                if (params.value !== null) {
-                    return moment(params?.value)
-                        .add(7, "hours")
-                        .format("YYYY-MM-DD HH:mm:ss");
-                }
-            },
-        },
-
-        {
-            field: "modifiedName",
-            headerName: intl.formatMessage({ id: "general.modifiedName" }),
-            width: 150,
-        },
-
-        {
-            field: "modifiedDate",
-            headerName: intl.formatMessage({ id: "general.modified_date" }),
-            width: 150,
-            valueFormatter: (params) => {
-                if (params.value !== null) {
-                    return moment(params?.value)
-                        .add(7, "hours")
-                        .format("YYYY-MM-DD HH:mm:ss");
-                }
-            },
-        },
     ];
 
     return (
@@ -290,38 +239,10 @@ const MaterialSO = (props) => {
 
                 <Grid item xs>
                     <MuiSearchField
-                        label="material-so-master.MsoCode"
-                        name="MsoCode"
+                        label="material-so-detail.MaterialColorCode"
+                        name="MaterialColorCode"
                         onClick={fetchData}
-                        onChange={(e) => changeSearchData(e, "MsoCode")}
-                    />
-                </Grid>
-
-                <Grid item xs>
-                    <MuiDateField
-                        disabled={materialSOState.isLoading}
-                        label={intl.formatMessage({
-                            id: "general.StartSearchingDate",
-                        })}
-                        value={materialSOState.searchData.StartSearchingDate}
-                        onChange={(e) => {
-                            changeSearchData(e, "StartSearchingDate");
-                        }}
-                        variant="standard"
-                    />
-                </Grid>
-
-                <Grid item xs>
-                    <MuiDateField
-                        disabled={materialSOState.isLoading}
-                        label={intl.formatMessage({
-                            id: "general.EndSearchingDate",
-                        })}
-                        value={materialSOState.searchData.EndSearchingDate}
-                        onChange={(e) => {
-                            changeSearchData(e, "EndSearchingDate");
-                        }}
-                        variant="standard"
+                        onChange={(e) => changeSearchData(e, "MaterialColorCode")}
                     />
                 </Grid>
 
@@ -335,7 +256,7 @@ const MaterialSO = (props) => {
                             <MuiButton text="search" color="info" onClick={fetchData} />
                         </Grid>
 
-                        <Grid item>
+                        {/* <Grid item>
                             <FormControlLabel
                                 sx={{ mb: 0, ml: "1px" }}
                                 control={
@@ -347,26 +268,26 @@ const MaterialSO = (props) => {
                                 }
                                 label={showActivedData ? "Actived" : "Deleted"}
                             />
-                        </Grid>
+                        </Grid> */}
                     </Grid>
                 </Grid>
             </Grid>
 
             <MuiDataGrid
-                showLoading={materialSOState.isLoading}
+                showLoading={materialSODetailState.isLoading}
                 isPagingServer={true}
                 headerHeight={45}
                 // rowHeight={30}
                 // gridHeight={736}
                 columns={columns}
-                rows={materialSOState.data}
-                page={materialSOState.page - 1}
-                pageSize={materialSOState.pageSize}
-                rowCount={materialSOState.totalRow}
+                rows={materialSODetailState.data}
+                page={materialSODetailState.page - 1}
+                pageSize={materialSODetailState.pageSize}
+                rowCount={materialSODetailState.totalRow}
                 onPageChange={(newPage) => {
-                    setMaterialSOState({ ...materialSOState, page: newPage + 1 });
+                    setMaterialSODetailState({ ...materialSODetailState, page: newPage + 1 });
                 }}
-                getRowId={(rows) => rows.WoId}
+                getRowId={(rows) => rows.MsoDetailId}
                 onSelectionModelChange={(newSelectedRowId) =>
                     handleRowSelection(newSelectedRowId)
                 }
@@ -377,8 +298,6 @@ const MaterialSO = (props) => {
                 }}
                 initialState={{ pinnedColumns: { right: ['action'] } }}
             />
-
-            <MaterialSODetail />
         </React.Fragment>
     )
 }
@@ -407,4 +326,4 @@ const mapDispatchToProps = dispatch => {
 
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MaterialSO);
+export default connect(mapStateToProps, mapDispatchToProps)(MaterialSODetail);

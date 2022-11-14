@@ -433,6 +433,11 @@
         "DueDate_required": "Due Date không được để trống"
     },
     "material-so-detail": {
+        "MsoCode": "Mã SO",
+        "MaterialCode": "Liệu",
+        "MaterialColorCode": "Liệu",
+        "MsoDetailStatus": "Trạng thái",
+        "SOrderQty": "S/L yêu cầu",
         "MsoId_required": "Shipping Order không đươc để trống",
         "Material_required": "Liệu không được để trống",
         "SOrderQty_required": "SL yêu cầu không được để trống",

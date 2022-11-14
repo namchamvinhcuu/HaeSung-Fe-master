@@ -434,6 +434,11 @@
         "DueDate_required": "Due Date is required"
     },
     "material-so-detail": {
+        "MsoCode": "SO Code",
+        "MaterialCode": "Material",
+        "MaterialColorCode": "Material",
+        "MsoDetailStatus": "Status",
+        "SOrderQty": "Order Qty",
         "MsoId_required": "Shipping Order cannot be blank",
         "Material_required": "Material cannot be blank",
         "SOrderQty_required": "OrderQty cannot be blank",
