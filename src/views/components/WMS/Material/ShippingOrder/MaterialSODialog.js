@@ -125,7 +125,7 @@ const MaterialSODialog = (props) => {
         return () => {
             isRendered = false;
         }
-    })
+    }, [])
 
     return (
         <MuiDialog

@@ -280,7 +280,7 @@ const MaterialSO = (props) => {
                 if (params.value !== null) {
                     return moment(params?.value)
                         .add(7, "hours")
-                        .format("YYYY-MM-DD HH:mm:ss");
+                        .format("YYYY-MM-DD");
                 }
             },
         },
