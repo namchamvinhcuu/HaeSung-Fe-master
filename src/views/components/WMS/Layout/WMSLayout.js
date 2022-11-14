@@ -90,13 +90,13 @@ const WMSLayout = (props) => {
 
     const [selectedShelfId, setSelectedShelfId] = useState(0);
 
+    const [BinId, setBinId] = useState(0);
     const [lotState, setLotState] = useState({
         isLoading: false,
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 8,
-        BinId: 0
+        pageSize: 8
     });
 
     const columns = [
@@ -121,7 +121,7 @@ const WMSLayout = (props) => {
     const fetchData = async (refresh) => {
         if (!refresh) {
             setSelectedShelfId(0);
-            setLotState({ ...lotState, BinId: 0 });
+            setBinId(0);
         }
         await drawingMasterFunc(refresh)
     };
@@ -192,7 +192,7 @@ const WMSLayout = (props) => {
     const handleEdit = async (Action) => {
         const params = { ShelfId: selectedShelfId, Action: Action };
         const res = await wmsLayoutService.editShelf(params);
-        setLotState({ ...lotState, BinId: 0 });
+        setBinId(0);
 
         if (res !== 'general.success') {
             ErrorAlert(intl.formatMessage({ id: res }))
@@ -207,7 +207,8 @@ const WMSLayout = (props) => {
     async function getDataLot() {
         setLotState({ ...lotState, isLoading: true, });
 
-        const res = await wmsLayoutService.getLotByBinId(lotState);
+        const res = await wmsLayoutService.getLotByBinId({ page: lotState.page, pageSize: lotState.pageSize, BinId: BinId });
+
         if (res && res.Data)
             setLotState({
                 ...lotState,
@@ -358,7 +359,7 @@ const WMSLayout = (props) => {
 
                     box.on('click', () => {
                         //alert(box.attrs.BinCode)
-                        setLotState({ ...lotState, BinId: box.attrs.binId });
+                        setBinId(box.attrs.binId);
                     });
 
                     let binCodeText = new Konva.Text({
@@ -432,12 +433,12 @@ const WMSLayout = (props) => {
 
     useEffect(() => {
         drawingDetailFunc();
+        setBinId(0);
     }, [selectedShelfId]);
 
     useEffect(() => {
-        if (lotState.BinId)
-            getDataLot();
-    }, [lotState.page, lotState.pageSize, lotState.BinId]);
+        getDataLot();
+    }, [BinId]);
 
     return (
         <React.Fragment>
