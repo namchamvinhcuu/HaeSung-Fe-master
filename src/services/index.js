@@ -35,7 +35,7 @@ import * as actualService from "./mms/ActualService";
 import * as materialReceivingService from "./WMS/Material/MaterialReceivingService";
 import * as wipReceivingService from "./WMS/WIP/WIPReceivingService";
 import * as wmsLayoutService from "./WMS/WMSLayout/WMSLayoutService";
-
+import * as materialPutAwayService from "./WMS/Material/MaterialPutAwayService";
 export {
   loginService,
   menuService,
@@ -70,4 +70,5 @@ export {
   materialReceivingService,
   wipReceivingService,
   wmsLayoutService,
+  materialPutAwayService
 };
