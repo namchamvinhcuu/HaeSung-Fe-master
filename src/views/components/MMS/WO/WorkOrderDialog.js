@@ -38,8 +38,6 @@ const WorkOrderDialog = (props) => {
         valueOption,
     } = props;
 
-
-
     const intl = useIntl();
     const [dialogState, setDialogState] = useState({
         ...initModal,

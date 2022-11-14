@@ -28,7 +28,7 @@ import { useIntl } from "react-intl";
 import { materialSOService } from "@services";
 import { MaterialSOMasterDto, MaterialSODetailDto, } from "@models";
 
-import { MaterialSODetail } from '@components'
+import { MaterialSODetail, MaterialSODialog } from '@components'
 
 const MaterialSO = (props) => {
     let isRendered = useRef(true);
@@ -46,6 +46,8 @@ const MaterialSO = (props) => {
         }
     });
 
+    const [mode, setMode] = useState(CREATE_ACTION);
+
     const [newData, setNewData] = useState({ ...MaterialSOMasterDto });
 
     const [isOpenDialog, setIsOpenDialog] = useState(false);
@@ -55,6 +57,15 @@ const MaterialSO = (props) => {
     const [selectedRow, setSelectedRow] = useState({
         ...MaterialSOMasterDto,
     });
+
+    const toggleDialog = (mode) => {
+        if (mode === CREATE_ACTION) {
+            setMode(CREATE_ACTION);
+        } else {
+            setMode(UPDATE_ACTION);
+        }
+        setIsOpenDialog(!isOpenDialog);
+    };
 
     const changeSearchData = async (e, inputName) => {
         let newSearchData = { ...materialSOState.searchData };
@@ -376,6 +387,15 @@ const MaterialSO = (props) => {
                     }
                 }}
                 initialState={{ pinnedColumns: { right: ['action'] } }}
+            />
+
+            <MaterialSODialog
+                setNewData={setNewData}
+                setUpdateData={setSelectedRow}
+                initModal={mode === CREATE_ACTION ? MaterialSOMasterDto : selectedRow}
+                isOpen={isOpenDialog}
+                onClose={toggleDialog}
+                mode={mode}
             />
 
             <MaterialSODetail />

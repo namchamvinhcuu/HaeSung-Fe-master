@@ -11,6 +11,7 @@ const MuiTextField = React.forwardRef((props, ref) => {
     required,
     disabled,
     onChange,
+    onBlur,
     error,
     helperText,
   } = props;
@@ -28,6 +29,7 @@ const MuiTextField = React.forwardRef((props, ref) => {
       name={name}
       value={value}
       onChange={onChange}
+      onBlur={onBlur}
       error={error ?? false}
       helperText={helperText ?? ""}
       {...props}
