@@ -46,6 +46,7 @@
         "root_only": "Root only",
         "sort_order": "Sort Order",
         "unauthorized": "Unauthorized",
+        "code_required": "Code cannot be blank",
         "field_required": "This field cannot be blank",
         "field_invalid": "This field value invalid",
         "field_length": "Length is {length} characters",
@@ -411,7 +412,8 @@
         "received": "Received",
         "Qty_required": " Qty is required",
         "Qty_bigger_1": " Qty not less 1",
-        "DaySearchNotValid": "Search start date not less end date"
+        "DaySearchNotValid": "Search start date not less end date",
+        "Qty_Format": "Format is invalid. Please re-enter using the proper format. (7.3)"
     },
     "wms-layout": {
         "warehouse": "Warehouse",
@@ -421,5 +423,16 @@
         "bin": "Bin",
         "total_level": "Total level(s)",
         "bin_per_level": "Bin(s) per level"
+    },
+    "material-so-master": {
+        "requester_required": "Requester cannot be blank",
+        "DueDate_required": "Due Date is required"
+    },
+    "material-so-detail": {
+        "MsoId_required": "Shipping Order cannot be blank",
+        "Material_required": "Material cannot be blank",
+        "SOrderQty_required": "OrderQty cannot be blank",
+        "SOrderQty_GreaterThan_0": "OrderQty must be greater than 0 ",
+        "SQty_Format": "OrderQty format is invalid (7.3) "
     }
 }
