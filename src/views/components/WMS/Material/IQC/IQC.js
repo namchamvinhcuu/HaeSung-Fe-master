@@ -132,7 +132,7 @@ const IQC = (props) => {
       field: "LotCode",
       headerName: "Lot Code",
       width: 200,
-      hide:false
+      hide:true
     },
 
     {

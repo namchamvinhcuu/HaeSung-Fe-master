@@ -29,10 +29,6 @@ const WIPReceiving = (props) => {
 
   const [focus, setFocus] = useState(true);
   const [newData, setNewData] = useState({ ...LotDto });
-  const [selectedRow, setSelectedRow] = useState({
-    ...LotDto,
-  });
-
 
   const columns = [
     { field: "Id", headerName: "", hide: true },
@@ -227,24 +223,10 @@ const WIPReceiving = (props) => {
         page={state.page - 1}
         pageSize={state.pageSize}
         rowCount={state.totalRow}
-        rowsPerPageOptions={[5, 10, 15, 20]}
-        onPageChange={(newPage) => {
-          setState({ ...state, page: newPage + 1 });
-        }}
-        onPageSizeChange={(newPageSize) => {
-          setState({
-            ...state, page: 1, pageSize: newPageSize,
-          });
-        }}
+        onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
+        onPageSizeChange={(newPageSize) => setState({ ...state, page: 1, pageSize: newPageSize })}
         getRowId={(rows) => rows.Id}
-        // onSelectionModelChange={(newSelectedRowId) =>
-        //   handleRowSelection(newSelectedRowId)
-        // }
-        getRowClassName={(params) => {
-          if (_.isEqual(params.row, newData)) {
-            return `Mui-created`;
-          }
-        }}
+        getRowClassName={(params) => { if (_.isEqual(params.row, newData)) return `Mui-created`; }}
         initialState={{ pinnedColumns: { right: ['action'] } }}
       />
     </React.Fragment>

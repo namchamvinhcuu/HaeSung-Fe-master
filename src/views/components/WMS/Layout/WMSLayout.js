@@ -5,10 +5,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import {
     MuiButton,
     MuiTextField,
-    MuiAutocomplete
+    MuiAutocomplete,
+    MuiDataGrid
 } from "@controls";
 import IconButton from "@mui/material/IconButton";
 import { ErrorAlert, SuccessAlert } from "@utils";
@@ -25,6 +28,7 @@ import Konva from 'konva';
 import { Stage, Layer, Text, Rect, Group } from 'react-konva';
 
 import { locationService, wmsLayoutService } from "@services";
+import { Button, ButtonGroup } from '@mui/material';
 
 const SCENE_BASE_WIDTH = 1080;
 const SCENE_BASE_HEIGHT = 700;
@@ -86,11 +90,39 @@ const WMSLayout = (props) => {
 
     const [selectedShelfId, setSelectedShelfId] = useState(0);
 
+    const [BinId, setBinId] = useState(0);
+    const [lotState, setLotState] = useState({
+        isLoading: false,
+        data: [],
+        totalRow: 0,
+        page: 1,
+        pageSize: 8
+    });
+
+    const columns = [
+        { field: "Id", headerName: "", hide: true },
+        {
+            field: "id",
+            headerName: "",
+            width: 80,
+            filterable: false,
+            renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (lotState.page - 1) * lotState.pageSize,
+        },
+        { field: "LotCode", headerName: "Lot Code", flex: 0.6, },
+        { field: "MaterialCode", headerName: "Material Code", flex: 0.4, },
+        { field: "LotSerial", headerName: "LotSerial", flex: 0.3, },
+        { field: "Qty", headerName: "Qty", flex: 0.3, },
+    ];
+
     const handleDelete = async (lot) => {
 
     };
 
     const fetchData = async (refresh) => {
+        if (!refresh) {
+            setSelectedShelfId(0);
+            setBinId(0);
+        }
         await drawingMasterFunc(refresh)
     };
 
@@ -155,6 +187,35 @@ const WMSLayout = (props) => {
 
             await fetchData(true);
         }
+    }
+
+    const handleEdit = async (Action) => {
+        const params = { ShelfId: selectedShelfId, Action: Action };
+        const res = await wmsLayoutService.editShelf(params);
+        setBinId(0);
+
+        if (res !== 'general.success') {
+            ErrorAlert(intl.formatMessage({ id: res }))
+        }
+        else {
+            SuccessAlert(intl.formatMessage({ id: res }))
+            await fetchData(true);
+            await drawingDetailFunc();
+        }
+    }
+
+    async function getDataLot() {
+        setLotState({ ...lotState, isLoading: true, });
+
+        const res = await wmsLayoutService.getLotByBinId({ page: lotState.page, pageSize: lotState.pageSize, BinId: BinId });
+
+        if (res && res.Data)
+            setLotState({
+                ...lotState,
+                data: res.Data ?? [],
+                totalRow: res.TotalRow,
+                isLoading: false
+            });
     }
 
     const handleDragStart = (e) => {
@@ -279,7 +340,7 @@ const WMSLayout = (props) => {
             for (let i = 0; i < total_level; i++) {
                 let group = new Konva.Group({
                     x: 50,
-                    y: i * 50 + 50,
+                    y: i * 40 + 40,
                 });
 
                 for (let j = 0; j < bin_per_level; j++) {
@@ -287,22 +348,24 @@ const WMSLayout = (props) => {
                         x: j * 100,
                         // y: i * 18,
                         width: 100,
-                        height: 50,
+                        height: 40,
                         // name: colors[i],
                         fill: 'lightblue',
                         stroke: 'black',
                         strokeWidth: 1,
-                        name: res.Data[(i * bin_per_level) + j].BinCode
+                        name: res.Data[(i * bin_per_level) + j].BinCode,
+                        binId: res.Data[(i * bin_per_level) + j].BinId
                     });
 
                     box.on('click', () => {
-                        alert(box.attrs.name)
+                        //alert(box.attrs.BinCode)
+                        setBinId(box.attrs.binId);
                     });
 
                     let binCodeText = new Konva.Text({
                         text: getShortBinCode(res.Data[(i * bin_per_level) + j].BinCode),
                         x: j * 100 + 10,
-                        y: 20,
+                        y: 15,
                         // width: 220,
                         // fontFamily: 'sans-serif',
                         // fontSize: 35,
@@ -370,7 +433,12 @@ const WMSLayout = (props) => {
 
     useEffect(() => {
         drawingDetailFunc();
+        setBinId(0);
     }, [selectedShelfId]);
+
+    useEffect(() => {
+        getDataLot();
+    }, [BinId]);
 
     return (
         <React.Fragment>
@@ -484,13 +552,49 @@ const WMSLayout = (props) => {
 
             <Box sx={{ flexGrow: 1 }}>
                 <Grid container spacing={2}>
-                    <Grid item xs={6} >
+                    <Grid item xs={5} >
                         <h3>Master</h3>
                         <Item id='master-konva' />
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={7}>
                         <h3>Detail</h3>
-                        <Item id='detail-konva' />
+                        <Item id='detail-konva' style={{ maxHeight: '280px', marginBottom: '15px' }} />
+                        <Grid item>
+                            <ButtonGroup disableElevation variant="contained" sx={{ mr: 1 }} disabled={selectedShelfId ? false : true}>
+                                <Button color="success" onClick={() => handleEdit(1)} startIcon={<AddIcon />}>
+                                    {intl.formatMessage({ id: "wms-layout.add_bin_per_level" })}
+                                </Button>
+                                <Button color="error" onClick={() => handleEdit(2)} endIcon={<RemoveIcon />}>
+                                    {intl.formatMessage({ id: "wms-layout.minus_bin_per_level" })}
+                                </Button>
+                            </ButtonGroup>
+
+                            <ButtonGroup disableElevation variant="contained" sx={{ ml: 1 }} disabled={selectedShelfId ? false : true}>
+                                <Button color="success" onClick={() => handleEdit(3)} startIcon={<AddIcon />}>
+                                    {intl.formatMessage({ id: "wms-layout.add_total_level" })}
+                                </Button>
+                                <Button color="error" onClick={() => handleEdit(4)} endIcon={<RemoveIcon />}>
+                                    {intl.formatMessage({ id: "wms-layout.minus_total_level" })}
+                                </Button>
+                            </ButtonGroup>
+                        </Grid>
+                        <Grid sx={{ mt: 2 }}>
+                            <MuiDataGrid
+                                showLoading={lotState.isLoading}
+                                isPagingServer={true}
+                                headerHeight={45}
+                                columns={columns}
+                                rows={lotState.data}
+                                page={lotState.page - 1}
+                                pageSize={lotState.pageSize}
+                                rowCount={lotState.totalRow}
+                                onPageChange={(newPage) => setLotState({ ...lotState, page: newPage + 1 })}
+                                onPageSizeChange={(newPageSize) => setLotState({ ...lotState, page: 1, pageSize: newPageSize })}
+                                getRowId={(rows) => rows.Id}
+                                //getRowClassName={(params) => { if (_.isEqual(params.row, newData)) return `Mui-created`; }}
+                                initialState={{ pinnedColumns: { right: ['action'] } }}
+                            />
+                        </Grid>
                     </Grid>
 
                 </Grid>

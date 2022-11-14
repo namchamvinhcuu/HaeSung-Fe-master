@@ -422,7 +422,12 @@
         "level": "Tầng",
         "bin": "Ô",
         "total_level": "Số tầng",
-        "bin_per_level": "Số ô một tầng"
+        "bin_per_level": "Số ô một tầng",
+        "add_total_level": "Thêm số tầng",
+        "add_bin_per_level": "Thêm số ô",
+        "minus_total_level": "Giảm số tầng",
+        "minus_bin_per_level": "Giảm số ô",
+        "error_level_qty":"error_level_qty"
     },
     "material-so-master": {
         "MsoCode": "Mã SO",

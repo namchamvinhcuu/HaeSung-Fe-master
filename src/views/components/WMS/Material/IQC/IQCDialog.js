@@ -103,7 +103,7 @@ const IQCDialog = (props) => {
         getSelectQCByLotId(initModal.Id);
         // setMaterialId(initModal.MaterialId);
       }
-      
+      setQCResult("")
   },[initModal])
   const getSelectQCByLotId = async (id) => {
     const res = await iqcService.getSelectQCByLotId({LotId:id});
@@ -134,6 +134,7 @@ const IQCDialog = (props) => {
               fetchDataFunc={getMaterialTypeRaw}
               displayLabel="MaterialCode"
               displayValue="MaterialId"
+              displayGroup="GroupMaterial"
               defaultValue={
                 mode == CREATE_ACTION
                   ? null
