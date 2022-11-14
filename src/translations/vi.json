@@ -424,6 +424,11 @@
         "bin_per_level": "Số ô một tầng"
     },
     "material-so-master": {
+        "MsoCode": "Mã SO",
+        "MsoStatus": "Trạng thái",
+        "Requester": "Người Y/C",
+        "DueDate": "SO DueDate",
+        "Remark": "Note",
         "requester_required": "Người yêu cầu không đươc để trống",
         "DueDate_required": "Due Date không được để trống"
     },

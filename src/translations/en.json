@@ -425,6 +425,11 @@
         "bin_per_level": "Bin(s) per level"
     },
     "material-so-master": {
+        "MsoCode": "SO Code",
+        "MsoStatus": "Status",
+        "Requester": "Requester",
+        "DueDate": "SO DueDate",
+        "Remark": "Remark",
         "requester_required": "Requester cannot be blank",
         "DueDate_required": "Due Date is required"
     },
