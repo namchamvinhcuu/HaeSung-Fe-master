@@ -422,7 +422,12 @@
         "level": "Level",
         "bin": "Bin",
         "total_level": "Total level(s)",
-        "bin_per_level": "Bin(s) per level"
+        "bin_per_level": "Bin(s) per level",
+        "add_total_level": "Add level",
+        "add_bin_per_level": "Add bin",
+        "minus_total_level": "Minus level",
+        "minus_bin_per_level": "Minus bin",
+        "error_level_qty":"error_level_qty"
     },
     "material-so-master": {
         "MsoCode": "SO Code",
