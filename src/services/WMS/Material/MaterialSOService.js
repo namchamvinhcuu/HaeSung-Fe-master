@@ -11,7 +11,7 @@ export const getMsoMasters = async (params) => {
     }
 };
 
-export const createMsoMasters = async (params) => {
+export const createMsoMaster = async (params) => {
     try {
         return await axios.post(`${API}/create-mso-masters`, { ...params });
     } catch (error) {

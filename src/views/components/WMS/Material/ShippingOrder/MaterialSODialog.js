@@ -5,9 +5,12 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useIntl } from 'react-intl'
 import * as yup from 'yup'
 
+import moment from "moment";
+
 import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
 
 import { MuiDialog, MuiSubmitButton, MuiResetButton, MuiTextField, MuiDateField } from '@controls'
+import { materialSOService } from "@services";
 
 const MaterialSODialog = (props) => {
     const intl = useIntl();
@@ -58,23 +61,27 @@ const MaterialSODialog = (props) => {
         setDialogState({ ...dialogState, isSubmit: true });
 
         if (mode == CREATE_ACTION) {
-            console.log(data);
+            const curDate = moment(new Date()).format("YYMMDD").toString();
+            data.MsoCode = `MSO${curDate}`
 
-            // const res = await workOrderService.create(data);
-            // if (res && isRendered) {
-            //     if (res.HttpResponseCode === 200 && res.Data) {
-            //         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-            //         setNewData({ ...res.Data });
+            const res = await materialSOService.createMsoMaster(data);
 
-            //         // handleReset();
-            //     } else {
-            //         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-            //     }
-            // }
-            // else {
-            //     ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
-            // }
-            // setDialogState({ ...dialogState, isSubmit: false });
+            console.log(isRendered)
+            if (res && isRendered) {
+                console.log('aaa')
+                if (res.HttpResponseCode === 200 && res.Data) {
+                    SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                    setNewData({ ...res.Data });
+
+                    // handleReset();
+                } else {
+                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                }
+            }
+            else {
+                ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+            }
+            setDialogState({ ...dialogState, isSubmit: false });
         } else {
             // const res = await workOrderService.modify(data);
             // if (res && isRendered) {

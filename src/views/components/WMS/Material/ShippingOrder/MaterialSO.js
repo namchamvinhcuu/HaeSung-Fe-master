@@ -138,7 +138,56 @@ const MaterialSO = (props) => {
     };
 
     const fetchData = async () => {
+        let flag = true;
+        let message = "";
+        const checkObj = { ...materialSOState.searchData };
+        _.forOwn(checkObj, (value, key) => {
+            switch (key) {
+                case "StartSearchingDate":
+                    if (value == "Invalid Date") {
+                        message = "general.StartSearchingDate_invalid";
+                        flag = false;
+                    }
+                    break;
+                case "EndSearchingDate":
+                    if (value == "Invalid Date") {
+                        message = "general.EndSearchingDate_invalid";
+                        flag = false;
+                    }
+                    break;
 
+                default:
+                    break;
+            }
+        });
+
+        if (flag && isRendered) {
+            setMaterialSOState({
+                ...materialSOState,
+                isLoading: true,
+            });
+
+            const params = {
+                page: materialSOState.page,
+                pageSize: materialSOState.pageSize,
+                MsoCode: materialSOState.searchData.MsoCode.trim(),
+                StartSearchingDate: materialSOState.searchData.StartSearchingDate,
+                EndSearchingDate: materialSOState.searchData.EndSearchingDate,
+                isActived: showActivedData,
+            };
+
+            const res = await materialSOService.getMsoMasters(params);
+
+            if (res && isRendered)
+                setMaterialSOState({
+                    ...materialSOState,
+                    data: !res.Data ? [] : [...res.Data],
+                    totalRow: res.TotalRow,
+                    isLoading: false,
+                });
+        } else {
+            ErrorAlert(intl.formatMessage({ id: message }));
+        }
     }
 
     const columns = [
@@ -281,6 +330,46 @@ const MaterialSO = (props) => {
         },
     ];
 
+    useEffect(() => {
+        fetchData();
+
+        return () => {
+            isRendered = false;
+        };
+    }, [materialSOState.page, materialSOState.pageSize, showActivedData]);
+
+    useEffect(() => {
+        if (!_.isEmpty(newData) && !_.isEqual(newData, MaterialSOMasterDto)) {
+            const data = [newData, ...materialSOState.data];
+            if (data.length > materialSOState.pageSize) {
+                data.pop();
+            }
+            if (isRendered)
+                setMaterialSOState({
+                    ...materialSOState,
+                    data: [...data],
+                    totalRow: materialSOState.totalRow + 1,
+                });
+        }
+    }, [newData]);
+
+    useEffect(() => {
+        if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, MaterialSOMasterDto)) {
+            let newArr = [...materialSOState.data];
+            const index = _.findIndex(newArr, function (o) {
+                return o.MsoId == selectedRow.MsoId;
+            });
+            if (index !== -1) {
+                newArr[index] = selectedRow;
+            }
+
+            setMaterialSOState({
+                ...materialSOState,
+                data: [...newArr],
+            });
+        }
+    }, [selectedRow]);
+
     return (
         <React.Fragment>
             <Grid
@@ -377,7 +466,7 @@ const MaterialSO = (props) => {
                 onPageChange={(newPage) => {
                     setMaterialSOState({ ...materialSOState, page: newPage + 1 });
                 }}
-                getRowId={(rows) => rows.WoId}
+                getRowId={(rows) => rows.MsoId}
                 onSelectionModelChange={(newSelectedRowId) =>
                     handleRowSelection(newSelectedRowId)
                 }
