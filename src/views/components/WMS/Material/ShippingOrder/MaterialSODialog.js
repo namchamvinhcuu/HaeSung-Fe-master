@@ -15,7 +15,6 @@ import { materialSOService } from "@services";
 const MaterialSODialog = (props) => {
     const intl = useIntl();
     let isRendered = useRef(true);
-
     const {
         initModal,
         isOpen,
@@ -43,20 +42,16 @@ const MaterialSODialog = (props) => {
 
     const formik = useFormik({
         validationSchema: schema,
-        initialValues:
-            mode === UPDATE_ACTION
-                ? {
-                    ...initModal,
-                    StartDate: moment(initModal.StartDate).add(7, "hours"),
-                }
-                : { ...initModal },
+        initialValues: initModal,
         enableReinitialize: true,
         onSubmit: async (values, actions) => {
             await onSubmit(values);
             // actions.setSubmitting(false);
         },
     });
-
+    const handleReset = () => {
+        resetForm();
+      };
     const onSubmit = async (data) => {
         setDialogState({ ...dialogState, isSubmit: true });
 
@@ -68,7 +63,6 @@ const MaterialSODialog = (props) => {
 
             console.log(isRendered)
             if (res && isRendered) {
-                console.log('aaa')
                 if (res.HttpResponseCode === 200 && res.Data) {
                     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
                     setNewData({ ...res.Data });
@@ -83,20 +77,20 @@ const MaterialSODialog = (props) => {
             }
             setDialogState({ ...dialogState, isSubmit: false });
         } else {
-            // const res = await workOrderService.modify(data);
-            // if (res && isRendered) {
-            //     if (res.HttpResponseCode === 200 && res.Data) {
-            //         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-            //         setUpdateData({ ...res.Data });
-            //         setDialogState({ ...dialogState, isSubmit: false });
-            //         handleReset();
-            //         handleCloseDialog();
-            //     } else {
-            //         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-            //     }
-            // } else {
-            //     ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
-            // }
+            const res = await materialSOService.modifyMsoMaster(data);
+            if (res && isRendered) {
+                if (res.HttpResponseCode === 200 && res.Data) {
+                    SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                    setUpdateData({ ...res.Data });
+                    setDialogState({ ...dialogState, isSubmit: false });
+                    handleReset();
+                    handleCloseDialog();
+                } else {
+                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                }
+            } else {
+                ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+            }
         }
         setDialogState({ ...dialogState, isSubmit: false });
     };
@@ -130,7 +124,9 @@ const MaterialSODialog = (props) => {
     return (
         <MuiDialog
             maxWidth='sm'
-            title={intl.formatMessage({ id: 'general.create' })}
+            title={intl.formatMessage({
+                id: mode == CREATE_ACTION ? "general.create" : "general.modify",
+              })}
             isOpen={isOpen}
             disabledCloseBtn={dialogState.isSubmit}
             disable_animate={300}
@@ -139,22 +135,7 @@ const MaterialSODialog = (props) => {
 
             <form onSubmit={handleSubmit}>
                 <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                    {/* <Grid item xs={12}>
-                        <MuiTextField
-                            required
-                            disabled={dialogState.isSubmit}
-                            label={intl.formatMessage({
-                                id: "material-so-master.MsoCode",
-                            })}
-                            name="MsoCode"
-                            value={values.MsoCode ?? ""}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            error={touched.MsoCode && Boolean(errors.MsoCode)}
-                            helperText={touched.MsoCode && errors.MsoCode}
-                        />
-                    </Grid> */}
-
+       
                     <Grid item xs={12}>
                         <MuiTextField
                             required
@@ -192,12 +173,11 @@ const MaterialSODialog = (props) => {
                             label={intl.formatMessage({
                                 id: "material-so-master.Remark",
                             })}
-                            name="DueDate"
+                            name="Remark"
                             value={values.Remark ?? ""}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                        // error={touched.DueDate && Boolean(errors.DueDate)}
-                        // helperText={touched.DueDate && errors.DueDate}
+              
                         />
                     </Grid>
 

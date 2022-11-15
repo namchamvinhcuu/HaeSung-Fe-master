@@ -72,7 +72,7 @@ const ForecastPODetail = ({ FPoMasterId }) => {
     };
   }, []);
   useEffect(() => {
-    FPoMasterId && fetchData(FPoMasterId);
+    fetchData(FPoMasterId);
   }, [
     forecastState.page,
     forecastState.pageSize,

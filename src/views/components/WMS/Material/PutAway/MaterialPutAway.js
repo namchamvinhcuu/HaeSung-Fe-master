@@ -202,22 +202,16 @@ const MaterialPutAway = (props) => {
       },
     },
 
-    // {
-    //     field: "LotCode",
-    //     headerName: "Lot Code",
-    //     width: 350,
-    // },
-
     {
       field: "MaterialColorCode",
       headerName: "Material Code",
       width: 250,
     },
-    // {
-    //     field: "MaterialName",
-    //     headerName: "Material Name",
-    //     width: 250,
-    // },
+    {
+      field: "LotSerial",
+      headerName: "Lot Serial",
+      width: 250,
+    },
 
     {
       field: "Qty",

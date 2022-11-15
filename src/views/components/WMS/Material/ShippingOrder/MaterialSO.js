@@ -33,7 +33,7 @@ import { MaterialSODetail, MaterialSODialog } from '@components'
 const MaterialSO = (props) => {
     let isRendered = useRef(true);
     const intl = useIntl();
-
+    const [MsoId, setMsoId] = useState(null);
     const [materialSOState, setMaterialSOState] = useState({
         isLoading: false,
         data: [],
@@ -121,10 +121,15 @@ const MaterialSO = (props) => {
             )
         ) {
             try {
-                let res = await materialSOService.handleDelete(materialSOMaster);
+                let res = await materialSOService.deleteMsoMaster({
+                    MsoId: materialSOMaster.MsoId,
+                    row_version: materialSOMaster.row_version,
+                  });
                 if (res) {
                     if (res && res.HttpResponseCode === 200) {
+                        SuccessAlert(intl.formatMessage({ id: "general.success" }));
                         await fetchData();
+                        // setMsoId(null)
                     } else {
                         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
                     }
@@ -138,6 +143,7 @@ const MaterialSO = (props) => {
     };
 
     const fetchData = async () => {
+        setMsoId(null)
         let flag = true;
         let message = "";
         const checkObj = { ...materialSOState.searchData };
@@ -468,7 +474,10 @@ const MaterialSO = (props) => {
                 }}
                 getRowId={(rows) => rows.MsoId}
                 onSelectionModelChange={(newSelectedRowId) =>
-                    handleRowSelection(newSelectedRowId)
+                    {
+                        handleRowSelection(newSelectedRowId);
+                        setMsoId(newSelectedRowId[0]);
+                    }
                 }
                 getRowClassName={(params) => {
                     if (_.isEqual(params.row, newData)) {
@@ -487,7 +496,7 @@ const MaterialSO = (props) => {
                 mode={mode}
             />
 
-            <MaterialSODetail />
+            <MaterialSODetail MsoId={MsoId}/>
         </React.Fragment>
     )
 }
