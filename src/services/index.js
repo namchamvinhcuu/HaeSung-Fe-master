@@ -28,10 +28,12 @@ import * as deliveryOrderService from "./PO/delivery-order/DeliveryOrderService"
 import * as forecastService from "./PO/Forecast/ForecastService";
 import * as forecastMasterService from "./PO/Forecast/ForecastMasterService";
 
-import * as workOrderService from "./mms/work-order/WorkOrderService";
+import * as workOrderService from "./MMS/work-order/WorkOrderService";
+import * as actualService from "./MMS/ActualService";
+import * as mmsReportService from "./MMS/MMSReportService";
+
 import * as fixedPOService from "./PO/purchase-order/FixedPOService";
 import * as iqcService from "./WMS/Material/IQCService"
-import * as actualService from "./mms/ActualService";
 import * as materialReceivingService from "./WMS/Material/MaterialReceivingService";
 import * as wipReceivingService from "./WMS/WIP/WIPReceivingService";
 import * as wmsLayoutService from "./WMS/WMSLayout/WMSLayoutService";
@@ -75,4 +77,5 @@ export {
   wmsLayoutService,
   materialPutAwayService,
   materialSOService,
+  mmsReportService,
 };
