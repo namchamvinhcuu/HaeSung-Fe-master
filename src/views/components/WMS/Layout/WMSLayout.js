@@ -45,6 +45,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const WMSLayout = (props) => {
 
+    console.log('component render')
     let isRendered = useRef(true);
     const intl = useIntl();
     let masterStage;
@@ -279,7 +280,7 @@ const WMSLayout = (props) => {
                     text: `${wmsLayoutState.Location.LocationCode}-${res.Data[i].ShelfCode}`,
                     fontSize: 24,
                     fontFamily: 'Calibri',
-                    fill: '#000',
+                    fill: '#000000',
                     width: 130,
                     // padding: 5,
                     // align: 'center',
@@ -294,10 +295,9 @@ const WMSLayout = (props) => {
                         width: 70,
                         height: 30,
                         // name: colors[i],
-                        fill: 'orange',
-                        stroke: 'black',
+                        fill: '#FFA500',
+                        stroke: '#ffffff',
                         strokeWidth: 1,
-
                     });
 
                     group.add(box);
@@ -306,6 +306,18 @@ const WMSLayout = (props) => {
                 group.on('click', () => {
                     setSelectedShelfId(group.attrs.id);
 
+                    // for (let i = 0; i < layer.children.length; i++) {
+                    //     layer.children[i].attrs.id !== group.attrs.id
+                    //         ? layer.children[i].stroke(null)
+                    //         : layer.children[i].stroke('#000000')
+                    // }
+                });
+                group.on('mouseenter', function () {
+                    masterStage.container().style.cursor = 'pointer';
+                });
+
+                group.on('mouseleave', function () {
+                    masterStage.container().style.cursor = 'default';
                 });
 
                 layer.add(group);
@@ -337,6 +349,16 @@ const WMSLayout = (props) => {
             let total_level = res.Data[0].TotalLevel;
             let shortAisleCode = getShortAisleCode(res.Data[0].BinCode);
 
+            let text = new Konva.Text({
+                x: 10,
+                y: 10,
+                text: shortAisleCode,
+                fontSize: 30,
+                fontFamily: 'Calibri',
+                fill: 'green'
+            });
+            layer.add(text);
+
             for (let i = 0; i < total_level; i++) {
                 let group = new Konva.Group({
                     x: 50,
@@ -350,16 +372,36 @@ const WMSLayout = (props) => {
                         width: 100,
                         height: 40,
                         // name: colors[i],
-                        fill: 'lightblue',
-                        stroke: 'black',
+                        fill: res.Data[(i * bin_per_level) + j].BinStatus ? 'orange' : '#f0f0f0',
+                        stroke: '#ffffff',
                         strokeWidth: 1,
                         name: res.Data[(i * bin_per_level) + j].BinCode,
-                        binId: res.Data[(i * bin_per_level) + j].BinId
+                        binId: res.Data[(i * bin_per_level) + j].BinId,
                     });
 
                     box.on('click', () => {
-                        //alert(box.attrs.BinCode)
                         setBinId(box.attrs.binId);
+
+                        let layerChild = layer.children;
+                        let groupArr = layerChild.slice(1);
+                        for (let i = 0; i < groupArr.length; i++) {
+                            let konvaGroup = groupArr[i];
+                            for (let j = 0; j < konvaGroup.children.length; j++) {
+                                let boxItem = konvaGroup.children[j];
+                                if (boxItem.attrs.binId) {
+                                    boxItem.stroke('#ffffff');
+                                }
+                            }
+                        }
+                        box.stroke('#000000');
+                    });
+
+                    box.on('mouseenter', function () {
+                        detailStage.container().style.cursor = 'pointer';
+                    });
+
+                    box.on('mouseleave', function () {
+                        detailStage.container().style.cursor = 'default';
                     });
 
                     let binCodeText = new Konva.Text({
@@ -379,16 +421,7 @@ const WMSLayout = (props) => {
                     // setSelectedShelfId(group.attrs.id)
                 });
 
-                let text = new Konva.Text({
-                    x: 10,
-                    y: 10,
-                    text: shortAisleCode,
-                    fontSize: 30,
-                    fontFamily: 'Calibri',
-                    fill: 'green'
-                });
-
-                layer.add(text, group);
+                layer.add(group);
             }
         }
         detailStage.add(layer);
@@ -438,6 +471,7 @@ const WMSLayout = (props) => {
 
     useEffect(() => {
         getDataLot();
+        // drawingDetailFunc();
     }, [BinId]);
 
     return (
@@ -558,7 +592,7 @@ const WMSLayout = (props) => {
                     </Grid>
                     <Grid item xs={7}>
                         <h3>Detail</h3>
-                        <Item id='detail-konva' style={{ maxHeight: '280px', marginBottom: '15px' }} />
+
                         <Grid item>
                             <ButtonGroup disableElevation variant="contained" sx={{ mr: 1 }} disabled={selectedShelfId ? false : true}>
                                 <Button color="success" onClick={() => handleEdit(1)} startIcon={<AddIcon />}>
@@ -578,6 +612,9 @@ const WMSLayout = (props) => {
                                 </Button>
                             </ButtonGroup>
                         </Grid>
+
+                        <Item id='detail-konva' style={{ maxHeight: '280px', marginBottom: '15px' }} />
+
                         <Grid sx={{ mt: 2 }}>
                             <MuiDataGrid
                                 showLoading={lotState.isLoading}
