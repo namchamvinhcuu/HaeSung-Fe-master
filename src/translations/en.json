@@ -411,6 +411,7 @@
     },
     "lot": {
         "received": "Received",
+        "put-away": "Put away",
         "Qty_required": " Qty is required",
         "Qty_bigger_1": " Qty not less 1",
         "DaySearchNotValid": "Search start date not less end date",
@@ -428,7 +429,7 @@
         "add_bin_per_level": "Add bin",
         "minus_total_level": "Minus level",
         "minus_bin_per_level": "Minus bin",
-        "error_level_qty":"error_level_qty",
+        "error_level_qty": "error_level_qty",
         "error_cant_delete_total_lot": "Can't minus, level have lot",
         "error_cant_delete_bin_per_lot": "Can't minus, bin have lot"
     },

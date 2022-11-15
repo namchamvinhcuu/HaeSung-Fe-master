@@ -105,6 +105,7 @@ const Line = (props) => {
                 let res = await lineService.handleDelete(line);
                 if (res && res.HttpResponseCode === 200) {
                     await fetchData();
+                    SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
                 }
                 else {
                     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))

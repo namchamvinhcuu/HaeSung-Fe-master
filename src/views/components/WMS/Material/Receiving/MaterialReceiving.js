@@ -51,8 +51,12 @@ const MaterialReceiving = (props) => {
     };
 
     const scanBtnClick = async () => {
+        let inputVal = '';
 
-        await handleReceivingLot(lotInputRef.current.value);
+        if (lotInputRef.current.value) {
+            inputVal = lotInputRef.current.value.trim();
+        }
+        await handleReceivingLot(inputVal);
         lotInputRef.current.value = '';
         lotInputRef.current.focus();
     };
@@ -161,6 +165,7 @@ const MaterialReceiving = (props) => {
                                 aria-label="delete"
                                 color="error"
                                 size="small"
+                                disabled={params.row.BinId ? true : false}
                                 sx={[{ "&:hover": { border: "1px solid red" } }]}
                                 onClick={() => handleDelete(params.row)}
                             >

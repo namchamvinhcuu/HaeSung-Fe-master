@@ -124,6 +124,7 @@ const WorkOrderDialog = (props) => {
             .length(12, intl.formatMessage({ id: "general.field_length" }, { length: 12 })),
         OrderQty: yup
             .number()
+            .integer()
             .required(intl.formatMessage({ id: "general.field_required" }))
             .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
         StartDate: yup

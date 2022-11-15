@@ -411,6 +411,7 @@
     },
     "lot": {
         "received": "Đã nhận",
+        "put-away": "Đã lên kệ",
         "Qty_required": " Qty không được để trống",
         "Qty_bigger_1": " Qty không bé hơn 1",
         "DaySearchNotValid": "Tìm kiếm ngày bắt đầu không lớn hơn ngày kết thúc"
@@ -427,7 +428,7 @@
         "add_bin_per_level": "Thêm số ô",
         "minus_total_level": "Giảm số tầng",
         "minus_bin_per_level": "Giảm số ô",
-        "error_level_qty":"error_level_qty",
+        "error_level_qty": "error_level_qty",
         "error_cant_delete_total_lot": "Không thể xóa, tầng chứa Lot",
         "error_cant_delete_bin_per_lot": "Không thể xóa, số ô chứa lot"
     },

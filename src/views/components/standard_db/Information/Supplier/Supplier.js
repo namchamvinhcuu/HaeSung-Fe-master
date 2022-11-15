@@ -112,6 +112,7 @@ const Supplier = (props) => {
         let res = await supplierService.handleDelete(supplier);
         if (res && res.HttpResponseCode === 200) {
           await fetchData();
+          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         }
