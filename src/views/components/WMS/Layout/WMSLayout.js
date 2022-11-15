@@ -47,7 +47,6 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const WMSLayout = (props) => {
 
-    console.log('component render')
     let isRendered = useRef(true);
     const intl = useIntl();
     let masterStage;
@@ -150,12 +149,38 @@ const WMSLayout = (props) => {
 
     const handleInputChange = (e, inputName) => {
         let newState = { ...wmsLayoutState };
-        newState[inputName] = e;
-        if (inputName === "commonDetailId") {
-            newState.Location = {
-                ...initLocation
-            };
+
+        switch (inputName) {
+            case 'commonDetailId':
+                newState.Location = {
+                    ...initLocation
+                };
+                newState[inputName] = e;
+                break;
+            case 'TotalLevel':
+            case 'BinPerLevel':
+                let num = parseInt(e, 10);
+                if (num > 9)
+                    num = 9;
+                newState[inputName] = num;
+                break;
+            case 'ShelfCode':
+                if (!/^([a-zA-Z]{1,})$/.test(e) && e !== '')
+                    newState[inputName] = 'A';
+                else
+                    newState[inputName] = e;
+                break;
+            default:
+                newState[inputName] = e;
+                break;
         }
+
+        // newState[inputName] = e;
+        // if (inputName === "commonDetailId") {
+        //     newState.Location = {
+        //         ...initLocation
+        //     };
+        // }
 
         setWMSLayoutState({ ...newState });
     };
@@ -543,6 +568,10 @@ const WMSLayout = (props) => {
                                         variant="standard"
                                         value={wmsLayoutState.ShelfCode}
                                         onChange={(e) => { handleInputChange(e.target.value, "ShelfCode") }}
+                                        inputProps={{
+                                            maxLength: 1,
+                                            pattern: "[a-zA-Z]"
+                                        }}
                                     />
                                 </Grid>
 
@@ -553,6 +582,13 @@ const WMSLayout = (props) => {
                                         type="number"
                                         value={wmsLayoutState.TotalLevel}
                                         onChange={(e) => { handleInputChange(e.target.value, "TotalLevel") }}
+                                        inputProps={{
+                                            min: 1,
+                                            max: 9,
+                                            step: 1,
+                                            inputMode: "numeric",
+                                            pattern: "[0-9]*"
+                                        }}
                                     />
                                 </Grid>
 
@@ -563,6 +599,13 @@ const WMSLayout = (props) => {
                                         type="number"
                                         value={wmsLayoutState.BinPerLevel}
                                         onChange={(e) => { handleInputChange(e.target.value, "BinPerLevel") }}
+                                        inputProps={{
+                                            min: 1,
+                                            max: 9,
+                                            step: 1,
+                                            inputMode: "numeric",
+                                            pattern: "[0-9]*"
+                                        }}
                                     />
                                 </Grid>
 
