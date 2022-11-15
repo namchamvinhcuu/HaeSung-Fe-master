@@ -29,6 +29,8 @@ import { Stage, Layer, Text, Rect, Group } from 'react-konva';
 
 import { locationService, wmsLayoutService } from "@services";
 import { Button, ButtonGroup } from '@mui/material';
+import WMSLayoutPrintDialog from './WMSLayoutPrintDialog';
+import { useModal } from "@basesShared";
 
 const SCENE_BASE_WIDTH = 1080;
 const SCENE_BASE_HEIGHT = 700;
@@ -50,7 +52,7 @@ const WMSLayout = (props) => {
     const intl = useIntl();
     let masterStage;
     let detailStage;
-
+    const { isShowing, toggle } = useModal();
     const initLocation = {
         LocationId: 0,
         LocationCode: ""
@@ -593,7 +595,7 @@ const WMSLayout = (props) => {
                     <Grid item xs={7}>
                         <h3>Detail</h3>
 
-                        <Grid item>
+                        <Grid item sx={{ mb: 2 }}>
                             <ButtonGroup disableElevation variant="contained" sx={{ mr: 1 }} disabled={selectedShelfId ? false : true}>
                                 <Button color="success" onClick={() => handleEdit(1)} startIcon={<AddIcon />}>
                                     {intl.formatMessage({ id: "wms-layout.add_bin_per_level" })}
@@ -603,13 +605,17 @@ const WMSLayout = (props) => {
                                 </Button>
                             </ButtonGroup>
 
-                            <ButtonGroup disableElevation variant="contained" sx={{ ml: 1 }} disabled={selectedShelfId ? false : true}>
+                            <ButtonGroup disableElevation variant="contained" sx={{ ml: 1, mr: 1 }} disabled={selectedShelfId ? false : true}>
                                 <Button color="success" onClick={() => handleEdit(3)} startIcon={<AddIcon />}>
                                     {intl.formatMessage({ id: "wms-layout.add_total_level" })}
                                 </Button>
                                 <Button color="error" onClick={() => handleEdit(4)} endIcon={<RemoveIcon />}>
                                     {intl.formatMessage({ id: "wms-layout.minus_total_level" })}
                                 </Button>
+                            </ButtonGroup>
+
+                            <ButtonGroup disableElevation variant="contained" sx={{ ml: 1, float: 'right' }} disabled={selectedShelfId ? false : true}>
+                                <MuiButton text="print" onClick={toggle} sx={{ mt: 0 }} />
                             </ButtonGroup>
                         </Grid>
 
@@ -636,6 +642,12 @@ const WMSLayout = (props) => {
 
                 </Grid>
             </Box>
+
+            <WMSLayoutPrintDialog
+                isOpen={isShowing}
+                onClose={toggle}
+                ShelfId={selectedShelfId}
+            />
         </React.Fragment>
     )
 }

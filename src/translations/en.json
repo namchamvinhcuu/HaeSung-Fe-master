@@ -428,7 +428,9 @@
         "add_bin_per_level": "Add bin",
         "minus_total_level": "Minus level",
         "minus_bin_per_level": "Minus bin",
-        "error_level_qty":"error_level_qty"
+        "error_level_qty":"error_level_qty",
+        "error_cant_delete_total_lot": "Can't minus, level have lot",
+        "error_cant_delete_bin_per_lot": "Can't minus, bin have lot"
     },
     "material-so-master": {
         "MsoCode": "SO Code",

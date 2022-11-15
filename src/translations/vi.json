@@ -427,7 +427,9 @@
         "add_bin_per_level": "Thêm số ô",
         "minus_total_level": "Giảm số tầng",
         "minus_bin_per_level": "Giảm số ô",
-        "error_level_qty":"error_level_qty"
+        "error_level_qty":"error_level_qty",
+        "error_cant_delete_total_lot": "Không thể xóa, tầng chứa Lot",
+        "error_cant_delete_bin_per_lot": "Không thể xóa, số ô chứa lot"
     },
     "material-so-master": {
         "MsoCode": "Mã SO",
