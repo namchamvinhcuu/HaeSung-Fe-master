@@ -35,9 +35,15 @@ const IQCDialog = (props) => {
       .required(intl.formatMessage({ id: "forecast.MaterialId_required" }))
       .min(1, intl.formatMessage({ id: "forecast.MaterialId_required" })),
     Qty: yup.number().nullable().required(intl.formatMessage({ id: "lot.Qty_required" })).min(1, intl.formatMessage({ id: "lot.Qty_bigger_1" })),
-    
+    QCResult:  yup.boolean().nullable().required(),
+    QcIDList: yup.array().nullable().when('QCResult', {
+      is: (res) => res === false ,
+      then: yup.array().min(1, intl.formatMessage({ id: "lot.QC_required" })).required(intl.formatMessage({ id: "lot.QC_required" }))
+      // otherwise: yup.string()
+  }),
   });
   const handleReset = () => {
+    setQCResult("")
     resetForm();
   };
   const handleCloseDialog = () => {
@@ -186,6 +192,7 @@ const IQCDialog = (props) => {
               }}
               disabled={dialogState.isSubmit}
               label="QC Result"
+              name="QCResult"
               options={optionQCResult}
               displayLabel="QCResultName"
               displayValue="QCResult"
@@ -208,6 +215,7 @@ const IQCDialog = (props) => {
                   fetchDataFunc={() => iqcService.getSelectQC({ MaterialId: values?.MaterialId })}
                   displayLabel="QCCode"
                   displayValue="QcId"
+                  name="QcIDList"
                   onChange={(e, value) =>{setFieldValue("QcIDList", value || [])}}
                   error={touched.QcIDList && Boolean(errors.QcIDList)}
                   helperText={touched.QcIDList && errors.QcIDList}
