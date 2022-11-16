@@ -9,17 +9,29 @@ import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiTextField, MuiButton, Mu
 import { Badge, Button, Checkbox, DialogActions, DialogContent, FormControlLabel, Grid, TextField } from "@mui/material";
 import { useIntl } from "react-intl";
 import * as yup from "yup";
-import { actualService } from "@services";
+import { wmsLayoutService } from "@services";
 import { ErrorAlert, SuccessAlert, getCurrentWeek } from "@utils";
 import { useFormik } from "formik";
 import moment from "moment";
 import ReactToPrint from "react-to-print";
 import QRCode from "react-qr-code";
 
-const ActualPrintDialog = ({ listData, isOpen, onClose }) => {
+const WMSLayoutPrintLotDialog = ({ BinId, isOpen, onClose }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
+  const [listData, setListData] = useState([]);
   const componentPringtRef = React.useRef();
+
+  useEffect(() => {
+    if (BinId && isOpen)
+      getBins();
+  }, [isOpen]);
+
+  const getBins = async () => {
+    const res = await wmsLayoutService.getLotByBinId({ page: 1, pageSize: 0, BinId: BinId });
+    setListData(res.Data);
+  }
+
   const handleCloseDialog = () => {
     onClose();
   };
@@ -120,4 +132,4 @@ const mapDispatchToProps = (dispatch) => {
   return { changeLanguage };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ActualPrintDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(WMSLayoutPrintLotDialog);

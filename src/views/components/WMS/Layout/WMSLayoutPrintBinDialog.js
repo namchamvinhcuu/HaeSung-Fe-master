@@ -12,7 +12,7 @@ import { wmsLayoutService } from "@services";
 import ReactToPrint from "react-to-print";
 import QRCode from "react-qr-code";
 
-const WMSLayoutPrintDialog = ({ ShelfId, isOpen, onClose }) => {
+const WMSLayoutPrintBinDialog = ({ ShelfId, isOpen, onClose }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
   const [listData, setListData] = useState([]);
@@ -36,7 +36,7 @@ const WMSLayoutPrintDialog = ({ ShelfId, isOpen, onClose }) => {
     <React.Fragment>
       <MuiDialog
         maxWidth="md"
-        title={intl.formatMessage({ id: "general.create" })}
+        title={intl.formatMessage({ id: "general.print" })}
         isOpen={isOpen}
         disabledCloseBtn={dialogState.isSubmit}
         disable_animate={300}
@@ -113,4 +113,4 @@ const mapDispatchToProps = (dispatch) => {
   return { changeLanguage };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WMSLayoutPrintDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(WMSLayoutPrintBinDialog);
