@@ -419,7 +419,8 @@
         "BinCode": "Ô",
         "LotSerial": "Số Serial",
         "Qty": "Số lượng",
-        "IncomingDate": "Ngày nhập kho"
+        "IncomingDate": "Ngày nhập kho",
+        "QC_required": "QC bắt buộc chọn"
     },
     "wms-layout": {
         "warehouse": "Kho",

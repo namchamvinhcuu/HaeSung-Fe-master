@@ -40,7 +40,7 @@ import * as wmsLayoutService from "./WMS/WMSLayout/WMSLayoutService";
 import * as materialPutAwayService from "./WMS/Material/MaterialPutAwayService";
 
 import * as materialSOService from "./WMS/Material/MaterialSOService"
-
+import * as materialReportService from "./WMS/Material/MaterialReportService"
 export {
   loginService,
   menuService,
@@ -78,4 +78,5 @@ export {
   materialPutAwayService,
   materialSOService,
   mmsReportService,
+  materialReportService
 };
