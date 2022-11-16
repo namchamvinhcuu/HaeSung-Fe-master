@@ -114,7 +114,7 @@ const handleDownloadDetail = async() =>{
         alignItems="center"
       >
         <Grid item>
-          <MuiButton text="excel" color="success" onClick={handleDownloadDetail}/>
+          <MuiButton text="excel" color="success" onClick={handleDownloadDetail} disabled={LotId!=null?false:true}/>
         </Grid>
         {/* <Grid item>
           <Grid container spacing={2} justifyContent="center">
