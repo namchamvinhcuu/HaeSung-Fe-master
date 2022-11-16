@@ -29,8 +29,9 @@ import { Stage, Layer, Text, Rect, Group } from 'react-konva';
 
 import { locationService, wmsLayoutService } from "@services";
 import { Button, ButtonGroup } from '@mui/material';
-import WMSLayoutPrintDialog from './WMSLayoutPrintDialog';
-import { useModal } from "@basesShared";
+import { useModal, useModal2 } from "@basesShared";
+import WMSLayoutPrintBinDialog from './WMSLayoutPrintBinDialog';
+import WMSLayoutPrintLotDialog from './WMSLayoutPrintLotDialog';
 
 const SCENE_BASE_WIDTH = 1080;
 const SCENE_BASE_HEIGHT = 700;
@@ -52,6 +53,7 @@ const WMSLayout = (props) => {
     let masterStage;
     let detailStage;
     const { isShowing, toggle } = useModal();
+    const { isShowing2, toggle2 } = useModal2();
     const initLocation = {
         LocationId: 0,
         LocationCode: ""
@@ -98,7 +100,7 @@ const WMSLayout = (props) => {
         data: [],
         totalRow: 0,
         page: 1,
-        pageSize: 8
+        pageSize: 7
     });
 
     const columns = [
@@ -662,9 +664,11 @@ const WMSLayout = (props) => {
                             </ButtonGroup>
                         </Grid>
 
-                        <Item id='detail-konva' style={{ maxHeight: '280px', marginBottom: '15px' }} />
-
-                        <Grid sx={{ mt: 2 }}>
+                        <Item id='detail-konva' style={{ maxHeight: '260px' }} />
+                        <Grid item sx={{ mt: 2, mb: 2, textAlign: 'right' }}>
+                            <MuiButton text="print" sx={{ mt: 0, mb: 0 }} onClick={toggle2} disabled={lotState.data.length > 0 ? false : true} />
+                        </Grid>
+                        <Grid item>
                             <MuiDataGrid
                                 showLoading={lotState.isLoading}
                                 isPagingServer={true}
@@ -686,10 +690,16 @@ const WMSLayout = (props) => {
                 </Grid>
             </Box>
 
-            <WMSLayoutPrintDialog
+            <WMSLayoutPrintBinDialog
                 isOpen={isShowing}
                 onClose={toggle}
                 ShelfId={selectedShelfId}
+            />
+
+            <WMSLayoutPrintLotDialog
+                isOpen={isShowing2}
+                onClose={toggle2}
+                BinId={BinId}
             />
         </React.Fragment>
     )
