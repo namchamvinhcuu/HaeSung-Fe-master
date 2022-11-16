@@ -22,7 +22,7 @@ import moment from "moment";
 import { useIntl } from "react-intl";
 import { materialSOService } from "@services";
 import { MaterialSOMasterDto, MaterialSODetailDto } from "@models";
-import  MaterialSODetailDialog  from "./MaterialSODetailDialog";
+import MaterialSODetailDialog from "./MaterialSODetailDialog";
 import { useModal, useModal2 } from "@basesShared";
 
 const MaterialSODetail = ({ MsoId }) => {
@@ -40,14 +40,14 @@ const MaterialSODetail = ({ MsoId }) => {
     pageSize: 8,
     searchData: {
       ...MaterialSODetailDto,
-      MaterialCode:"",
-      isActived:true
+      MaterialCode: "",
+      isActived: true
     },
     MsoId: MsoId,
   });
 
   const [newData, setNewData] = useState({ ...MaterialSODetailDto });
-
+  const [newDataArr, setNewDataArr] = useState([]);
 
   useEffect(() => {
     fetchData(MsoId);
@@ -57,20 +57,21 @@ const MaterialSODetail = ({ MsoId }) => {
     MsoId,
     materialSODetailState.searchData.isActived,
   ]);
+
   useEffect(() => {
 
-    if (!_.isEmpty(newData) && isRendered && !_.isEqual(newData, MaterialSODetailDto)) {
-      const data = [newData, ...materialSODetailState.data];
+    if (isRendered && newDataArr.length) {
+      const data = [newDataArr, ...materialSODetailState.data];
       if (data.length > materialSODetailState.pageSize) {
         data.pop();
       }
       setMaterialSODetailState({
         ...materialSODetailState,
         data: [...data],
-        totalRow: materialSODetailState.totalRow + 1,
+        totalRow: materialSODetailState.totalRow + newDataArr.length,
       });
     }
-  }, [newData]);
+  }, [newDataArr]);
 
   useEffect(() => {
     if (
@@ -88,7 +89,7 @@ const MaterialSODetail = ({ MsoId }) => {
       setMaterialSODetailState({ ...materialSODetailState, data: [...newArr] });
     }
   }, [updateData]);
- 
+
   const handleDelete = async (materialSODetail) => {
     if (
       window.confirm(
@@ -101,9 +102,9 @@ const MaterialSODetail = ({ MsoId }) => {
     ) {
       try {
         let res = await materialSOService.handleDeleteSODetail({
-            MsoDetailId: materialSODetail.MsoDetailId,
-            row_version: materialSODetail.row_version,
-      });
+          MsoDetailId: materialSODetail.MsoDetailId,
+          row_version: materialSODetail.row_version,
+        });
         if (res) {
           if (res && res.HttpResponseCode === 200) {
             await fetchData(MsoId);
@@ -120,24 +121,24 @@ const MaterialSODetail = ({ MsoId }) => {
   };
 
   const fetchData = async (MsoId) => {
-    
-    setMaterialSODetailState({ ...materialSODetailState, isLoading: true });
-      const params = {
-        page: materialSODetailState.page,
-        pageSize: materialSODetailState.pageSize,
-        MaterialCode: materialSODetailState.searchData.MaterialCode,
-        isActived: materialSODetailState.searchData.isActived,
-        MsoId: MsoId,
-      };
 
-      const res = await materialSOService.getMsoDetails(params);
-      if (res && res.Data && isRendered)
+    setMaterialSODetailState({ ...materialSODetailState, isLoading: true });
+    const params = {
+      page: materialSODetailState.page,
+      pageSize: materialSODetailState.pageSize,
+      MaterialCode: materialSODetailState.searchData.MaterialCode,
+      isActived: materialSODetailState.searchData.isActived,
+      MsoId: MsoId,
+    };
+
+    const res = await materialSOService.getMsoDetails(params);
+    if (res && res.Data && isRendered)
       setMaterialSODetailState({
-          ...materialSODetailState,
-          data: res.Data ?? [],
-          totalRow: res.TotalRow,
-          isLoading: false,
-        });
+        ...materialSODetailState,
+        data: res.Data ?? [],
+        totalRow: res.TotalRow,
+        isLoading: false,
+      });
   };
 
   const columns = [
@@ -192,7 +193,7 @@ const MaterialSODetail = ({ MsoId }) => {
                 sx={[{ "&:hover": { border: "1px solid red" } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                  <DeleteIcon fontSize="inherit" />
+                <DeleteIcon fontSize="inherit" />
                 {/* {params.row.isActived ? (
                   <DeleteIcon fontSize="inherit" />
                 ) : (
@@ -233,21 +234,25 @@ const MaterialSODetail = ({ MsoId }) => {
       /*flex: 0.7,*/ width: 150,
     },
   ];
+
   const handleAdd = () => {
     setMode(CREATE_ACTION);
-    setRowData({...MaterialSODetailDto});
+    setRowData({ ...MaterialSODetailDto });
     toggle();
   };
+
   const handleUpdate = (row) => {
     setMode(UPDATE_ACTION);
     setRowData({ ...row, MsoId: MsoId });
     toggle();
   };
+
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...materialSODetailState.searchData };
     newSearchData[inputName] = e;
-        setMaterialSODetailState({ ...materialSODetailState, searchData: { ...newSearchData } });
+    setMaterialSODetailState({ ...materialSODetailState, searchData: { ...newSearchData } });
   };
+
   return (
     <React.Fragment>
       <Grid
@@ -270,7 +275,7 @@ const MaterialSODetail = ({ MsoId }) => {
             disabled={MsoId ? false : true}
             label="material-so-detail.MaterialColorCode"
             name="MaterialColorCode"
-            onClick={()=>fetchData(MsoId)}
+            onClick={() => fetchData(MsoId)}
             onChange={(e) => handleSearch(e.target.value, "MaterialCode")}
           />
         </Grid>
@@ -282,7 +287,7 @@ const MaterialSODetail = ({ MsoId }) => {
                 disabled={MsoId ? false : true}
                 text="search"
                 color="info"
-                onClick={()=>fetchData(MsoId)}
+                onClick={() => fetchData(MsoId)}
               />
             </Grid>
 
@@ -318,9 +323,10 @@ const MaterialSODetail = ({ MsoId }) => {
         }}
         initialState={{ pinnedColumns: { right: ["action"] } }}
       />
+
       <MaterialSODetailDialog
         initModal={rowData}
-        setNewData={setNewData}
+        setNewData={setNewDataArr}
         setUpdateData={setUpdateData}
         isOpen={isShowing}
         onClose={toggle}

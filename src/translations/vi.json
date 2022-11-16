@@ -414,7 +414,12 @@
         "put-away": "Đã lên kệ",
         "Qty_required": " Qty không được để trống",
         "Qty_bigger_1": " Qty không bé hơn 1",
-        "DaySearchNotValid": "Tìm kiếm ngày bắt đầu không lớn hơn ngày kết thúc"
+        "DaySearchNotValid": "Tìm kiếm ngày bắt đầu không lớn hơn ngày kết thúc",
+        "Qty_Format": "Format không hợp lệ. Nhập kiểu số thực (7.3)",
+        "BinCode": "Ô",
+        "LotSerial": "Số Serial",
+        "Qty": "Số lượng",
+        "IncomingDate": "Ngày nhập kho"
     },
     "wms-layout": {
         "warehouse": "Kho",

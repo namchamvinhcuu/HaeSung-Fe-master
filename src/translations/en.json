@@ -415,7 +415,11 @@
         "Qty_required": " Qty is required",
         "Qty_bigger_1": " Qty not less 1",
         "DaySearchNotValid": "Search start date not less end date",
-        "Qty_Format": "Format is invalid. Please re-enter using the proper format. (7.3)"
+        "Qty_Format": "Format is invalid. Please re-enter using the proper format. (7.3)",
+        "BinCode": "Bin",
+        "LotSerial": "Lot Serial",
+        "Qty": "Qty",
+        "IncomingDate": "Incoming Date"
     },
     "wms-layout": {
         "warehouse": "Warehouse",
