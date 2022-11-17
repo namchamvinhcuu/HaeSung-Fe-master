@@ -26,6 +26,8 @@ import { loginService } from "@services";
 import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from "@utils";
 import * as ConfigConstants from "@constants/ConfigConstants";
 import store from "@states/store";
+import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
+import { versionAppService } from "@services";
 
 const theme = createTheme();
 
@@ -68,6 +70,13 @@ const Login = (props) => {
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
+  };
+  const handleDownload = async (e) => {
+    try {
+      await versionAppService.downloadApp();
+    } catch (error) {
+      console.log(`ERROR: ${error}`);
+    }
   };
 
   const schema = yup.object().shape({
@@ -309,6 +318,24 @@ const Login = (props) => {
                 {<FormattedMessage id={errorMessages} />}
               </p>
             )}
+            <Box>
+              <button
+                className="btn mt-3"
+                style={{ width: "100%", backgroundColor: "#21c789"}}
+                onClick={() => handleDownload()}
+              >
+                  <div className="d-flex" style={{color: "white"}}>
+                    <PhoneAndroidIcon />
+
+                    <div className="d-block" >
+                      <small style={{ opacity: 0.9, fontSize: "18px" }}>
+                        Download App
+                      </small>
+                    
+                    </div>
+                  </div>
+              </button>
+            </Box>
           </Box>
         </Grid>
       </Grid>
