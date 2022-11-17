@@ -419,6 +419,7 @@
         "BinCode": "Ô",
         "LotSerial": "Số Serial",
         "Qty": "Số lượng",
+        "RequestQty": "S/L yêu cầu",
         "IncomingDate": "Ngày nhập kho",
         "QC_required": "QC bắt buộc chọn"
     },

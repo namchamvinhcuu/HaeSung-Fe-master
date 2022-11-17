@@ -90,7 +90,6 @@ const FixedPO = (props) => {
 
   const handleRowUpdate = async (newRow) => {
 
-    console.log(newRow)
     if (!isNumber(newRow.OrderQty) || newRow.OrderQty < 0) {
       ErrorAlert(intl.formatMessage({ id: "forecast.OrderQty_required_bigger" }));
       return selectedRow;

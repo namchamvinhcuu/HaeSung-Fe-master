@@ -419,6 +419,7 @@
         "BinCode": "Bin",
         "LotSerial": "Lot Serial",
         "Qty": "Qty",
+        "RequestQty": "Request Qty",
         "IncomingDate": "Incoming Date",
         "QC_required": "QC is required"
     },
