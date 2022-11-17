@@ -96,23 +96,21 @@ const MaterialSODetailDialog = (props) => {
       return;
     }
 
-    const dataPost = { ...data, MsoId: MsoId, LotDtos: [...lotArr] };
+    const dataPost = { MsoId: MsoId, LotDtos: [...lotArr] };
 
-    console.log('dataPost', dataPost);
-
-    setDialogState({ ...dialogState, isSubmit: true });
+    //setDialogState({ ...dialogState, isSubmit: true });
 
     const res = await materialSOService.createMsoDetail(dataPost);
 
     if (res.HttpResponseCode === 200 && res.Data) {
       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
       setNewData([...res.Data]);
-      setDialogState({ ...dialogState, isSubmit: false });
+      //setDialogState({ ...dialogState, isSubmit: false });
       handleReset();
     }
     else {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-      setDialogState({ ...dialogState, isSubmit: false });
+      //setDialogState({ ...dialogState, isSubmit: false });
     }
 
     // if (!selectedRow || !selectedRow.length) {
@@ -186,11 +184,11 @@ const MaterialSODetailDialog = (props) => {
       return item.Id === arrIds[0];
     });
 
-    if (rowSelected && rowSelected.length > 0) {
-      setSelectedRow({ ...rowSelected[0] });
-    } else {
-      setSelectedRow({ ...ForecastPODto });
-    }
+    // if (rowSelected && rowSelected.length > 0) {
+    //   setSelectedRow({ ...rowSelected[0] });
+    // } else {
+    //   setSelectedRow({ ...ForecastPODto });
+    // }
   };
 
   const columns = [
@@ -235,10 +233,10 @@ const MaterialSODetailDialog = (props) => {
   ];
 
   const handleRowUpdate = async (newRow) => {
-
     if (!isNumber(newRow.RequestQty) || newRow.RequestQty < 0) {
       ErrorAlert(intl.formatMessage({ id: "forecast.OrderQty_required_bigger" }));
-      return selectedRow;
+      newRow.RequestQty = 0;
+      return newRow;
     }
     newRow = { ...newRow, RequestQty: parseInt(newRow.RequestQty) }
 
