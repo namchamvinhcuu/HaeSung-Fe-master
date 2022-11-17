@@ -496,7 +496,7 @@ const MaterialSO = (props) => {
                 mode={mode}
             />
 
-            <MaterialSODetail MsoId={MsoId}/>
+            <MaterialSODetail MsoId={MsoId} fromPicking={false}/>
         </React.Fragment>
     )
 }
