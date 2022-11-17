@@ -75,13 +75,13 @@ const MaterialReport = (props) => {
       field: "QCDate",
       headerName: "QC Date",
       width: 150,
-      // valueFormatter: (params) => {
-      //   if (params.value !== null) {
-      //     return moment(params?.value)
-      //       .add(7, "hours")
-      //       .format("YYYY-MM-DD HH:mm:ss");
-      //   }
-      // },
+      valueFormatter: (params) => {
+        if (params.value !== null) {
+          return moment(params?.value)
+            // .add(7, "hours")
+            .format("YYYY-MM-DD HH:mm:ss");
+        }
+      },
     },
     {
       field: "QCResult",
