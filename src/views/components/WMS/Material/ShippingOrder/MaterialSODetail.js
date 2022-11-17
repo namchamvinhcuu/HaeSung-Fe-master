@@ -16,7 +16,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import { addDays, ErrorAlert, SuccessAlert } from "@utils";
+import { addDays, ErrorAlert, SuccessAlert, isNumber } from "@utils";
 import _ from "lodash";
 import moment from "moment";
 import { useIntl } from "react-intl";
@@ -73,8 +73,8 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
 
   useEffect(() => {
     if (isRendered && newDataArr.length) {
-      const data = [newDataArr, ...materialSODetailState.data];
-      if (data.length > materialSODetailState.pageSize) {
+      const data = [...newDataArr, ...materialSODetailState.data];
+      while (data.length > materialSODetailState.pageSize) {
         data.pop();
       }
       setMaterialSODetailState({
@@ -98,6 +98,7 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
       if (index !== -1) {
         newArr[index] = updateData;
       }
+      console.log(newArr)
       setMaterialSODetailState({ ...materialSODetailState, data: [...newArr] });
     }
   }, [updateData]);
@@ -133,6 +134,7 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
   };
 
   const fetchData = async (MsoId) => {
+    setNewDataArr([]);
     setMaterialSODetailState({ ...materialSODetailState, isLoading: true });
     const params = {
       page: materialSODetailState.page,
@@ -186,30 +188,14 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
           >
             <Grid item xs={6}>
               <IconButton
-                aria-label="edit"
-                color="warning"
-                size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
-                onClick={() => handleUpdate(params.row)}
-              >
-                <EditIcon fontSize="inherit" />
-              </IconButton>
-            </Grid>
-
-            <Grid item xs={6}>
-              <IconButton
                 aria-label="delete"
                 color="error"
                 size="small"
+                disabled={params.row.MsoDetailStatus == false ? false : true}
                 sx={[{ "&:hover": { border: "1px solid red" } }]}
                 onClick={() => handleDelete(params.row)}
               >
                 <DeleteIcon fontSize="inherit" />
-                {/* {params.row.isActived ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )} */}
               </IconButton>
             </Grid>
           </Grid>
@@ -230,18 +216,19 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
       }),
       /*flex: 0.7,*/ width: 200,
     },
-
-    {
-      field: "MsoDetailStatus",
-      headerName: intl.formatMessage({
-        id: "material-so-detail.MsoDetailStatus",
-      }),
-      /*flex: 0.7,*/ width: 120,
-    },
-
     {
       field: "SOrderQty",
       headerName: intl.formatMessage({ id: "material-so-detail.SOrderQty" }),
+      /*flex: 0.7,*/ width: 150, editable: true
+    },
+    {
+      field: "LotSerial",
+      headerName: intl.formatMessage({ id: "material-so-detail.LotSerial" }),
+      /*flex: 0.7,*/ width: 150,
+    },
+    {
+      field: "BinCode",
+      headerName: intl.formatMessage({ id: "material-so-detail.BinCode" }),
       /*flex: 0.7,*/ width: 150,
     },
   ];
@@ -334,11 +321,46 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
     toggle();
   };
 
-  const handleUpdate = (row) => {
-    setMode(UPDATE_ACTION);
-    setRowData({ ...row, MsoId: MsoId });
-    toggle();
-  };
+  const handleRowUpdate = async (newRow) => {
+    if (newRow.MsoDetailStatus != false) {
+      ErrorAlert(intl.formatMessage({ id: "material-so-detail.MsoDetailStatus_edit" }));
+      const index = _.findIndex(materialSODetailState.data, function (o) {
+        return o.MsoDetailId == newRow.MsoDetailId;
+      });
+
+      return materialSODetailState.data[index];
+    }
+
+    setMaterialSODetailState({ ...materialSODetailState, isSubmit: true });
+    if (!isNumber(newRow.SOrderQty) || newRow.SOrderQty < 0) {
+      ErrorAlert(intl.formatMessage({ id: "forecast.OrderQty_required_bigger" }));
+      newRow.SOrderQty = 0;
+    }
+    newRow = { ...newRow, SOrderQty: parseInt(newRow.SOrderQty) }
+
+    const res = await materialSOService.modifyMsoDetail(newRow);
+    if (res.HttpResponseCode === 200 && res.Data) {
+      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      setUpdateData(res.Data);
+      setMaterialSODetailState({ ...materialSODetailState, isSubmit: false });
+      return newRow;
+    }
+    else {
+      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      setMaterialSODetailState({ ...materialSODetailState, isSubmit: false });
+      const index = _.findIndex(materialSODetailState.data, function (o) {
+        return o.MsoDetailId == newRow.MsoDetailId;
+      });
+
+      return materialSODetailState.data[index];
+    }
+
+  }
+
+  const handleProcessRowUpdateError = React.useCallback((error) => {
+    console.log('update error', error)
+    ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+  }, []);
 
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...materialSODetailState.searchData };
@@ -403,6 +425,10 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
         page={materialSODetailState.page - 1}
         pageSize={materialSODetailState.pageSize}
         rowCount={materialSODetailState.totalRow}
+        processRowUpdate={handleRowUpdate}
+        isCellEditable={(params) => params.row.MsoDetailStatus == false}
+        onProcessRowUpdateError={handleProcessRowUpdateError}
+        experimentalFeatures={{ newEditingApi: true }}
         onPageChange={(newPage) => {
           setMaterialSODetailState({
             ...materialSODetailState,
@@ -414,7 +440,8 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
         //   handleRowSelection(newSelectedRowId)
         // }
         getRowClassName={(params) => {
-          if (_.isEqual(params.row, newData)) {
+          var item = newDataArr.find(x => x.MsoDetailId == params.row.MsoDetailId)
+          if (item) {
             return `Mui-created`;
           }
         }}

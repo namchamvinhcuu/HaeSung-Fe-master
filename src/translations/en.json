@@ -420,6 +420,7 @@
         "BinCode": "Bin",
         "LotSerial": "Lot Serial",
         "Qty": "Qty",
+        "RequestQty": "Request Qty",
         "IncomingDate": "Incoming Date",
         "QC_required": "QC is required"
     },
@@ -454,6 +455,9 @@
         "MaterialColorCode": "Material",
         "MsoDetailStatus": "Status",
         "SOrderQty": "Order Qty",
+        "LotSerial":"Lot Serial",
+        "BinCode" : "Bin Code",
+        "MsoDetailStatus_edit": "Cannot update because status",
         "MsoId_required": "Shipping Order cannot be blank",
         "Material_required": "Material cannot be blank",
         "SOrderQty_required": "OrderQty cannot be blank",

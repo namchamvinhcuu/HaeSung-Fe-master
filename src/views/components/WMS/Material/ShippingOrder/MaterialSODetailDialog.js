@@ -15,8 +15,9 @@ import * as yup from "yup";
 import { Grid, TextField } from "@mui/material";
 import { iqcService } from "@services";
 import { materialSOService } from "@services";
-import { ErrorAlert, SuccessAlert } from '@utils';
+import { ErrorAlert, SuccessAlert, isNumber } from '@utils';
 import moment from "moment";
+import _ from "lodash";
 
 const MaterialSODetailDialog = (props) => {
   const intl = useIntl();
@@ -32,14 +33,14 @@ const MaterialSODetailDialog = (props) => {
   const [pageSize, setPageSize] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
   const [lotArr, setLotArr] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRow, setSelectedRow] = useState([]);
 
   const schema = yup.object().shape({
     MaterialId: yup
       .number()
       .required(intl.formatMessage({ id: "forecast.MaterialId_required" }))
       .min(1, intl.formatMessage({ id: "forecast.MaterialId_required" })),
-    SOrderQty: yup.number().nullable().required(intl.formatMessage({ id: "lot.Qty_required" })).min(1, intl.formatMessage({ id: "lot.Qty_bigger_1" })),
+    // SOrderQty: yup.number().nullable().required(intl.formatMessage({ id: "lot.Qty_required" })).min(1, intl.formatMessage({ id: "lot.Qty_bigger_1" })),
 
   });
 
@@ -81,50 +82,82 @@ const MaterialSODetailDialog = (props) => {
 
   const onSubmit = async (data) => {
 
+    let flag = false;
+    for (let i = 0; i < lotArr.length; i++) {
+      const element = lotArr[i];
+      if (element.RequestQty) {
+        flag = true;
+        break
+      }
+    }
 
-    if (!selectedRows || !selectedRows.length) {
+    if (!flag) {
       ErrorAlert(intl.formatMessage({ id: 'general.one_data_at_least' }));
       return;
     }
-    else {
-      setDialogState({ ...dialogState, isSubmit: true });
-      if (mode == CREATE_ACTION) {
 
-        let LotIds = [];
-        for (let i = 0; i < selectedRows.length; i++) {
-          LotIds.push(selectedRows[i].Id);
-        }
+    const dataPost = { MsoId: MsoId, LotDtos: [...lotArr] };
 
-        const dataPush = { ...data, MsoId: MsoId, LotIds: [...LotIds] };
+    //setDialogState({ ...dialogState, isSubmit: true });
 
-        console.log(dataPush);
+    const res = await materialSOService.createMsoDetail(dataPost);
 
-        const res = await materialSOService.createMsoDetail(dataPush);
-        if (res.HttpResponseCode === 200 && res.Data) {
-          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-          setNewData([...res.Data]);
-          setDialogState({ ...dialogState, isSubmit: false });
-          handleReset();
-        } else {
-          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-          setDialogState({ ...dialogState, isSubmit: false });
-        }
-      } else {
-        const res = await materialSOService.modifyMsoDetail({
-          ...data,
-        });
-        if (res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-          setUpdateData({ ...res.Data });
-          setDialogState({ ...dialogState, isSubmit: false });
-          handleReset();
-          handleCloseDialog();
-        } else {
-          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-          setDialogState({ ...dialogState, isSubmit: false });
-        }
-      }
+    if (res.HttpResponseCode === 200 && res.Data) {
+      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      setNewData([...res.Data]);
+      //setDialogState({ ...dialogState, isSubmit: false });
+      handleReset();
     }
+    else {
+      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      //setDialogState({ ...dialogState, isSubmit: false });
+    }
+
+    // if (!selectedRow || !selectedRow.length) {
+    //   ErrorAlert(intl.formatMessage({ id: 'general.one_data_at_least' }));
+    //   return;
+    // }
+    // else {
+    //   setDialogState({ ...dialogState, isSubmit: true });
+    //   if (mode == CREATE_ACTION) {
+
+    //     let LotIds = [];
+    //     for (let i = 0; i < selectedRows.length; i++) {
+    //       LotIds.push(selectedRows[i].Id);
+    //     }
+
+    //     const dataPush = { ...data, MsoId: MsoId, LotIds: [...LotIds] };
+
+    //     console.log(dataPush);
+
+    //     const res = await materialSOService.createMsoDetail(dataPush);
+    //     if (res.HttpResponseCode === 200 && res.Data) {
+    //       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //       setNewData([...res.Data]);
+    //       setDialogState({ ...dialogState, isSubmit: false });
+    //       handleReset();
+    //     } else {
+    //       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //       setDialogState({ ...dialogState, isSubmit: false });
+    //     }
+    //   }
+    //   else {
+    //     const res = await materialSOService.modifyMsoDetail({
+    //       ...data,
+    //     });
+    //     if (res.HttpResponseCode === 200) {
+    //       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //       setUpdateData({ ...res.Data });
+    //       setDialogState({ ...dialogState, isSubmit: false });
+    //       handleReset();
+    //       handleCloseDialog();
+    //     }
+    //     else {
+    //       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //       setDialogState({ ...dialogState, isSubmit: false });
+    //     }
+    //   }
+    // }
   };
 
   const getLots = async (materialId) => {
@@ -140,13 +173,22 @@ const MaterialSODetailDialog = (props) => {
   }
 
   const handleRowSelection = (arrIds) => {
-    const rowSelected = lotArr.filter(item => arrIds.includes(item.Id));
+    // const rowSelected = lotArr.filter(item => arrIds.includes(item.Id));
 
-    if (rowSelected && rowSelected.length > 0) {
-      setSelectedRows([...rowSelected]);
-    } else {
-      setSelectedRows([]);
-    }
+    // if (rowSelected && rowSelected.length > 0) {
+    //   setSelectedRows([...rowSelected]);
+    // } else {
+    //   setSelectedRows([]);
+    // }
+    const rowSelected = lotArr.filter((item) => {
+      return item.Id === arrIds[0];
+    });
+
+    // if (rowSelected && rowSelected.length > 0) {
+    //   setSelectedRow({ ...rowSelected[0] });
+    // } else {
+    //   setSelectedRow({ ...ForecastPODto });
+    // }
   };
 
   const columns = [
@@ -161,13 +203,19 @@ const MaterialSODetailDialog = (props) => {
     {
       field: "LotSerial",
       headerName: intl.formatMessage({ id: "lot.LotSerial" }),
-      /*flex: 0.7,*/ width: 120,
+      /*flex: 0.7,*/ width: 150,
     },
 
     {
       field: "Qty",
       headerName: intl.formatMessage({ id: "lot.Qty" }),
-      /*flex: 0.7,*/ width: 200,
+      /*flex: 0.7,*/ width: 150,
+    },
+
+    {
+      field: "RequestQty",
+      headerName: intl.formatMessage({ id: "lot.RequestQty" }),
+      /*flex: 0.7,*/ width: 150, editable: true
     },
 
     {
@@ -183,6 +231,43 @@ const MaterialSODetailDialog = (props) => {
       },
     },
   ];
+
+  const handleRowUpdate = async (newRow) => {
+    if (!isNumber(newRow.RequestQty) || newRow.RequestQty < 0) {
+      ErrorAlert(intl.formatMessage({ id: "forecast.OrderQty_required_bigger" }));
+      newRow.RequestQty = 0;
+      return newRow;
+    }
+    newRow = { ...newRow, RequestQty: parseInt(newRow.RequestQty) }
+
+    let newArr = [...lotArr];
+    const index = _.findIndex(newArr, (o) => {
+      return o.Id == newRow.Id;
+    });
+    if (index !== -1) {
+      newArr[index] = newRow;
+    }
+
+    setLotArr([...newArr]);
+
+    return newRow;
+
+    // const res = await fixedPOService.modify(newRow);
+    // if (res && res.HttpResponseCode === 200 && isRendered) {
+    //   SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //   setSelectedRow(res.Data);
+    //   return res.Data;
+    // }
+    // else {
+    //   ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //   return selectedRow;
+    // }
+  }
+
+  const handleProcessRowUpdateError = React.useCallback((error) => {
+    console.log('update error', error)
+    ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+  }, []);
 
   useEffect(() => {
     if (isRendered) {
@@ -246,7 +331,7 @@ const MaterialSODetailDialog = (props) => {
             />
           </Grid>
 
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <TextField
               fullWidth
               type="number"
@@ -258,6 +343,48 @@ const MaterialSODetailDialog = (props) => {
               label="Oder Qty"
               error={touched.SOrderQty && Boolean(errors.SOrderQty)}
               helperText={touched.SOrderQty && errors.SOrderQty}
+            />
+          </Grid> */}
+          <Grid item xs={12}>
+            <MuiDataGrid
+              showLoading={isLoading}
+              // isPagingServer={true}
+              headerHeight={45}
+              // rowHeight={30}
+              // gridHeight={736}
+              // checkboxSelection
+              columns={columns}
+              rows={lotArr}
+              page={page - 1}
+              pageSize={pageSize}
+              rowCount={lotArr.length}
+              onPageChange={(newPage) => {
+                setPage(newPage + 1);
+              }}
+              getRowId={(rows) => rows.Id}
+              onSelectionModelChange={(newSelectedRowId) =>
+                handleRowSelection(newSelectedRowId)
+              }
+              onPageSizeChange={(newPageSize) => {
+                setPageSize(newPageSize);
+                setPage(1);
+              }}
+              processRowUpdate={handleRowUpdate}
+              onProcessRowUpdateError={handleProcessRowUpdateError}
+              experimentalFeatures={{ newEditingApi: true }}
+              // initialState={{
+              //   aggregation: {
+              //     model: {
+              //       orderQty: 'sum',
+              //     },
+              //   },
+              // }}
+              rowsPerPageOptions={[5, 10, 15]}
+              getRowClassName={(params) => {
+                // if (_.isEqual(params.row, newData)) {
+                //     return `Mui-created`;
+                // }
+              }}
             />
           </Grid>
 
@@ -273,43 +400,7 @@ const MaterialSODetailDialog = (props) => {
 
         </Grid>
 
-        <MuiDataGrid
-          showLoading={isLoading}
-          // isPagingServer={true}
-          headerHeight={45}
-          // rowHeight={30}
-          // gridHeight={736}
-          checkboxSelection
-          columns={columns}
-          rows={lotArr}
-          page={page - 1}
-          pageSize={pageSize}
-          rowCount={lotArr.length}
-          onPageChange={(newPage) => {
-            setPage(newPage + 1);
-          }}
-          getRowId={(rows) => rows.Id}
-          onSelectionModelChange={(newSelectedRowId) =>
-            handleRowSelection(newSelectedRowId)
-          }
-          onPageSizeChange={(newPageSize) => {
-            setPageSize(newPageSize);
-            setPage(1);
-          }}
-          // initialState={{
-          //   aggregation: {
-          //     model: {
-          //       orderQty: 'sum',
-          //     },
-          //   },
-          // }}
-          rowsPerPageOptions={[5, 10, 15]}
-          getRowClassName={(params) => {
-            // if (_.isEqual(params.row, newData)) {
-            //     return `Mui-created`;
-            // }
-          }}
-        />
+
       </form>
     </MuiDialog>
   );
