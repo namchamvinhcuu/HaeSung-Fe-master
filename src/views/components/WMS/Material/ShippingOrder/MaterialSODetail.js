@@ -278,6 +278,7 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
     {
       field: "Button",
       headerName: "Action",
+      align: "center",
       renderCell: (params) => {
         return (
           <Button
@@ -458,12 +459,12 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
         MsoId={MsoId}
       />
       {isShowing2 && (
-        <PopupConform isShowing={true} hide={toggle2} rowConfirm={rowConfirm} setUpdateData={setUpdateData}/>
+        <PopupConfirm isShowing={true} hide={toggle2} rowConfirm={rowConfirm} setUpdateData={setUpdateData}/>
       )}
     </React.Fragment>
   );
 };
-const PopupConform = memo(({ isShowing, hide, rowConfirm, setUpdateData }) => {
+const PopupConfirm = memo(({ isShowing, hide, rowConfirm, setUpdateData }) => {
   const intl = useIntl();
   const verifyConfirm = async() =>{
    const res =  await materialSOService.pickingMsoDetail({
