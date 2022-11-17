@@ -34,7 +34,7 @@ const MaterialReportDetail = ({LotId}) => {
       filterable: false,
       renderCell: (index) => (index.api.getRowIndex(index.row.QcId) + 1) + (iqcStateDetail.page - 1) * iqcStateDetail.pageSize,
     },
-    // { field: 'QCMasterCode', headerName: intl.formatMessage({ id: "qcMaster.QCMasterCode" }), flex: 0.5, },
+   { field: 'MaterialCode', headerName: "Material Code", flex: 0.5, },
     {
       field: 'QCCode', headerName: intl.formatMessage({ id: "standardQC.QCCode" }), flex: 0.5,
       renderCell: (params) => (

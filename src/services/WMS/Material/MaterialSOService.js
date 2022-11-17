@@ -76,3 +76,11 @@ export const getLots = async (materialId) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+export const pickingMsoDetail = async (params) => {
+  try {
+    return await axios.put(`${API}/picking-mso-details`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};

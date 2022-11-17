@@ -10,7 +10,7 @@ const MaterialSODetailDto = {
     MaterialColorCode: "",
     StartSearchingDate: new Date(),
     EndSearchingDate: new Date(),
-
+    
     isActived: true,
 };
 

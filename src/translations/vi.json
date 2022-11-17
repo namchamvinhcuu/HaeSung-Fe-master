@@ -73,7 +73,8 @@
         "week_invalid": "Tuần phải là số nguyên dương trong khoảng 1 - 52",
         "year_invalid": "Năm phải là số nguyên dương trong khoảng 2022 - 2050",
         "datetime_format_invalid": "Format ngày giờ không hợp lệ",
-        "over_range_999": "Sequence is over 999"
+        "over_range_999": "Sequence is over 999",
+        "qty_notEnough":"Số lượng không đủ"
     },
     "login": {
         "account_password_invalid": "Tài khoản/Mật khẩu không hợp lệ",

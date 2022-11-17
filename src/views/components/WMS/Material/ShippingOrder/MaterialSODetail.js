@@ -24,9 +24,21 @@ import { materialSOService } from "@services";
 import { MaterialSOMasterDto, MaterialSODetailDto } from "@models";
 import MaterialSODetailDialog from "./MaterialSODetailDialog";
 import { useModal, useModal2 } from "@basesShared";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Typography,
+} from "@mui/material";
+import { memo } from "react";
+import CloseIcon from "@mui/icons-material/Close";
 
-const MaterialSODetail = ({ MsoId }) => {
+const MaterialSODetail = ({ MsoId, fromPicking }) => {
   let isRendered = useRef(true);
+  const { isShowing2, toggle2 } = useModal2();
   const intl = useIntl();
   const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
@@ -41,13 +53,14 @@ const MaterialSODetail = ({ MsoId }) => {
     searchData: {
       ...MaterialSODetailDto,
       MaterialCode: "",
-      isActived: true
+      isActived: true,
     },
     MsoId: MsoId,
   });
 
   const [newData, setNewData] = useState({ ...MaterialSODetailDto });
   const [newDataArr, setNewDataArr] = useState([]);
+  const [rowConfirm, setRowConfirm] = useState([]);
 
   useEffect(() => {
     fetchData(MsoId);
@@ -59,7 +72,6 @@ const MaterialSODetail = ({ MsoId }) => {
   ]);
 
   useEffect(() => {
-
     if (isRendered && newDataArr.length) {
       const data = [newDataArr, ...materialSODetailState.data];
       if (data.length > materialSODetailState.pageSize) {
@@ -121,7 +133,6 @@ const MaterialSODetail = ({ MsoId }) => {
   };
 
   const fetchData = async (MsoId) => {
-
     setMaterialSODetailState({ ...materialSODetailState, isLoading: true });
     const params = {
       page: materialSODetailState.page,
@@ -234,7 +245,89 @@ const MaterialSODetail = ({ MsoId }) => {
       /*flex: 0.7,*/ width: 150,
     },
   ];
+  const columnsFromPicking = [
+    { field: "MsoDetailId", headerName: "", hide: true },
+    // { field: "MsoId", headerName: "", hide: true },
+    // { field: "MaterialId", headerName: "", hide: true },
 
+    {
+      field: "id",
+      headerName: "",
+      width: 100,
+      filterable: false,
+      renderCell: (index) =>
+        index.api.getRowIndex(index.row.MsoDetailId) +
+        1 +
+        (materialSODetailState.page - 1) * materialSODetailState.pageSize,
+    },
+
+    {
+      field: "MsoCode",
+      headerName: intl.formatMessage({ id: "material-so-detail.MsoCode" }),
+      /*flex: 0.7,*/ width: 150,
+    },
+
+    {
+      field: "MaterialColorCode",
+      headerName: intl.formatMessage({
+        id: "material-so-detail.MaterialColorCode",
+      }),
+      /*flex: 0.7,*/ width: 200,
+    },
+
+    {
+      field: "MsoDetailStatus",
+      headerName: intl.formatMessage({
+        id: "material-so-detail.MsoDetailStatus",
+      }),
+      /*flex: 0.7,*/ width: 120,
+    },
+
+    {
+      field: "SOrderQty",
+      headerName: intl.formatMessage({ id: "material-so-detail.SOrderQty" }),
+      /*flex: 0.7,*/ width: 150,
+    },
+    {
+      field: "Button",
+      headerName: "Action",
+      renderCell: (params) => {
+        return (
+          <Button
+          disabled={params.row.MsoDetailStatus}
+            variant="contained"
+            color="success"
+            size="small"
+            sx={{ textTransform: "capitalize", fontSize: "14px" }}
+            onClick={() => handleConfirm(params)}
+          >
+            {params.row.MsoDetailStatus?<span style={{color:"rgba(0,0,0,0.7)"}}>Picked</span>:"Picking"}
+          </Button>
+        );
+      },
+    },
+    {
+      field: "PickingDate",
+      headerName: "Picking Date",
+      width: 150,
+      valueFormatter: (params) => {
+        if (params.value !== null) {
+          return moment(params?.value)
+            .add(7, "hours")
+            .format("YYYY-MM-DD HH:mm:ss");
+        }
+      },
+    },
+    {
+      field: "pickingUser",
+      headerName: "User Picking",
+      width: 150,
+    },
+  ];
+  const handleConfirm = (params) => {
+    toggle2();
+    setRowConfirm(params.row)
+  };
   const handleAdd = () => {
     setMode(CREATE_ACTION);
     setRowData({ ...MaterialSODetailDto });
@@ -250,7 +343,10 @@ const MaterialSODetail = ({ MsoId }) => {
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...materialSODetailState.searchData };
     newSearchData[inputName] = e;
-    setMaterialSODetailState({ ...materialSODetailState, searchData: { ...newSearchData } });
+    setMaterialSODetailState({
+      ...materialSODetailState,
+      searchData: { ...newSearchData },
+    });
   };
 
   return (
@@ -262,12 +358,14 @@ const MaterialSODetail = ({ MsoId }) => {
         alignItems="flex-end"
       >
         <Grid item xs={1.5}>
-          <MuiButton
-            disabled={MsoId ? false : true}
-            text="create"
-            color="success"
-            onClick={handleAdd}
-          />
+          {!fromPicking && (
+            <MuiButton
+              disabled={MsoId ? false : true}
+              text="create"
+              color="success"
+              onClick={handleAdd}
+            />
+          )}
         </Grid>
 
         <Grid item xs>
@@ -290,7 +388,6 @@ const MaterialSODetail = ({ MsoId }) => {
                 onClick={() => fetchData(MsoId)}
               />
             </Grid>
-
           </Grid>
         </Grid>
       </Grid>
@@ -301,7 +398,7 @@ const MaterialSODetail = ({ MsoId }) => {
         headerHeight={45}
         // rowHeight={30}
         // gridHeight={736}
-        columns={columns}
+        columns={fromPicking ? columnsFromPicking : columns}
         rows={materialSODetailState.data}
         page={materialSODetailState.page - 1}
         pageSize={materialSODetailState.pageSize}
@@ -333,9 +430,62 @@ const MaterialSODetail = ({ MsoId }) => {
         mode={mode}
         MsoId={MsoId}
       />
+      {isShowing2 && (
+        <PopupConform isShowing={true} hide={toggle2} rowConfirm={rowConfirm} setUpdateData={setUpdateData}/>
+      )}
     </React.Fragment>
   );
 };
+const PopupConform = memo(({ isShowing, hide, rowConfirm, setUpdateData }) => {
+  const intl = useIntl();
+  const verifyConfirm = async() =>{
+   const res =  await materialSOService.pickingMsoDetail({
+      ...rowConfirm,
+    })
+    if (res.HttpResponseCode === 200) {
+      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      setUpdateData({ ...res.Data });
+      hide();
+    } else {
+      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    }
+  }
+  return (
+    <Dialog open={isShowing} maxWidth="sm" fullWidth>
+      <DialogTitle
+        sx={{
+          p: 1,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Typography sx={{ fontWeight: 600, fontSize: "22px" }}>
+          Confirm Picking
+        </Typography>
+        <IconButton
+          aria-label="delete"
+          size="small"
+          onClick={() => hide()}
+          sx={{ backgroundColor: "rgba(0,0,0,0.1)" }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent sx={{ textAlign: "center" }}>
+        <Typography variant="h5"> Are you sure picking?</Typography>
+        <Box sx={{ mt: 1 }}>
+          <Button variant="contained" color="success" sx={{ m: 1 }} onClick={verifyConfirm}>
+            Confirm 
+          </Button>
+          <Button variant="contained" color="error" sx={{ m: 1 }} onClick={hide}>
+            Cancel
+          </Button>
+        </Box>
+      </DialogContent>
+    </Dialog>
+  );
+});
 
 User_Operations.toString = function () {
   return "User_Operations";
