@@ -18,6 +18,8 @@ import { LotDto } from "@models";
 import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
 
+import axios from "axios";
+
 const MaterialPutAway = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
@@ -151,6 +153,18 @@ const MaterialPutAway = (props) => {
     await handlePutAway({ lot, binId });
     lotInputRef.current.value = "";
     lotInputRef.current.focus();
+
+    let dataList = []
+
+    const res = await materialPutAwayService.getESLDataByBinId(binId);
+
+    dataList.push(res);
+    try {
+      let response = await axios.post('http://118.69.130.73:9001/articles', { dataList: dataList });
+      // console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   const columns = [
@@ -238,6 +252,10 @@ const MaterialPutAway = (props) => {
   ];
 
   const handlePutAway = async (inputValue) => {
+    if((inputValue.binId===0 || inputValue.binId == undefined) || inputValue.lot.trim()===""){
+      ErrorAlert(intl.formatMessage({ id:"lot.binAndLot_required" }));
+      return;
+    }
     const res = await materialPutAwayService.scanPutAway({
       LotCode: inputValue.lot.trim(),
       BinId: inputValue.binId,
@@ -272,6 +290,7 @@ const MaterialPutAway = (props) => {
                 displayLabel="LocationCode"
                 displayValue="LocationId"
                 onChange={(e, item) => {
+                  setBinId(0)
                   handleInputChange(
                     item ? item?.LocationId ?? null : null,
                     "LocationId"
@@ -289,6 +308,7 @@ const MaterialPutAway = (props) => {
                 displayLabel="ShelfCode"
                 displayValue="ShelfId"
                 onChange={(e, item) => {
+                  setBinId(0)
                   handleInputChange(
                     item ? item?.ShelfId ?? null : null,
                     "ShelfId"

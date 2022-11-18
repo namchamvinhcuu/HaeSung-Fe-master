@@ -177,7 +177,15 @@ const MaterialPicking = (props) => {
         {
             field: "MsoStatus",
             headerName: intl.formatMessage({ id: "material-so-master.MsoStatus" }),
+            align:"center",
       /*flex: 0.7,*/ width: 120,
+            renderCell: (params) => { 
+                return(
+                    params.row.MsoStatus
+                    ?<span className="badge badge-success" style={{fontSize:"13px"}}>DONE</span>
+                    :<span className="badge badge-danger" style={{fontSize:"13px"}}>NOT YET</span>
+                );
+            }
         },
 
         {
