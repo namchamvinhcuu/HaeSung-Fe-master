@@ -458,7 +458,7 @@
         "MaterialColorCode": "Material",
         "MsoDetailStatus": "Status",
         "SOrderQty": "Order Qty",
-        "SOrderQty_tip": "Double click to value for edit",
+        "SOrderQty_tip": "Double click to edit",
         "LotSerial":"Lot Serial",
         "BinCode" : "Bin Code",
         "MsoDetailStatus_edit": "Cannot update because status",

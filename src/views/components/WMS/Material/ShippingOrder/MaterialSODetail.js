@@ -31,6 +31,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { memo } from "react";
@@ -218,8 +219,14 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
     {
       field: "SOrderQty",
       headerName: intl.formatMessage({ id: "material-so-detail.SOrderQty" }),
-      description: intl.formatMessage({ id: "material-so-detail.SOrderQty_tip" }),
       /*flex: 0.7,*/ width: 150, editable: true,
+      renderCell: (params) => {
+        return (
+          <Tooltip title={params.row.MsoDetailStatus ? "" : intl.formatMessage({ id: "material-so-detail.SOrderQty_tip" })}>
+            <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.SOrderQty}</Typography>
+          </Tooltip>
+        );
+      },
     },
     {
       field: "LotSerial",
@@ -273,7 +280,6 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
     {
       field: "SOrderQty",
       headerName: intl.formatMessage({ id: "material-so-detail.SOrderQty" }),
-      description: intl.formatMessage({ id: "material-so-detail.SOrderQty_tip" }),
       /*flex: 0.7,*/ width: 150,
     },
     {

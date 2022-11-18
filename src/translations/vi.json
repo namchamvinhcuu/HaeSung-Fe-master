@@ -458,7 +458,7 @@
         "MaterialColorCode": "Liệu",
         "MsoDetailStatus": "Trạng thái",
         "SOrderQty": "S/L yêu cầu",
-        "SOrderQty_tip": "Double click vào dữ liệu để chỉnh sửa",
+        "SOrderQty_tip": "Double click để chỉnh sửa",
         "LotSerial":"Lot Serial",
         "BinCode" : "Mã Bin",
         "MsoDetailStatus_edit": "Không thể sửa vì trạng thái",
