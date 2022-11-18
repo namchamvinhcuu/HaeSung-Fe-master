@@ -262,13 +262,13 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
       /*flex: 0.7,*/ width: 200,
     },
 
-    {
-      field: "MsoDetailStatus",
-      headerName: intl.formatMessage({
-        id: "material-so-detail.MsoDetailStatus",
-      }),
-      /*flex: 0.7,*/ width: 120,
-    },
+    // {
+    //   field: "MsoDetailStatus",
+    //   headerName: intl.formatMessage({
+    //     id: "material-so-detail.MsoDetailStatus",
+    //   }),
+    //   /*flex: 0.7,*/ width: 120,
+    // },
 
     {
       field: "SOrderQty",
