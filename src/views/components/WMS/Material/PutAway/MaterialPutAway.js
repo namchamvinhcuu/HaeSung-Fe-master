@@ -220,7 +220,7 @@ const MaterialPutAway = (props) => {
     },
     {
       field: "LocationCode",
-      headerName: "Location Name",
+      headerName: "Bin",
       width: 250,
     },
     {
