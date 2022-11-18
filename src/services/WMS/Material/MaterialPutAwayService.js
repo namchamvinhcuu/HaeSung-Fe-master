@@ -55,4 +55,20 @@ const handleDelete = async (params) => {
   }
 };
 
-export { get, getAilse, getShelf, getBin, scanPutAway, handleDelete };
+const getESLData = async (BinCode) => {
+  try {
+    return await axios.get(`${apiName}/get-els-data?BinCode=${BinCode}`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+}
+
+const getESLDataByBinId = async (BinId) => {
+  try {
+    return await axios.get(`${apiName}/get-els-data-by-binId?BinId=${BinId}`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+}
+
+export { get, getAilse, getShelf, getBin, scanPutAway, handleDelete, getESLData, getESLDataByBinId };
