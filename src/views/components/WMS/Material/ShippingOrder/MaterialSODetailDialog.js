@@ -215,7 +215,8 @@ const MaterialSODetailDialog = (props) => {
     {
       field: "RequestQty",
       headerName: intl.formatMessage({ id: "lot.RequestQty" }),
-      /*flex: 0.7,*/ width: 150, editable: true
+      description: intl.formatMessage({ id: "material-so-detail.SOrderQty_tip" }),
+      /*flex: 0.7,*/ width: 150, editable: true,
     },
 
     {

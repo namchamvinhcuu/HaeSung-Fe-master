@@ -34,6 +34,7 @@ const MaterialSO = (props) => {
     let isRendered = useRef(true);
     const intl = useIntl();
     const [MsoId, setMsoId] = useState(null);
+    const [MsoStatus, setMsoStatus] = useState(false);
     const [materialSOState, setMaterialSOState] = useState({
         isLoading: false,
         data: [],
@@ -124,7 +125,7 @@ const MaterialSO = (props) => {
                 let res = await materialSOService.deleteMsoMaster({
                     MsoId: materialSOMaster.MsoId,
                     row_version: materialSOMaster.row_version,
-                  });
+                });
                 if (res) {
                     if (res && res.HttpResponseCode === 200) {
                         SuccessAlert(intl.formatMessage({ id: "general.success" }));
@@ -263,19 +264,24 @@ const MaterialSO = (props) => {
         {
             field: "MsoCode",
             headerName: intl.formatMessage({ id: "material-so-master.MsoCode" }),
-      /*flex: 0.7,*/ width: 150,
+            /*flex: 0.7,*/ width: 150,
         },
 
         {
             field: "MsoStatus",
             headerName: intl.formatMessage({ id: "material-so-master.MsoStatus" }),
-      /*flex: 0.7,*/ width: 120,
+            /*flex: 0.7,*/ width: 120,
+            renderCell: (params) => {
+                return params.row.MsoStatus ?
+                    (<b style={{ color: "green" }}>{intl.formatMessage({ id: "material-so-master.MsoStatus_true" })}</b>) :
+                    (<b style={{ color: "red" }}>{intl.formatMessage({ id: "material-so-master.MsoStatus_false" })}</b>)
+            }
         },
 
         {
             field: "Requester",
             headerName: intl.formatMessage({ id: "material-so-master.Requester" }),
-      /*flex: 0.7,*/ width: 200,
+            /*flex: 0.7,*/ width: 200,
         },
 
         {
@@ -473,12 +479,13 @@ const MaterialSO = (props) => {
                     setMaterialSOState({ ...materialSOState, page: newPage + 1 });
                 }}
                 getRowId={(rows) => rows.MsoId}
-                onSelectionModelChange={(newSelectedRowId) =>
-                    {
-                        handleRowSelection(newSelectedRowId);
-                        setMsoId(newSelectedRowId[0]);
-                    }
-                }
+                onSelectionModelChange={(newSelectedRowId) => {
+                    handleRowSelection(newSelectedRowId);
+                    setMsoId(newSelectedRowId[0]);
+                    var row = materialSOState.data.find(x => x.MsoId == newSelectedRowId[0]);
+                    if (row)
+                        setMsoStatus(row.MsoStatus);
+                }}
                 getRowClassName={(params) => {
                     if (_.isEqual(params.row, newData)) {
                         return `Mui-created`;
@@ -496,7 +503,7 @@ const MaterialSO = (props) => {
                 mode={mode}
             />
 
-            <MaterialSODetail MsoId={MsoId} fromPicking={false}/>
+            <MaterialSODetail MsoId={MsoId} fromPicking={false} MsoStatus={MsoStatus} />
         </React.Fragment>
     )
 }

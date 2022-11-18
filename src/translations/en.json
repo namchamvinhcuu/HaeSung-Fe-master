@@ -443,6 +443,8 @@
     "material-so-master": {
         "MsoCode": "SO Code",
         "MsoStatus": "Status",
+        "MsoStatus_true": "Done",
+        "MsoStatus_false": "Not Yet",
         "Requester": "Requester",
         "DueDate": "SO DueDate",
         "Remark": "Remark",
@@ -455,6 +457,7 @@
         "MaterialColorCode": "Material",
         "MsoDetailStatus": "Status",
         "SOrderQty": "Order Qty",
+        "SOrderQty_tip": "Double click to value for edit",
         "LotSerial":"Lot Serial",
         "BinCode" : "Bin Code",
         "MsoDetailStatus_edit": "Cannot update because status",
