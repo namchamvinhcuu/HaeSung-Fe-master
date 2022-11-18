@@ -459,9 +459,7 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
         mode={mode}
         MsoId={MsoId}
       />
-      {isShowing2 && (
-        <PopupConfirm isShowing={true} hide={toggle2} rowConfirm={rowConfirm} setUpdateData={setUpdateData} />
-      )}
+      <PopupConfirm isShowing={isShowing2} hide={toggle2} rowConfirm={rowConfirm} setUpdateData={setUpdateData} />
     </React.Fragment>
   );
 };
