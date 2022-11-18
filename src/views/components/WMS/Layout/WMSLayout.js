@@ -112,10 +112,16 @@ const WMSLayout = (props) => {
             filterable: false,
             renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (lotState.page - 1) * lotState.pageSize,
         },
-        { field: "LotCode", headerName: "Lot Code", flex: 0.6, },
-        { field: "MaterialCode", headerName: "Material Code", flex: 0.4, },
+        //{ field: "LotCode", headerName: "Lot Code", flex: 0.6, },
         { field: "LotSerial", headerName: "LotSerial", flex: 0.3, },
+        { field: "MaterialCode", headerName: "Material Code", flex: 0.4, },
         { field: "Qty", headerName: "Qty", flex: 0.3, },
+        {
+            field: "IncomingDate", headerName: "Incoming Date", flex: 0.5,
+            valueFormatter: (params) => {
+                if (params.value !== null) return moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss");
+            },
+        },
     ];
 
     const handleDelete = async (lot) => {

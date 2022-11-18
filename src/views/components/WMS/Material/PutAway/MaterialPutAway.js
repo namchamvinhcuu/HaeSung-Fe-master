@@ -18,6 +18,10 @@ import { LotDto } from "@models";
 import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
 
+import _ from 'lodash'
+
+import axios from "axios";
+
 const MaterialPutAway = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
@@ -26,6 +30,7 @@ const MaterialPutAway = (props) => {
   const [locationId, setLocationId] = useState(0);
   const [shelfId, setShelfId] = useState(0);
   const [binId, setBinId] = useState(0);
+  const [binCode, setBinCode] = useState('');
   const [putAwayState, setPutAwayState] = useState({
     isLoading: false,
     data: [],
@@ -33,6 +38,8 @@ const MaterialPutAway = (props) => {
     page: 1,
     pageSize: 20,
   });
+
+  const initialESLData = { ITEM_NAME: '', LOCATION: '', SHELVE_LEVEL: -32768 }
 
   const keyPress = async (e) => {
     if (e.key === "Enter") {
@@ -151,6 +158,21 @@ const MaterialPutAway = (props) => {
     await handlePutAway({ lot, binId });
     lotInputRef.current.value = "";
     lotInputRef.current.focus();
+
+    let dataList = []
+
+    let res = await materialPutAwayService.getESLDataByBinId(binId);
+    if (res && res.data && !_.isEqual(res.data, initialESLData)) {
+      res.id = `Bin-${binCode}`;
+      dataList.push(res);
+    }
+    if (dataList.length > 0)
+      try {
+        let response = await axios.post('http://118.69.130.73:9001/articles', { dataList: dataList });
+        // console.log(response)
+      } catch (error) {
+        console.log(error)
+      }
   };
 
   const columns = [
@@ -238,8 +260,8 @@ const MaterialPutAway = (props) => {
   ];
 
   const handlePutAway = async (inputValue) => {
-    if((inputValue.binId===0 || inputValue.binId == undefined) || inputValue.lot.trim()===""){
-      ErrorAlert(intl.formatMessage({ id:"lot.binAndLot_required" }));
+    if ((inputValue.binId === 0 || inputValue.binId == undefined) || inputValue.lot.trim() === "") {
+      ErrorAlert(intl.formatMessage({ id: "lot.binAndLot_required" }));
       return;
     }
     const res = await materialPutAwayService.scanPutAway({
@@ -314,6 +336,7 @@ const MaterialPutAway = (props) => {
                 onChange={(e, item) => {
                   handleInputChange(item ? item?.BinId ?? null : null, "BinId");
                   setBinId(item?.BinId);
+                  setBinCode(item?.BinCode)
                 }}
                 variant="standard"
               />
