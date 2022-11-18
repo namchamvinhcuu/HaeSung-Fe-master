@@ -189,6 +189,20 @@ const MaterialPutAway = (props) => {
       res.data.LOCATION = binCode;
       res.data.SHELVE_LEVEL = binLevel
     }
+    // else {
+    //   let item_name = '';
+
+    //   let splitItem = res.data.ITEM_NAME.split(',');
+    //   for (let i = 0; i < splitItem.length; i++) {
+    //     item_name += splitItem[i].trim() + (' ', 22 + (i - splitItem[i].trim().length))
+    //   }
+
+    //   // let str = item_name.join("", res.data.ITEM_NAME.split(',').select(a => a.trim()).select((a, index) => {
+    //   //   return a + (' ', 22 + index - a.length);
+    //   // }));
+
+    //   res.data.ITEM_NAME = item_name;
+    // }
 
     res.id = `Bin-${binCode}`;
     dataList.push(res);
