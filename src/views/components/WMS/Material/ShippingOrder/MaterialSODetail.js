@@ -36,7 +36,7 @@ import {
 import { memo } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 
-const MaterialSODetail = ({ MsoId, fromPicking }) => {
+const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
   let isRendered = useRef(true);
   const { isShowing2, toggle2 } = useModal2();
   const intl = useIntl();
@@ -98,7 +98,6 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
       if (index !== -1) {
         newArr[index] = updateData;
       }
-      console.log(newArr)
       setMaterialSODetailState({ ...materialSODetailState, data: [...newArr] });
     }
   }, [updateData]);
@@ -219,7 +218,8 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
     {
       field: "SOrderQty",
       headerName: intl.formatMessage({ id: "material-so-detail.SOrderQty" }),
-      /*flex: 0.7,*/ width: 150, editable: true
+      description: intl.formatMessage({ id: "material-so-detail.SOrderQty_tip" }),
+      /*flex: 0.7,*/ width: 150, editable: true,
     },
     {
       field: "LotSerial",
@@ -262,17 +262,18 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
       /*flex: 0.7,*/ width: 200,
     },
 
-    {
-      field: "MsoDetailStatus",
-      headerName: intl.formatMessage({
-        id: "material-so-detail.MsoDetailStatus",
-      }),
-      /*flex: 0.7,*/ width: 120,
-    },
+    // {
+    //   field: "MsoDetailStatus",
+    //   headerName: intl.formatMessage({
+    //     id: "material-so-detail.MsoDetailStatus",
+    //   }),
+    //   /*flex: 0.7,*/ width: 120,
+    // },
 
     {
       field: "SOrderQty",
       headerName: intl.formatMessage({ id: "material-so-detail.SOrderQty" }),
+      description: intl.formatMessage({ id: "material-so-detail.SOrderQty_tip" }),
       /*flex: 0.7,*/ width: 150,
     },
     {
@@ -282,14 +283,14 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
       renderCell: (params) => {
         return (
           <Button
-          disabled={params.row.MsoDetailStatus}
+            disabled={params.row.MsoDetailStatus}
             variant="contained"
             color="success"
             size="small"
             sx={{ textTransform: "capitalize", fontSize: "14px" }}
             onClick={() => handleConfirm(params)}
           >
-            {params.row.MsoDetailStatus?<span style={{color:"rgba(0,0,0,0.7)"}}>Picked</span>:"Picking"}
+            {params.row.MsoDetailStatus ? <span style={{ color: "rgba(0,0,0,0.7)" }}>Picked</span> : "Picking"}
           </Button>
         );
       },
@@ -323,13 +324,13 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
   };
 
   const handleRowUpdate = async (newRow) => {
-    if (newRow.MsoDetailStatus != false) {
-      ErrorAlert(intl.formatMessage({ id: "material-so-detail.MsoDetailStatus_edit" }));
-      const index = _.findIndex(materialSODetailState.data, function (o) {
-        return o.MsoDetailId == newRow.MsoDetailId;
-      });
+    const index = _.findIndex(materialSODetailState.data, function (o) {
+      return o.MsoDetailId == newRow.MsoDetailId;
+    });
+    var oldRow = materialSODetailState.data[index];
 
-      return materialSODetailState.data[index];
+    if (newRow.SOrderQty == oldRow.SOrderQty) {
+      return oldRow;
     }
 
     setMaterialSODetailState({ ...materialSODetailState, isSubmit: true });
@@ -383,7 +384,7 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
         <Grid item xs={1.5}>
           {!fromPicking && (
             <MuiButton
-              disabled={MsoId ? false : true}
+              disabled={MsoId ? MsoStatus : true}
               text="create"
               color="success"
               onClick={handleAdd}
@@ -459,15 +460,15 @@ const MaterialSODetail = ({ MsoId, fromPicking }) => {
         MsoId={MsoId}
       />
       {isShowing2 && (
-        <PopupConfirm isShowing={true} hide={toggle2} rowConfirm={rowConfirm} setUpdateData={setUpdateData}/>
+        <PopupConfirm isShowing={true} hide={toggle2} rowConfirm={rowConfirm} setUpdateData={setUpdateData} />
       )}
     </React.Fragment>
   );
 };
 const PopupConfirm = memo(({ isShowing, hide, rowConfirm, setUpdateData }) => {
   const intl = useIntl();
-  const verifyConfirm = async() =>{
-   const res =  await materialSOService.pickingMsoDetail({
+  const verifyConfirm = async () => {
+    const res = await materialSOService.pickingMsoDetail({
       ...rowConfirm,
     })
     if (res.HttpResponseCode === 200) {
@@ -504,7 +505,7 @@ const PopupConfirm = memo(({ isShowing, hide, rowConfirm, setUpdateData }) => {
         <Typography variant="h5"> Are you sure picking?</Typography>
         <Box sx={{ mt: 1 }}>
           <Button variant="contained" color="success" sx={{ m: 1 }} onClick={verifyConfirm}>
-            Confirm 
+            Confirm
           </Button>
           <Button variant="contained" color="error" sx={{ m: 1 }} onClick={hide}>
             Cancel

@@ -252,6 +252,10 @@ const MaterialPutAway = (props) => {
   ];
 
   const handlePutAway = async (inputValue) => {
+    if((inputValue.binId===0 || inputValue.binId == undefined) || inputValue.lot.trim()===""){
+      ErrorAlert(intl.formatMessage({ id:"lot.binAndLot_required" }));
+      return;
+    }
     const res = await materialPutAwayService.scanPutAway({
       LotCode: inputValue.lot.trim(),
       BinId: inputValue.binId,
@@ -286,6 +290,7 @@ const MaterialPutAway = (props) => {
                 displayLabel="LocationCode"
                 displayValue="LocationId"
                 onChange={(e, item) => {
+                  setBinId(0)
                   handleInputChange(
                     item ? item?.LocationId ?? null : null,
                     "LocationId"
@@ -303,6 +308,7 @@ const MaterialPutAway = (props) => {
                 displayLabel="ShelfCode"
                 displayValue="ShelfId"
                 onChange={(e, item) => {
+                  setBinId(0)
                   handleInputChange(
                     item ? item?.ShelfId ?? null : null,
                     "ShelfId"

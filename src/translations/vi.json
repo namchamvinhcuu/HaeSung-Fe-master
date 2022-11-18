@@ -422,7 +422,8 @@
         "Qty": "Số lượng",
         "RequestQty": "S/L yêu cầu",
         "IncomingDate": "Ngày nhập kho",
-        "QC_required": "QC bắt buộc chọn"
+        "QC_required": "QC bắt buộc chọn",
+        "binAndLot_required": "Bin hoặc Lot chưa có dữ liệu"
     },
     "wms-layout": {
         "warehouse": "Kho",
@@ -443,6 +444,8 @@
     "material-so-master": {
         "MsoCode": "Mã SO",
         "MsoStatus": "Trạng thái",
+        "MsoStatus_true": "Done",
+        "MsoStatus_false": "Not Yet",
         "Requester": "Người Y/C",
         "DueDate": "SO DueDate",
         "Remark": "Note",
@@ -455,6 +458,7 @@
         "MaterialColorCode": "Liệu",
         "MsoDetailStatus": "Trạng thái",
         "SOrderQty": "S/L yêu cầu",
+        "SOrderQty_tip": "Double click vào dữ liệu để chỉnh sửa",
         "LotSerial":"Lot Serial",
         "BinCode" : "Mã Bin",
         "MsoDetailStatus_edit": "Không thể sửa vì trạng thái",
