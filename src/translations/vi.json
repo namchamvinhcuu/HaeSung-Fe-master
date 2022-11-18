@@ -422,7 +422,8 @@
         "Qty": "Số lượng",
         "RequestQty": "S/L yêu cầu",
         "IncomingDate": "Ngày nhập kho",
-        "QC_required": "QC bắt buộc chọn"
+        "QC_required": "QC bắt buộc chọn",
+        "binAndLot_required": "Bin hoặc Lot chưa có dữ liệu"
     },
     "wms-layout": {
         "warehouse": "Kho",
