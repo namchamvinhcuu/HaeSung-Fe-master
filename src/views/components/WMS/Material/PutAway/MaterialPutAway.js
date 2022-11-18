@@ -31,6 +31,7 @@ const MaterialPutAway = (props) => {
   const [shelfId, setShelfId] = useState(0);
   const [binId, setBinId] = useState(0);
   const [binCode, setBinCode] = useState('');
+  const [binLevel, setBinLevel] = useState(0);
   const [putAwayState, setPutAwayState] = useState({
     isLoading: false,
     data: [],
@@ -72,6 +73,7 @@ const MaterialPutAway = (props) => {
         let res = await materialPutAwayService.handleDelete(lot);
         if (res && res.HttpResponseCode === 200) {
           await fetchData();
+          await updateESLData(lot.BinId);
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         }
@@ -159,13 +161,38 @@ const MaterialPutAway = (props) => {
     lotInputRef.current.value = "";
     lotInputRef.current.focus();
 
+    // let dataList = []
+
+    // let res = await materialPutAwayService.getESLDataByBinId(binId);
+    // if (res && res.data && !_.isEqual(res.data, initialESLData)) {
+    //   res.id = `Bin-${binCode}`;
+    //   dataList.push(res);
+    // }
+    // if (dataList.length > 0)
+    //   try {
+    //     let response = await axios.post('http://118.69.130.73:9001/articles', { dataList: dataList });
+    //     // console.log(response)
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+
+    await updateESLData(binId);
+  };
+
+  const updateESLData = async (bin_Id) => {
     let dataList = []
 
-    let res = await materialPutAwayService.getESLDataByBinId(binId);
-    if (res && res.data && !_.isEqual(res.data, initialESLData)) {
-      res.id = `Bin-${binCode}`;
-      dataList.push(res);
+    let res = await materialPutAwayService.getESLDataByBinId(bin_Id);
+
+
+    if (_.isEqual(res.data, initialESLData)) {
+      res.data.LOCATION = binCode;
+      res.data.SHELVE_LEVEL = binLevel
     }
+
+    res.id = `Bin-${binCode}`;
+    dataList.push(res);
+
     if (dataList.length > 0)
       try {
         let response = await axios.post('http://118.69.130.73:9001/articles', { dataList: dataList });
@@ -173,10 +200,11 @@ const MaterialPutAway = (props) => {
       } catch (error) {
         console.log(error)
       }
-  };
+  }
 
   const columns = [
     { field: "Id", headerName: "", hide: true },
+
     {
       field: "id",
       headerName: "",
@@ -229,6 +257,7 @@ const MaterialPutAway = (props) => {
       headerName: "Material Code",
       width: 250,
     },
+
     {
       field: "LotSerial",
       headerName: "Lot Serial",
@@ -240,11 +269,13 @@ const MaterialPutAway = (props) => {
       headerName: "Qty",
       width: 100,
     },
+
     {
       field: "LocationCode",
       headerName: "Location Name",
       width: 250,
     },
+
     {
       field: "IncomingDate",
       headerName: "Incoming Date",
@@ -308,6 +339,7 @@ const MaterialPutAway = (props) => {
                 variant="standard"
               />
             </Grid>
+
             <Grid item sx={{ width: "215px" }}>
               <MuiAutocomplete
                 key={locationId}
@@ -326,6 +358,7 @@ const MaterialPutAway = (props) => {
                 variant="standard"
               />
             </Grid>
+
             <Grid item sx={{ width: "215px" }}>
               <MuiAutocomplete
                 key={[shelfId, locationId]}
@@ -336,13 +369,15 @@ const MaterialPutAway = (props) => {
                 onChange={(e, item) => {
                   handleInputChange(item ? item?.BinId ?? null : null, "BinId");
                   setBinId(item?.BinId);
-                  setBinCode(item?.BinCode)
+                  setBinCode(item?.BinCode);
+                  setBinLevel(item?.BinLevel)
                 }}
                 variant="standard"
               />
             </Grid>
           </Grid>
         </Grid>
+
         <Grid item>
           <Grid container spacing={2}>
             <Grid item sx={{ width: "600px", mt: 0.5 }}>
@@ -361,6 +396,7 @@ const MaterialPutAway = (props) => {
           </Grid>
         </Grid>
       </Grid>
+
       <MuiDataGrid
         showLoading={putAwayState.isLoading}
         isPagingServer={true}
