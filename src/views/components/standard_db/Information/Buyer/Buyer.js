@@ -266,7 +266,7 @@ const Buyer = (props) => {
             title={params.row.Description ?? ""}
             className="col-text-elip"
           >
-            <Typography sx={{ fontSize: 14, maxWidth: 300 }}>
+            <Typography sx={{ fontSize: 14, maxWidth: 1500 }}>
               {params.row.Description}
             </Typography>
           </Tooltip>
