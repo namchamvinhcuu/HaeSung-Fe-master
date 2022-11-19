@@ -11,6 +11,7 @@ import {
   MuiDataGrid,
   MuiDateField,
   MuiSearchField,
+  MuiTextField,
 } from "@controls";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -221,11 +222,20 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
     {
       field: "SOrderQty",
       headerName: intl.formatMessage({ id: "material-so-detail.SOrderQty" }),
-      /*flex: 0.7,*/ width: 150, editable: true,
+      /*flex: 0.7,*/ width: 150,
+      editable: true,
       renderCell: (params) => {
         return (
-          <Tooltip title={params.row.MsoDetailStatus ? "" : intl.formatMessage({ id: "material-so-detail.SOrderQty_tip" })}>
-            <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.SOrderQty}</Typography>
+          <Tooltip
+            title={
+              params.row.MsoDetailStatus
+                ? ""
+                : intl.formatMessage({ id: "material-so-detail.SOrderQty_tip" })
+            }
+          >
+            <Typography sx={{ fontSize: 14, width: "100%" }}>
+              {params.row.SOrderQty}
+            </Typography>
           </Tooltip>
         );
       },
@@ -298,7 +308,11 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
             sx={{ textTransform: "capitalize", fontSize: "14px" }}
             onClick={() => handleConfirm(params)}
           >
-            {params.row.MsoDetailStatus ? <span style={{ color: "rgba(0,0,0,0.7)" }}>Picked</span> : "Picking"}
+            {params.row.MsoDetailStatus ? (
+              <span style={{ color: "rgba(0,0,0,0.7)" }}>Picked</span>
+            ) : (
+              "Picking"
+            )}
           </Button>
         );
       },
@@ -323,7 +337,7 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
   ];
   const handleConfirm = (params) => {
     toggle2();
-    setRowConfirm(params.row)
+    setRowConfirm(params.row);
   };
   const handleAdd = () => {
     setMode(CREATE_ACTION);
@@ -343,10 +357,12 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
 
     setMaterialSODetailState({ ...materialSODetailState, isSubmit: true });
     if (!isNumber(newRow.SOrderQty) || newRow.SOrderQty < 0) {
-      ErrorAlert(intl.formatMessage({ id: "forecast.OrderQty_required_bigger" }));
+      ErrorAlert(
+        intl.formatMessage({ id: "forecast.OrderQty_required_bigger" })
+      );
       newRow.SOrderQty = 0;
     }
-    newRow = { ...newRow, SOrderQty: parseInt(newRow.SOrderQty) }
+    newRow = { ...newRow, SOrderQty: parseInt(newRow.SOrderQty) };
 
     const res = await materialSOService.modifyMsoDetail(newRow);
     if (res.HttpResponseCode === 200 && res.Data) {
@@ -354,8 +370,7 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
       setUpdateData(res.Data);
       setMaterialSODetailState({ ...materialSODetailState, isSubmit: false });
       return newRow;
-    }
-    else {
+    } else {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
       setMaterialSODetailState({ ...materialSODetailState, isSubmit: false });
       const index = _.findIndex(materialSODetailState.data, function (o) {
@@ -364,11 +379,10 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
 
       return materialSODetailState.data[index];
     }
-
-  }
+  };
 
   const handleProcessRowUpdateError = React.useCallback((error) => {
-    console.log('update error', error)
+    console.log("update error", error);
     ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
   }, []);
 
@@ -450,7 +464,9 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
         //   handleRowSelection(newSelectedRowId)
         // }
         getRowClassName={(params) => {
-          var item = newDataArr.find(x => x.MsoDetailId == params.row.MsoDetailId)
+          var item = newDataArr.find(
+            (x) => x.MsoDetailId == params.row.MsoDetailId
+          );
           if (item) {
             return `Mui-created`;
           }
@@ -467,43 +483,68 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
         mode={mode}
         MsoId={MsoId}
       />
-      <PopupConfirm isShowing={isShowing2} hide={toggle2} rowConfirm={rowConfirm} setUpdateData={setUpdateData} />
+      <PopupConfirm
+        isShowing={isShowing2}
+        hide={toggle2}
+        rowConfirm={rowConfirm}
+        setUpdateData={setUpdateData}
+      />
     </React.Fragment>
   );
 };
 
+const initialESLData = { ITEM_NAME: "", LOCATION: "", SHELVE_LEVEL: -32768 };
 
-const initialESLData = { ITEM_NAME: '', LOCATION: '', SHELVE_LEVEL: -32768 }
-
-const PopupConfirm = memo(({ isShowing, hide, rowConfirm, setUpdateData }) => {
+const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
   const intl = useIntl();
+  const lotInputRef = useRef();
+  const handleLotInputChange = (e) => {
+    lotInputRef.current.value = e.target.value;
+  };
+
+  let timer;
+
+  const [inputRef, setInputRef] = useState(null)
+ 
+  const scanBtnClick = async () => {
+    verifyConfirm()
+    lotInputRef.current.value = "";
+    lotInputRef.current.focus();
+
+  };
+
+  const keyPress = async (e) => {
+    if (e.key === "Enter") {
+      await scanBtnClick();
+    }
+  };
 
   const verifyConfirm = async () => {
 
-    console.log('rowConfirm', rowConfirm);
+    const lot = lotInputRef.current.value.trim();
+    const rowConfirmData = {...rowConfirm, LotCode:lot}
 
     const res = await materialSOService.pickingMsoDetail({
-      ...rowConfirm,
-    })
+      ...rowConfirmData,
+    });
     if (res.HttpResponseCode === 200) {
       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
       setUpdateData({ ...res.Data });
       hide();
-      await updateESLData(rowConfirm.BinCode);
-
+      await updateESLData(rowConfirmData.BinCode);
     } else {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
     }
-  }
+  };
 
   const updateESLData = async (binCode) => {
-    let dataList = []
+    let dataList = [];
 
     let res = await materialSOService.getESLDataByBinCode(binCode);
 
     if (_.isEqual(res.data, initialESLData)) {
       res.data.LOCATION = binCode;
-      res.data.SHELVE_LEVEL = binLevel
+      res.data.SHELVE_LEVEL = binLevel;
     }
 
     res.id = `Bin-${binCode}`;
@@ -511,12 +552,28 @@ const PopupConfirm = memo(({ isShowing, hide, rowConfirm, setUpdateData }) => {
 
     if (dataList.length > 0)
       try {
-        let response = await axios.post('http://118.69.130.73:9001/articles', { dataList: dataList });
-        console.log(response)
+        let response = await axios.post("http://118.69.130.73:9001/articles", {
+          dataList: dataList,
+        });
+        console.log(response);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-  }
+  };
+
+
+  useEffect(() => {
+   lotInputRef.current = inputRef;
+
+    if (inputRef){
+      timer = setTimeout(() => lotInputRef.current.focus(), 500);
+    }
+
+    return () => {
+      if(timer)
+        clearTimeout(timer);
+    };
+  }, [inputRef]);
 
   return (
     <Dialog open={isShowing} maxWidth="sm" fullWidth>
@@ -542,18 +599,26 @@ const PopupConfirm = memo(({ isShowing, hide, rowConfirm, setUpdateData }) => {
       </DialogTitle>
       <DialogContent sx={{ textAlign: "center" }}>
         <Typography variant="h5"> Are you sure picking?</Typography>
-        <Box sx={{ mt: 1 }}>
-          <Button variant="contained" color="success" sx={{ m: 1 }} onClick={verifyConfirm}>
-            Confirm
-          </Button>
-          <Button variant="contained" color="error" sx={{ m: 1 }} onClick={hide}>
-            Cancel
-          </Button>
+        <Box className="d-flex align-items-center mt-1">
+          <MuiTextField
+            ref={ele=> {
+              setInputRef(ele)
+            //   setTimeout(() => {
+            //   ele.focus();
+            // }, 1)
+          } }
+            label="Lot"
+            // autoFocus={focus}
+            // value={lotInputRef.current.value}
+            onChange={handleLotInputChange}
+            onKeyDown={keyPress}
+          />
+          <MuiButton text="scan" color="success" onClick={scanBtnClick} />
         </Box>
       </DialogContent>
     </Dialog>
   );
-});
+};
 
 User_Operations.toString = function () {
   return "User_Operations";

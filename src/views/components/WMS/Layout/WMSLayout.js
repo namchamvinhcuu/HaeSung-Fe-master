@@ -19,6 +19,7 @@ import moment from "moment";
 import { useIntl } from "react-intl";
 import _ from 'lodash'
 
+import DeleteIcon from "@mui/icons-material/Delete";
 import Grid from "@mui/material/Grid";
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -26,8 +27,9 @@ import { styled } from '@mui/material/styles';
 
 import Konva from 'konva';
 import { Stage, Layer, Text, Rect, Group } from 'react-konva';
+import axios from "axios";
 
-import { locationService, wmsLayoutService } from "@services";
+import { locationService, wmsLayoutService, materialPutAwayService } from "@services";
 import { Button, ButtonGroup } from '@mui/material';
 import { useModal, useModal2 } from "@basesShared";
 import WMSLayoutPrintBinDialog from './WMSLayoutPrintBinDialog';
@@ -113,8 +115,8 @@ const WMSLayout = (props) => {
             renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (lotState.page - 1) * lotState.pageSize,
         },
         //{ field: "LotCode", headerName: "Lot Code", flex: 0.6, },
-        { field: "LotSerial", headerName: "LotSerial", flex: 0.3, },
         { field: "MaterialCode", headerName: "Material Code", flex: 0.4, },
+        { field: "LotSerial", headerName: "LotSerial", flex: 0.3, },
         { field: "Qty", headerName: "Qty", flex: 0.3, },
         {
             field: "IncomingDate", headerName: "Incoming Date", flex: 0.5,
@@ -122,11 +124,72 @@ const WMSLayout = (props) => {
                 if (params.value !== null) return moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss");
             },
         },
+
+        {
+            field: "action",
+            headerName: "",
+            width: 80,
+            // headerAlign: 'center',
+            disableClickEventBubbling: true,
+            sortable: false,
+            disableColumnMenu: true,
+            renderCell: (params) => {
+                return (
+                    <Grid
+                        container
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Grid
+                            item
+                            xs={12}
+                            style={{ display: "flex", justifyContent: "center" }}
+                        >
+                            <IconButton
+                                aria-label="delete"
+                                color="error"
+                                size="small"
+                                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                                onClick={() => handleDeleteLot(params.row)}
+                            >
+                                <DeleteIcon fontSize="inherit" />
+                            </IconButton>
+                        </Grid>
+                    </Grid>
+                );
+            },
+        },
     ];
 
-    const handleDelete = async (lot) => {
-
+    const handleDeleteLot = async (lot) => {
+        if (window.confirm(intl.formatMessage({ id: "general.confirm_delete" }))) {
+            try {
+                let res = await materialPutAwayService.handleDelete(lot);
+                if (res && res.HttpResponseCode === 200) {
+                    await updateESLData(lot.BinId, lot.BinCode);
+                    await getDataLot();
+                } else {
+                    ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
     };
+
+    const updateESLData = async (bin_Id, Bin_Code) => {
+        let res = await materialPutAwayService.getESLDataByBinId(bin_Id);
+        if (res) {
+            res.id = `Bin-${Bin_Code}`;
+            try {
+                await axios.post('http://118.69.130.73:9001/articles', { dataList: [res] });
+            }
+            catch (error) {
+                console.log(error)
+            }
+        }
+    }
 
     const fetchData = async (refresh) => {
         if (!refresh) {
