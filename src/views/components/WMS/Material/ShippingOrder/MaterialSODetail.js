@@ -37,6 +37,8 @@ import {
 import { memo } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 
+import axios from "axios";
+
 const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
   let isRendered = useRef(true);
   const { isShowing2, toggle2 } = useModal2();
@@ -469,9 +471,17 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
     </React.Fragment>
   );
 };
+
+
+const initialESLData = { ITEM_NAME: '', LOCATION: '', SHELVE_LEVEL: -32768 }
+
 const PopupConfirm = memo(({ isShowing, hide, rowConfirm, setUpdateData }) => {
   const intl = useIntl();
+
   const verifyConfirm = async () => {
+
+    console.log('rowConfirm', rowConfirm);
+
     const res = await materialSOService.pickingMsoDetail({
       ...rowConfirm,
     })
@@ -479,10 +489,35 @@ const PopupConfirm = memo(({ isShowing, hide, rowConfirm, setUpdateData }) => {
       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
       setUpdateData({ ...res.Data });
       hide();
+      await updateESLData(rowConfirm.BinCode);
+
     } else {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
     }
   }
+
+  const updateESLData = async (binCode) => {
+    let dataList = []
+
+    let res = await materialSOService.getESLDataByBinCode(binCode);
+
+    if (_.isEqual(res.data, initialESLData)) {
+      res.data.LOCATION = binCode;
+      res.data.SHELVE_LEVEL = binLevel
+    }
+
+    res.id = `Bin-${binCode}`;
+    dataList.push(res);
+
+    if (dataList.length > 0)
+      try {
+        let response = await axios.post('http://118.69.130.73:9001/articles', { dataList: dataList });
+        console.log(response)
+      } catch (error) {
+        console.log(error)
+      }
+  }
+
   return (
     <Dialog open={isShowing} maxWidth="sm" fullWidth>
       <DialogTitle

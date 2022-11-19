@@ -84,3 +84,11 @@ export const pickingMsoDetail = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+export const getESLDataByBinCode = async (binCode) => {
+  try {
+    return await axios.get(`${API}/get-els-data-by-binCode?BinCode=${binCode}`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+}
