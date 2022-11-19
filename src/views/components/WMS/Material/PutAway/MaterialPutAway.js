@@ -209,7 +209,7 @@ const MaterialPutAway = (props) => {
     //   res.data.ITEM_NAME = item_name;
     // }
 
-    res.id = `Bin-${binCode}`;
+    res.id = `${binCode}`;
     dataList.push(res);
 
     if (dataList.length > 0)

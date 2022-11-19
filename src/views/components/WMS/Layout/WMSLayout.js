@@ -181,7 +181,7 @@ const WMSLayout = (props) => {
     const updateESLData = async (bin_Id, Bin_Code) => {
         let res = await materialPutAwayService.getESLDataByBinId(bin_Id);
         if (res) {
-            res.id = `Bin-${Bin_Code}`;
+            res.id = `${Bin_Code}`;
             try {
                 await axios.post('http://118.69.130.73:9001/articles', { dataList: [res] });
             }

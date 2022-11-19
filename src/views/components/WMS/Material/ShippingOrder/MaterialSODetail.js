@@ -505,7 +505,7 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
   let timer;
 
   const [inputRef, setInputRef] = useState(null)
- 
+
   const scanBtnClick = async () => {
     verifyConfirm()
     lotInputRef.current.value = "";
@@ -522,7 +522,7 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
   const verifyConfirm = async () => {
 
     const lot = lotInputRef.current.value.trim();
-    const rowConfirmData = {...rowConfirm, LotCode:lot}
+    const rowConfirmData = { ...rowConfirm, LotCode: lot }
 
     const res = await materialSOService.pickingMsoDetail({
       ...rowConfirmData,
@@ -547,7 +547,7 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
       res.data.SHELVE_LEVEL = binLevel;
     }
 
-    res.id = `Bin-${binCode}`;
+    res.id = `${binCode}`;
     dataList.push(res);
 
     if (dataList.length > 0)
@@ -563,14 +563,14 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
 
 
   useEffect(() => {
-   lotInputRef.current = inputRef;
+    lotInputRef.current = inputRef;
 
-    if (inputRef){
+    if (inputRef) {
       timer = setTimeout(() => lotInputRef.current.focus(), 500);
     }
 
     return () => {
-      if(timer)
+      if (timer)
         clearTimeout(timer);
     };
   }, [inputRef]);
@@ -601,12 +601,12 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
         <Typography variant="h5"> Are you sure picking?</Typography>
         <Box className="d-flex align-items-center mt-1">
           <MuiTextField
-            ref={ele=> {
+            ref={ele => {
               setInputRef(ele)
-            //   setTimeout(() => {
-            //   ele.focus();
-            // }, 1)
-          } }
+              //   setTimeout(() => {
+              //   ele.focus();
+              // }, 1)
+            }}
             label="Lot"
             // autoFocus={focus}
             // value={lotInputRef.current.value}
