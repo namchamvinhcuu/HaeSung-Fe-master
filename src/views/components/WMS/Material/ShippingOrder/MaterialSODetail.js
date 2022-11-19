@@ -522,6 +522,10 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
   const verifyConfirm = async () => {
 
     const lot = lotInputRef.current.value.trim();
+    if (lot.length < 1) {
+      ErrorAlert(intl.formatMessage({ id: "lot.lot_code_scan_required" }))
+      return;
+    }
     const rowConfirmData = { ...rowConfirm, LotCode: lot }
 
     const res = await materialSOService.pickingMsoDetail({
@@ -613,7 +617,7 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
             onChange={handleLotInputChange}
             onKeyDown={keyPress}
           />
-          <MuiButton text="scan" color="success" onClick={scanBtnClick} />
+          <MuiButton text="scan" color="success" onClick={scanBtnClick} sx={{ whiteSpace: "nowrap" }} />
         </Box>
       </DialogContent>
     </Dialog>
