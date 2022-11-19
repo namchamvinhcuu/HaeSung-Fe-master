@@ -423,7 +423,8 @@
         "RequestQty": "Request Qty",
         "IncomingDate": "Incoming Date",
         "QC_required": "QC is required",
-        "binAndLot_required": "Bin and Lot is required"
+        "binAndLot_required": "Bin and Lot is required",
+        "scan_wrong_lot": "Scan wrong Lot Code"
     },
     "wms-layout": {
         "warehouse": "Warehouse",

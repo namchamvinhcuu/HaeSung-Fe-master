@@ -10,27 +10,29 @@ import {
   MuiTextField,
   MuiAutocomplete,
   MuiDataGrid,
+  MuiDateField,
 } from "@controls";
 import { useIntl } from "react-intl";
 import { materialPutAwayService } from "@services";
-import { ErrorAlert, SuccessAlert } from "@utils";
+import { ErrorAlert, SuccessAlert, addDays } from "@utils";
 import { LotDto } from "@models";
 import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
 
-import _ from 'lodash'
+import _ from "lodash";
 
 import axios from "axios";
 
 const MaterialPutAway = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
+  const initETDLoad = new Date();
   const [newData, setNewData] = useState({ ...LotDto });
   const lotInputRef = useRef(null);
   const [locationId, setLocationId] = useState(0);
   const [shelfId, setShelfId] = useState(0);
   const [binId, setBinId] = useState(0);
-  const [binCode, setBinCode] = useState('');
+  const [binCode, setBinCode] = useState("");
   const [binLevel, setBinLevel] = useState(0);
   const [putAwayState, setPutAwayState] = useState({
     isLoading: false,
@@ -38,9 +40,13 @@ const MaterialPutAway = (props) => {
     totalRow: 0,
     page: 1,
     pageSize: 20,
+    searchData: {
+      searchStartDay: addDays(initETDLoad, -1),
+      searchEndDay: initETDLoad,
+    },
   });
 
-  const initialESLData = { ITEM_NAME: '', LOCATION: '', SHELVE_LEVEL: -32768 }
+  const initialESLData = { ITEM_NAME: "", LOCATION: "", SHELVE_LEVEL: -32768 };
 
   const keyPress = async (e) => {
     if (e.key === "Enter") {
@@ -180,14 +186,13 @@ const MaterialPutAway = (props) => {
   };
 
   const updateESLData = async (bin_Id) => {
-    let dataList = []
+    let dataList = [];
 
     let res = await materialPutAwayService.getESLDataByBinId(bin_Id);
 
-
     if (_.isEqual(res.data, initialESLData)) {
       res.data.LOCATION = binCode;
-      res.data.SHELVE_LEVEL = binLevel
+      res.data.SHELVE_LEVEL = binLevel;
     }
 
     res.id = `Bin-${binCode}`;
@@ -195,12 +200,14 @@ const MaterialPutAway = (props) => {
 
     if (dataList.length > 0)
       try {
-        let response = await axios.post('http://118.69.130.73:9001/articles', { dataList: dataList });
+        let response = await axios.post("http://118.69.130.73:9001/articles", {
+          dataList: dataList,
+        });
         // console.log(response)
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-  }
+  };
 
   const columns = [
     { field: "Id", headerName: "", hide: true },
@@ -291,7 +298,11 @@ const MaterialPutAway = (props) => {
   ];
 
   const handlePutAway = async (inputValue) => {
-    if ((inputValue.binId === 0 || inputValue.binId == undefined) || inputValue.lot.trim() === "") {
+    if (
+      inputValue.binId === 0 ||
+      inputValue.binId == undefined ||
+      inputValue.lot.trim() === ""
+    ) {
       ErrorAlert(intl.formatMessage({ id: "lot.binAndLot_required" }));
       return;
     }
@@ -329,7 +340,7 @@ const MaterialPutAway = (props) => {
                 displayLabel="LocationCode"
                 displayValue="LocationId"
                 onChange={(e, item) => {
-                  setBinId(0)
+                  setBinId(0);
                   handleInputChange(
                     item ? item?.LocationId ?? null : null,
                     "LocationId"
@@ -348,7 +359,7 @@ const MaterialPutAway = (props) => {
                 displayLabel="ShelfCode"
                 displayValue="ShelfId"
                 onChange={(e, item) => {
-                  setBinId(0)
+                  setBinId(0);
                   handleInputChange(
                     item ? item?.ShelfId ?? null : null,
                     "ShelfId"
@@ -370,7 +381,7 @@ const MaterialPutAway = (props) => {
                   handleInputChange(item ? item?.BinId ?? null : null, "BinId");
                   setBinId(item?.BinId);
                   setBinCode(item?.BinCode);
-                  setBinLevel(item?.BinLevel)
+                  setBinLevel(item?.BinLevel);
                 }}
                 variant="standard"
               />
@@ -394,6 +405,42 @@ const MaterialPutAway = (props) => {
               <MuiButton text="scan" color="success" onClick={scanBtnClick} />
             </Grid>
           </Grid>
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        spacing={2}
+        direction="row"
+        justifyContent="flex-start"
+        alignItems="center"
+      >
+        <Grid item sx={{ ml: 2 }}>
+          <MuiDateField
+            disabled={putAwayState.isLoading}
+            label="End QC Date"
+            value={putAwayState.searchData.searchStartDay}
+            onChange={(e) => {
+              handleSearch(
+                e ? moment(e).format("YYYY-MM-DD") : null,
+                "searchStartDay"
+              );
+            }}
+            variant="standard"
+          />
+        </Grid>
+        <Grid item>
+          <MuiDateField
+            disabled={putAwayState.isLoading}
+            label="End QC Date"
+            value={putAwayState.searchData.searchEndDay}
+            onChange={(e) => {
+              handleSearch(
+                e ? moment(e).format("YYYY-MM-DD") : null,
+                "searchEndDay"
+              );
+            }}
+            variant="standard"
+          />
         </Grid>
       </Grid>
 
