@@ -320,20 +320,22 @@ const Login = (props) => {
             )}
             <Box>
               <button
-                className="btn mt-3"
-                style={{ width: "100%", backgroundColor: "#21c789"}}
+                className="btn btn-success"
+                style={{ width: "100%", marginTop: "25px" }}
+                type="submit"
                 onClick={() => handleDownload()}
               >
-                  <div className="d-flex" style={{color: "white"}}>
+                <span className="d-block" aria-hidden="true">
+                  <div className="d-flex" style={{ color: "white" }}>
                     <PhoneAndroidIcon />
 
-                    <div className="d-block" >
+                    <div className="d-block">
                       <small style={{ opacity: 0.9, fontSize: "18px" }}>
                         Download App
                       </small>
-                    
                     </div>
                   </div>
+                </span>
               </button>
             </Box>
           </Box>

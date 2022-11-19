@@ -21,7 +21,7 @@ import { FormControlLabel, Switch } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import { workOrderService } from "@services";
-import { addDays, ErrorAlert } from "@utils";
+import { addDays, ErrorAlert, SuccessAlert } from "@utils";
 import _ from "lodash";
 import moment from "moment";
 import { useIntl } from "react-intl";
@@ -105,6 +105,7 @@ const WorkOrder = (props) => {
         if (res) {
           if (res && res.HttpResponseCode === 200) {
             await fetchData();
+            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
           } else {
             ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
           }
