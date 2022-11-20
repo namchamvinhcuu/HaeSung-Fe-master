@@ -1,44 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
-import { User_Operations } from "@appstate/user";
-import { Store } from "@appstate";
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import {
-  MuiAutocomplete,
-  MuiButton,
-  MuiDataGrid,
-  MuiDateField,
-  MuiSearchField,
-  MuiTextField,
-} from "@controls";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
-import { addDays, ErrorAlert, SuccessAlert, isNumber } from "@utils";
-import _ from "lodash";
-import moment from "moment";
-import { useIntl } from "react-intl";
-import { materialSOService } from "@services";
-import { MaterialSOMasterDto, MaterialSODetailDto } from "@models";
-import MaterialSODetailDialog from "./MaterialSODetailDialog";
-import { useModal, useModal2 } from "@basesShared";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import { memo } from "react";
-import CloseIcon from "@mui/icons-material/Close";
+import React, { useEffect, useRef, useState } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
+import { User_Operations } from '@appstate/user';
+import { Store } from '@appstate';
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateField, MuiSearchField, MuiTextField } from '@controls';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import { addDays, ErrorAlert, SuccessAlert, isNumber } from '@utils';
+import _ from 'lodash';
+import moment from 'moment';
+import { useIntl } from 'react-intl';
+import { materialSOService } from '@services';
+import { MaterialSOMasterDto, MaterialSODetailDto } from '@models';
+import MaterialSODetailDialog from './MaterialSODetailDialog';
+import { useModal, useModal2 } from '@basesShared';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Tooltip, Typography } from '@mui/material';
+import { memo } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
 
-import axios from "axios";
+import axios from 'axios';
 
 const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
   let isRendered = useRef(true);
@@ -56,7 +40,7 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
     pageSize: 8,
     searchData: {
       ...MaterialSODetailDto,
-      MaterialCode: "",
+      MaterialCode: '',
       isActived: true,
     },
     MsoId: MsoId,
@@ -68,12 +52,7 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
 
   useEffect(() => {
     fetchData(MsoId);
-  }, [
-    materialSODetailState.page,
-    materialSODetailState.pageSize,
-    MsoId,
-    materialSODetailState.searchData.isActived,
-  ]);
+  }, [materialSODetailState.page, materialSODetailState.pageSize, MsoId, materialSODetailState.searchData.isActived]);
 
   useEffect(() => {
     if (isRendered && newDataArr.length) {
@@ -90,11 +69,7 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
   }, [newDataArr]);
 
   useEffect(() => {
-    if (
-      !_.isEmpty(updateData) &&
-      !_.isEqual(updateData, rowData) &&
-      isRendered
-    ) {
+    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData) && isRendered) {
       let newArr = [...materialSODetailState.data];
       const index = _.findIndex(newArr, function (o) {
         return o.MsoDetailId == updateData.MsoDetailId;
@@ -110,9 +85,7 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
     if (
       window.confirm(
         intl.formatMessage({
-          id: materialSODetail.isActived
-            ? "general.confirm_delete"
-            : "general.confirm_redo_deleted",
+          id: materialSODetail.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
         })
       )
     ) {
@@ -128,7 +101,7 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
             ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
           }
         } else {
-          ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+          ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
         }
       } catch (error) {
         console.log(error);
@@ -158,13 +131,13 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
   };
 
   const columns = [
-    { field: "MsoDetailId", headerName: "", hide: true },
+    { field: 'MsoDetailId', headerName: '', hide: true },
     // { field: "MsoId", headerName: "", hide: true },
     // { field: "MaterialId", headerName: "", hide: true },
 
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       width: 100,
       filterable: false,
       renderCell: (index) =>
@@ -174,8 +147,8 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
     },
 
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       width: 80,
       // headerAlign: 'center',
       disableClickEventBubbling: true,
@@ -183,19 +156,14 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
             <Grid item xs={6}>
               <IconButton
                 aria-label="delete"
                 color="error"
                 size="small"
                 disabled={params.row.MsoDetailStatus == false ? false : true}
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
                 <DeleteIcon fontSize="inherit" />
@@ -207,58 +175,52 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
     },
 
     {
-      field: "MsoCode",
-      headerName: intl.formatMessage({ id: "material-so-detail.MsoCode" }),
+      field: 'MsoCode',
+      headerName: intl.formatMessage({ id: 'material-so-detail.MsoCode' }),
       /*flex: 0.7,*/ width: 150,
     },
 
     {
-      field: "MaterialColorCode",
+      field: 'MaterialColorCode',
       headerName: intl.formatMessage({
-        id: "material-so-detail.MaterialColorCode",
+        id: 'material-so-detail.MaterialColorCode',
       }),
       /*flex: 0.7,*/ width: 200,
     },
     {
-      field: "SOrderQty",
-      headerName: intl.formatMessage({ id: "material-so-detail.SOrderQty" }),
+      field: 'SOrderQty',
+      headerName: intl.formatMessage({ id: 'material-so-detail.SOrderQty' }),
       /*flex: 0.7,*/ width: 150,
       editable: true,
       renderCell: (params) => {
         return (
           <Tooltip
-            title={
-              params.row.MsoDetailStatus
-                ? ""
-                : intl.formatMessage({ id: "material-so-detail.SOrderQty_tip" })
-            }
+            title={params.row.MsoDetailStatus ? '' : intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' })}
           >
-            <Typography sx={{ fontSize: 14, width: "100%" }}>
-              {params.row.SOrderQty}
-            </Typography>
+            <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.SOrderQty}</Typography>
           </Tooltip>
         );
       },
     },
     {
-      field: "LotSerial",
-      headerName: intl.formatMessage({ id: "material-so-detail.LotSerial" }),
+      field: 'LotSerial',
+      headerName: intl.formatMessage({ id: 'material-so-detail.LotSerial' }),
       /*flex: 0.7,*/ width: 150,
     },
     {
-      field: "BinCode",
-      headerName: intl.formatMessage({ id: "material-so-detail.BinCode" }),
+      field: 'BinCode',
+      headerName: intl.formatMessage({ id: 'material-so-detail.BinCode' }),
       /*flex: 0.7,*/ width: 150,
     },
   ];
   const columnsFromPicking = [
-    { field: "MsoDetailId", headerName: "", hide: true },
+    { field: 'MsoDetailId', headerName: '', hide: true },
     // { field: "MsoId", headerName: "", hide: true },
     // { field: "MaterialId", headerName: "", hide: true },
 
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       width: 100,
       filterable: false,
       renderCell: (index) =>
@@ -268,15 +230,15 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
     },
 
     {
-      field: "MsoCode",
-      headerName: intl.formatMessage({ id: "material-so-detail.MsoCode" }),
+      field: 'MsoCode',
+      headerName: intl.formatMessage({ id: 'material-so-detail.MsoCode' }),
       /*flex: 0.7,*/ width: 150,
     },
 
     {
-      field: "MaterialColorCode",
+      field: 'MaterialColorCode',
       headerName: intl.formatMessage({
-        id: "material-so-detail.MaterialColorCode",
+        id: 'material-so-detail.MaterialColorCode',
       }),
       /*flex: 0.7,*/ width: 200,
     },
@@ -290,14 +252,14 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
     // },
 
     {
-      field: "SOrderQty",
-      headerName: intl.formatMessage({ id: "material-so-detail.SOrderQty" }),
+      field: 'SOrderQty',
+      headerName: intl.formatMessage({ id: 'material-so-detail.SOrderQty' }),
       /*flex: 0.7,*/ width: 150,
     },
     {
-      field: "Button",
-      headerName: "Action",
-      align: "center",
+      field: 'Button',
+      headerName: 'Action',
+      align: 'center',
       renderCell: (params) => {
         return (
           <Button
@@ -305,33 +267,27 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
             variant="contained"
             color="success"
             size="small"
-            sx={{ textTransform: "capitalize", fontSize: "14px" }}
+            sx={{ textTransform: 'capitalize', fontSize: '14px' }}
             onClick={() => handleConfirm(params)}
           >
-            {params.row.MsoDetailStatus ? (
-              <span style={{ color: "rgba(0,0,0,0.7)" }}>Picked</span>
-            ) : (
-              "Picking"
-            )}
+            {params.row.MsoDetailStatus ? <span style={{ color: 'rgba(0,0,0,0.7)' }}>Picked</span> : 'Picking'}
           </Button>
         );
       },
     },
     {
-      field: "PickingDate",
-      headerName: "Picking Date",
+      field: 'PickingDate',
+      headerName: 'Picking Date',
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
     {
-      field: "pickingUser",
-      headerName: "User Picking",
+      field: 'pickingUser',
+      headerName: 'User Picking',
       width: 150,
     },
   ];
@@ -357,9 +313,7 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
 
     setMaterialSODetailState({ ...materialSODetailState, isSubmit: true });
     if (!isNumber(newRow.SOrderQty) || newRow.SOrderQty < 0) {
-      ErrorAlert(
-        intl.formatMessage({ id: "forecast.OrderQty_required_bigger" })
-      );
+      ErrorAlert(intl.formatMessage({ id: 'forecast.OrderQty_required_bigger' }));
       newRow.SOrderQty = 0;
     }
     newRow = { ...newRow, SOrderQty: parseInt(newRow.SOrderQty) };
@@ -382,8 +336,8 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
   };
 
   const handleProcessRowUpdateError = React.useCallback((error) => {
-    console.log("update error", error);
-    ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+    console.log('update error', error);
+    ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
   }, []);
 
   const handleSearch = (e, inputName) => {
@@ -397,20 +351,10 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        spacing={2}
-        justifyContent="flex-end"
-        alignItems="flex-end"
-      >
+      <Grid container spacing={2} justifyContent="flex-end" alignItems="flex-end">
         <Grid item xs={1.5}>
           {!fromPicking && (
-            <MuiButton
-              disabled={MsoId ? MsoStatus : true}
-              text="create"
-              color="success"
-              onClick={handleAdd}
-            />
+            <MuiButton disabled={MsoId ? MsoStatus : true} text="create" color="success" onClick={handleAdd} />
           )}
         </Grid>
 
@@ -420,19 +364,14 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
             label="material-so-detail.MaterialColorCode"
             name="MaterialColorCode"
             onClick={() => fetchData(MsoId)}
-            onChange={(e) => handleSearch(e.target.value, "MaterialCode")}
+            onChange={(e) => handleSearch(e.target.value, 'MaterialCode')}
           />
         </Grid>
 
         <Grid item xs={2.5}>
           <Grid container justifyContent="space-around" alignItems="flex-end">
             <Grid item>
-              <MuiButton
-                disabled={MsoId ? false : true}
-                text="search"
-                color="info"
-                onClick={() => fetchData(MsoId)}
-              />
+              <MuiButton disabled={MsoId ? false : true} text="search" color="info" onClick={() => fetchData(MsoId)} />
             </Grid>
           </Grid>
         </Grid>
@@ -464,14 +403,12 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
         //   handleRowSelection(newSelectedRowId)
         // }
         getRowClassName={(params) => {
-          var item = newDataArr.find(
-            (x) => x.MsoDetailId == params.row.MsoDetailId
-          );
+          var item = newDataArr.find((x) => x.MsoDetailId == params.row.MsoDetailId);
           if (item) {
             return `Mui-created`;
           }
         }}
-        initialState={{ pinnedColumns: { right: ["action"] } }}
+        initialState={{ pinnedColumns: { right: ['action'] } }}
       />
 
       <MaterialSODetailDialog
@@ -483,17 +420,12 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
         mode={mode}
         MsoId={MsoId}
       />
-      <PopupConfirm
-        isShowing={isShowing2}
-        hide={toggle2}
-        rowConfirm={rowConfirm}
-        setUpdateData={setUpdateData}
-      />
+      <PopupConfirm isShowing={isShowing2} hide={toggle2} rowConfirm={rowConfirm} setUpdateData={setUpdateData} />
     </React.Fragment>
   );
 };
 
-const initialESLData = { ITEM_NAME: "", LOCATION: "", SHELVE_LEVEL: -32768 };
+const initialESLData = { ITEM_NAME: '', LOCATION: '', SHELVE_LEVEL: -32768 };
 
 const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
   const intl = useIntl();
@@ -504,29 +436,27 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
 
   let timer;
 
-  const [inputRef, setInputRef] = useState(null)
+  const [inputRef, setInputRef] = useState(null);
 
   const scanBtnClick = async () => {
-    verifyConfirm()
-    lotInputRef.current.value = "";
+    verifyConfirm();
+    lotInputRef.current.value = '';
     lotInputRef.current.focus();
-
   };
 
   const keyPress = async (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       await scanBtnClick();
     }
   };
 
   const verifyConfirm = async () => {
-
     const lot = lotInputRef.current.value.trim();
     if (lot.length < 1) {
-      ErrorAlert(intl.formatMessage({ id: "lot.lot_code_scan_required" }))
+      ErrorAlert(intl.formatMessage({ id: 'lot.lot_code_scan_required' }));
       return;
     }
-    const rowConfirmData = { ...rowConfirm, LotCode: lot }
+    const rowConfirmData = { ...rowConfirm, LotCode: lot };
 
     const res = await materialSOService.pickingMsoDetail({
       ...rowConfirmData,
@@ -556,7 +486,7 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
 
     if (dataList.length > 0)
       try {
-        let response = await axios.post("http://118.69.130.73:9001/articles", {
+        let response = await axios.post('http://118.69.130.73:9001/articles', {
           dataList: dataList,
         });
         console.log(response);
@@ -564,7 +494,6 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
         console.log(error);
       }
   };
-
 
   useEffect(() => {
     lotInputRef.current = inputRef;
@@ -574,8 +503,7 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
     }
 
     return () => {
-      if (timer)
-        clearTimeout(timer);
+      if (timer) clearTimeout(timer);
     };
   }, [inputRef]);
 
@@ -584,29 +512,22 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
       <DialogTitle
         sx={{
           p: 1,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
-        <Typography sx={{ fontWeight: 600, fontSize: "22px" }}>
-          Confirm Picking
-        </Typography>
-        <IconButton
-          aria-label="delete"
-          size="small"
-          onClick={() => hide()}
-          sx={{ backgroundColor: "rgba(0,0,0,0.1)" }}
-        >
+        <Typography sx={{ fontWeight: 600, fontSize: '22px' }}>Confirm Picking</Typography>
+        <IconButton aria-label="delete" size="small" onClick={() => hide()} sx={{ backgroundColor: 'rgba(0,0,0,0.1)' }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent sx={{ textAlign: "center" }}>
+      <DialogContent sx={{ textAlign: 'center' }}>
         <Typography variant="h5"> Are you sure picking?</Typography>
         <Box className="d-flex align-items-center mt-1">
           <MuiTextField
-            ref={ele => {
-              setInputRef(ele)
+            ref={(ele) => {
+              setInputRef(ele);
               //   setTimeout(() => {
               //   ele.focus();
               // }, 1)
@@ -617,7 +538,7 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
             onChange={handleLotInputChange}
             onKeyDown={keyPress}
           />
-          <MuiButton text="scan" color="success" onClick={scanBtnClick} sx={{ whiteSpace: "nowrap" }} />
+          <MuiButton text="scan" color="success" onClick={scanBtnClick} sx={{ whiteSpace: 'nowrap' }} />
         </Box>
       </DialogContent>
     </Dialog>
@@ -625,7 +546,7 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
 };
 
 User_Operations.toString = function () {
-  return "User_Operations";
+  return 'User_Operations';
 };
 
 const mapStateToProps = (state) => {

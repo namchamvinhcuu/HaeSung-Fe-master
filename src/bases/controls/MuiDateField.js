@@ -1,8 +1,8 @@
-import * as React from "react";
-import TextField from "@mui/material/TextField";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import * as React from 'react';
+import TextField from '@mui/material/TextField';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 export default function MuiDateField({
   label,
@@ -15,13 +15,10 @@ export default function MuiDateField({
   error,
   helperText,
   disabled,
-  required
+  required,
 }) {
-
   let labelFomart = label;
-  if (required)
-    labelFomart += " *";
-
+  if (required) labelFomart += ' *';
 
   const onKeyDown = (e) => {
     e.preventDefault();

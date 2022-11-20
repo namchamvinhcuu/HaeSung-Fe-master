@@ -1,27 +1,21 @@
-import React, { useState, useRef, useEffect } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
-import { User_Operations } from "@appstate/user";
-import { Store } from "@appstate";
-import { Grid, IconButton } from "@mui/material";
-import {
-  MuiButton,
-  MuiTextField,
-  MuiAutocomplete,
-  MuiDataGrid,
-  MuiDateField,
-} from "@controls";
-import { useIntl } from "react-intl";
-import { materialPutAwayService } from "@services";
-import { ErrorAlert, SuccessAlert, addDays } from "@utils";
-import { LotDto } from "@models";
-import DeleteIcon from "@mui/icons-material/Delete";
-import moment from "moment";
+import React, { useState, useRef, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
+import { User_Operations } from '@appstate/user';
+import { Store } from '@appstate';
+import { Grid, IconButton } from '@mui/material';
+import { MuiButton, MuiTextField, MuiAutocomplete, MuiDataGrid, MuiDateField } from '@controls';
+import { useIntl } from 'react-intl';
+import { materialPutAwayService } from '@services';
+import { ErrorAlert, SuccessAlert, addDays } from '@utils';
+import { LotDto } from '@models';
+import DeleteIcon from '@mui/icons-material/Delete';
+import moment from 'moment';
 
-import _ from "lodash";
+import _ from 'lodash';
 
-import axios from "axios";
+import axios from 'axios';
 
 const MaterialPutAway = (props) => {
   let isRendered = useRef(true);
@@ -32,7 +26,7 @@ const MaterialPutAway = (props) => {
   const [locationId, setLocationId] = useState(0);
   const [shelfId, setShelfId] = useState(0);
   const [binId, setBinId] = useState(0);
-  const [binCode, setBinCode] = useState("");
+  const [binCode, setBinCode] = useState('');
   const [binLevel, setBinLevel] = useState(0);
   const [putAwayState, setPutAwayState] = useState({
     isLoading: false,
@@ -46,10 +40,10 @@ const MaterialPutAway = (props) => {
     },
   });
 
-  const initialESLData = { ITEM_NAME: "", LOCATION: "", SHELVE_LEVEL: -32768 };
+  const initialESLData = { ITEM_NAME: '', LOCATION: '', SHELVE_LEVEL: -32768 };
 
   const keyPress = async (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       await scanBtnClick();
     }
   };
@@ -74,7 +68,7 @@ const MaterialPutAway = (props) => {
   };
 
   const handleDelete = async (lot) => {
-    if (window.confirm(intl.formatMessage({ id: "general.confirm_delete" }))) {
+    if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
       try {
         let res = await materialPutAwayService.handleDelete(lot);
         if (res && res.HttpResponseCode === 200) {
@@ -92,10 +86,10 @@ const MaterialPutAway = (props) => {
   const handleInputChange = (e, inputName) => {
     let newState = { ...putAwayState };
     newState[inputName] = e;
-    if (inputName === "LocationId") {
+    if (inputName === 'LocationId') {
       (newState.ShelfId = null), (newState.BinId = null);
     } else {
-      if (inputName === "ShelfId") {
+      if (inputName === 'ShelfId') {
         newState.BinId = null;
       }
     }
@@ -164,7 +158,7 @@ const MaterialPutAway = (props) => {
   const scanBtnClick = async () => {
     const lot = lotInputRef.current.value.trim();
     await handlePutAway({ lot, binId });
-    lotInputRef.current.value = "";
+    lotInputRef.current.value = '';
     lotInputRef.current.focus();
 
     // let dataList = []
@@ -214,7 +208,7 @@ const MaterialPutAway = (props) => {
 
     if (dataList.length > 0)
       try {
-        let response = await axios.post("http://118.69.130.73:9001/articles", {
+        let response = await axios.post('http://118.69.130.73:9001/articles', {
           dataList: dataList,
         });
         // console.log(response)
@@ -224,22 +218,19 @@ const MaterialPutAway = (props) => {
   };
 
   const columns = [
-    { field: "Id", headerName: "", hide: true },
+    { field: 'Id', headerName: '', hide: true },
 
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       width: 80,
       filterable: false,
-      renderCell: (index) =>
-        index.api.getRowIndex(index.row.Id) +
-        1 +
-        (putAwayState.page - 1) * putAwayState.pageSize,
+      renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (putAwayState.page - 1) * putAwayState.pageSize,
     },
 
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       width: 80,
       // headerAlign: 'center',
       disableClickEventBubbling: true,
@@ -247,22 +238,13 @@ const MaterialPutAway = (props) => {
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            direction="row"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Grid
-              item
-              xs={12}
-              style={{ display: "flex", justifyContent: "center" }}
-            >
+          <Grid container direction="row" alignItems="center" justifyContent="center">
+            <Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
               <IconButton
                 aria-label="delete"
                 color="error"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
                 <DeleteIcon fontSize="inherit" />
@@ -274,50 +256,44 @@ const MaterialPutAway = (props) => {
     },
 
     {
-      field: "MaterialColorCode",
-      headerName: "Material Code",
+      field: 'MaterialColorCode',
+      headerName: 'Material Code',
       width: 250,
     },
 
     {
-      field: "LotSerial",
-      headerName: "Lot Serial",
+      field: 'LotSerial',
+      headerName: 'Lot Serial',
       width: 250,
     },
 
     {
-      field: "Qty",
-      headerName: "Qty",
+      field: 'Qty',
+      headerName: 'Qty',
       width: 100,
     },
 
     {
-      field: "LocationCode",
-      headerName: "Bin",
+      field: 'LocationCode',
+      headerName: 'Bin',
       width: 250,
     },
 
     {
-      field: "IncomingDate",
-      headerName: "Incoming Date",
+      field: 'IncomingDate',
+      headerName: 'Incoming Date',
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
   ];
 
   const handlePutAway = async (inputValue) => {
-    if (
-      inputValue.binId === 0 ||
-      inputValue.binId == undefined ||
-      inputValue.lot.trim() === ""
-    ) {
-      ErrorAlert(intl.formatMessage({ id: "lot.binAndLot_required" }));
+    if (inputValue.binId === 0 || inputValue.binId == undefined || inputValue.lot.trim() === '') {
+      ErrorAlert(intl.formatMessage({ id: 'lot.binAndLot_required' }));
       return;
     }
     const res = await materialPutAwayService.scanPutAway({
@@ -333,21 +309,16 @@ const MaterialPutAway = (props) => {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
       }
     } else {
-      ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+      ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
     }
   };
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-      >
+      <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item sx={{ ml: 2 }}>
           <Grid container spacing={2}>
-            <Grid item sx={{ width: "215px" }}>
+            <Grid item sx={{ width: '215px' }}>
               <MuiAutocomplete
                 label="Aisle"
                 fetchDataFunc={getAilse}
@@ -355,17 +326,14 @@ const MaterialPutAway = (props) => {
                 displayValue="LocationId"
                 onChange={(e, item) => {
                   setBinId(0);
-                  handleInputChange(
-                    item ? item?.LocationId ?? null : null,
-                    "LocationId"
-                  );
+                  handleInputChange(item ? item?.LocationId ?? null : null, 'LocationId');
                   setLocationId(item?.LocationId);
                 }}
                 variant="standard"
               />
             </Grid>
 
-            <Grid item sx={{ width: "215px" }}>
+            <Grid item sx={{ width: '215px' }}>
               <MuiAutocomplete
                 key={locationId}
                 label="Shelf"
@@ -374,17 +342,14 @@ const MaterialPutAway = (props) => {
                 displayValue="ShelfId"
                 onChange={(e, item) => {
                   setBinId(0);
-                  handleInputChange(
-                    item ? item?.ShelfId ?? null : null,
-                    "ShelfId"
-                  );
+                  handleInputChange(item ? item?.ShelfId ?? null : null, 'ShelfId');
                   setShelfId(item?.ShelfId);
                 }}
                 variant="standard"
               />
             </Grid>
 
-            <Grid item sx={{ width: "215px" }}>
+            <Grid item sx={{ width: '215px' }}>
               <MuiAutocomplete
                 key={[shelfId, locationId]}
                 label="Bin"
@@ -392,7 +357,7 @@ const MaterialPutAway = (props) => {
                 displayLabel="BinCode"
                 displayValue="BinId"
                 onChange={(e, item) => {
-                  handleInputChange(item ? item?.BinId ?? null : null, "BinId");
+                  handleInputChange(item ? item?.BinId ?? null : null, 'BinId');
                   setBinId(item?.BinId);
                   setBinCode(item?.BinCode);
                   setBinLevel(item?.BinLevel);
@@ -405,7 +370,7 @@ const MaterialPutAway = (props) => {
 
         <Grid item>
           <Grid container spacing={2}>
-            <Grid item sx={{ width: "600px", mt: 0.5 }}>
+            <Grid item sx={{ width: '600px', mt: 0.5 }}>
               <MuiTextField
                 ref={lotInputRef}
                 label="Lot"
@@ -421,23 +386,14 @@ const MaterialPutAway = (props) => {
           </Grid>
         </Grid>
       </Grid>
-      <Grid
-        container
-        spacing={2}
-        direction="row"
-        justifyContent="flex-start"
-        alignItems="center"
-      >
+      <Grid container spacing={2} direction="row" justifyContent="flex-start" alignItems="center">
         <Grid item sx={{ ml: 2 }}>
           <MuiDateField
             disabled={putAwayState.isLoading}
             label="End QC Date"
             value={putAwayState.searchData.searchStartDay}
             onChange={(e) => {
-              handleSearch(
-                e ? moment(e).format("YYYY-MM-DD") : null,
-                "searchStartDay"
-              );
+              handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchStartDay');
             }}
             variant="standard"
           />
@@ -448,10 +404,7 @@ const MaterialPutAway = (props) => {
             label="End QC Date"
             value={putAwayState.searchData.searchEndDay}
             onChange={(e) => {
-              handleSearch(
-                e ? moment(e).format("YYYY-MM-DD") : null,
-                "searchEndDay"
-              );
+              handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchEndDay');
             }}
             variant="standard"
           />
@@ -489,14 +442,14 @@ const MaterialPutAway = (props) => {
             return `Mui-created`;
           }
         }}
-        initialState={{ pinnedColumns: { right: ["action"] } }}
+        initialState={{ pinnedColumns: { right: ['action'] } }}
       />
     </React.Fragment>
   );
 };
 
 User_Operations.toString = function () {
-  return "User_Operations";
+  return 'User_Operations';
 };
 
 const mapStateToProps = (state) => {
