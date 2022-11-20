@@ -1,5 +1,5 @@
-import { axios } from "@utils";
-const API = "api/material-shipping-order";
+import { axios } from '@utils';
+const API = 'api/material-shipping-order';
 
 export const getMsoMasters = async (params) => {
   try {
@@ -30,11 +30,10 @@ export const modifyMsoMaster = async (params) => {
 export const deleteMsoMaster = async (params) => {
   try {
     return await axios.delete(`${API}/delete-mso-masters`, { data: params });
-  }
-  catch (error) {
+  } catch (error) {
     console.log(`ERROR: ${error}`);
   }
-}
+};
 
 export const createMsoDetail = async (params) => {
   try {
@@ -63,11 +62,10 @@ export const modifyMsoDetail = async (params) => {
 export const handleDeleteSODetail = async (params) => {
   try {
     return await axios.delete(`${API}/delete-mso-details`, { data: params });
-  }
-  catch (error) {
+  } catch (error) {
     console.log(`ERROR: ${error}`);
   }
-}
+};
 
 export const getLots = async (materialId) => {
   try {
@@ -91,4 +89,4 @@ export const getESLDataByBinCode = async (binCode) => {
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }
-}
+};

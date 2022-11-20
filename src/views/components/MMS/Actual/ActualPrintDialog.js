@@ -1,20 +1,16 @@
-import React, { useEffect, useState, useRef } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
-import { User_Operations } from "@appstate/user";
-import { Store } from "@appstate";
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiTextField, MuiButton, MuiDataGrid, MuiAutocomplete, MuiSelectField } from "@controls";
-import { Badge, Button, Checkbox, DialogActions, DialogContent, FormControlLabel, Grid, TextField } from "@mui/material";
-import { useIntl } from "react-intl";
-import * as yup from "yup";
-import { actualService } from "@services";
-import { ErrorAlert, SuccessAlert, getCurrentWeek } from "@utils";
-import { useFormik } from "formik";
-import moment from "moment";
-import ReactToPrint from "react-to-print";
-import QRCode from "react-qr-code";
+import { MuiButton, MuiDialog } from '@controls';
+import { DialogActions, DialogContent } from '@mui/material';
+import moment from 'moment';
+import { useIntl } from 'react-intl';
+import QRCode from 'react-qr-code';
+import ReactToPrint from 'react-to-print';
 
 const ActualPrintDialog = ({ listData, isOpen, onClose }) => {
   const intl = useIntl();
@@ -28,61 +24,77 @@ const ActualPrintDialog = ({ listData, isOpen, onClose }) => {
     <React.Fragment>
       <MuiDialog
         maxWidth="md"
-        title={intl.formatMessage({ id: "general.print" })}
+        title={intl.formatMessage({ id: 'general.print' })}
         isOpen={isOpen}
         disabledCloseBtn={dialogState.isSubmit}
         disable_animate={300}
         onClose={handleCloseDialog}
       >
-        <DialogContent >
+        <DialogContent>
           <div style={{ overflow: 'visible', height: '500px' }} ref={componentPringtRef}>
             {listData.map((item, index) => {
-              return <div key={index} style={{ padding: '20px 50px' }}>
-                <table key={index} style={style.table}>
-                  <tbody>
-                    <tr>
-                      <td style={style.cell}>CODE</td>
-                      <td style={{ ...style.cell, fontWeight: '600' }} colSpan="2">{item.MaterialCode}</td>
-                      <td style={style.cell} rowSpan="2"><QRCode value={`${item.LotCode}`} size={90} /></td>
-                    </tr>
-                    <tr>
-                      <td style={style.cell} colSpan="3">Desc: {item.MaterialDescription}</td>
-                    </tr>
-                    <tr>
-                      <td style={{ ...style.cell, width: '25%' }}>QTY</td>
-                      <td style={{ ...style.cell, width: '25%', fontWeight: '600' }}>{item.Qty + ' ' + item.UnitName}</td>
-                      <td style={{ ...style.cell, width: '25%' }}>Vendor</td>
-                      <td style={{ ...style.cell, width: '25%' }}>HANLIM</td>
-                    </tr>
-                    <tr>
-                      <td style={style.cell}>LOT No.</td>
-                      <td style={style.cell}></td>
-                      <td style={style.cell}></td>
-                      <td style={style.cell}>{item.QCResult ? "OK" : "NG"}</td>
-                    </tr>
-                    <tr>
-                      <td style={style.cell}>{moment(item.QCDate).format("YYYY.MM.DD")}</td>
-                      <td style={{ ...style.cell, fontSize: '45px', fontWeight: '600' }} colSpan="3" rowSpan="2">{item.LotSerial}</td>
-                    </tr>
-                    <tr>
-                      <td style={style.cell}>{`W${moment(item.QCDate).week()} / T${moment(item.QCDate).format("MM")}`}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              return (
+                <div key={index} style={{ padding: '20px 50px' }}>
+                  <table key={index} style={style.table}>
+                    <tbody>
+                      <tr>
+                        <td style={style.cell}>CODE</td>
+                        <td style={{ ...style.cell, fontWeight: '600' }} colSpan="2">
+                          {item.MaterialCode}
+                        </td>
+                        <td style={style.cell} rowSpan="2">
+                          <QRCode value={`${item.LotCode}`} size={90} />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style={style.cell} colSpan="3">
+                          Desc: {item.MaterialDescription}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style={{ ...style.cell, width: '25%' }}>QTY</td>
+                        <td style={{ ...style.cell, width: '25%', fontWeight: '600' }}>
+                          {item.Qty + ' ' + item.UnitName}
+                        </td>
+                        <td style={{ ...style.cell, width: '25%' }}>Vendor</td>
+                        <td style={{ ...style.cell, width: '25%' }}>HANLIM</td>
+                      </tr>
+                      <tr>
+                        <td style={style.cell}>LOT No.</td>
+                        <td style={style.cell}></td>
+                        <td style={style.cell}></td>
+                        <td style={style.cell}>{item.QCResult ? 'OK' : 'NG'}</td>
+                      </tr>
+                      <tr>
+                        <td style={style.cell}>{moment(item.QCDate).format('YYYY.MM.DD')}</td>
+                        <td style={{ ...style.cell, fontSize: '45px', fontWeight: '600' }} colSpan="3" rowSpan="2">
+                          {item.LotSerial}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style={style.cell}>{`W${moment(item.QCDate).week()} / T${moment(item.QCDate).format(
+                          'MM'
+                        )}`}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              );
             })}
           </div>
         </DialogContent>
         <DialogActions sx={{ mt: 3 }}>
           <ReactToPrint
-            trigger={() => { return <MuiButton text="print" /> }}
+            trigger={() => {
+              return <MuiButton text="print" />;
+            }}
             content={() => componentPringtRef.current}
           />
         </DialogActions>
       </MuiDialog>
-    </React.Fragment >
-  )
-}
+    </React.Fragment>
+  );
+};
 
 const style = {
   table: {
@@ -90,18 +102,17 @@ const style = {
     marginTop: '40px',
     textAlign: 'center',
     fontSize: '20px',
-    pageBreakAfter: "always",
+    pageBreakAfter: 'always',
     border: 'black solid 2px',
   },
   cell: {
     border: 'black solid 1px',
     padding: '15px 0',
-
   },
-}
+};
 
 User_Operations.toString = function () {
-  return "User_Operations";
+  return 'User_Operations';
 };
 
 const mapStateToProps = (state) => {

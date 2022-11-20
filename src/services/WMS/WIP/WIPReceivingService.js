@@ -1,5 +1,5 @@
-import { axios } from "@utils";
-const API = "api/wip-receiving";
+import { axios } from '@utils';
+const API = 'api/wip-receiving';
 
 export const get = async (params) => {
   try {

@@ -10,69 +10,57 @@ import { DashBoard, Login } from '@containers';
 // const queryClient = new QueryClient()
 
 function RouteWrapperLogin(props) {
-    const ComponentWrapper = NotAuthenticateRoute(Login,
-        '/');
-    return <ComponentWrapper {...props} />;
+  const ComponentWrapper = NotAuthenticateRoute(Login, '/');
+  return <ComponentWrapper {...props} />;
 }
 
 function RouteWrapperRoot(props) {
-    const ComponentWrapper = AuthenticateRoute(DashBoard,
-        '/login');
+  const ComponentWrapper = AuthenticateRoute(DashBoard, '/login');
 
-    return <ComponentWrapper {...props} />;
+  return <ComponentWrapper {...props} />;
 }
 
 function RouteWrapperLogout(props) {
-    const ComponentWrapper = LogoutRoute();
-    return <ComponentWrapper {...props} />;
+  const ComponentWrapper = LogoutRoute();
+  return <ComponentWrapper {...props} />;
 }
 
 class App extends Component {
+  handlePersistorState = () => {
+    const { persistor } = this.props;
 
-    handlePersistorState = () => {
-        const { persistor } = this.props;
-
-        let { bootstrapped } = persistor.getState();
-        if (bootstrapped) {
-            if (this.props.onBeforeLift) {
-                Promise.resolve(this.props.onBeforeLift())
-                    .then(() => this.setState({ bootstrapped: true }))
-                    .catch(() => this.setState({ bootstrapped: true }));
-            } else {
-                this.setState({ bootstrapped: true });
-            }
-        }
-    };
-
-    componentDidMount() {
-        this.handlePersistorState();
+    let { bootstrapped } = persistor.getState();
+    if (bootstrapped) {
+      if (this.props.onBeforeLift) {
+        Promise.resolve(this.props.onBeforeLift())
+          .then(() => this.setState({ bootstrapped: true }))
+          .catch(() => this.setState({ bootstrapped: true }));
+      } else {
+        this.setState({ bootstrapped: true });
+      }
     }
+  };
 
-    render() {
-        return (
-            <Fragment>
-                {/* <QueryClientProvider client={queryClient}> */}
-                <CustomRouter history={historyApp}>
-                    <Switch>
-                        <Route
-                            exact
-                            path='/login'
-                            component={RouteWrapperLogin} />
-                        <Route
-                            exact
-                            path='/logout'
-                            component={RouteWrapperLogout} />
+  componentDidMount() {
+    this.handlePersistorState();
+  }
 
-                        <Route
-                            path='/'
-                            render={() => <RouteWrapperRoot />} />
+  render() {
+    return (
+      <Fragment>
+        {/* <QueryClientProvider client={queryClient}> */}
+        <CustomRouter history={historyApp}>
+          <Switch>
+            <Route exact path="/login" component={RouteWrapperLogin} />
+            <Route exact path="/logout" component={RouteWrapperLogout} />
 
-                    </Switch>
-                </CustomRouter>
-                {/* </QueryClientProvider> */}
-            </Fragment>
-        )
-    }
+            <Route path="/" render={() => <RouteWrapperRoot />} />
+          </Switch>
+        </CustomRouter>
+        {/* </QueryClientProvider> */}
+      </Fragment>
+    );
+  }
 }
 
 export default App;

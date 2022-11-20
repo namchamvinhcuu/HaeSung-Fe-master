@@ -1,21 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
-import { User_Operations } from "@appstate/user";
-import { useIntl } from "react-intl";
-import { Store } from "@appstate";
-import { Button, Grid, IconButton, Typography } from "@mui/material";
-import {
-  MuiButton,
-  MuiDataGrid,
-  MuiSearchField,
-  MuiDateField,
-} from "@controls";
-import moment from "moment";
-import { materialReportService } from "@services";
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { MuiButton, MuiDataGrid } from '@controls';
+import { Grid } from '@mui/material';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
+import { materialReportService } from '@services';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-const MaterialReportDetail = ({LotId}) => {
+const MaterialReportDetail = ({ LotId }) => {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [iqcStateDetail, setIQCDetailState] = useState({
@@ -24,34 +19,46 @@ const MaterialReportDetail = ({LotId}) => {
     totalRow: 0,
     page: 1,
     pageSize: 8,
-    searchData: {
-
-    },
+    searchData: {},
   });
   const columns = [
     {
-      field: 'id', headerName: '', flex: 0.1, align: 'center',
+      field: 'id',
+      headerName: '',
+      flex: 0.1,
+      align: 'center',
       filterable: false,
-      renderCell: (index) => (index.api.getRowIndex(index.row.QcId) + 1) + (iqcStateDetail.page - 1) * iqcStateDetail.pageSize,
+      renderCell: (index) =>
+        index.api.getRowIndex(index.row.QcId) + 1 + (iqcStateDetail.page - 1) * iqcStateDetail.pageSize,
     },
-   { field: 'MaterialCode', headerName: "Material Code", flex: 0.5, },
+    { field: 'MaterialCode', headerName: 'Material Code', flex: 0.5 },
     {
-      field: 'QCCode', headerName: intl.formatMessage({ id: "standardQC.QCCode" }), flex: 0.5,
+      field: 'QCCode',
+      headerName: intl.formatMessage({ id: 'standardQC.QCCode' }),
+      flex: 0.5,
       renderCell: (params) => (
         <div>
-          {params.row.Description == null || params.row.Description == "" ? params.row.QCCode : params.row.QCCode + ' - ' + params.row.Description}
+          {params.row.Description == null || params.row.Description == ''
+            ? params.row.QCCode
+            : params.row.QCCode + ' - ' + params.row.Description}
         </div>
       ),
     },
-    { field: 'createdName', headerName: intl.formatMessage({ id: "general.createdName" }), flex: 0.5, },
+    { field: 'createdName', headerName: intl.formatMessage({ id: 'general.createdName' }), flex: 0.5 },
     {
-      field: 'createdDate', headerName: intl.formatMessage({ id: "general.createdDate" }), flex: 0.5,
-      valueFormatter: params => params?.value ? moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss") : null
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.createdDate' }),
+      flex: 0.5,
+      valueFormatter: (params) =>
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
-    { field: 'modifiedName', headerName: intl.formatMessage({ id: "general.modifiedName" }), flex: 0.5, },
+    { field: 'modifiedName', headerName: intl.formatMessage({ id: 'general.modifiedName' }), flex: 0.5 },
     {
-      field: 'modifiedDate', headerName: intl.formatMessage({ id: "general.modifiedDate" }), flex: 0.5,
-      valueFormatter: params => params?.value ? moment(params?.value).add(7, 'hours').format("YYYY-MM-DD HH:mm:ss") : null
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modifiedDate' }),
+      flex: 0.5,
+      valueFormatter: (params) =>
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
   ];
   async function fetchData(LotId) {
@@ -59,12 +66,12 @@ const MaterialReportDetail = ({LotId}) => {
     const params = {
       page: iqcStateDetail.page,
       pageSize: iqcStateDetail.pageSize,
-      LotId: LotId
+      LotId: LotId,
     };
-    console.log("params", params)
+    console.log('params', params);
     const res = await materialReportService.getReportDetail(params);
     if (res && res.Data && isRendered)
-    setIQCDetailState({
+      setIQCDetailState({
         ...iqcStateDetail,
         data: res.Data ?? [],
         totalRow: res.TotalRow,
@@ -79,42 +86,40 @@ const MaterialReportDetail = ({LotId}) => {
       isRendered = false;
     };
   }, []);
-//   const handleSearch = (e, inputName) => {
-//     let newSearchData = { ...iqcStateDetail.searchData };
+  //   const handleSearch = (e, inputName) => {
+  //     let newSearchData = { ...iqcStateDetail.searchData };
 
-//     newSearchData[inputName] = e;
-//     if (inputName == "showDelete") {
-//         setIQCDetailState({
-//         ...iqcStateDetail,
-//         page: 1,
-//         searchData: { ...newSearchData },
-//       });
-//     } else {
-//         setIQCDetailState({ ...iqcStateDetail, searchData: { ...newSearchData } });
-//     }
-//   };
-const handleDownloadDetail = async() =>{
+  //     newSearchData[inputName] = e;
+  //     if (inputName == "showDelete") {
+  //         setIQCDetailState({
+  //         ...iqcStateDetail,
+  //         page: 1,
+  //         searchData: { ...newSearchData },
+  //       });
+  //     } else {
+  //         setIQCDetailState({ ...iqcStateDetail, searchData: { ...newSearchData } });
+  //     }
+  //   };
+  const handleDownloadDetail = async () => {
     try {
-        const params = {
-            LotId: LotId,
-   
-          };
-          await materialReportService.downloadReportDetail(params);
+      const params = {
+        LotId: LotId,
+      };
+      await materialReportService.downloadReportDetail(params);
+    } catch (error) {
+      console.log(`ERROR: ${error}`);
     }
-    catch (error) {
-        console.log(`ERROR: ${error}`);
-    }
-  }
+  };
   return (
     <React.Fragment>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-      >
+      <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item>
-          <MuiButton text="excel" color="success" onClick={handleDownloadDetail} disabled={LotId!=null?false:true}/>
+          <MuiButton
+            text="excel"
+            color="success"
+            onClick={handleDownloadDetail}
+            disabled={LotId != null ? false : true}
+          />
         </Grid>
         {/* <Grid item>
           <Grid container spacing={2} justifyContent="center">
@@ -170,10 +175,10 @@ const handleDownloadDetail = async() =>{
         rowCount={iqcStateDetail.totalRow}
         onSelectionModelChange={(ids) => {
           // setRowSelected(ids)
-        //   handleRowSelection(ids);
+          //   handleRowSelection(ids);
         }}
         onPageChange={(newPage) => {
-            setIQCDetailState({ ...iqcStateDetail, page: newPage + 1 });
+          setIQCDetailState({ ...iqcStateDetail, page: newPage + 1 });
         }}
         getRowId={(rows) => rows.QcId}
         // getRowClassName={(params) => {
@@ -181,14 +186,14 @@ const handleDownloadDetail = async() =>{
         //     return `Mui-created`;
         //   }
         // }}
-        initialState={{ pinnedColumns: { right: ["action"] } }}
+        initialState={{ pinnedColumns: { right: ['action'] } }}
       />
     </React.Fragment>
   );
 };
 
 User_Operations.toString = function () {
-  return "User_Operations";
+  return 'User_Operations';
 };
 
 const mapStateToProps = (state) => {

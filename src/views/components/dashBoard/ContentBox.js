@@ -1,9 +1,8 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 class ContentBox extends Component {
   constructor(props) {
     super(props);
-
   }
   state = {};
   render() {
@@ -31,7 +30,9 @@ class ContentBox extends Component {
                             <li key={i} className="breadcrumb-item active">
                               <a href="#" onClick={(e) => e.preventDefault()}>
                                 {/* {row[i]} */}
-                                <span className="badge badge-info" style={{ fontSize: '12px' }}>{this.props.code}</span>
+                                <span className="badge badge-info" style={{ fontSize: '12px' }}>
+                                  {this.props.code}
+                                </span>
                               </a>
                             </li>
                           );
@@ -50,18 +51,14 @@ class ContentBox extends Component {
                       {/* <div className="align-middle ml-2">
                         <span className="badge badge-info" style={{ fontSize: '12px' }}>{this.props.code}</span>
                       </div> */}
-
                     </ol>
-
                   </div>
-
                 </div>
               </div>
             </section>
 
             <div className="row ">
               <div className="col-12">
-
                 {/* <div className="card-header">
                                     <h3 className="card-title"><strong>{this.props.title}</strong></h3>
                                     <ol className="breadcrumb float-sm-right">
@@ -82,7 +79,6 @@ class ContentBox extends Component {
                                     </div>
                                 </div> */}
                 {this.props.children && this.props.children}
-
               </div>
             </div>
           </div>

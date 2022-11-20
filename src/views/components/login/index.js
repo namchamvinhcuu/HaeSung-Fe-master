@@ -1,25 +1,25 @@
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Autocomplete from '@mui/material/Autocomplete';
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
-import Typography from "@mui/material/Typography";
-import { HasValue, MapFormToModelData } from "@plugins/helperJS";
-import { firstLogin, login } from "@utils";
-import React, { Component } from "react";
+import Typography from '@mui/material/Typography';
+import { HasValue, MapFormToModelData } from '@plugins/helperJS';
+import { firstLogin, login } from '@utils';
+import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { reduxForm } from "redux-form";
+import { reduxForm } from 'redux-form';
 
 import { api_download } from '@utils';
 
-import { loginService } from '@services'
-import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils'
-import * as ConfigConstants from '@constants/ConfigConstants'
-import store from '@states/store'
+import { loginService } from '@services';
+import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils';
+import * as ConfigConstants from '@constants/ConfigConstants';
+import store from '@states/store';
 
 const theme = createTheme();
 class Login extends Component {
@@ -29,7 +29,7 @@ class Login extends Component {
       // ...initModal,
       errorMessages: [],
       isLoading: false,
-      langcode: "",
+      langcode: '',
       countries: [
         {
           code: 'en-US',
@@ -37,11 +37,11 @@ class Login extends Component {
           label: 'English',
         },
         {
-          code: 'vi-VN'
-          , fcode: 'VN'
-          , label: 'Tiếng Việt'
+          code: 'vi-VN',
+          fcode: 'VN',
+          label: 'Tiếng Việt',
         },
-      ]
+      ],
     };
     this.username = React.createRef();
     this.password = React.createRef();
@@ -54,31 +54,29 @@ class Login extends Component {
   //   resErrorMessage: '',
   // }
 
-  componentDidMount = () => {
-
-  }
+  componentDidMount = () => {};
 
   changeLanguageValue = () => {
     if (this.state.countries && this.state.countries.length > 0) {
-      if (this.props.language === "VI") {
+      if (this.props.language === 'VI') {
         return this.state.countries[1];
       }
-      if (this.props.language === "EN") {
+      if (this.props.language === 'EN') {
         return this.state.countries[0];
       }
     }
     return null;
-  }
+  };
 
   download_apk(e) {
     e.preventDefault();
-    api_download('EquipmentManagerApi/download-apk', "android_setup.apk")
+    api_download('EquipmentManagerApi/download-apk', 'android_setup.apk');
   }
 
   changeLanguage = async (language) => {
     //fire redux actions
     this.props.changeLanguage(language);
-  }
+  };
 
   onLogin = async (e) => {
     e.preventDefault();
@@ -89,14 +87,13 @@ class Login extends Component {
 
     const model = MapFormToModelData(e.target);
     if (model) {
-
       const errorMessages = [];
-      if (model.username === "" || !HasValue(model.username)) {
-        errorMessages.push("Bạn chưa nhập tên đăng nhập");
+      if (model.username === '' || !HasValue(model.username)) {
+        errorMessages.push('Bạn chưa nhập tên đăng nhập');
         this.username.current.focus();
       }
-      if (model.password === "" || !HasValue(model.password)) {
-        errorMessages.push("Bạn chưa nhập mật khẩu");
+      if (model.password === '' || !HasValue(model.password)) {
+        errorMessages.push('Bạn chưa nhập mật khẩu');
       }
 
       if (errorMessages.length > 0) {
@@ -162,7 +159,7 @@ class Login extends Component {
             });
 
             RemoveLocalStorage(ConfigConstants.CURRENT_USER);
-            SetLocalStorage(ConfigConstants.CURRENT_USER, returnData.Data)
+            SetLocalStorage(ConfigConstants.CURRENT_USER, returnData.Data);
 
             this.setState((previousState) => ({
               ...previousState,
@@ -173,18 +170,13 @@ class Login extends Component {
             firstLogin.isfirst = true;
 
             this.props.history.push({
-              pathname: routername ?? "/",
+              pathname: routername ?? '/',
               closetab: false,
             });
-
+          } else {
           }
-          else {
-
-          }
-        }
-        else {
-
-          errorMessages.push(res.ResponseMessage)
+        } else {
+          errorMessages.push(res.ResponseMessage);
           this.setState((previousState) => ({
             ...previousState,
             errorMessages: errorMessages,
@@ -199,8 +191,7 @@ class Login extends Component {
     const { errorMessages, isLoading } = this.state;
     return (
       <ThemeProvider theme={theme}>
-        <Grid container component="main" sx={{ height: "100vh" }}>
-
+        <Grid container component="main" sx={{ height: '100vh' }}>
           <CssBaseline />
 
           <Grid
@@ -209,14 +200,12 @@ class Login extends Component {
             sm={4}
             md={7}
             sx={{
-              backgroundImage: "url(https://images.unsplash.com/photo-1483058712412-4245e9b90334?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80)",
-              backgroundRepeat: "no-repeat",
-              backgroundColor: (t) =>
-                t.palette.mode === "light"
-                  ? t.palette.grey[50]
-                  : t.palette.grey[900],
-              backgroundSize: "cover",
-              backgroundPosition: "center",
+              backgroundImage:
+                'url(https://images.unsplash.com/photo-1483058712412-4245e9b90334?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80)',
+              backgroundRepeat: 'no-repeat',
+              backgroundColor: (t) => (t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900]),
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
             }}
           >
             <Box className="content-login">
@@ -224,38 +213,23 @@ class Login extends Component {
             </Box>
           </Grid>
 
-          <Grid
-            item
-            xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            square
-
-            className="background-login"
-          >
+          <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square className="background-login">
             <Box
               sx={{
                 my: 8,
                 mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
               }}
             >
-              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+              <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                 <LockOutlinedIcon />
               </Avatar>
               <Typography component="h1" variant="h5">
                 Sign in
               </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={this.onLogin.bind(this)}
-                sx={{ mt: 1 }}
-              >
+              <Box component="form" noValidate onSubmit={this.onLogin.bind(this)} sx={{ mt: 1 }}>
                 <TextField
                   sx={{ backgroundColor: '#E8F0FE' }}
                   ref={this.username}
@@ -263,7 +237,7 @@ class Login extends Component {
                   required
                   fullWidth
                   id="username"
-                  label={<FormattedMessage id='user.userName' />}
+                  label={<FormattedMessage id="user.userName" />}
                   name="username"
                   autoComplete="username"
                   autoFocus
@@ -275,8 +249,7 @@ class Login extends Component {
                   required
                   fullWidth
                   name="password"
-                  label={<FormattedMessage id='user.userPassword' />}
-
+                  label={<FormattedMessage id="user.userPassword" />}
                   type="password"
                   id="password"
                   autoComplete="current-password"
@@ -294,35 +267,33 @@ class Login extends Component {
                   defaultValue={this.changeLanguageValue}
                   onChange={(event, newValue) => {
                     this.setState({ langcode: newValue.code });
-                    this.changeLanguage(newValue.code === "vi-VN" ? "VI" : "EN");
+                    this.changeLanguage(newValue.code === 'vi-VN' ? 'VI' : 'EN');
                   }}
                   renderOption={(props, option) => (
                     <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                      {
-                        option.fcode === "US" ?
-                          <i className="flag-icon flag-icon-us mr-2"></i>
-                          : <i className="flag-icon flag-icon-vi mr-2"></i>
-                      }
+                      {option.fcode === 'US' ? (
+                        <i className="flag-icon flag-icon-us mr-2"></i>
+                      ) : (
+                        <i className="flag-icon flag-icon-vi mr-2"></i>
+                      )}
                       {option.label}
                     </Box>
                   )}
                   getOptionLabel={(option) => option.label}
-                  renderInput={(params) => <TextField {...params} label={<FormattedMessage id="general.select_language" />} />}
+                  renderInput={(params) => (
+                    <TextField {...params} label={<FormattedMessage id="general.select_language" />} />
+                  )}
                 />
 
                 <button
                   disabled={this.state.isLoading}
-                  style={{ width: "100%", marginTop: "25px" }}
+                  style={{ width: '100%', marginTop: '25px' }}
                   type="submit"
                   className="btn btn-primary"
                 >
-                  <FormattedMessage id='general.signin' />
+                  <FormattedMessage id="general.signin" />
                   {this.state.isLoading && (
-                    <span
-                      className="spinner-border spinner-border-sm mx-3"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
+                    <span className="spinner-border spinner-border-sm mx-3" role="status" aria-hidden="true"></span>
                   )}
                 </button>
 
@@ -336,19 +307,14 @@ class Login extends Component {
                   ""
                 )} */}
 
-                {
-                  errorMessages.length
-                    ?
-
-                    (<p style={{ color: 'red', textAlign: 'center' }}>
-                      {<FormattedMessage id='login.account_password_invalid' />}
-                    </p>)
-                    :
-                    (<p></p>)
-                }
-
+                {errorMessages.length ? (
+                  <p style={{ color: 'red', textAlign: 'center' }}>
+                    {<FormattedMessage id="login.account_password_invalid" />}
+                  </p>
+                ) : (
+                  <p></p>
+                )}
               </Box>
-
             </Box>
           </Grid>
         </Grid>

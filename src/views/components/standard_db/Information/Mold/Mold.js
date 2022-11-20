@@ -1,32 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import UndoIcon from "@mui/icons-material/Undo";
-import {
-  Autocomplete,
-  FormControlLabel,
-  Grid,
-  IconButton,
-  Switch,
-  TextField,
-  Typography,
-  Tooltip
-} from "@mui/material";
-import { createTheme, ThemeProvider } from "@mui/material";
-import { useIntl } from "react-intl";
-import {
-  MuiButton,
-  MuiDataGrid,
-  MuiSelectField,
-  MuiSearchField,
-  MuiAutocomplete,
-} from "@controls";
-import { moldService } from "@services";
-import { useModal } from "@basesShared";
-import { ErrorAlert, SuccessAlert } from "@utils";
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import moment from "moment";
-import MoldDialog from "./MoldDialog";
+import { useModal } from '@basesShared';
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import UndoIcon from '@mui/icons-material/Undo';
+import { FormControlLabel, Grid, IconButton, Switch, Tooltip, Typography } from '@mui/material';
+import { moldService } from '@services';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
+import MoldDialog from './MoldDialog';
 
 export default function Mold() {
   const intl = useIntl();
@@ -40,7 +24,7 @@ export default function Mold() {
     page: 1,
     pageSize: 20,
     searchData: {
-      keyWord: "",
+      keyWord: '',
       Model: null,
       MoldType: null,
       MachineType: null,
@@ -53,54 +37,42 @@ export default function Mold() {
 
   const columns = [
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       width: 70,
-      align: "center",
+      align: 'center',
       filterable: false,
-      renderCell: (index) =>
-        index.api.getRowIndex(index.row.MoldId) +
-        1 +
-        (moldState.page - 1) * moldState.pageSize,
+      renderCell: (index) => index.api.getRowIndex(index.row.MoldId) + 1 + (moldState.page - 1) * moldState.pageSize,
     },
-    { field: "MoldId", hide: true },
-    { field: "row_version", hide: true },
+    { field: 'MoldId', hide: true },
+    { field: 'row_version', hide: true },
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       width: 80,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="delete"
                 color="error"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                {params.row.isActived ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={() => handleUpdate(params.row)}
               >
                 <EditIcon fontSize="inherit" />
@@ -111,103 +83,93 @@ export default function Mold() {
       },
     },
     {
-      field: "MoldSerial",
-      headerName: intl.formatMessage({ id: "mold.MoldSerial" }),
+      field: 'MoldSerial',
+      headerName: intl.formatMessage({ id: 'mold.MoldSerial' }),
       width: 150,
     },
     {
-      field: "MoldCode",
-      headerName: intl.formatMessage({ id: "mold.MoldCode" }),
+      field: 'MoldCode',
+      headerName: intl.formatMessage({ id: 'mold.MoldCode' }),
       width: 150,
     },
     {
-      field: "ModelName",
-      headerName: intl.formatMessage({ id: "mold.Model" }),
+      field: 'ModelName',
+      headerName: intl.formatMessage({ id: 'mold.Model' }),
       width: 150,
     },
     {
-      field: "MoldTypeName",
-      headerName: intl.formatMessage({ id: "mold.MoldType" }),
+      field: 'MoldTypeName',
+      headerName: intl.formatMessage({ id: 'mold.MoldType' }),
       width: 150,
     },
     {
-      field: "Inch",
-      headerName: intl.formatMessage({ id: "mold.Inch" }),
+      field: 'Inch',
+      headerName: intl.formatMessage({ id: 'mold.Inch' }),
       width: 100,
     },
     {
-      field: "MachineTypeName",
-      headerName: intl.formatMessage({ id: "mold.MachineType" }),
+      field: 'MachineTypeName',
+      headerName: intl.formatMessage({ id: 'mold.MachineType' }),
       width: 150,
     },
     {
-      field: "MachineTon",
-      headerName: intl.formatMessage({ id: "mold.MachineTon" }),
+      field: 'MachineTon',
+      headerName: intl.formatMessage({ id: 'mold.MachineTon' }),
       width: 150,
     },
     {
-      field: "ETADate",
-      headerName: intl.formatMessage({ id: "mold.ETADate" }),
+      field: 'ETADate',
+      headerName: intl.formatMessage({ id: 'mold.ETADate' }),
       width: 150,
-      valueFormatter: (params) =>
-        moment(params?.value).add(7, "hours").format("YYYY-MM-DD"),
+      valueFormatter: (params) => moment(params?.value).add(7, 'hours').format('YYYY-MM-DD'),
     },
     {
-      field: "Cabity",
-      headerName: intl.formatMessage({ id: "mold.Cabity" }),
+      field: 'Cabity',
+      headerName: intl.formatMessage({ id: 'mold.Cabity' }),
       width: 100,
     },
     {
-      field: "ETAStatus",
-      headerName: intl.formatMessage({ id: "mold.ETAStatus" }),
+      field: 'ETAStatus',
+      headerName: intl.formatMessage({ id: 'mold.ETAStatus' }),
       width: 150,
-      align: "center",
-      renderCell: (params) => (params.row.ETAStatus ? "Y" : "N"),
+      align: 'center',
+      renderCell: (params) => (params.row.ETAStatus ? 'Y' : 'N'),
     },
     {
-      field: "Remark",
-      headerName: intl.formatMessage({ id: "mold.Remark" }),
+      field: 'Remark',
+      headerName: intl.formatMessage({ id: 'mold.Remark' }),
       width: 150,
       renderCell: (params) => {
         return (
-          <Tooltip
-            title={params.row.Remark ?? ""}
-            className="col-text-elip"
-          >
-            <Typography sx={{ fontSize: 14 }}>
-              {params.row.Remark}
-            </Typography>
+          <Tooltip title={params.row.Remark ?? ''} className="col-text-elip">
+            <Typography sx={{ fontSize: 14 }}>{params.row.Remark}</Typography>
           </Tooltip>
         );
       },
     },
     {
-      field: "createdName",
-      headerName: intl.formatMessage({ id: "general.createdName" }),
+      field: 'createdName',
+      headerName: intl.formatMessage({ id: 'general.createdName' }),
       width: 150,
     },
     {
-      field: "createdDate",
-      headerName: intl.formatMessage({ id: "general.createdDate" }),
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.createdDate' }),
       width: 150,
       valueFormatter: (params) =>
-        params?.value
-          ? moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")
-          : null,
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
     {
-      field: "modifiedName",
-      headerName: intl.formatMessage({ id: "general.modifiedName" }),
+      field: 'modifiedName',
+      headerName: intl.formatMessage({ id: 'general.modifiedName' }),
       width: 150,
     },
     {
-      field: "modifiedDate",
-      headerName: intl.formatMessage({ id: "general.modifiedDate" }),
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modifiedDate' }),
       width: 150,
       valueFormatter: (params) =>
-        params?.value
-          ? moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")
-          : null,
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
   ];
 
@@ -251,9 +213,7 @@ export default function Mold() {
     if (
       window.confirm(
         intl.formatMessage({
-          id: mold.isActived
-            ? "general.confirm_delete"
-            : "general.confirm_redo_deleted",
+          id: mold.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
         })
       )
     ) {
@@ -263,7 +223,7 @@ export default function Mold() {
           row_version: mold.row_version,
         });
         if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: "general.success" }));
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchData();
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
@@ -289,7 +249,7 @@ export default function Mold() {
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...moldState.searchData };
     newSearchData[inputName] = e;
-    if (inputName == "showDelete") {
+    if (inputName == 'showDelete') {
       setMoldState({ ...moldState, page: 1, searchData: { ...newSearchData } });
     } else {
       setMoldState({ ...moldState, searchData: { ...newSearchData } });
@@ -298,7 +258,7 @@ export default function Mold() {
 
   const handleCellClick = (param, event) => {
     //disable click cell
-    event.defaultMuiPrevented = param.field === "action";
+    event.defaultMuiPrevented = param.field === 'action';
   };
 
   async function fetchData() {
@@ -324,89 +284,53 @@ export default function Mold() {
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="width-end"
-      >
+      <Grid container direction="row" justifyContent="space-between" alignItems="width-end">
         <Grid item xs={3}>
-          <MuiButton
-            text="create"
-            color="success"
-            onClick={handleAdd}
-            sx={{ mt: 1 }}
-          />
+          <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mt: 1 }} />
         </Grid>
         <Grid item xs>
-          <Grid
-            container
-            columnSpacing={2}
-            direction="row"
-            justifyContent="flex-end"
-            alignItems="flex-end"
-          >
-            <Grid item style={{ width: "21%" }}>
+          <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
+            <Grid item style={{ width: '21%' }}>
               <MuiSearchField
                 fullWidth
                 variant="keyWord"
                 label="mold.SerialCode"
                 onClick={fetchData}
-                onChange={(e) => handleSearch(e.target.value, "keyWord")}
+                onChange={(e) => handleSearch(e.target.value, 'keyWord')}
               />
             </Grid>
-            <Grid item style={{ width: "21%" }}>
+            <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
-                label={intl.formatMessage({ id: "mold.Model" })}
+                label={intl.formatMessage({ id: 'mold.Model' })}
                 fetchDataFunc={moldService.getProductModel}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
-                onChange={(e, item) =>
-                  handleSearch(
-                    item ? item.commonDetailId ?? null : null,
-                    "Model"
-                  )
-                }
+                onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Model')}
                 variant="standard"
               />
             </Grid>
-            <Grid item style={{ width: "21%" }}>
+            <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
-                label={intl.formatMessage({ id: "mold.MoldType" })}
+                label={intl.formatMessage({ id: 'mold.MoldType' })}
                 fetchDataFunc={moldService.getProductType}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
-                onChange={(e, item) =>
-                  handleSearch(
-                    item ? item.commonDetailId ?? null : null,
-                    "MoldType"
-                  )
-                }
+                onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'MoldType')}
                 variant="standard"
               />
             </Grid>
-            <Grid item style={{ width: "21%" }}>
+            <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
-                label={intl.formatMessage({ id: "mold.MachineType" })}
+                label={intl.formatMessage({ id: 'mold.MachineType' })}
                 fetchDataFunc={moldService.getMachineType}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
-                onChange={(e, item) =>
-                  handleSearch(
-                    item ? item.commonDetailId ?? null : null,
-                    "MachineType"
-                  )
-                }
+                onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'MachineType')}
                 variant="standard"
               />
             </Grid>
             <Grid item>
-              <MuiButton
-                text="search"
-                color="info"
-                onClick={fetchData}
-                sx={{ mr: 3, mb: 1 }}
-              />
+              <MuiButton text="search" color="info" onClick={fetchData} sx={{ mr: 3, mb: 1 }} />
             </Grid>
           </Grid>
         </Grid>
@@ -418,13 +342,11 @@ export default function Mold() {
               <Switch
                 defaultChecked={true}
                 color="primary"
-                onChange={(e) => handleSearch(e.target.checked, "showDelete")}
+                onChange={(e) => handleSearch(e.target.checked, 'showDelete')}
               />
             }
             label={intl.formatMessage({
-              id: moldState.searchData.showDelete
-                ? "general.data_actived"
-                : "general.data_deleted",
+              id: moldState.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted',
             })}
           />
         </Grid>
@@ -441,12 +363,8 @@ export default function Mold() {
         pageSize={moldState.pageSize}
         rowCount={moldState.totalRow}
         rowsPerPageOptions={[5, 10, 20]}
-        onPageChange={(newPage) =>
-          setMoldState({ ...moldState, page: newPage + 1 })
-        }
-        onPageSizeChange={(newPageSize) =>
-          setMoldState({ ...moldState, pageSize: newPageSize, page: 1 })
-        }
+        onPageChange={(newPage) => setMoldState({ ...moldState, page: newPage + 1 })}
+        onPageSizeChange={(newPageSize) => setMoldState({ ...moldState, pageSize: newPageSize, page: 1 })}
         onCellClick={handleCellClick}
         getRowId={(rows) => rows.MoldId}
         getRowClassName={(params) => {

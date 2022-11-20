@@ -1,29 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
-import ForeCastPODetail from "./ForeCastPODetail";
-import { useIntl } from "react-intl";
-import EditIcon from "@mui/icons-material/Edit";
-import UndoIcon from "@mui/icons-material/Undo";
-import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  MuiButton,
-  MuiDataGrid,
-  MuiSearchField,
-  MuiSelectField,
-} from "@controls";
-import {
-  Box,
-  FormControlLabel,
-  Grid,
-  IconButton,
-  Switch,
-} from "@mui/material";
-import { ForecastPOMasterDto } from "@models";
-import { forecastMasterService } from "@services";
-import moment from "moment";
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import { useModal } from "@basesShared";
-import ForecastMasterDialog from "./ForecastMasterDialog";
-import { ErrorAlert, SuccessAlert, getCurrentWeek } from "@utils";
+import React, { useEffect, useRef, useState } from 'react';
+import ForeCastPODetail from './ForeCastPODetail';
+import { useIntl } from 'react-intl';
+import EditIcon from '@mui/icons-material/Edit';
+import UndoIcon from '@mui/icons-material/Undo';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { MuiButton, MuiDataGrid, MuiSearchField, MuiSelectField } from '@controls';
+import { Box, FormControlLabel, Grid, IconButton, Switch } from '@mui/material';
+import { ForecastPOMasterDto } from '@models';
+import { forecastMasterService } from '@services';
+import moment from 'moment';
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { useModal } from '@basesShared';
+import ForecastMasterDialog from './ForecastMasterDialog';
+import { ErrorAlert, SuccessAlert, getCurrentWeek } from '@utils';
 
 export default function ForecastPOMaster(props) {
   const intl = useIntl();
@@ -40,13 +29,14 @@ export default function ForecastPOMaster(props) {
     page: 1,
     pageSize: 8,
     searchData: {
-      keyWord: "",
+      keyWord: '',
       showDelete: true,
     },
   });
   const [newData, setNewData] = useState({ ...ForecastPOMasterDto });
   const [updateData, setUpdateData] = useState({});
-  async function fetchData() {
+
+  const fetchData = async () => {
     setFPOMasterId(null);
     setForecastMasterState({ ...forecastMasterState, isLoading: true });
     const params = {
@@ -63,25 +53,20 @@ export default function ForecastPOMaster(props) {
         totalRow: res.TotalRow,
         isLoading: false,
       });
-  }
+  };
+
   useEffect(() => {
     return () => {
       isRendered = false;
     };
   }, []);
+
   useEffect(() => {
     fetchData();
-  }, [
-    forecastMasterState.page,
-    forecastMasterState.pageSize,
-    forecastMasterState.searchData.showDelete,
-  ]);
+  }, [forecastMasterState.page, forecastMasterState.pageSize, forecastMasterState.searchData.showDelete]);
+
   useEffect(() => {
-    if (
-      !_.isEmpty(newData) &&
-      isRendered &&
-      !_.isEqual(newData, ForecastPOMasterDto)
-    ) {
+    if (!_.isEmpty(newData) && isRendered && !_.isEqual(newData, ForecastPOMasterDto)) {
       const data = [newData, ...forecastMasterState.data];
       if (data.length > forecastMasterState.pageSize) {
         data.pop();
@@ -95,11 +80,7 @@ export default function ForecastPOMaster(props) {
   }, [newData]);
 
   useEffect(() => {
-    if (
-      !_.isEmpty(updateData) &&
-      !_.isEqual(updateData, rowData) &&
-      isRendered
-    ) {
+    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData) && isRendered) {
       let newArr = [...forecastMasterState.data];
       const index = _.findIndex(newArr, function (o) {
         return o.FPoMasterId == updateData.FPoMasterId;
@@ -110,23 +91,24 @@ export default function ForecastPOMaster(props) {
       setForecastMasterState({ ...forecastMasterState, data: [...newArr] });
     }
   }, [updateData]);
+
   const handleAdd = () => {
     setMode(CREATE_ACTION);
     setRowData();
     toggle();
   };
+
   const handleUpdate = (row) => {
     setMode(UPDATE_ACTION);
     setRowData({ ...row });
     toggle();
   };
+
   const handleDelete = async (fcM) => {
     if (
       window.confirm(
         intl.formatMessage({
-          id: fcM.isActived
-            ? "general.confirm_delete"
-            : "general.confirm_redo_deleted",
+          id: fcM.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
         })
       )
     ) {
@@ -136,7 +118,7 @@ export default function ForecastPOMaster(props) {
           row_version: fcM.row_version,
         });
         if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: "general.success" }));
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchData();
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
@@ -146,10 +128,11 @@ export default function ForecastPOMaster(props) {
       }
     }
   };
+
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...forecastMasterState.searchData };
     newSearchData[inputName] = e;
-    if (inputName == "showDelete") {
+    if (inputName == 'showDelete') {
       setForecastMasterState({
         ...forecastMasterState,
         page: 1,
@@ -159,11 +142,12 @@ export default function ForecastPOMaster(props) {
       setForecastMasterState({ ...forecastMasterState, searchData: { ...newSearchData } });
     }
   };
+
   const columns = [
-    { field: "FPoMasterId", headerName: "", hide: true },
+    { field: 'FPoMasterId', headerName: '', hide: true },
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       width: 80,
       filterable: false,
       renderCell: (index) =>
@@ -172,42 +156,33 @@ export default function ForecastPOMaster(props) {
         (forecastMasterState.page - 1) * forecastMasterState.pageSize,
     },
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       width: 80,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="delete"
                 color="error"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                {params.row.isActived ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
 
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={() => handleUpdate(params.row)}
               >
                 <EditIcon fontSize="inherit" />
@@ -218,60 +193,51 @@ export default function ForecastPOMaster(props) {
       },
     },
     {
-      field: "FPoMasterCode",
-      headerName: "FPO Master Code",
+      field: 'FPoMasterCode',
+      headerName: 'FPO Master Code',
       width: 200,
     },
 
     {
-      field: "TotalOrderQty",
-      headerName: intl.formatMessage({ id: "forecast.Total_Order_Qty" }),
+      field: 'TotalOrderQty',
+      headerName: intl.formatMessage({ id: 'forecast.Total_Order_Qty' }),
       width: 170,
     },
 
     {
-      field: "createdName",
-      headerName: intl.formatMessage({ id: "general.createdName" }),
+      field: 'createdName',
+      headerName: intl.formatMessage({ id: 'general.createdName' }),
       width: 150,
     },
     {
-      field: "createdDate",
-      headerName: intl.formatMessage({ id: "general.created_date" }),
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.created_date' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
     {
-      field: "modifiedName",
-      headerName: intl.formatMessage({ id: "general.modifiedName" }),
+      field: 'modifiedName',
+      headerName: intl.formatMessage({ id: 'general.modifiedName' }),
       width: 150,
     },
     {
-      field: "modifiedDate",
-      headerName: intl.formatMessage({ id: "general.modified_date" }),
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modified_date' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
   ];
   return (
     <>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="flex-end"
-      >
+      <Grid container direction="row" justifyContent="space-between" alignItems="flex-end">
         <Grid item xs={8}>
           <MuiButton text="create" color="success" onClick={handleAdd} />
         </Grid>
@@ -282,7 +248,7 @@ export default function ForecastPOMaster(props) {
                 label="general.name"
                 name="LineName"
                 onClick={fetchData}
-                onChange={(e) => handleSearch(e.target.value, "keyWord")}
+                onChange={(e) => handleSearch(e.target.value, 'keyWord')}
               />
             </Box>
           </Box>
@@ -292,18 +258,16 @@ export default function ForecastPOMaster(props) {
         </Grid>
         <Grid item>
           <FormControlLabel
-            sx={{ marginBottom: "3px" }}
+            sx={{ marginBottom: '3px' }}
             control={
               <Switch
                 defaultChecked={true}
                 color="primary"
-                onChange={(e) => handleSearch(e.target.checked, "showDelete")}
+                onChange={(e) => handleSearch(e.target.checked, 'showDelete')}
               />
             }
             label={intl.formatMessage({
-              id: forecastMasterState.searchData.showDelete
-                ? "general.data_actived"
-                : "general.data_deleted",
+              id: forecastMasterState.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted',
             })}
           />
         </Grid>
@@ -346,8 +310,9 @@ export default function ForecastPOMaster(props) {
         onClose={toggle}
         mode={mode}
       />
-      <ForeCastPODetail FPoMasterId={FPoMasterId}
-      // newDataChild={newDataChild}
+      <ForeCastPODetail
+        FPoMasterId={FPoMasterId}
+        // newDataChild={newDataChild}
       />
     </>
   );

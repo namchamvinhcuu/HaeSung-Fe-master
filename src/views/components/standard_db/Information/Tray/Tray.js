@@ -1,8 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import UndoIcon from "@mui/icons-material/Undo";
-import QRCode from "react-qr-code";
+import { useModal, useModal2 } from '@basesShared';
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import UndoIcon from '@mui/icons-material/Undo';
 import {
   Box,
   Button,
@@ -13,33 +15,24 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
-  Zoom,
   Switch,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-  TextField,
   Typography,
-} from "@mui/material";
+  Zoom,
+} from '@mui/material';
 import { GRID_CHECKBOX_SELECTION_COL_DEF } from '@mui/x-data-grid-pro';
-import { useIntl } from "react-intl";
-import {
-  MuiButton,
-  MuiDataGrid,
-  MuiSelectField,
-  MuiSearchField,
-  MuiAutocomplete,
-} from "@controls";
-import { trayService } from "@services";
-import { useModal, useModal2 } from "@basesShared";
-import { ErrorAlert, SuccessAlert } from "@utils";
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import moment from "moment";
-import TrayDialog from "./TrayDialog";
-import ReactToPrint from "react-to-print";
-import CloseIcon from "@mui/icons-material/Close";
+import { trayService } from '@services';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
+import QRCode from 'react-qr-code';
+import ReactToPrint from 'react-to-print';
+import TrayDialog from './TrayDialog';
 
 export default function Tray() {
   const intl = useIntl();
@@ -55,7 +48,7 @@ export default function Tray() {
     page: 1,
     pageSize: 20,
     searchData: {
-      keyWord: "",
+      keyWord: '',
       TrayType: null,
       showDelete: true,
     },
@@ -70,54 +63,42 @@ export default function Tray() {
 
   const columns = [
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       width: 70,
-      align: "center",
+      align: 'center',
       filterable: false,
-      renderCell: (index) =>
-        index.api.getRowIndex(index.row.TrayId) +
-        1 +
-        (trayState.page - 1) * trayState.pageSize,
+      renderCell: (index) => index.api.getRowIndex(index.row.TrayId) + 1 + (trayState.page - 1) * trayState.pageSize,
     },
-    { field: "TrayId", hide: true },
+    { field: 'TrayId', hide: true },
     // { field: "row_version", hide: true },
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       width: 80,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="delete"
                 color="error"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                {params.row.isActived ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={() => handleUpdate(params.row)}
               >
                 <EditIcon fontSize="inherit" />
@@ -128,49 +109,45 @@ export default function Tray() {
       },
     },
     {
-      field: "TrayCode",
-      headerName: intl.formatMessage({ id: "tray.TrayCode" }),
+      field: 'TrayCode',
+      headerName: intl.formatMessage({ id: 'tray.TrayCode' }),
       width: 150,
     },
     {
-      field: "TrayTypeName",
-      headerName: intl.formatMessage({ id: "tray.TrayType" }),
+      field: 'TrayTypeName',
+      headerName: intl.formatMessage({ id: 'tray.TrayType' }),
       width: 150,
     },
     {
-      field: "IsReuse",
-      headerName: intl.formatMessage({ id: "tray.IsReuse" }),
+      field: 'IsReuse',
+      headerName: intl.formatMessage({ id: 'tray.IsReuse' }),
       width: 80,
-      align: "center",
-      renderCell: (params) => (params.row.IsReuse ? "Y" : "N"),
+      align: 'center',
+      renderCell: (params) => (params.row.IsReuse ? 'Y' : 'N'),
     },
     {
-      field: "createdName",
-      headerName: intl.formatMessage({ id: "general.createdName" }),
+      field: 'createdName',
+      headerName: intl.formatMessage({ id: 'general.createdName' }),
       width: 150,
     },
     {
-      field: "createdDate",
-      headerName: intl.formatMessage({ id: "general.createdDate" }),
-      width: 150,
-      valueFormatter: (params) =>
-        params?.value
-          ? moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")
-          : null,
-    },
-    {
-      field: "modifiedName",
-      headerName: intl.formatMessage({ id: "general.modifiedName" }),
-      width: 150,
-    },
-    {
-      field: "modifiedDate",
-      headerName: intl.formatMessage({ id: "general.modifiedDate" }),
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.createdDate' }),
       width: 150,
       valueFormatter: (params) =>
-        params?.value
-          ? moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")
-          : null,
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
+    },
+    {
+      field: 'modifiedName',
+      headerName: intl.formatMessage({ id: 'general.modifiedName' }),
+      width: 150,
+    },
+    {
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modifiedDate' }),
+      width: 150,
+      valueFormatter: (params) =>
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
   ];
 
@@ -198,11 +175,7 @@ export default function Tray() {
   }, [newData]);
 
   useEffect(() => {
-    if (
-      !_.isEmpty(updateData) &&
-      !_.isEqual(updateData, rowData) &&
-      isRendered
-    ) {
+    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData) && isRendered) {
       let newArr = [...trayState.data];
       const index = _.findIndex(newArr, function (o) {
         return o.TrayId == updateData.TrayId;
@@ -220,9 +193,7 @@ export default function Tray() {
     if (
       window.confirm(
         intl.formatMessage({
-          id: tray.isActived
-            ? "general.confirm_delete"
-            : "general.confirm_redo_deleted",
+          id: tray.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
         })
       )
     ) {
@@ -232,7 +203,7 @@ export default function Tray() {
           row_version: tray.row_version,
         });
         if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: "general.success" }));
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchData();
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
@@ -258,7 +229,7 @@ export default function Tray() {
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...trayState.searchData };
     newSearchData[inputName] = e;
-    if (inputName == "showDelete") {
+    if (inputName == 'showDelete') {
       setTrayState({ ...trayState, page: 1, searchData: { ...newSearchData } });
     } else {
       setTrayState({ ...trayState, searchData: { ...newSearchData } });
@@ -286,64 +257,42 @@ export default function Tray() {
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="width-end"
-      >
+      <Grid container direction="row" justifyContent="space-between" alignItems="width-end">
         <Grid item xs={3}>
-          <MuiButton
-            text="create"
-            color="success"
-            onClick={handleAdd}
-            sx={{ mt: 1 }}
-          />
+          <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mt: 1 }} />
           <Button
             disabled={rowSelected.length > 0 ? false : true}
             variant="contained"
             color="secondary"
-            onClick={() => QrCode()} sx={{ marginTop: "5px", mx: 2 }}>Print QR Code</Button>
+            onClick={() => QrCode()}
+            sx={{ marginTop: '5px', mx: 2 }}
+          >
+            Print QR Code
+          </Button>
         </Grid>
         <Grid item xs>
-          <Grid
-            container
-            columnSpacing={2}
-            direction="row"
-            justifyContent="flex-end"
-            alignItems="flex-end"
-          >
-            <Grid item style={{ width: "21%" }}>
+          <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
+            <Grid item style={{ width: '21%' }}>
               <MuiSearchField
                 fullWidth
                 variant="keyWord"
                 label="general.code"
                 onClick={fetchData}
-                onChange={(e) => handleSearch(e.target.value, "keyWord")}
+                onChange={(e) => handleSearch(e.target.value, 'keyWord')}
               />
             </Grid>
-            <Grid item style={{ width: "21%" }}>
+            <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
-                label={intl.formatMessage({ id: "tray.TrayType" })}
+                label={intl.formatMessage({ id: 'tray.TrayType' })}
                 fetchDataFunc={trayService.GetTrayType}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
-                onChange={(e, item) =>
-                  handleSearch(
-                    item ? item.commonDetailId ?? null : null,
-                    "TrayType"
-                  )
-                }
+                onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'TrayType')}
                 variant="standard"
               />
             </Grid>
             <Grid item>
-              <MuiButton
-                text="search"
-                color="info"
-                onClick={fetchData}
-                sx={{ mt: 1, mr: 2 }}
-              />
+              <MuiButton text="search" color="info" onClick={fetchData} sx={{ mt: 1, mr: 2 }} />
             </Grid>
           </Grid>
         </Grid>
@@ -355,20 +304,18 @@ export default function Tray() {
               <Switch
                 defaultChecked={true}
                 color="primary"
-                onChange={(e) => handleSearch(e.target.checked, "showDelete")}
+                onChange={(e) => handleSearch(e.target.checked, 'showDelete')}
               />
             }
             label={intl.formatMessage({
-              id: trayState.searchData.showDelete
-                ? "general.data_actived"
-                : "general.data_deleted",
+              id: trayState.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted',
             })}
           />
         </Grid>
       </Grid>
       <MuiDataGrid
         onSelectionModelChange={(ids) => {
-          setRowSelected(ids)
+          setRowSelected(ids);
         }}
         disableSelectionOnClick
         checkboxSelection
@@ -386,7 +333,12 @@ export default function Tray() {
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;
         }}
-        initialState={{ pinnedColumns: { left: [GRID_CHECKBOX_SELECTION_COL_DEF.field, 'id', 'TrayCode', 'TrayTypeName'], right: ['action'] } }}
+        initialState={{
+          pinnedColumns: {
+            left: [GRID_CHECKBOX_SELECTION_COL_DEF.field, 'id', 'TrayCode', 'TrayTypeName'],
+            right: ['action'],
+          },
+        }}
       />
 
       <TrayDialog
@@ -397,71 +349,68 @@ export default function Tray() {
         onClose={toggle}
         mode={mode}
       />
-      {isShowing2 && (
-        <Modal_Qr_Code
-          isShowing={true}
-          hide={toggle2}
-          rowSelected={rowSelected}
-        />
-      )}
+      {isShowing2 && <Modal_Qr_Code isShowing={true} hide={toggle2} rowSelected={rowSelected} />}
     </React.Fragment>
   );
 }
 
 const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
-
   const DialogTransition = React.forwardRef(function DialogTransition(props, ref) {
     return <Zoom direction="up" ref={ref} {...props} />;
-  })
+  });
   const componentPringtRef = React.useRef();
   const [listPrint, setListPrint] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     const res = await trayService.GetListPrintQR(rowSelected);
-    setListPrint(res.Data)
-    setIsLoading(false)
+    setListPrint(res.Data);
+    setIsLoading(false);
   }, []);
 
   return (
     <React.Fragment>
-      {!isLoading && <Dialog open={isShowing} maxWidth="sm" fullWidth TransitionComponent={DialogTransition} transitionDuration={300}>
-        <DialogTitle
-          sx={{
-            p: 1,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+      {!isLoading && (
+        <Dialog
+          open={isShowing}
+          maxWidth="sm"
+          fullWidth
+          TransitionComponent={DialogTransition}
+          transitionDuration={300}
         >
-          <Typography sx={{ fontWeight: 600, fontSize: "22px" }}>
-            QR CODE
-          </Typography>
-          <IconButton
-            aria-label="delete"
-            size="small"
-            onClick={() => hide()}
-            sx={{ backgroundColor: "rgba(0,0,0,0.1)" }}
+          <DialogTitle
+            sx={{
+              p: 1,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
           >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent
-          ref={componentPringtRef}
-          sx={{ display: "flex", justifyContent: "center" }}
-        >
-          <Box>
-            {
-              listPrint?.reverse()?.map((item, index) => {
+            <Typography sx={{ fontWeight: 600, fontSize: '22px' }}>QR CODE</Typography>
+            <IconButton
+              aria-label="delete"
+              size="small"
+              onClick={() => hide()}
+              sx={{ backgroundColor: 'rgba(0,0,0,0.1)' }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent ref={componentPringtRef} sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box>
+              {listPrint?.reverse()?.map((item, index) => {
                 return (
-                  <Box key={`TRAY_${index}`} sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    mb: 1,
-                    pb: 1,
-                    pageBreakAfter: "always"
-                  }}>
+                  <Box
+                    key={`TRAY_${index}`}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      mb: 1,
+                      pb: 1,
+                      pageBreakAfter: 'always',
+                    }}
+                  >
                     <Box sx={{ mr: 2 }}>
                       <QRCode value={`${item.TrayCode}`} size={80} />
                     </Box>
@@ -469,47 +418,47 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
                       <Table>
                         <TableBody>
                           <TableRow>
-                            <TableCell sx={{ fontSize: "12px", border:"none", padding:"2px 0px 2px 0px" }}>
+                            <TableCell sx={{ fontSize: '12px', border: 'none', padding: '2px 0px 2px 0px' }}>
                               Tray Code: {item?.TrayCode}
                             </TableCell>
                           </TableRow>
                           <TableRow>
-                            <TableCell sx={{ fontSize: "12px",  border:"none", padding:"2px 0px 2px 0px" }}>
+                            <TableCell sx={{ fontSize: '12px', border: 'none', padding: '2px 0px 2px 0px' }}>
                               Tray Type Name: {item?.TrayTypeName}
                             </TableCell>
                           </TableRow>
                           <TableRow>
-                            <TableCell sx={{ fontSize: "12px",  border:"none", padding:"2px 0px 2px 0px" }}>
+                            <TableCell sx={{ fontSize: '12px', border: 'none', padding: '2px 0px 2px 0px' }}>
                               Created By: {item?.createdName}
                             </TableCell>
                           </TableRow>
                           <TableRow>
-                            <TableCell sx={{ fontSize: "12px",  border:"none", padding:"2px 0px 2px 0px" }}>
-                              Created Date: {moment(item?.createdDate).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")}
+                            <TableCell sx={{ fontSize: '12px', border: 'none', padding: '2px 0px 2px 0px' }}>
+                              Created Date: {moment(item?.createdDate).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss')}
                             </TableCell>
                           </TableRow>
                         </TableBody>
                       </Table>
                     </TableContainer>
                   </Box>
-                )
-              })
-            }
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ pt: 0 }}>
-          <ReactToPrint
-            trigger={() => {
-              return (
-                <Button variant="contained" color="primary">
-                  Print
-                </Button>
-              );
-            }}
-            content={() => componentPringtRef.current}
-          />
-        </DialogActions>
-      </Dialog>}
+                );
+              })}
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ pt: 0 }}>
+            <ReactToPrint
+              trigger={() => {
+                return (
+                  <Button variant="contained" color="primary">
+                    Print
+                  </Button>
+                );
+              }}
+              content={() => componentPringtRef.current}
+            />
+          </DialogActions>
+        </Dialog>
+      )}
     </React.Fragment>
   );
 };

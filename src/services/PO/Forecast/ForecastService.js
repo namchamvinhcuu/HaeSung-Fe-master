@@ -1,7 +1,7 @@
-import { axios } from "@utils";
-const apiName = "/api/forecast-po";
+import { axios } from '@utils';
+const apiName = '/api/forecast-po';
 import * as ConfigConstants from '@constants/ConfigConstants';
-import { GetLocalStorage } from '@utils'
+import { GetLocalStorage } from '@utils';
 
 const getForecastList = async (params) => {
   try {
@@ -46,11 +46,10 @@ const modifyForecast = async (params) => {
 const deleteForecast = async (params) => {
   try {
     return await axios.delete(`${apiName}/delete-forecast`, { data: params });
-  }
-  catch (error) {
+  } catch (error) {
     console.log(`ERROR: ${error}`);
   }
-}
+};
 
 const getYearModel = async () => {
   try {
@@ -82,35 +81,36 @@ const downloadReport = async (params) => {
     const options = {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
-    }
-    console.log(params)
-    fetch(`${ConfigConstants.API_URL}forecast-po/download-excel?
+    };
+    console.log(params);
+    fetch(
+      `${ConfigConstants.API_URL}forecast-po/download-excel?
     FPoMasterId=${params.FPoMasterId}
     &weekStart=${params.weekStart}
     &weekEnd=${params.weekEnd}
-    &Year=${params.Year}`, options)
-      .then(response => {
-        response.blob().then(blob => {
-          let url = URL.createObjectURL(blob);
-          let downloadLink = document.createElement('a');
-          downloadLink.href = url;
-          downloadLink.download = 'report.xlsx';
-          document.body.appendChild(downloadLink);
-          downloadLink.click();
+    &Year=${params.Year}`,
+      options
+    ).then((response) => {
+      response.blob().then((blob) => {
+        let url = URL.createObjectURL(blob);
+        let downloadLink = document.createElement('a');
+        downloadLink.href = url;
+        downloadLink.download = 'report.xlsx';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
 
-          document.body.removeChild(downloadLink);
-          URL.revokeObjectURL(url);
-        });
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(url);
       });
-
+    });
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }
-}
+};
 
 export {
   getMaterialModel,
@@ -121,7 +121,6 @@ export {
   deleteForecast,
   getYearModel,
   getBuyerModel,
-
   getForecastPOReport,
   downloadReport,
 };

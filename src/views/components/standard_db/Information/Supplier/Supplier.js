@@ -1,26 +1,26 @@
-import { Store } from "@appstate";
-import { User_Operations } from "@appstate/user";
-import { MuiButton, MuiDataGrid, MuiSearchField } from "@controls";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import UndoIcon from "@mui/icons-material/Undo";
-import { FormControlLabel, Switch, Typography, Tooltip } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
-import { CombineDispatchToProps, CombineStateToProps } from "@plugins/helperJS";
-import _ from "lodash";
-import moment from "moment";
-import React, { useEffect, useState, useRef } from "react";
-import { useIntl } from "react-intl";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import UndoIcon from '@mui/icons-material/Undo';
+import { FormControlLabel, Switch, Tooltip, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
+import _ from 'lodash';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import { SupplierDto } from "@models";
-import { supplierService } from "@services";
-import { ErrorAlert, SuccessAlert } from "@utils";
+import { SupplierDto } from '@models';
+import { supplierService } from '@services';
+import { ErrorAlert, SuccessAlert } from '@utils';
 
-import CreateSupplierDialog from "./CreateSupplierDialog";
-import ModifySupplierDialog from "./ModifySupplierDialog";
+import CreateSupplierDialog from './CreateSupplierDialog';
+import ModifySupplierDialog from './ModifySupplierDialog';
 
 const Supplier = (props) => {
   let isRendered = useRef(true);
@@ -33,8 +33,8 @@ const Supplier = (props) => {
     page: 1,
     pageSize: 20,
     searchData: {
-      SupplierCode: "",
-      SupplierName: "",
+      SupplierCode: '',
+      SupplierName: '',
     },
   });
 
@@ -102,9 +102,7 @@ const Supplier = (props) => {
     if (
       window.confirm(
         intl.formatMessage({
-          id: showActivedData
-            ? "general.confirm_delete"
-            : "general.confirm_redo_deleted",
+          id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
         })
       )
     ) {
@@ -172,17 +170,17 @@ const Supplier = (props) => {
   }, [selectedRow]);
 
   const columns = [
-    { field: "SupplierId", headerName: "", hide: true },
+    { field: 'SupplierId', headerName: '', hide: true },
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       flex: 0.01,
       filterable: false,
       renderCell: (index) => index.api.getRowIndex(index.row.SupplierId) + 1,
     },
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       width: 80,
       // headerAlign: 'center',
       disableClickEventBubbling: true,
@@ -190,18 +188,13 @@ const Supplier = (props) => {
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
             <Grid item xs={6}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={toggleModifyDialog}
               >
                 <EditIcon fontSize="inherit" />
@@ -213,14 +206,10 @@ const Supplier = (props) => {
                 aria-label="delete"
                 color="error"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDeleteSupplier(params.row)}
               >
-                {showActivedData ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
+                {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
           </Grid>
@@ -228,55 +217,49 @@ const Supplier = (props) => {
       },
     },
     {
-      field: "SupplierCode",
-      headerName: intl.formatMessage({ id: "supplier.SupplierCode" }),
+      field: 'SupplierCode',
+      headerName: intl.formatMessage({ id: 'supplier.SupplierCode' }),
       /*flex: 0.7,*/ width: 150,
     },
     {
-      field: "SupplierName",
-      headerName: intl.formatMessage({ id: "supplier.SupplierName" }),
+      field: 'SupplierName',
+      headerName: intl.formatMessage({ id: 'supplier.SupplierName' }),
       flex: 1,
     },
     {
-      field: "ResinULCode",
-      headerName: "ResinULCode",
+      field: 'ResinULCode',
+      headerName: 'ResinULCode',
       /*flex: 0.7,*/ width: 150,
     },
     {
-      field: "SupplierContact",
-      headerName: intl.formatMessage({ id: "supplier.SupplierContact" }),
+      field: 'SupplierContact',
+      headerName: intl.formatMessage({ id: 'supplier.SupplierContact' }),
       flex: 1,
       renderCell: (params) => {
         return (
-          <Tooltip title={params.row.SupplierContact ?? ""} className="col-text-elip">
-            <Typography sx={{ fontSize: 14, maxWidth: 600 }}>
-              {params.row.SupplierContact}
-            </Typography>
+          <Tooltip title={params.row.SupplierContact ?? ''} className="col-text-elip">
+            <Typography sx={{ fontSize: 14, maxWidth: 600 }}>{params.row.SupplierContact}</Typography>
           </Tooltip>
         );
       },
     },
     {
-      field: "createdDate",
-      headerName: intl.formatMessage({ id: "general.created_date" }),
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.created_date' }),
       flex: 0.3,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
     {
-      field: "modifiedDate",
-      headerName: intl.formatMessage({ id: "general.modified_date" }),
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modified_date' }),
       flex: 0.3,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
@@ -284,26 +267,16 @@ const Supplier = (props) => {
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        spacing={2}
-        direction="row"
-        justifyContent="space-between"
-        alignItems="flex-end"
-      >
+      <Grid container spacing={2} direction="row" justifyContent="space-between" alignItems="flex-end">
         <Grid item xs={5}>
-          <MuiButton
-            text="create"
-            color="success"
-            onClick={toggleCreateDialog}
-          />
+          <MuiButton text="create" color="success" onClick={toggleCreateDialog} />
         </Grid>
         <Grid item xs>
           <MuiSearchField
             label="general.code"
             name="SupplierCode"
             onClick={fetchData}
-            onChange={(e) => changeSearchData(e, "SupplierCode")}
+            onChange={(e) => changeSearchData(e, 'SupplierCode')}
           />
         </Grid>
 
@@ -312,22 +285,16 @@ const Supplier = (props) => {
             label="general.name"
             name="SupplierName"
             onClick={fetchData}
-            onChange={(e) => changeSearchData(e, "SupplierName")}
+            onChange={(e) => changeSearchData(e, 'SupplierName')}
           />
         </Grid>
 
-        <Grid item xs sx={{ display: "flex", justifyContent: "right" }}>
+        <Grid item xs sx={{ display: 'flex', justifyContent: 'right' }}>
           <MuiButton text="search" color="info" onClick={fetchData} />
           <FormControlLabel
-            sx={{ mb: 0, ml: "1px" }}
-            control={
-              <Switch
-                defaultChecked={true}
-                color="primary"
-                onChange={(e) => handleshowActivedData(e)}
-              />
-            }
-            label={showActivedData ? "Actived" : "Deleted"}
+            sx={{ mb: 0, ml: '1px' }}
+            control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleshowActivedData(e)} />}
+            label={showActivedData ? 'Actived' : 'Deleted'}
           />
         </Grid>
       </Grid>
@@ -382,7 +349,7 @@ const Supplier = (props) => {
 };
 
 User_Operations.toString = function () {
-  return "User_Operations";
+  return 'User_Operations';
 };
 
 const mapStateToProps = (state) => {

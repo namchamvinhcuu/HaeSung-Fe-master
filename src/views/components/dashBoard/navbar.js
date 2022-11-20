@@ -1,68 +1,54 @@
-import React, { Component } from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import CloseIcon from "@mui/icons-material/Close";
-import { withStyles } from "@mui/styles";
-import _ from 'lodash'
-import {
-  historyDashboard,
-  historyApp,
-  calDateAgo,
-  UserManager,
-  GetLocalStorage,
-} from "@utils";
-import {
-  api_get,
-  api_post,
-  api_push_notify,
-  SuccessAlert,
-  ErrorAlert,
-  RemoveLocalStorage,
-} from "@utils";
-import * as ConfigConstants from "@constants/ConfigConstants";
+import React, { Component } from 'react';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import CloseIcon from '@mui/icons-material/Close';
+import { withStyles } from '@mui/styles';
+import _ from 'lodash';
+import { historyDashboard, historyApp, calDateAgo, UserManager, GetLocalStorage } from '@utils';
+import { api_get, api_post, api_push_notify, SuccessAlert, ErrorAlert, RemoveLocalStorage } from '@utils';
+import * as ConfigConstants from '@constants/ConfigConstants';
 
-import { Document, Page } from "react-pdf/dist/esm/entry.webpack";
-import { HubConnectionBuilder, LogLevel, HttpTransportType, HubConnectionState } from "@microsoft/signalr";
+import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
+import { HubConnectionBuilder, LogLevel, HttpTransportType, HubConnectionState } from '@microsoft/signalr';
 
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import ReactDOM from "react-dom";
-import Button from "@mui/material/Button";
-import { withTranslation } from "react-i18next";
-import NotifyUnread from "./NotifyUnread";
-import { ChangeLanguage } from "@containers";
-import { loginService, documentService } from "@services";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import ReactDOM from 'react-dom';
+import Button from '@mui/material/Button';
+import { withTranslation } from 'react-i18next';
+import NotifyUnread from './NotifyUnread';
+import { ChangeLanguage } from '@containers';
+import { loginService, documentService } from '@services';
 
 const styles = (theme) => ({
   tabs: {
-    width: "100%",
-    "& .MuiTab-root": {
-      fontFamily: "Sora-Regular",
+    width: '100%',
+    '& .MuiTab-root': {
+      fontFamily: 'Sora-Regular',
     },
 
-    "& .MuiTabs-indicator": {
-      backgroundColor: "orange",
+    '& .MuiTabs-indicator': {
+      backgroundColor: 'orange',
       height: 3,
     },
 
-    "& .MuiTab-root.Mui-selected": {
-      color: "red",
-      "& .MuiSvgIcon-root": {
-        backgroundColor: "lightgrey",
+    '& .MuiTab-root.Mui-selected': {
+      color: 'red',
+      '& .MuiSvgIcon-root': {
+        backgroundColor: 'lightgrey',
       },
 
       //  backgroundColor: "papayawhip",
-      background:
-        "linear-gradient(0deg, rgba(166,166,166,0.6) 0%, rgba(255,255,255,1) 50%)",
-      border: "1px solid lightgrey",
+      background: 'linear-gradient(0deg, rgba(166,166,166,0.6) 0%, rgba(255,255,255,1) 50%)',
+      border: '1px solid lightgrey',
     },
-    "& .MuiTabs-flexContainer": {
-      "& button": { borderRadius: 2 },
-      "& button:hover": { backgroundColor: "papayawhip" },
-      "& button:focus": { backgroundColor: "transparent" },
+    '& .MuiTabs-flexContainer': {
+      '& button': { borderRadius: 2 },
+      '& button:hover': { backgroundColor: 'papayawhip' },
+      '& button:focus': { backgroundColor: 'transparent' },
     },
 
     //"& button:active": { bgcolor:'lightgrey' }
@@ -76,13 +62,12 @@ class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      langselected: "en-US",
+      langselected: 'en-US',
       isShowing: false,
-      pdfURL: "",
-      title_guide: "",
+      pdfURL: '',
+      title_guide: '',
       showNotifyPopup: false,
       onlineUsers: [],
-
     };
     this.connection = null;
     this._isMounted = false;
@@ -95,18 +80,17 @@ class NavBar extends Component {
   startConnection = async () => {
     try {
       this.connection = new HubConnectionBuilder()
-        .withUrl(
-          `${ConfigConstants.BASE_URL}/signalr`, {
+        .withUrl(`${ConfigConstants.BASE_URL}/signalr`, {
           // accessTokenFactory: () => GetLocalStorage(ConfigConstants.TOKEN_ACCESS),
           skipNegotiation: true,
-          transport: HttpTransportType.WebSockets
+          transport: HttpTransportType.WebSockets,
         })
         .configureLogging(LogLevel.None)
         .withAutomaticReconnect({
-          nextRetryDelayInMilliseconds: retryContext => {
+          nextRetryDelayInMilliseconds: (retryContext) => {
             //reconnect after 5-20s
-            return 5000 + (Math.random() * 15000);
-          }
+            return 5000 + Math.random() * 15000;
+          },
         })
         .build();
 
@@ -114,30 +98,30 @@ class NavBar extends Component {
         await this.connection.start();
       }
 
-      await this.connection.invoke("SendOnlineUsers");
+      await this.connection.invoke('SendOnlineUsers');
 
-      this.connection.on("ReceivedOnlineUsers", (data) => {
+      this.connection.on('ReceivedOnlineUsers', (data) => {
         if (data && data.length > 0) {
-          this._isMounted && this.setState({
-            onlineUsers: [...data],
-          });
+          this._isMounted &&
+            this.setState({
+              onlineUsers: [...data],
+            });
         }
       });
 
-      this.connection.onclose(e => {
+      this.connection.onclose((e) => {
         // this.connection = null;
       });
-
     } catch (error) {
-      console.log("[websocket error] :", error)
+      console.log('[websocket error] :', error);
     }
-  }
+  };
 
   closeConnection = async () => {
     try {
       await this.connection.stop();
     } catch (error) {
-      console.log("[close connection errors] :", error);
+      console.log('[close connection errors] :', error);
     }
   };
 
@@ -153,21 +137,18 @@ class NavBar extends Component {
     try {
       await this.closeConnection();
       const res = await loginService.handleLogout();
-      if (
-        res.HttpResponseCode === 200 &&
-        res.ResponseMessage === "general.success"
-      ) {
+      if (res.HttpResponseCode === 200 && res.ResponseMessage === 'general.success') {
         RemoveLocalStorage(ConfigConstants.TOKEN_ACCESS);
         RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
         RemoveLocalStorage(ConfigConstants.CURRENT_USER);
         const { deleteAll } = this.props;
         deleteAll();
-        historyApp.push("/logout");
+        historyApp.push('/logout');
       } else {
-        ErrorAlert("System error");
+        ErrorAlert('System error');
       }
     } catch (error) {
-      console.log("[logout error]: ", error);
+      console.log('[logout error]: ', error);
     }
     // window.location.reload(true);
   };
@@ -199,10 +180,7 @@ class NavBar extends Component {
     e.preventDefault();
     const { HistoryElementTabs, index_tab_active_array } = this.props;
     let tab = HistoryElementTabs[index_tab_active_array];
-    let res = await documentService.downloadDocument(
-      tab.component,
-      this.props.language
-    );
+    let res = await documentService.downloadDocument(tab.component, this.props.language);
     if (res.Data) {
       let url_file = `${ConfigConstants.BASE_URL}/document/${res.Data.language}/${res.Data.urlFile}`;
       this.setState({
@@ -211,11 +189,7 @@ class NavBar extends Component {
         title_guide: res.Data.menuName,
       });
     } else {
-      ErrorAlert(
-        this.props.language == "VI"
-          ? "Không có tài liệu hướng dẫn"
-          : "No documentation available"
-      );
+      ErrorAlert(this.props.language == 'VI' ? 'Không có tài liệu hướng dẫn' : 'No documentation available');
     }
   };
 
@@ -240,7 +214,6 @@ class NavBar extends Component {
     });
 
     if (uArr.length === 0 && currentUser) {
-
       const { deleteAll } = this.props;
       deleteAll();
 
@@ -251,17 +224,16 @@ class NavBar extends Component {
       this.connection = null;
       this._isMounted = false;
       // console.log("websocket is disconnected");
-      historyApp.push("/logout");
-
+      historyApp.push('/logout');
     }
-  }
+  };
 
   reConnectToServer = async () => {
     if (this.connection) {
       if (this.connection.state === HubConnectionState.Connected) {
         if (this.state.onlineUsers.length === 0) {
           // console.log('connected to server');
-          await this.connection.invoke("SendOnlineUsers");
+          await this.connection.invoke('SendOnlineUsers');
         }
       }
 
@@ -270,16 +242,14 @@ class NavBar extends Component {
         if (this._isMounted) {
           await this.connection.stop();
           await this.connection.start();
-          await this.connection.invoke("SendOnlineUsers");
+          await this.connection.invoke('SendOnlineUsers');
         }
       }
-    }
-
-    else {
-      console.log("[reconnect fail]")
+    } else {
+      console.log('[reconnect fail]');
       await this.startConnection();
     }
-  }
+  };
 
   componentDidMount = async () => {
     this._isMounted = true;
@@ -289,7 +259,7 @@ class NavBar extends Component {
     }
     await this.startConnection();
     // await this.forceLogout();
-  }
+  };
 
   componentDidUpdate = async (prevProps, prevState) => {
     // $('#notify_dropdown').on('show.bs.dropdown', () => {
@@ -302,7 +272,7 @@ class NavBar extends Component {
       await this.reConnectToServer();
       await this.forceLogout();
     }
-  }
+  };
 
   componentWillUnmount = async () => {
     // if (this.connection && this.connection.state === HubConnectionState.Connected) {
@@ -313,7 +283,7 @@ class NavBar extends Component {
 
     this.connection = null;
     this._isMounted = false;
-  }
+  };
 
   handleClick_See_All_Notifies(e, self) {
     e.preventDefault();
@@ -330,12 +300,7 @@ class NavBar extends Component {
 
   render() {
     const { classes } = this.props;
-    const {
-      HistoryElementTabs,
-      index_tab_active_array,
-      notify_list,
-      total_notify,
-    } = this.props;
+    const { HistoryElementTabs, index_tab_active_array, notify_list, total_notify } = this.props;
     // const { langselected } = this.state;
     // var flag = ""
     // if (this.props.language == "EN") flag = "flag-icon-us"
@@ -361,7 +326,7 @@ class NavBar extends Component {
                 label={
                   <span>
                     {ele.name}
-                    <a className="closeTab" title={"Close tab"}>
+                    <a className="closeTab" title={'Close tab'}>
                       <CloseIcon
                         onClick={(e) => this.handleCloseTab(e, ele)}
                         sx={{
@@ -370,10 +335,10 @@ class NavBar extends Component {
                           mt: -0.5,
                           ml: 3,
                           mr: -1,
-                          border: "1px solid lightgrey",
+                          border: '1px solid lightgrey',
                           // bgcolor:'lightgrey',
-                          "&: hover": {
-                            bgcolor: "lightgrey",
+                          '&: hover': {
+                            bgcolor: 'lightgrey',
                           },
                         }}
                       />
@@ -422,13 +387,7 @@ class NavBar extends Component {
             } */}
 
             <li className="nav-item">
-              <a
-                className="nav-link"
-                onClick={this.handleGuide.bind(this)}
-                href="#"
-                role="button"
-                title="help"
-              >
+              <a className="nav-link" onClick={this.handleGuide.bind(this)} href="#" role="button" title="help">
                 <i className="fa fa-question"></i>
               </a>
             </li>
@@ -473,13 +432,7 @@ class NavBar extends Component {
             <ChangeLanguage />
 
             <li className="nav-item">
-              <a
-                className="nav-link"
-                href="#"
-                role="button"
-                onClick={this.signOut}
-                title="logout"
-              >
+              <a className="nav-link" href="#" role="button" onClick={this.signOut} title="logout">
                 <i className="fas fa-sign-out-alt"></i>
               </a>
             </li>
@@ -495,9 +448,7 @@ class NavBar extends Component {
           />
         )}
 
-        {this.state.showNotifyPopup && (
-          <NotifyUnread onClose={this.handleNotifyUnreadClosed.bind(this)} />
-        )}
+        {this.state.showNotifyPopup && <NotifyUnread onClose={this.handleNotifyUnreadClosed.bind(this)} />}
       </>
     );
   }
@@ -522,37 +473,33 @@ const PDFModal = ({ isShowing, hide, pdfURL, title }) => {
   // }
   return isShowing
     ? ReactDOM.createPortal(
-      <React.Fragment>
-        <div>
-          <Dialog open={true} maxWidth={"xl"} fullWidth={true}>
-            <DialogTitle>{title}</DialogTitle>
-            <DialogContent dividers={true}>
-              <div>
-                <Document file={pdfURL} onLoadSuccess={onDocumentLoadSuccess}>
-                  {Array.from(new Array(numPages), (el, index) => (
-                    <Page
-                      key={`page_${index + 1}`}
-                      pageNumber={index + 1}
-                      width={1000}
-                    />
-                  ))}
-                </Document>
-                {/* <p>
+        <React.Fragment>
+          <div>
+            <Dialog open={true} maxWidth={'xl'} fullWidth={true}>
+              <DialogTitle>{title}</DialogTitle>
+              <DialogContent dividers={true}>
+                <div>
+                  <Document file={pdfURL} onLoadSuccess={onDocumentLoadSuccess}>
+                    {Array.from(new Array(numPages), (el, index) => (
+                      <Page key={`page_${index + 1}`} pageNumber={index + 1} width={1000} />
+                    ))}
+                  </Document>
+                  {/* <p>
                   Page {pageNumber} of {numPages}
                 </p> */}
-              </div>
-            </DialogContent>
+                </div>
+              </DialogContent>
 
-            <DialogActions>
-              <Button variant="outlined" onClick={hide}>
-                OK
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
-      </React.Fragment>,
-      document.body
-    )
+              <DialogActions>
+                <Button variant="outlined" onClick={hide}>
+                  OK
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </div>
+        </React.Fragment>,
+        document.body
+      )
     : null;
 };
 

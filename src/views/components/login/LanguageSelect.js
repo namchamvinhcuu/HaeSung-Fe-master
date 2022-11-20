@@ -2,18 +2,16 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage } from 'react-intl';
 
 export default function LanguageSelect({ onChange, language }) {
-
   return (
     <Autocomplete
       sx={{ mt: 1 }}
       options={countries}
       autoHighlight
       onChange={onChange}
-
-      defaultValue={language === "VI" ? countries[1] : countries[0]}
+      defaultValue={language === 'VI' ? countries[1] : countries[0]}
       getOptionLabel={(option) => option.label}
       renderOption={(props, option) => (
         <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
@@ -28,12 +26,11 @@ export default function LanguageSelect({ onChange, language }) {
       )}
       renderInput={(params) => (
         <TextField
-
           {...params}
           label={<FormattedMessage id="general.select_language" />}
           sx={{ backgroundColor: '#E8F0FE' }}
           inputProps={{
-            ...params.inputProps
+            ...params.inputProps,
           }}
         />
       )}
@@ -49,8 +46,8 @@ const countries = [
     label: 'English',
   },
   {
-    code: 'vi-VN'
-    , fcode: 'VN'
-    , label: 'Tiếng Việt'
+    code: 'vi-VN',
+    fcode: 'VN',
+    label: 'Tiếng Việt',
   },
 ];

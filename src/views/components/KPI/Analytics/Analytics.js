@@ -1,15 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS'
-import { User_Operations } from '@appstate/user'
-import { forecastService } from "@services";
-import { Store } from '@appstate'
-import { FormControlLabel, Grid, IconButton, Switch, TextField, Tooltip, Typography, } from "@mui/material";
-import { useIntl } from "react-intl";
-import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateTimeField, MuiSearchField, MuiSelectField, } from "@controls";
-import { useModal } from "@basesShared";
-import { ErrorAlert, SuccessAlert, getCurrentWeek } from "@utils";
+import React, { useEffect, useRef, useState } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
+import { User_Operations } from '@appstate/user';
+import { forecastService } from '@services';
+import { Store } from '@appstate';
+import { FormControlLabel, Grid, IconButton, Switch, TextField, Tooltip, Typography } from '@mui/material';
+import { useIntl } from 'react-intl';
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateTimeField, MuiSearchField, MuiSelectField } from '@controls';
+import { useModal } from '@basesShared';
+import { ErrorAlert, SuccessAlert, getCurrentWeek } from '@utils';
 
 const Analytics = (props) => {
   const intl = useIntl();
@@ -32,28 +32,34 @@ const Analytics = (props) => {
   });
 
   const columns = [
-    { field: "MaterialId", hide: true },
+    { field: 'MaterialId', hide: true },
     {
-      field: "LineName", headerName: intl.formatMessage({ id: "forecast.LineName" }), width: 200, renderCell: (params) => {
+      field: 'LineName',
+      headerName: intl.formatMessage({ id: 'forecast.LineName' }),
+      width: 200,
+      renderCell: (params) => {
         return (
-          <Tooltip title={params.row.LineName ?? ""} className="col-text-elip">
+          <Tooltip title={params.row.LineName ?? ''} className="col-text-elip">
             <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.LineName}</Typography>
           </Tooltip>
         );
       },
     },
-    { field: "MaterialCode", headerName: intl.formatMessage({ id: "forecast.MaterialCode" }), width: 120 },
+    { field: 'MaterialCode', headerName: intl.formatMessage({ id: 'forecast.MaterialCode' }), width: 120 },
     {
-      field: "DescriptionMaterial", headerName: intl.formatMessage({ id: "forecast.DescriptionMaterial" }), width: 200, renderCell: (params) => {
+      field: 'DescriptionMaterial',
+      headerName: intl.formatMessage({ id: 'forecast.DescriptionMaterial' }),
+      width: 200,
+      renderCell: (params) => {
         return (
-          <Tooltip title={params.row.DescriptionMaterial ?? ""} className="col-text-elip">
+          <Tooltip title={params.row.DescriptionMaterial ?? ''} className="col-text-elip">
             <Typography sx={{ fontSize: 14 }}>{params.row.DescriptionMaterial}</Typography>
           </Tooltip>
         );
       },
     },
-    { field: "Description", headerName: intl.formatMessage({ id: "forecast.Desciption" }), width: 120 },
-    { field: "Year", headerName: intl.formatMessage({ id: "forecast.Year" }), width: 100 },
+    { field: 'Description', headerName: intl.formatMessage({ id: 'forecast.Desciption' }), width: 120 },
+    { field: 'Year', headerName: intl.formatMessage({ id: 'forecast.Year' }), width: 100 },
   ];
 
   const [gridCol, setGridCol] = useState([...columns]);
@@ -61,7 +67,9 @@ const Analytics = (props) => {
   useEffect(() => {
     fetchData();
     getYearList();
-    return () => { isRendered = false; };
+    return () => {
+      isRendered = false;
+    };
   }, [state.page, state.pageSize]);
 
   async function fetchData() {
@@ -79,11 +87,14 @@ const Analytics = (props) => {
 
     let col = [...columns];
     for (let i = state.searchData.weekStart; i <= state.searchData.weekEnd; i++) {
-      if (i < 1)
-        continue;
-      if (i > 52)
-        break;
-      col.push({ field: "Week" + i, headerName: intl.formatMessage({ id: "forecast.Week_number" }, { number: i }), width: 100, align: "right" })
+      if (i < 1) continue;
+      if (i > 52) break;
+      col.push({
+        field: 'Week' + i,
+        headerName: intl.formatMessage({ id: 'forecast.Week_number' }, { number: i }),
+        width: 100,
+        align: 'right',
+      });
     }
     setGridCol([...col]);
 
@@ -93,8 +104,8 @@ const Analytics = (props) => {
         data: res.Data ?? [],
         totalRow: res.TotalRow,
         isLoading: false,
-      })
-    };
+      });
+    }
   }
 
   const handleSearch = (e, inputName) => {
@@ -118,27 +129,25 @@ const Analytics = (props) => {
         FPoMasterId: state.searchData.FPoMasterId,
         weekStart: state.searchData.weekStart,
         weekEnd: state.searchData.weekEnd,
-        Year: state.searchData.Year
+        Year: state.searchData.Year,
       };
 
       await forecastService.downloadReport(params);
-    }
-    catch (error) {
+    } catch (error) {
       console.log(`ERROR: ${error}`);
     }
-  }
+  };
 
   return (
     <React.Fragment>
       <Grid container direction="row" justifyContent="space-between" alignItems="width-end" sx={{ mb: 1 }}>
-        <Grid item xs={5}>
-        </Grid>
+        <Grid item xs={5}></Grid>
         <Grid item>
           <TextField
-            label={intl.formatMessage({ id: "forecast.Week_start" })}
+            label={intl.formatMessage({ id: 'forecast.Week_start' })}
             variant="standard"
             type="number"
-            sx={{ width: "200px" }}
+            sx={{ width: '200px' }}
             value={state.searchData.weekStart}
             inputProps={{ min: 1, max: 52 }}
             onChange={(e) => {
@@ -146,49 +155,45 @@ const Analytics = (props) => {
               // if (value > max) value = max;
               // if (value < min) value = min;
               // setValueStart(value || "");
-              handleSearch(e.target.value || 0, "weekStart");
+              handleSearch(e.target.value || 0, 'weekStart');
             }}
           />
         </Grid>
         <Grid item>
           <TextField
-            label={intl.formatMessage({ id: "forecast.Week_end" })}
+            label={intl.formatMessage({ id: 'forecast.Week_end' })}
             variant="standard"
             type="number"
-            sx={{ width: "200px" }}
+            sx={{ width: '200px' }}
             value={state.searchData.weekEnd}
             inputProps={{ min: 1, max: 52 }}
             onChange={(e) => {
               var value = parseInt(e.target.value, 10);
               //value = value > 52 ? 52 : value < state.searchData.weekStart ? state.searchData.weekStart : value
               // < 1 ? 1 : value;
-              handleSearch(value || 0, "weekEnd");
+              handleSearch(value || 0, 'weekEnd');
             }}
           />
         </Grid>
-        <Grid item sx={{ width: "200px" }}>
+        <Grid item sx={{ width: '200px' }}>
           <MuiSelectField
             variant="standard"
             sx={{ mb: 0 }}
-            value={state.searchData.Year ? { YearId: state.searchData.Year, YearName: state.searchData.Year.toString() } : null}
-            label={intl.formatMessage({ id: "forecast.Year" })}
+            value={
+              state.searchData.Year
+                ? { YearId: state.searchData.Year, YearName: state.searchData.Year.toString() }
+                : null
+            }
+            label={intl.formatMessage({ id: 'forecast.Year' })}
             options={YearList}
             displayLabel="YearName"
             displayValue="YearId"
-            onChange={(e, item) => handleSearch(item?.YearId || 0, "Year")}
+            onChange={(e, item) => handleSearch(item?.YearId || 0, 'Year')}
           />
         </Grid>
         <Grid item>
-          <MuiButton
-            text="search"
-            color="info"
-            onClick={fetchData}
-          />
-          <MuiButton
-            text="excel"
-            color="primary"
-            onClick={handleDownload}
-          />
+          <MuiButton text="search" color="info" onClick={fetchData} />
+          <MuiButton text="excel" color="primary" onClick={handleDownload} />
         </Grid>
       </Grid>
       <MuiDataGrid
@@ -205,33 +210,28 @@ const Analytics = (props) => {
         getRowId={(rows) => rows.FPOId}
         initialState={{ pinnedColumns: { left: ['LineName', 'MaterialCode'] } }}
       />
-
     </React.Fragment>
-  )
-}
+  );
+};
 
 User_Operations.toString = function () {
   return 'User_Operations';
-}
-
-const mapStateToProps = state => {
-
-  const { User_Reducer: { language } } = CombineStateToProps(state.AppReducer, [
-    [Store.User_Reducer]
-  ]);
-
-  return { language };
-
 };
 
-const mapDispatchToProps = dispatch => {
+const mapStateToProps = (state) => {
+  const {
+    User_Reducer: { language },
+  } = CombineStateToProps(state.AppReducer, [[Store.User_Reducer]]);
 
-  const { User_Operations: { changeLanguage } } = CombineDispatchToProps(dispatch, bindActionCreators, [
-    [User_Operations]
-  ]);
+  return { language };
+};
 
-  return { changeLanguage }
+const mapDispatchToProps = (dispatch) => {
+  const {
+    User_Operations: { changeLanguage },
+  } = CombineDispatchToProps(dispatch, bindActionCreators, [[User_Operations]]);
 
+  return { changeLanguage };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Analytics);

@@ -1,32 +1,32 @@
-import React, { useEffect, useRef, useState } from 'react'
-import DeleteIcon from '@mui/icons-material/Delete'
-import EditIcon from '@mui/icons-material/Edit'
-import { Grid, IconButton, TextField } from '@mui/material'
+import React, { useEffect, useRef, useState } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { Grid, IconButton, TextField } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
-import { createTheme, ThemeProvider } from "@mui/material"
-import { useIntl } from 'react-intl'
-import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
-import { userService } from '@services'
-import UserDialog from './UserDialog'
-import { useModal, useModal2, useModal3 } from "@basesShared";
-import { ErrorAlert, SuccessAlert } from '@utils'
-import { GetLocalStorage } from '@utils'
+import { createTheme, ThemeProvider } from '@mui/material';
+import { useIntl } from 'react-intl';
+import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import { userService } from '@services';
+import UserDialog from './UserDialog';
+import { useModal, useModal2, useModal3 } from '@basesShared';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import { GetLocalStorage } from '@utils';
 import * as ConfigConstants from '@constants/ConfigConstants';
-import UserPasswordDialog from './UserPasswordDialog'
-import UserRoleDialog from './UserRoleDialog'
+import UserPasswordDialog from './UserPasswordDialog';
+import UserRoleDialog from './UserRoleDialog';
 
 const myTheme = createTheme({
   components: {
     MuiDataGrid: {
       styleOverrides: {
         row: {
-          "&.Mui-created": {
-            backgroundColor: "#A0DB8E",
-          }
-        }
-      }
-    }
-  }
+          '&.Mui-created': {
+            backgroundColor: '#A0DB8E',
+          },
+        },
+      },
+    },
+  },
 });
 
 export default function User() {
@@ -42,21 +42,21 @@ export default function User() {
     page: 1,
     pageSize: 20,
     search: {
-      keyWord: ''
-    }
+      keyWord: '',
+    },
   });
-  const [newData, setNewData] = useState({})
+  const [newData, setNewData] = useState({});
   const [rowData, setRowData] = useState({});
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
 
   const RoleUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
-  const RoleArr = (RoleUser.RoleNameList.replace(" ", "")).split(',');
+  const RoleArr = RoleUser.RoleNameList.replace(' ', '').split(',');
 
   const columns = [
     { field: 'userId', hide: true },
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       flex: 0.4,
       disableClickEventBubbling: true,
       sortable: false,
@@ -64,52 +64,54 @@ export default function User() {
       renderCell: (params) => {
         return (
           <Grid container spacing={1} alignItems="center" justifyContent="center">
-            <Grid item xs={RoleArr.includes('ROOT') ? 4 : 6} style={{ textAlign: "center" }}>
+            <Grid item xs={RoleArr.includes('ROOT') ? 4 : 6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="delete"
                 color="error"
                 size="small"
-                sx={[{ '&:hover': { border: '1px solid red', }, }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
                 <DeleteIcon fontSize="inherit" />
               </IconButton>
             </Grid>
-            <Grid item xs={RoleArr.includes('ROOT') ? 4 : 6} style={{ textAlign: "center" }}>
+            <Grid item xs={RoleArr.includes('ROOT') ? 4 : 6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ '&:hover': { border: '1px solid orange', }, }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={() => handleChangePass(params.row)}
               >
                 <EditIcon fontSize="inherit" />
               </IconButton>
             </Grid>
-            {RoleArr.includes('ROOT') &&
-              <Grid item xs={4} style={{ textAlign: "center" }}>
+            {RoleArr.includes('ROOT') && (
+              <Grid item xs={4} style={{ textAlign: 'center' }}>
                 <IconButton
                   aria-label="edit"
                   color="success"
                   size="small"
-                  sx={[{ '&:hover': { border: '1px solid green', }, }]}
+                  sx={[{ '&:hover': { border: '1px solid green' } }]}
                   onClick={() => handleUpdate(params.row)}
                 >
                   <LockIcon fontSize="inherit" />
                 </IconButton>
               </Grid>
-            }
+            )}
           </Grid>
         );
       },
     },
-    { field: 'userName', headerName: intl.formatMessage({ id: "general.name" }), flex: 0.7, },
-    { field: 'RoleNameList', headerName: intl.formatMessage({ id: "user.roleName" }), flex: 0.7, },
+    { field: 'userName', headerName: intl.formatMessage({ id: 'general.name' }), flex: 0.7 },
+    { field: 'RoleNameList', headerName: intl.formatMessage({ id: 'user.roleName' }), flex: 0.7 },
   ];
 
   useEffect(() => {
     fetchData();
-    return () => { isRendered = false; }
+    return () => {
+      isRendered = false;
+    };
   }, [userState.page, userState.pageSize]);
 
   const handleDelete = async (user) => {
@@ -117,17 +119,16 @@ export default function User() {
       try {
         let res = await userService.deleteUser(user.userId);
         if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: 'general.success' }))
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchData();
-        }
-        else {
-          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
-  }
+  };
 
   const handleUpdate = (row) => {
     setRowData({ ...row });
@@ -141,22 +142,21 @@ export default function User() {
 
   async function fetchData() {
     setUserState({
-      ...userState
-      , isLoading: true
-
+      ...userState,
+      isLoading: true,
     });
     const params = {
       page: userState.page,
       pageSize: userState.pageSize,
-      keyword: search
-    }
+      keyword: search,
+    };
     const res = await userService.getUserList(params);
     if (res && res.Data && isRendered)
       setUserState({
-        ...userState
-        , data: res.Data ?? []
-        , totalRow: res.TotalRow
-        , isLoading: false
+        ...userState,
+        data: res.Data ?? [],
+        totalRow: res.TotalRow,
+        isLoading: false,
       });
   }
 
@@ -167,9 +167,9 @@ export default function User() {
         data.pop();
       }
       setUserState({
-        ...userState
-        , data: [...data]
-        , totalRow: userState.totalRow + 1
+        ...userState,
+        data: [...data],
+        totalRow: userState.totalRow + 1,
       });
     }
   }, [newData]);
@@ -179,21 +179,21 @@ export default function User() {
       <ThemeProvider theme={myTheme}>
         <Grid container sx={{ mb: 1 }}>
           <Grid item xs={8}>
-            <MuiButton text="create" color='success' onClick={toggle} />
+            <MuiButton text="create" color="success" onClick={toggle} />
           </Grid>
           <Grid item xs={4} container>
             <Grid item xs={9}>
               <MuiSearchField
                 fullWidth
                 variant="keyword"
-                size='small'
-                label='user.userName'
+                size="small"
+                label="user.userName"
                 onClick={fetchData}
-                onChange={e => setSearch(e.target.value, 'keyword')}
+                onChange={(e) => setSearch(e.target.value, 'keyword')}
               />
             </Grid>
             <Grid item xs={3}>
-              <MuiButton text="search" color='info' onClick={fetchData} sx={{ mt: 1, ml: 2 }} />
+              <MuiButton text="search" color="info" onClick={fetchData} sx={{ mt: 1, ml: 2 }} />
             </Grid>
           </Grid>
         </Grid>
@@ -216,35 +216,27 @@ export default function User() {
           getRowId={(rows) => rows.userId}
           getRowClassName={(params) => {
             if (_.isEqual(params.row, newData)) {
-              return `Mui-created`
+              return `Mui-created`;
             }
           }}
         />
 
-        {isShowing && <UserDialog
-          setNewData={setNewData}
-          rowData={rowData}
-          isOpen={isShowing}
-          onClose={toggle}
-        />}
+        {isShowing && <UserDialog setNewData={setNewData} rowData={rowData} isOpen={isShowing} onClose={toggle} />}
 
-        {isShowing2 && <UserRoleDialog
-          setNewData={setNewData}
-          rowData={rowData}
-          isOpen={isShowing2}
-          onClose={toggle2}
-          loadData={fetchData}
-        />}
+        {isShowing2 && (
+          <UserRoleDialog
+            setNewData={setNewData}
+            rowData={rowData}
+            isOpen={isShowing2}
+            onClose={toggle2}
+            loadData={fetchData}
+          />
+        )}
 
-        {isShowing3 && <UserPasswordDialog
-          setNewData={setNewData}
-          rowData={rowData}
-          isOpen={isShowing3}
-          onClose={toggle3}
-        />}
-
+        {isShowing3 && (
+          <UserPasswordDialog setNewData={setNewData} rowData={rowData} isOpen={isShowing3} onClose={toggle3} />
+        )}
       </ThemeProvider>
     </React.Fragment>
-
-  )
+  );
 }

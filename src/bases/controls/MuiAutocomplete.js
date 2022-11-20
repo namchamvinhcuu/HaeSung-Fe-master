@@ -1,7 +1,7 @@
-import Autocomplete from "@mui/material/Autocomplete";
-import CircularProgress from "@mui/material/CircularProgress";
-import TextField from "@mui/material/TextField";
-import React from "react";
+import Autocomplete from '@mui/material/Autocomplete';
+import CircularProgress from '@mui/material/CircularProgress';
+import TextField from '@mui/material/TextField';
+import React from 'react';
 
 // const MuiDataGrid = React.forwardRef((props, ref) => {
 const MuiAutocomplete = React.forwardRef(({ ...props }, ref) => {
@@ -27,7 +27,7 @@ const MuiAutocomplete = React.forwardRef(({ ...props }, ref) => {
   let isRendered = React.useRef(true);
 
   let labelFomart = label;
-  if (required) labelFomart += " *";
+  if (required) labelFomart += ' *';
 
   const [open, setOpen] = React.useState(false);
   const [isFetchData, setIsFetchData] = React.useState(true);
@@ -89,9 +89,7 @@ const MuiAutocomplete = React.forwardRef(({ ...props }, ref) => {
           autoHighlight
           openOnFocus
           getOptionLabel={(option) => option[displayLabel]}
-          isOptionEqualToValue={(option, value) =>
-            option[displayValue] === value[displayValue]
-          }
+          isOptionEqualToValue={(option, value) => option[displayValue] === value[displayValue]}
           defaultValue={defaultValue ?? (multiple ? [] : null)}
           onChange={onChange}
           renderInput={(params) => {
@@ -107,9 +105,7 @@ const MuiAutocomplete = React.forwardRef(({ ...props }, ref) => {
                   ...params.InputProps,
                   endAdornment: (
                     <React.Fragment>
-                      {loading ? (
-                        <CircularProgress color="inherit" size={20} />
-                      ) : null}
+                      {loading ? <CircularProgress color="inherit" size={20} /> : null}
                       {params.InputProps.endAdornment}
                     </React.Fragment>
                   ),
@@ -140,9 +136,7 @@ const MuiAutocomplete = React.forwardRef(({ ...props }, ref) => {
           openOnFocus
           groupBy={(option) => option[displayGroup]}
           getOptionLabel={(option) => option[displayLabel]}
-          isOptionEqualToValue={(option, value) =>
-            option[displayValue] === value[displayValue]
-          }
+          isOptionEqualToValue={(option, value) => option[displayValue] === value[displayValue]}
           defaultValue={defaultValue ?? (multiple ? [] : null)}
           onChange={onChange}
           renderInput={(params) => {
@@ -158,9 +152,7 @@ const MuiAutocomplete = React.forwardRef(({ ...props }, ref) => {
                   ...params.InputProps,
                   endAdornment: (
                     <React.Fragment>
-                      {loading ? (
-                        <CircularProgress color="inherit" size={20} />
-                      ) : null}
+                      {loading ? <CircularProgress color="inherit" size={20} /> : null}
                       {params.InputProps.endAdornment}
                     </React.Fragment>
                   ),
@@ -170,21 +162,17 @@ const MuiAutocomplete = React.forwardRef(({ ...props }, ref) => {
           }}
           renderGroup={(params) => {
             return (
-              <div key={"group" + params.key}>
+              <div key={'group' + params.key}>
                 <div
                   style={{
-                    textIndent: "10px",
+                    textIndent: '10px',
                     marginBottom: 10,
-                    background: "#0288d1",
+                    background: '#0288d1',
                   }}
                 >
-                  <span style={{ fontSize: 14, color: "white" }}>
-                    {params.group}
-                  </span>
+                  <span style={{ fontSize: 14, color: 'white' }}>{params.group}</span>
                 </div>
-                <div style={{ textIndent: "15px", marginBottom: 10 }}>
-                  {params.children}
-                </div>
+                <div style={{ textIndent: '15px', marginBottom: 10 }}>{params.children}</div>
               </div>
             );
           }}

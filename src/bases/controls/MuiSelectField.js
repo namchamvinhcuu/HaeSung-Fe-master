@@ -1,6 +1,6 @@
-import * as React from "react";
-import TextField from "@mui/material/TextField";
-import { Autocomplete } from "@mui/material";
+import * as React from 'react';
+import TextField from '@mui/material/TextField';
+import { Autocomplete } from '@mui/material';
 
 export default function MuiSelectField({
   value,
@@ -21,7 +21,7 @@ export default function MuiSelectField({
   required,
 }) {
   let labelFomart = label;
-  if (required) labelFomart += " *";
+  if (required) labelFomart += ' *';
 
   // const foo = () => {};
 
@@ -36,9 +36,7 @@ export default function MuiSelectField({
       autoHighlight
       openOnFocus
       getOptionLabel={(option) => option[displayLabel]}
-      isOptionEqualToValue={(option, value) =>
-        option[displayValue] === value[displayValue]
-      }
+      isOptionEqualToValue={(option, value) => option[displayValue] === value[displayValue]}
       defaultValue={defaultValue ?? null}
       onChange={onChange}
       // onOpen={onOpen ?? foo}
@@ -67,9 +65,7 @@ export default function MuiSelectField({
       openOnFocus
       groupBy={(option) => option[displayGroup]}
       getOptionLabel={(option) => option[displayLabel]}
-      isOptionEqualToValue={(option, value) =>
-        option[displayValue] === value[displayValue]
-      }
+      isOptionEqualToValue={(option, value) => option[displayValue] === value[displayValue]}
       defaultValue={defaultValue ?? null}
       onChange={onChange}
       renderInput={(params) => {
@@ -86,21 +82,17 @@ export default function MuiSelectField({
       }}
       renderGroup={(params) => {
         return (
-          <div key={"group" + params.key}>
+          <div key={'group' + params.key}>
             <div
               style={{
-                textIndent: "10px",
+                textIndent: '10px',
                 marginBottom: 10,
-                background: "#0288d1",
+                background: '#0288d1',
               }}
             >
-              <span style={{ fontSize: 14, color: "white" }}>
-                {params.group}
-              </span>
+              <span style={{ fontSize: 14, color: 'white' }}>{params.group}</span>
             </div>
-            <div style={{ textIndent: "15px", marginBottom: 10 }}>
-              {params.children}
-            </div>
+            <div style={{ textIndent: '15px', marginBottom: 10 }}>{params.children}</div>
           </div>
         );
       }}

@@ -1,13 +1,13 @@
-import { Grid, TextField } from "@mui/material";
-import { ErrorAlert, SuccessAlert } from "@utils";
-import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
-import { useIntl } from "react-intl";
-import * as yup from "yup";
+import { Grid, TextField } from '@mui/material';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import { useFormik } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { useIntl } from 'react-intl';
+import * as yup from 'yup';
 
-import { MuiDialog, MuiSubmitButton, MuiResetButton } from "@controls";
+import { MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls';
 
-import { staffService } from "@services";
+import { staffService } from '@services';
 
 const ModifyStaffDialog = (props) => {
   const intl = useIntl();
@@ -20,12 +20,8 @@ const ModifyStaffDialog = (props) => {
   });
 
   const schema = yup.object().shape({
-    StaffCode: yup
-      .string()
-      .required(intl.formatMessage({ id: "general.field_required" })),
-    StaffName: yup
-      .string()
-      .required(intl.formatMessage({ id: "general.field_required" })),
+    StaffCode: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
+    StaffName: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
   });
 
   const formik = useFormik({
@@ -46,17 +42,7 @@ const ModifyStaffDialog = (props) => {
     },
   });
 
-  const {
-    handleChange,
-    handleBlur,
-    handleSubmit,
-    values,
-    setFieldValue,
-    errors,
-    touched,
-    isValid,
-    resetForm,
-  } = formik;
+  const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
 
   const handleCloseDialog = () => {
     setDialogState({
@@ -73,25 +59,21 @@ const ModifyStaffDialog = (props) => {
   return (
     <MuiDialog
       maxWidth="sm"
-      title={intl.formatMessage({ id: "general.modify" })}
+      title={intl.formatMessage({ id: 'general.modify' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
       disable_animate={300}
       onClose={handleCloseDialog}
     >
       <form onSubmit={handleSubmit}>
-        <Grid
-          container
-          rowSpacing={2.5}
-          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-        >
+        <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12}>
             <TextField
               autoFocus
               fullWidth
               size="small"
               disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: "staff.StaffCode" }) + " *"}
+              label={intl.formatMessage({ id: 'staff.StaffCode' }) + ' *'}
               name="StaffCode"
               value={values.StaffCode}
               onChange={handleChange}
@@ -104,7 +86,7 @@ const ModifyStaffDialog = (props) => {
               fullWidth
               size="small"
               disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: "staff.StaffName" }) + " *"}
+              label={intl.formatMessage({ id: 'staff.StaffName' }) + ' *'}
               name="StaffName"
               value={values.StaffName}
               onChange={handleChange}
@@ -119,7 +101,7 @@ const ModifyStaffDialog = (props) => {
               multiline={true}
               rows={3}
               disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: "staff.Contact" })}
+              label={intl.formatMessage({ id: 'staff.Contact' })}
               name="Contact"
               value={values.Contact}
               onChange={handleChange}
@@ -129,10 +111,7 @@ const ModifyStaffDialog = (props) => {
           <Grid item xs={12}>
             <Grid container direction="row-reverse">
               <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
-              <MuiResetButton
-                onClick={resetForm}
-                disabled={dialogState.isSubmit}
-              />
+              <MuiResetButton onClick={resetForm} disabled={dialogState.isSubmit} />
             </Grid>
           </Grid>
         </Grid>

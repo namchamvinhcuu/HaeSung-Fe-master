@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useIntl } from "react-intl";
-import { useFormik } from "formik";
-import * as yup from "yup";
+import React, { useEffect, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 import {
   Autocomplete,
   Checkbox,
@@ -12,11 +12,11 @@ import {
   TextField,
   FormControl,
   FormLabel,
-} from "@mui/material";
+} from '@mui/material';
 
-import { MuiDialog, MuiResetButton, MuiSubmitButton } from "@controls";
-import { ErrorAlert, SuccessAlert } from "@utils";
-import { menuService } from "@services";
+import { MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import { menuService } from '@services';
 
 const CreateMenuFormik = (props) => {
   const intl = useIntl();
@@ -42,36 +42,26 @@ const CreateMenuFormik = (props) => {
   };
 
   const schema = yup.object().shape({
-    menuName: yup
-      .string()
-      .required(intl.formatMessage({ id: "menu.menuName_required" })),
+    menuName: yup.string().required(intl.formatMessage({ id: 'menu.menuName_required' })),
 
     // menuIcon: yup.string().required(intl.formatMessage({ id: 'menu.menuName_required' })),
 
-    navigateUrl: yup.string().when("menuLevel", (menuLevel) => {
+    navigateUrl: yup.string().when('menuLevel', (menuLevel) => {
       if (parseInt(menuLevel) === 3) {
-        return yup
-          .string()
-          .required(intl.formatMessage({ id: "menu.navigateUrl_required" }));
+        return yup.string().required(intl.formatMessage({ id: 'menu.navigateUrl_required' }));
       }
     }),
 
     menuComponent: yup
       .string()
-      .when("menuLevel", (menuLevel) => {
+      .when('menuLevel', (menuLevel) => {
         if (parseInt(menuLevel) === 3) {
-          return yup
-            .string()
-            .required(
-              intl.formatMessage({ id: "menu.menuComponent_required" })
-            );
+          return yup.string().required(intl.formatMessage({ id: 'menu.menuComponent_required' }));
         }
       })
-      .when("navigateUrl", (navigateUrl) => {
+      .when('navigateUrl', (navigateUrl) => {
         if (navigateUrl && navigateUrl.length > 0) {
-          return yup
-            .string()
-            .required(intl.formatMessage({ id: "menu.navigateUrl_required" }));
+          return yup.string().required(intl.formatMessage({ id: 'menu.navigateUrl_required' }));
         }
       }),
 
@@ -80,13 +70,13 @@ const CreateMenuFormik = (props) => {
     parentId: yup
       .string()
       .nullable()
-      .when("menuLevel", (menuLevel) => {
+      .when('menuLevel', (menuLevel) => {
         if (parseInt(menuLevel) > 1) {
           return yup
             .number()
             .required()
-            .min(1, intl.formatMessage({ id: "menu.parentId_required" }))
-            .typeError(intl.formatMessage({ id: "menu.parentId_required" }));
+            .min(1, intl.formatMessage({ id: 'menu.parentId_required' }))
+            .typeError(intl.formatMessage({ id: 'menu.parentId_required' }));
         }
       }),
   });
@@ -108,17 +98,7 @@ const CreateMenuFormik = (props) => {
     },
   });
 
-  const {
-    handleChange,
-    handleBlur,
-    handleSubmit,
-    values,
-    setFieldValue,
-    errors,
-    touched,
-    isValid,
-    resetForm,
-  } = formik;
+  const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
 
   const handleCloseDialog = () => {
     setDialogState({
@@ -129,9 +109,7 @@ const CreateMenuFormik = (props) => {
   };
 
   const handleReset = () => {
-    const ele = clearParent.current.getElementsByClassName(
-      "MuiAutocomplete-clearIndicator"
-    )[0];
+    const ele = clearParent.current.getElementsByClassName('MuiAutocomplete-clearIndicator')[0];
     if (ele) ele.click();
     resetForm();
   };
@@ -147,33 +125,25 @@ const CreateMenuFormik = (props) => {
   return (
     <MuiDialog
       maxWidth="sm"
-      title={intl.formatMessage({ id: "general.create" })}
+      title={intl.formatMessage({ id: 'general.create' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
       disable_animate={300}
       onClose={handleCloseDialog}
     >
       <form onSubmit={handleSubmit}>
-        <Grid
-          container
-          rowSpacing={2.5}
-          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-        >
+        <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12}>
             <Grid container spacing={2}>
-              <Grid
-                item
-                xs={6}
-                style={{ display: "flex", justifyContent: "center" }}
-              >
+              <Grid item xs={6} style={{ display: 'flex', justifyContent: 'center' }}>
                 <span
                   style={{
-                    marginTop: "5px",
-                    marginRight: "16px",
-                    fontWeight: "700",
+                    marginTop: '5px',
+                    marginRight: '16px',
+                    fontWeight: '700',
                   }}
                 >
-                  {intl.formatMessage({ id: "general.level" })}
+                  {intl.formatMessage({ id: 'general.level' })}
                 </span>
 
                 <FormControl>
@@ -182,28 +152,14 @@ const CreateMenuFormik = (props) => {
                     name="menuLevel"
                     value={values.menuLevel}
                     onChange={(event) => {
-                      setFieldValue("menuLevel", event.target.value);
-                      const ele = clearParent.current.getElementsByClassName(
-                        "MuiAutocomplete-clearIndicator"
-                      )[0];
+                      setFieldValue('menuLevel', event.target.value);
+                      const ele = clearParent.current.getElementsByClassName('MuiAutocomplete-clearIndicator')[0];
                       if (ele) ele.click();
                     }}
                   >
-                    <FormControlLabel
-                      label="1"
-                      value={1}
-                      control={<Radio size="small" />}
-                    />
-                    <FormControlLabel
-                      label="2"
-                      value={2}
-                      control={<Radio size="small" />}
-                    />
-                    <FormControlLabel
-                      label="3"
-                      value={3}
-                      control={<Radio size="small" />}
-                    />
+                    <FormControlLabel label="1" value={1} control={<Radio size="small" />} />
+                    <FormControlLabel label="2" value={2} control={<Radio size="small" />} />
+                    <FormControlLabel label="3" value={3} control={<Radio size="small" />} />
                   </RadioGroup>
                 </FormControl>
               </Grid>
@@ -213,9 +169,7 @@ const CreateMenuFormik = (props) => {
                     ref={clearParent}
                     options={parentMenuArr}
                     getOptionLabel={(menuP) => menuP?.menuName}
-                    onChange={(e, value) =>
-                      setFieldValue("parentId", value?.menuId || "")
-                    }
+                    onChange={(e, value) => setFieldValue('parentId', value?.menuId || '')}
                     onOpen={handleBlur}
                     includeInputInList
                     renderInput={(params) => (
@@ -243,7 +197,7 @@ const CreateMenuFormik = (props) => {
                   autoFocus
                   fullWidth
                   size="small"
-                  label={intl.formatMessage({ id: "general.name" })}
+                  label={intl.formatMessage({ id: 'general.name' })}
                   name="menuName"
                   value={values.menuName}
                   onChange={handleChange}
@@ -255,7 +209,7 @@ const CreateMenuFormik = (props) => {
                 <TextField
                   fullWidth
                   size="small"
-                  label={intl.formatMessage({ id: "general.icon" })}
+                  label={intl.formatMessage({ id: 'general.icon' })}
                   name="menuIcon"
                   value={values.menuIcon}
                   onChange={handleChange}
@@ -270,7 +224,7 @@ const CreateMenuFormik = (props) => {
                 <TextField
                   fullWidth
                   size="small"
-                  label={intl.formatMessage({ id: "general.component" })}
+                  label={intl.formatMessage({ id: 'general.component' })}
                   name="menuComponent"
                   value={values.menuComponent}
                   onChange={handleChange}
@@ -282,7 +236,7 @@ const CreateMenuFormik = (props) => {
                 <TextField
                   fullWidth
                   size="small"
-                  label={intl.formatMessage({ id: "general.url" })}
+                  label={intl.formatMessage({ id: 'general.url' })}
                   name="navigateUrl"
                   value={values.navigateUrl}
                   onChange={handleChange}
@@ -299,7 +253,7 @@ const CreateMenuFormik = (props) => {
                 <TextField
                   fullWidth
                   size="small"
-                  label={intl.formatMessage({ id: "general.language_key" })}
+                  label={intl.formatMessage({ id: 'general.language_key' })}
                   name="languageKey"
                   value={values.languageKey}
                   onChange={handleChange}
@@ -310,14 +264,14 @@ const CreateMenuFormik = (props) => {
               <Grid item xs={6}>
                 <FormControlLabel
                   checked={values.forRoot}
-                  onChange={() => setFieldValue("forRoot", !values.forRoot)}
+                  onChange={() => setFieldValue('forRoot', !values.forRoot)}
                   control={<Checkbox />}
                   label="For Root"
                 />
 
                 <FormControlLabel
                   checked={values.forApp}
-                  onChange={() => setFieldValue("forApp", !values.forApp)}
+                  onChange={() => setFieldValue('forApp', !values.forApp)}
                   control={<Checkbox />}
                   label="For App"
                 />
@@ -328,10 +282,7 @@ const CreateMenuFormik = (props) => {
           <Grid item xs={12}>
             <Grid container direction="row-reverse">
               <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
-              <MuiResetButton
-                onClick={handleReset}
-                disabled={dialogState.isSubmit}
-              />
+              <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} />
             </Grid>
           </Grid>
         </Grid>

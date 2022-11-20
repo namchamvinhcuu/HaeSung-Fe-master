@@ -1,25 +1,25 @@
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
-import { createTheme, ThemeProvider, TextField } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
-import { useIntl } from "react-intl";
-import { MuiButton, MuiDataGrid, MuiSearchField } from "@controls";
-import { permissionService } from "@services";
-import _ from "lodash";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import { createTheme, ThemeProvider, TextField } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
+import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import { permissionService } from '@services';
+import _ from 'lodash';
 
-import CreatePermissionDialog from "./CreatePermissionDialog";
-import ModifyPermissionDialog from "./ModifyPermissionDialog";
+import CreatePermissionDialog from './CreatePermissionDialog';
+import ModifyPermissionDialog from './ModifyPermissionDialog';
 
 const Permission = () => {
   const intl = useIntl();
   let isRendered = useRef(true);
   const initPermissionModel = {
     permissionId: 0,
-    permissionName: "",
-    commonDetailId: "",
-    commonDetailName: "",
+    permissionName: '',
+    commonDetailId: '',
+    commonDetailName: '',
     forRoot: false,
   };
   const [menuState, setMenuState] = useState({
@@ -124,17 +124,17 @@ const Permission = () => {
   };
 
   const columns = [
-    { field: "permissionId", headerName: "", flex: 0.01, hide: true },
+    { field: 'permissionId', headerName: '', flex: 0.01, hide: true },
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       flex: 0.01,
       filterable: false,
       renderCell: (index) => index.api.getRowIndex(index.row.permissionId) + 1,
     },
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       flex: 0.01,
       // headerAlign: 'center',
       disableClickEventBubbling: true,
@@ -142,18 +142,13 @@ const Permission = () => {
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
             <Grid item xs={12}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={toggleModifyPermissionDialog}
               >
                 <EditIcon fontSize="inherit" />
@@ -164,55 +159,35 @@ const Permission = () => {
       },
     },
 
-    { field: "commonDetailName", headerName: "Common Detail Name", flex: 0.3 },
+    { field: 'commonDetailName', headerName: 'Common Detail Name', flex: 0.3 },
     {
-      field: "permissionName",
-      headerName: intl.formatMessage({ id: "permission.permissionName" }),
+      field: 'permissionName',
+      headerName: intl.formatMessage({ id: 'permission.permissionName' }),
       flex: 0.3,
     },
 
-    { field: "forRoot", headerName: "forRoot", flex: 0.3 },
-    { field: "isActived", headerName: "isActived", flex: 0.3 },
+    { field: 'forRoot', headerName: 'forRoot', flex: 0.3 },
+    { field: 'isActived', headerName: 'isActived', flex: 0.3 },
   ];
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="flex-end"
-        sx={{ mb: 1, pr: 1 }}
-      >
+      <Grid container direction="row" justifyContent="space-between" alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
         <Grid item xs={8}>
-          <MuiButton
-            text="create"
-            color="success"
-            onClick={toggleCreatePermissionDialog}
-          />
+          <MuiButton text="create" color="success" onClick={toggleCreatePermissionDialog} />
         </Grid>
         <Grid item xs>
-          <Grid
-            container
-            columnSpacing={2}
-            direction="row"
-            justifyContent="flex-end"
-            alignItems="flex-end"
-          >
+          <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
             <Grid item xs={8}>
               <MuiSearchField
                 name="keyWord"
                 label="permission.permissionName"
                 onClick={fetchData}
-                onChange={(e) => changeSearchData(e.target.value, "keyWord")}
+                onChange={(e) => changeSearchData(e.target.value, 'keyWord')}
               />
             </Grid>
             <Grid item xs>
-              <MuiButton
-                text="search"
-                color="info"
-                onClick={fetchData}        
-              />
+              <MuiButton text="search" color="info" onClick={fetchData} />
             </Grid>
           </Grid>
         </Grid>

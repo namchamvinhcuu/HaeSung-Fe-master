@@ -1,33 +1,33 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { useFormCustom } from "@hooks";
-import { firstLogin } from "@utils";
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { useFormCustom } from '@hooks';
+import { firstLogin } from '@utils';
 
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import Paper from "@mui/material/Paper";
-import Avatar from "@mui/material/Avatar";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import IconButton from "@mui/material/IconButton";
-import InputAdornment from "@mui/material/InputAdornment";
-import { FormattedMessage, useIntl } from "react-intl";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Paper from '@mui/material/Paper';
+import Avatar from '@mui/material/Avatar';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import { FormattedMessage, useIntl } from 'react-intl';
 
-import { ErrorAlert, SuccessAlert } from "@utils";
-import { loginService } from "@services";
-import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from "@utils";
-import * as ConfigConstants from "@constants/ConfigConstants";
-import store from "@states/store";
-import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
-import { versionAppService } from "@services";
+import { ErrorAlert, SuccessAlert } from '@utils';
+import { loginService } from '@services';
+import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils';
+import * as ConfigConstants from '@constants/ConfigConstants';
+import store from '@states/store';
+import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
+import { versionAppService } from '@services';
 
 const theme = createTheme();
 
@@ -38,12 +38,12 @@ const Login = (props) => {
   const { language, changeLanguage, history } = props;
   const countries = [
     {
-      code: "EN",
-      title: "English",
+      code: 'EN',
+      title: 'English',
     },
     {
-      code: "VI",
-      title: "Tiếng Việt",
+      code: 'VI',
+      title: 'Tiếng Việt',
     },
   ];
 
@@ -52,8 +52,8 @@ const Login = (props) => {
   const [errorMessages, setErrorMessages] = useState(null);
 
   const initModal = {
-    userName: "",
-    userPassword: "1234@",
+    userName: '',
+    userPassword: '1234@',
     // userName: '',
     // userPassword: '',
   };
@@ -80,12 +80,8 @@ const Login = (props) => {
   };
 
   const schema = yup.object().shape({
-    userName: yup
-      .string()
-      .required(<FormattedMessage id="login.userName_required" />),
-    userPassword: yup
-      .string()
-      .required(<FormattedMessage id="login.userPassword_required" />),
+    userName: yup.string().required(<FormattedMessage id="login.userName_required" />),
+    userPassword: yup.string().required(<FormattedMessage id="login.userPassword_required" />),
 
     // userName: yup.string().required(intl.formatMessage({ id: 'login.userName_required' })),
     // userPassword: yup.string().required(intl.formatMessage({ id: 'login.userPassword_required' })),
@@ -96,7 +92,7 @@ const Login = (props) => {
     handleSubmit,
     clearErrors,
   } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     resolver: yupResolver(schema),
     defaultValues: { ...initModal },
   });
@@ -106,10 +102,7 @@ const Login = (props) => {
     RemoveLocalStorage(ConfigConstants.TOKEN_REFRESH);
     RemoveLocalStorage(ConfigConstants.CURRENT_USER);
 
-    const res = await loginService.handleLogin(
-      data.userName,
-      data.userPassword
-    );
+    const res = await loginService.handleLogin(data.userName, data.userPassword);
     if (res && res.HttpResponseCode === 200) {
       SetLocalStorage(ConfigConstants.TOKEN_ACCESS, res.Data.accessToken);
       SetLocalStorage(ConfigConstants.TOKEN_REFRESH, res.Data.refreshToken);
@@ -118,7 +111,7 @@ const Login = (props) => {
 
       if (returnData.HttpResponseCode === 200) {
         store.dispatch({
-          type: "Dashboard/USER_LOGIN",
+          type: 'Dashboard/USER_LOGIN',
         });
 
         SetLocalStorage(ConfigConstants.CURRENT_USER, returnData.Data);
@@ -132,13 +125,13 @@ const Login = (props) => {
         firstLogin.isfirst = true;
 
         history.push({
-          pathname: routername ?? "/",
+          pathname: routername ?? '/',
           closetab: true,
         });
       } else {
         // setErrorMessages(res.ResponseMessage);
         // errorMessages.push(res.ResponseMessage)
-        ErrorAlert(intl.formatMessage({ id: "login.lost_authorization" }));
+        ErrorAlert(intl.formatMessage({ id: 'login.lost_authorization' }));
         setIsSubmit(false);
       }
     } else {
@@ -148,7 +141,7 @@ const Login = (props) => {
   };
 
   const setDefaultLanguage = () => {
-    if (language === "VI") {
+    if (language === 'VI') {
       return countries[1];
     } else {
       return countries[0];
@@ -161,7 +154,7 @@ const Login = (props) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container component="main" sx={{ height: "100vh" }}>
+      <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
 
         <Grid
@@ -171,14 +164,11 @@ const Login = (props) => {
           md={7}
           sx={{
             backgroundImage:
-              "url(https://images.unsplash.com/photo-1483058712412-4245e9b90334?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80)",
-            backgroundRepeat: "no-repeat",
-            backgroundColor: (t) =>
-              t.palette.mode === "light"
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+              'url(https://images.unsplash.com/photo-1483058712412-4245e9b90334?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80)',
+            backgroundRepeat: 'no-repeat',
+            backgroundColor: (t) => (t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900]),
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
           }}
         >
           <Box className="content-login">
@@ -186,26 +176,17 @@ const Login = (props) => {
           </Box>
         </Grid>
 
-        <Grid
-          item
-          xs={12}
-          sm={8}
-          md={5}
-          component={Paper}
-          elevation={6}
-          square
-          className="background-login"
-        >
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square className="background-login">
           <Box
             sx={{
               my: 8,
               mx: 4,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
@@ -219,33 +200,31 @@ const Login = (props) => {
                         }}> */}
               <Box sx={{ mt: 1 }}>
                 <TextField
-                  sx={{ backgroundColor: "#E8F0FE" }}
+                  sx={{ backgroundColor: '#E8F0FE' }}
                   autoFocus
                   // required
                   fullWidth
                   label={<FormattedMessage id="user.userName" />}
                   name="userName"
-                  {...register("userName", {
+                  {...register('userName', {
                     // onChange: (e) => handleInputChange(e)
                   })}
                   error={!!errors?.userName}
                   helperText={errors?.userName ? errors.userName.message : null}
                 />
                 <TextField
-                  sx={{ backgroundColor: "#E8F0FE" }}
+                  sx={{ backgroundColor: '#E8F0FE' }}
                   margin="normal"
                   // required
                   fullWidth
                   name="userPassword"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   label={<FormattedMessage id="user.userPassword" />}
-                  {...register("userPassword", {
+                  {...register('userPassword', {
                     // onChange: (e) => handleInputChange(e)
                   })}
                   error={!!errors?.userPassword}
-                  helperText={
-                    errors?.userPassword ? errors.userPassword.message : null
-                  }
+                  helperText={errors?.userPassword ? errors.userPassword.message : null}
                   InputProps={{
                     // <-- This is where the toggle button is added.
                     endAdornment: (
@@ -267,18 +246,14 @@ const Login = (props) => {
                   freeSolo
                   autoHighlight
                   options={countries}
-                  sx={{ mt: 1, backgroundColor: "#E8F0FE" }}
+                  sx={{ mt: 1, backgroundColor: '#E8F0FE' }}
                   defaultValue={setDefaultLanguage}
                   onChange={(event, newValue) => {
-                    changeLanguage(newValue.code === "VI" ? "VI" : "EN");
+                    changeLanguage(newValue.code === 'VI' ? 'VI' : 'EN');
                   }}
                   renderOption={(props, option) => (
-                    <Box
-                      component="li"
-                      sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                      {...props}
-                    >
-                      {option.code === "EN" ? (
+                    <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                      {option.code === 'EN' ? (
                         <i className="flag-icon flag-icon-us mr-2"></i>
                       ) : (
                         <i className="flag-icon flag-icon-vi mr-2"></i>
@@ -288,51 +263,40 @@ const Login = (props) => {
                   )}
                   getOptionLabel={(option) => option.title}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label={<FormattedMessage id="general.select_language" />}
-                    />
+                    <TextField {...params} label={<FormattedMessage id="general.select_language" />} />
                   )}
                 />
 
                 <button
                   disabled={isSubmit}
-                  style={{ width: "100%", marginTop: "25px" }}
+                  style={{ width: '100%', marginTop: '25px' }}
                   type="submit"
                   className="btn btn-primary"
                 >
                   {<FormattedMessage id="general.signin" />}
                   {isSubmit && (
-                    <span
-                      className="spinner-border spinner-border-sm mx-3"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
+                    <span className="spinner-border spinner-border-sm mx-3" role="status" aria-hidden="true"></span>
                   )}
                 </button>
               </Box>
             </form>
 
             {errorMessages && (
-              <p style={{ color: "red", textAlign: "center" }}>
-                {<FormattedMessage id={errorMessages} />}
-              </p>
+              <p style={{ color: 'red', textAlign: 'center' }}>{<FormattedMessage id={errorMessages} />}</p>
             )}
             <Box>
               <button
                 className="btn btn-success"
-                style={{ width: "100%", marginTop: "25px" }}
+                style={{ width: '100%', marginTop: '25px' }}
                 type="submit"
                 onClick={() => handleDownload()}
               >
                 <span className="d-block" aria-hidden="true">
-                  <div className="d-flex" style={{ color: "white" }}>
+                  <div className="d-flex" style={{ color: 'white' }}>
                     <PhoneAndroidIcon />
 
                     <div className="d-block">
-                      <small style={{ opacity: 0.9, fontSize: "18px" }}>
-                        Download App
-                      </small>
+                      <small style={{ opacity: 0.9, fontSize: '18px' }}>Download App</small>
                     </div>
                   </div>
                 </span>

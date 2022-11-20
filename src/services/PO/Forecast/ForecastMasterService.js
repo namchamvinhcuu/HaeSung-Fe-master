@@ -1,5 +1,5 @@
-import { axios } from "@utils";
-const apiName = "/api/forecast-po-master";
+import { axios } from '@utils';
+const apiName = '/api/forecast-po-master';
 
 const getForecastMasterList = async (params) => {
   try {
@@ -28,15 +28,9 @@ const modifyForecastMaster = async (params) => {
 const deleteForecastMaster = async (params) => {
   try {
     return await axios.delete(`${apiName}/delete-forecast-master`, { data: params });
-  }
-  catch (error) {
+  } catch (error) {
     console.log(`ERROR: ${error}`);
   }
-}
-
-export  {
-  getForecastMasterList,
-  createForecastMaster,
-  modifyForecastMaster,
-  deleteForecastMaster,
 };
+
+export { getForecastMasterList, createForecastMaster, modifyForecastMaster, deleteForecastMaster };

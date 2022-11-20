@@ -1,31 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import UndoIcon from "@mui/icons-material/Undo";
-import {
-  FormControlLabel,
-  Grid,
-  IconButton,
-  Switch,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import { useIntl } from "react-intl";
-import {
-  MuiAutocomplete,
-  MuiButton,
-  MuiDataGrid,
-  MuiDateTimeField,
-  MuiSearchField,
-  MuiSelectField,
-} from "@controls";
-import { materialService } from "@services";
-import { useModal } from "@basesShared";
-import { ErrorAlert, SuccessAlert } from "@utils";
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import moment from "moment";
-import MaterialDialog from "./MaterialDialog";
+import { useModal } from '@basesShared';
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import UndoIcon from '@mui/icons-material/Undo';
+import { FormControlLabel, Grid, IconButton, Switch, Tooltip, Typography } from '@mui/material';
+import { materialService } from '@services';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
+import MaterialDialog from './MaterialDialog';
 
 export default function Material() {
   const intl = useIntl();
@@ -39,7 +24,7 @@ export default function Material() {
     page: 1,
     pageSize: 20,
     searchData: {
-      keyWord: "",
+      keyWord: '',
       MaterialType: null,
       Unit: null,
       SupplierId: null,
@@ -52,54 +37,42 @@ export default function Material() {
 
   const columns = [
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       width: 70,
-      align: "center",
+      align: 'center',
       filterable: false,
-      renderCell: (index) =>
-        index.api.getRowIndex(index.row.MaterialId) +
-        1 +
-        (state.page - 1) * state.pageSize,
+      renderCell: (index) => index.api.getRowIndex(index.row.MaterialId) + 1 + (state.page - 1) * state.pageSize,
     },
-    { field: "MaterialId", hide: true },
-    { field: "row_version", hide: true },
+    { field: 'MaterialId', hide: true },
+    { field: 'row_version', hide: true },
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       width: 80,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="delete"
                 color="error"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                {params.row.isActived ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={() => handleUpdate(params.row)}
               >
                 <EditIcon fontSize="inherit" />
@@ -110,105 +83,92 @@ export default function Material() {
       },
     },
     {
-      field: "MaterialCode",
-      headerName: intl.formatMessage({ id: "material.MaterialCode" }),
+      field: 'MaterialCode',
+      headerName: intl.formatMessage({ id: 'material.MaterialCode' }),
       width: 150,
     },
     {
-      field: "MaterialTypeName",
-      headerName: intl.formatMessage({ id: "material.MaterialType" }),
+      field: 'MaterialTypeName',
+      headerName: intl.formatMessage({ id: 'material.MaterialType' }),
       width: 150,
     },
     {
-      field: "UnitName",
-      headerName: intl.formatMessage({ id: "material.Unit" }),
+      field: 'UnitName',
+      headerName: intl.formatMessage({ id: 'material.Unit' }),
       width: 120,
     },
     {
-      field: "QCMasterCode",
-      headerName: intl.formatMessage({ id: "material.QCMasterId" }),
+      field: 'QCMasterCode',
+      headerName: intl.formatMessage({ id: 'material.QCMasterId' }),
       width: 150,
     },
     {
-      field: "SupplierName",
-      headerName: intl.formatMessage({ id: "material.SupplierId" }),
+      field: 'SupplierName',
+      headerName: intl.formatMessage({ id: 'material.SupplierId' }),
       width: 200,
       renderCell: (params) => {
         return (
-          <Tooltip
-            title={params.row.SupplierName ?? ""}
-            className="col-text-elip"
-          >
-            <Typography sx={{ fontSize: 14 }}>
-              {params.row.SupplierName}
-            </Typography>
+          <Tooltip title={params.row.SupplierName ?? ''} className="col-text-elip">
+            <Typography sx={{ fontSize: 14 }}>{params.row.SupplierName}</Typography>
           </Tooltip>
         );
       },
     },
     {
-      field: "Description",
-      headerName: intl.formatMessage({ id: "material.Description" }),
+      field: 'Description',
+      headerName: intl.formatMessage({ id: 'material.Description' }),
       width: 200,
       renderCell: (params) => {
         return (
-          <Tooltip
-            title={params.row.Description ?? ""}
-            className="col-text-elip"
-          >
-            <Typography sx={{ fontSize: 14 }}>
-              {params.row.Description}
-            </Typography>
+          <Tooltip title={params.row.Description ?? ''} className="col-text-elip">
+            <Typography sx={{ fontSize: 14 }}>{params.row.Description}</Typography>
           </Tooltip>
         );
       },
     },
     {
-      field: "Grade",
-      headerName: intl.formatMessage({ id: "material.Grade" }),
-      width: 120,
-    }, {
-      field: "Color",
-      headerName: intl.formatMessage({ id: "material.Color" }),
+      field: 'Grade',
+      headerName: intl.formatMessage({ id: 'material.Grade' }),
       width: 120,
     },
     {
-      field: "ResinType",
-      headerName: intl.formatMessage({ id: "material.ResinType" }),
+      field: 'Color',
+      headerName: intl.formatMessage({ id: 'material.Color' }),
       width: 120,
     },
     {
-      field: "FlameClass",
-      headerName: intl.formatMessage({ id: "material.FlameClass" }),
+      field: 'ResinType',
+      headerName: intl.formatMessage({ id: 'material.ResinType' }),
       width: 120,
     },
     {
-      field: "createdName",
-      headerName: intl.formatMessage({ id: "general.createdName" }),
+      field: 'FlameClass',
+      headerName: intl.formatMessage({ id: 'material.FlameClass' }),
       width: 120,
     },
     {
-      field: "createdDate",
-      headerName: intl.formatMessage({ id: "general.createdDate" }),
+      field: 'createdName',
+      headerName: intl.formatMessage({ id: 'general.createdName' }),
+      width: 120,
+    },
+    {
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.createdDate' }),
       width: 150,
       valueFormatter: (params) =>
-        params?.value
-          ? moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")
-          : null,
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
     {
-      field: "modifiedName",
-      headerName: intl.formatMessage({ id: "general.modifiedName" }),
+      field: 'modifiedName',
+      headerName: intl.formatMessage({ id: 'general.modifiedName' }),
       width: 120,
     },
     {
-      field: "modifiedDate",
-      headerName: intl.formatMessage({ id: "general.modifiedDate" }),
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modifiedDate' }),
       width: 150,
       valueFormatter: (params) =>
-        params?.value
-          ? moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")
-          : null,
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
   ];
 
@@ -253,9 +213,7 @@ export default function Material() {
     if (
       window.confirm(
         intl.formatMessage({
-          id: material.isActived
-            ? "general.confirm_delete"
-            : "general.confirm_redo_deleted",
+          id: material.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
         })
       )
     ) {
@@ -265,7 +223,7 @@ export default function Material() {
           row_version: material.row_version,
         });
         if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: "general.success" }));
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchData();
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
@@ -295,7 +253,7 @@ export default function Material() {
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...state.searchData };
     newSearchData[inputName] = e;
-    if (inputName == "showDelete") {
+    if (inputName == 'showDelete') {
       setState({ ...state, page: 1, searchData: { ...newSearchData } });
     } else {
       setState({ ...state, searchData: { ...newSearchData } });
@@ -325,89 +283,53 @@ export default function Material() {
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="width-end"
-      >
+      <Grid container direction="row" justifyContent="space-between" alignItems="width-end">
         <Grid item xs={3}>
-          <MuiButton
-            text="create"
-            color="success"
-            onClick={handleAdd}
-            sx={{ mt: 1 }}
-          />
+          <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mt: 1 }} />
         </Grid>
         <Grid item xs>
-          <Grid
-            container
-            columnSpacing={2}
-            direction="row"
-            justifyContent="flex-end"
-            alignItems="flex-end"
-          >
-            <Grid item style={{ width: "21%" }}>
+          <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
+            <Grid item style={{ width: '21%' }}>
               <MuiSearchField
                 variant="keyWord"
                 label="general.code"
                 onClick={fetchData}
-                onChange={(e) => handleSearch(e.target.value, "keyWord")}
+                onChange={(e) => handleSearch(e.target.value, 'keyWord')}
               />
             </Grid>
-            <Grid item style={{ width: "21%" }}>
+            <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
-                label={intl.formatMessage({ id: "material.MaterialType" })}
+                label={intl.formatMessage({ id: 'material.MaterialType' })}
                 fetchDataFunc={materialService.getMaterialType}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
-                onChange={(e, item) =>
-                  handleSearch(
-                    item ? item.commonDetailId ?? null : null,
-                    "MaterialType"
-                  )
-                }
+                onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'MaterialType')}
                 variant="standard"
               />
             </Grid>
-            <Grid item style={{ width: "21%" }}>
+            <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
-                label={intl.formatMessage({ id: "material.Unit" })}
+                label={intl.formatMessage({ id: 'material.Unit' })}
                 fetchDataFunc={materialService.getUnit}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
-                onChange={(e, item) =>
-                  handleSearch(
-                    item ? item.commonDetailId ?? null : null,
-                    "Unit"
-                  )
-                }
+                onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Unit')}
                 variant="standard"
               />
             </Grid>
-            <Grid item style={{ width: "21%" }}>
+            <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
-                label={intl.formatMessage({ id: "material.SupplierId" })}
+                label={intl.formatMessage({ id: 'material.SupplierId' })}
                 fetchDataFunc={materialService.getSupplier}
                 displayLabel="SupplierName"
                 displayValue="SupplierId"
-                onChange={(e, item) =>
-                  handleSearch(
-                    item ? item.SupplierId ?? null : null,
-                    "SupplierId"
-                  )
-                }
+                onChange={(e, item) => handleSearch(item ? item.SupplierId ?? null : null, 'SupplierId')}
                 variant="standard"
                 fullWidth
               />
             </Grid>
             <Grid item>
-              <MuiButton
-                text="search"
-                color="info"
-                onClick={fetchData}
-                sx={{ mr: 3, mb: 1 }}
-              />
+              <MuiButton text="search" color="info" onClick={fetchData} sx={{ mr: 3, mb: 1 }} />
             </Grid>
           </Grid>
         </Grid>
@@ -419,13 +341,11 @@ export default function Material() {
               <Switch
                 defaultChecked={true}
                 color="primary"
-                onChange={(e) => handleSearch(e.target.checked, "showDelete")}
+                onChange={(e) => handleSearch(e.target.checked, 'showDelete')}
               />
             }
             label={intl.formatMessage({
-              id: state.searchData.showDelete
-                ? "general.data_actived"
-                : "general.data_deleted",
+              id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted',
             })}
           />
         </Grid>
@@ -437,15 +357,12 @@ export default function Material() {
         headerHeight={45}
         columns={columns}
         rows={state.data}
-
         page={state.page - 1}
         pageSize={state.pageSize}
         rowCount={state.totalRow}
         rowsPerPageOptions={[5, 10, 20]}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
-        onPageSizeChange={(newPageSize) =>
-          setState({ ...state, pageSize: newPageSize, page: 1 })
-        }
+        onPageSizeChange={(newPageSize) => setState({ ...state, pageSize: newPageSize, page: 1 })}
         getRowId={(rows) => rows.MaterialId}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;

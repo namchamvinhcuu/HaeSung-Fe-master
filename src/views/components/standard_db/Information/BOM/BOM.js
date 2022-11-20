@@ -1,26 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import UndoIcon from "@mui/icons-material/Undo";
-import {
-  FormControlLabel,
-  Grid,
-  IconButton,
-  Switch,
-  TextField,
-  Typography,
-  Tooltip,
-} from "@mui/material";
-import { useIntl } from "react-intl";
-import { MuiButton, MuiDataGrid, MuiSelectField, MuiAutocomplete } from "@controls";
-import { bomService } from "@services";
-import { useModal, useModal2 } from "@basesShared";
-import { ErrorAlert, SuccessAlert } from "@utils";
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import moment from "moment";
-import BOMDialog from "./BOMDialog";
-import BOMCopyDialog from "./BOMCopyDialog";
-import BOMDetail from "./BOMDetail";
+import React, { useEffect, useRef, useState } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import UndoIcon from '@mui/icons-material/Undo';
+import { FormControlLabel, Grid, IconButton, Switch, TextField, Typography, Tooltip } from '@mui/material';
+import { useIntl } from 'react-intl';
+import { MuiButton, MuiDataGrid, MuiSelectField, MuiAutocomplete } from '@controls';
+import { bomService } from '@services';
+import { useModal, useModal2 } from '@basesShared';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import moment from 'moment';
+import BOMDialog from './BOMDialog';
+import BOMCopyDialog from './BOMCopyDialog';
+import BOMDetail from './BOMDetail';
 
 export default function BOM() {
   const intl = useIntl();
@@ -35,7 +27,7 @@ export default function BOM() {
     page: 1,
     pageSize: 8,
     searchData: {
-      keyWord: "",
+      keyWord: '',
       MaterialId: null,
       showDelete: true,
     },
@@ -49,54 +41,42 @@ export default function BOM() {
 
   const columns = [
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       flex: 0.1,
-      align: "center",
+      align: 'center',
       filterable: false,
-      renderCell: (index) =>
-        index.api.getRowIndex(index.row.BomId) +
-        1 +
-        (state.page - 1) * state.pageSize,
+      renderCell: (index) => index.api.getRowIndex(index.row.BomId) + 1 + (state.page - 1) * state.pageSize,
     },
-    { field: "BomId", hide: true },
-    { field: "row_version", hide: true },
+    { field: 'BomId', hide: true },
+    { field: 'row_version', hide: true },
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       flex: 0.3,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="delete"
                 color="error"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                {params.row.isActived ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={() => handleUpdate(params.row)}
               >
                 <EditIcon fontSize="inherit" />
@@ -107,61 +87,55 @@ export default function BOM() {
       },
     },
     {
-      field: "BomCode",
-      headerName: intl.formatMessage({ id: "bom.BomCode" }),
+      field: 'BomCode',
+      headerName: intl.formatMessage({ id: 'bom.BomCode' }),
       flex: 0.5,
     },
     {
-      field: "Version",
-      headerName: intl.formatMessage({ id: "bom.Version" }),
+      field: 'Version',
+      headerName: intl.formatMessage({ id: 'bom.Version' }),
       flex: 0.3,
     },
     {
-      field: "MaterialCode",
-      headerName: intl.formatMessage({ id: "bom.MaterialId" }),
+      field: 'MaterialCode',
+      headerName: intl.formatMessage({ id: 'bom.MaterialId' }),
       flex: 0.5,
     },
     {
-      field: "Remark",
-      headerName: intl.formatMessage({ id: "bom.Remark" }),
+      field: 'Remark',
+      headerName: intl.formatMessage({ id: 'bom.Remark' }),
       flex: 0.7,
       renderCell: (params) => {
         return (
-          <Tooltip title={params.row.Remark ?? ""} className="col-text-elip">
-            <Typography sx={{ fontSize: 14, maxWidth: 500 }}>
-              {params.row.Remark}
-            </Typography>
+          <Tooltip title={params.row.Remark ?? ''} className="col-text-elip">
+            <Typography sx={{ fontSize: 14, maxWidth: 500 }}>{params.row.Remark}</Typography>
           </Tooltip>
         );
       },
     },
     {
-      field: "createdName",
-      headerName: intl.formatMessage({ id: "general.createdName" }),
+      field: 'createdName',
+      headerName: intl.formatMessage({ id: 'general.createdName' }),
       flex: 0.5,
     },
     {
-      field: "createdDate",
-      headerName: intl.formatMessage({ id: "general.createdDate" }),
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.createdDate' }),
       flex: 0.5,
       valueFormatter: (params) =>
-        params?.value
-          ? moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")
-          : null,
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
     {
-      field: "modifiedName",
-      headerName: intl.formatMessage({ id: "general.modifiedName" }),
+      field: 'modifiedName',
+      headerName: intl.formatMessage({ id: 'general.modifiedName' }),
       flex: 0.5,
     },
     {
-      field: "modifiedDate",
-      headerName: intl.formatMessage({ id: "general.modifiedDate" }),
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modifiedDate' }),
       flex: 0.5,
       valueFormatter: (params) =>
-        params?.value
-          ? moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")
-          : null,
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
   ];
 
@@ -192,11 +166,7 @@ export default function BOM() {
   }, [newData]);
 
   useEffect(() => {
-    if (
-      !_.isEmpty(updateData) &&
-      !_.isEqual(updateData, rowData) &&
-      isRendered
-    ) {
+    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData) && isRendered) {
       let newArr = [...state.data];
       const index = _.findIndex(newArr, function (o) {
         return o.BomId == updateData.BomId;
@@ -214,9 +184,7 @@ export default function BOM() {
     if (
       window.confirm(
         intl.formatMessage({
-          id: bom.isActived
-            ? "general.confirm_delete"
-            : "general.confirm_redo_deleted",
+          id: bom.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
         })
       )
     ) {
@@ -226,7 +194,7 @@ export default function BOM() {
           row_version: bom.row_version,
         });
         if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: "general.success" }));
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchData();
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
@@ -252,7 +220,7 @@ export default function BOM() {
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...state.searchData };
     newSearchData[inputName] = e;
-    if (inputName == "showDelete") {
+    if (inputName == 'showDelete') {
       setState({ ...state, page: 1, searchData: { ...newSearchData } });
     } else {
       setState({ ...state, searchData: { ...newSearchData } });
@@ -290,19 +258,9 @@ export default function BOM() {
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="width-end"
-      >
+      <Grid container direction="row" justifyContent="space-between" alignItems="width-end">
         <Grid item xs={8}>
-          <MuiButton
-            text="create"
-            color="success"
-            onClick={handleAdd}
-            sx={{ mt: 1 }}
-          />
+          <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mt: 1 }} />
           <MuiButton
             text="copy"
             color="secondary"
@@ -314,15 +272,12 @@ export default function BOM() {
 
         <Grid item>
           <MuiAutocomplete
-            label={intl.formatMessage({ id: "bom.MaterialId" })}
+            label={intl.formatMessage({ id: 'bom.MaterialId' })}
             fetchDataFunc={getMaterial}
             displayLabel="MaterialCode"
             displayValue="MaterialId"
             displayGroup="GroupMaterial"
-
-            onChange={(e, item) =>
-              handleSearch(item ? item.MaterialId ?? null : null, "MaterialId")
-            }
+            onChange={(e, item) => handleSearch(item ? item.MaterialId ?? null : null, 'MaterialId')}
             sx={{ width: 250 }}
             variant="standard"
           />
@@ -340,12 +295,7 @@ export default function BOM() {
           /> */}
         </Grid>
         <Grid item>
-          <MuiButton
-            text="search"
-            color="info"
-            onClick={fetchData}
-            sx={{ mt: 1 }}
-          />
+          <MuiButton text="search" color="info" onClick={fetchData} sx={{ mt: 1 }} />
         </Grid>
         <Grid item>
           <FormControlLabel
@@ -354,13 +304,11 @@ export default function BOM() {
               <Switch
                 defaultChecked={true}
                 color="primary"
-                onChange={(e) => handleSearch(e.target.checked, "showDelete")}
+                onChange={(e) => handleSearch(e.target.checked, 'showDelete')}
               />
             }
             label={intl.formatMessage({
-              id: state.searchData.showDelete
-                ? "general.data_actived"
-                : "general.data_deleted",
+              id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted',
             })}
           />
         </Grid>
@@ -377,9 +325,7 @@ export default function BOM() {
         rowCount={state.totalRow}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
         getRowId={(rows) => rows.BomId}
-        onSelectionModelChange={(newSelectedRowId) =>
-          setBomId(newSelectedRowId[0])
-        }
+        onSelectionModelChange={(newSelectedRowId) => setBomId(newSelectedRowId[0])}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;
         }}

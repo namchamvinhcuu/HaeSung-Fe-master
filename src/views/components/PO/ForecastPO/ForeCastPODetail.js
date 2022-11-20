@@ -1,39 +1,22 @@
-import React, { useState, useEffect, useRef } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
-import { User_Operations } from "@appstate/user";
-import { Store } from "@appstate";
-import {
-  Box,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  IconButton,
-  Input,
-  InputLabel,
-  Switch,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import {
-  MuiButton,
-  MuiDataGrid,
-  MuiSearchField,
-  MuiSelectField,
-} from "@controls";
-import { useIntl } from "react-intl";
-import EditIcon from "@mui/icons-material/Edit";
-import UndoIcon from "@mui/icons-material/Undo";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ForecastDetailDialog from "./ForecastDetailDialog";
-import { ForecastPODto } from "@models";
-import { useModal } from "@basesShared";
-import { ErrorAlert, SuccessAlert, getCurrentWeek } from "@utils";
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import { forecastService } from "@services";
-import moment from "moment";
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { useModal } from '@basesShared';
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import { ForecastPODto } from '@models';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import UndoIcon from '@mui/icons-material/Undo';
+import { Box, FormControlLabel, Grid, IconButton, Switch, TextField, Tooltip, Typography } from '@mui/material';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
+import { forecastService } from '@services';
+import { ErrorAlert, getCurrentWeek, SuccessAlert } from '@utils';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import ForecastDetailDialog from './ForecastDetailDialog';
 
 const min = 1;
 const max = 52;
@@ -47,9 +30,10 @@ const ForecastPODetail = ({ FPoMasterId }) => {
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
   const { isShowing, toggle } = useModal();
-  const [valueYear, setValueYear] = useState("");
+  const [valueYear, setValueYear] = useState('');
   const curWeek = getCurrentWeek();
   const [currentWeek, setCurrentWeek] = useState(curWeek);
+
   const [forecastState, setForecastState] = useState({
     isLoading: false,
     data: [],
@@ -57,7 +41,7 @@ const ForecastPODetail = ({ FPoMasterId }) => {
     page: 1,
     pageSize: 8,
     searchData: {
-      keyWord: "",
+      keyWord: '',
       keyWordWeekStart: 0,
       keyWordWeekEnd: curWeek,
       keyWordYear: new Date().getFullYear(),
@@ -65,26 +49,20 @@ const ForecastPODetail = ({ FPoMasterId }) => {
     },
     FPoMasterId: FPoMasterId,
   });
+
   useEffect(() => {
     // getYearList();
     return () => {
       isRendered = false;
     };
   }, []);
+
   useEffect(() => {
     fetchData(FPoMasterId);
-  }, [
-    forecastState.page,
-    forecastState.pageSize,
-    FPoMasterId,
-    forecastState.searchData.showDelete,
-  ]);
+  }, [forecastState.page, forecastState.pageSize, FPoMasterId, forecastState.searchData.showDelete]);
+
   useEffect(() => {
-    if (
-      !_.isEmpty(newData) &&
-      isRendered &&
-      !_.isEqual(newData, ForecastPODto)
-    ) {
+    if (!_.isEmpty(newData) && isRendered && !_.isEqual(newData, ForecastPODto)) {
       const data = [newData, ...forecastState.data];
       if (data.length > forecastState.pageSize) {
         data.pop();
@@ -98,11 +76,7 @@ const ForecastPODetail = ({ FPoMasterId }) => {
   }, [newData]);
 
   useEffect(() => {
-    if (
-      !_.isEmpty(updateData) &&
-      !_.isEqual(updateData, rowData) &&
-      isRendered
-    ) {
+    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData) && isRendered) {
       let newArr = [...forecastState.data];
       const index = _.findIndex(newArr, function (o) {
         return o.FPOId == updateData.FPOId;
@@ -119,6 +93,7 @@ const ForecastPODetail = ({ FPoMasterId }) => {
     setRowData();
     toggle();
   };
+
   const handleUpdate = (row) => {
     setMode(UPDATE_ACTION);
     setRowData({ ...row, FPoMasterId: FPoMasterId });
@@ -126,54 +101,43 @@ const ForecastPODetail = ({ FPoMasterId }) => {
   };
 
   const columns = [
-    { field: "FPOId", headerName: "", hide: true },
+    { field: 'FPOId', headerName: '', hide: true },
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       width: 80,
       filterable: false,
       renderCell: (index) =>
-        index.api.getRowIndex(index.row.FPOId) +
-        1 +
-        (forecastState.page - 1) * forecastState.pageSize,
+        index.api.getRowIndex(index.row.FPOId) + 1 + (forecastState.page - 1) * forecastState.pageSize,
     },
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       width: 80,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="delete"
                 color="error"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                {params.row.isActived ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
 
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={() => handleUpdate(params.row)}
               >
                 <EditIcon fontSize="inherit" />
@@ -184,99 +148,90 @@ const ForecastPODetail = ({ FPoMasterId }) => {
       },
     },
     {
-      field: "Inch",
-      headerName: "Inch",
+      field: 'Inch',
+      headerName: 'Inch',
       width: 100,
     },
     {
-      field: "FPoCode",
-      headerName: intl.formatMessage({ id: "forecast.FPoCode" }),
+      field: 'FPoCode',
+      headerName: intl.formatMessage({ id: 'forecast.FPoCode' }),
       width: 120,
     },
     {
-      field: "LineName",
-      headerName: intl.formatMessage({ id: "forecast.LineId" }),
+      field: 'LineName',
+      headerName: intl.formatMessage({ id: 'forecast.LineId' }),
       width: 200,
     },
     {
-      field: "MaterialCode",
-      headerName: intl.formatMessage({ id: "forecast.MaterialId" }),
+      field: 'MaterialCode',
+      headerName: intl.formatMessage({ id: 'forecast.MaterialId' }),
       width: 200,
     },
     {
-      field: "BuyerCode",
-      headerName: intl.formatMessage({ id: "forecast.BuyerId" }),
+      field: 'BuyerCode',
+      headerName: intl.formatMessage({ id: 'forecast.BuyerId' }),
       width: 200,
     },
     {
-      field: "DescriptionMaterial",
-      headerName: intl.formatMessage({ id: "forecast.Desciption" }),
+      field: 'DescriptionMaterial',
+      headerName: intl.formatMessage({ id: 'forecast.Desciption' }),
       width: 300,
       renderCell: (params) => {
         return (
-          <Tooltip
-            title={params.row.DescriptionMaterial ?? ""}
-            className="col-text-elip"
-          >
-            <Typography sx={{ fontSize: 14, maxWidth: 300 }}>
-              {params.row.DescriptionMaterial}
-            </Typography>
+          <Tooltip title={params.row.DescriptionMaterial ?? ''} className="col-text-elip">
+            <Typography sx={{ fontSize: 14, maxWidth: 300 }}>{params.row.DescriptionMaterial}</Typography>
           </Tooltip>
         );
       },
     },
     {
-      field: "Description",
-      headerName: "Desc 2",
+      field: 'Description',
+      headerName: 'Desc 2',
       width: 180,
     },
     {
-      field: "Week",
-      headerName: intl.formatMessage({ id: "forecast.Week" }),
+      field: 'Week',
+      headerName: intl.formatMessage({ id: 'forecast.Week' }),
       width: 100,
     },
     {
-      field: "Year",
-      headerName: intl.formatMessage({ id: "forecast.Year" }),
+      field: 'Year',
+      headerName: intl.formatMessage({ id: 'forecast.Year' }),
       width: 100,
     },
     {
-      field: "Amount",
-      headerName: intl.formatMessage({ id: "forecast.Amount" }),
+      field: 'Amount',
+      headerName: intl.formatMessage({ id: 'forecast.Amount' }),
       width: 100,
     },
 
     {
-      field: "createdName",
-      headerName: intl.formatMessage({ id: "general.createdName" }),
+      field: 'createdName',
+      headerName: intl.formatMessage({ id: 'general.createdName' }),
       width: 150,
     },
     {
-      field: "createdDate",
-      headerName: intl.formatMessage({ id: "general.created_date" }),
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.created_date' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
     {
-      field: "modifiedName",
-      headerName: intl.formatMessage({ id: "general.modifiedName" }),
+      field: 'modifiedName',
+      headerName: intl.formatMessage({ id: 'general.modifiedName' }),
       width: 150,
     },
     {
-      field: "modifiedDate",
-      headerName: intl.formatMessage({ id: "general.modified_date" }),
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modified_date' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
@@ -291,11 +246,10 @@ const ForecastPODetail = ({ FPoMasterId }) => {
 
   async function fetchData(FPoMasterId) {
     if (
-      forecastState.searchData.keyWordWeekStart >
-      forecastState.searchData.keyWordWeekEnd &&
+      forecastState.searchData.keyWordWeekStart > forecastState.searchData.keyWordWeekEnd &&
       forecastState.searchData.keyWordWeekEnd != 0
     ) {
-      ErrorAlert(intl.formatMessage({ id: "forecast.Start_end_week_error" }));
+      ErrorAlert(intl.formatMessage({ id: 'forecast.Start_end_week_error' }));
       return;
     }
     setForecastState({ ...forecastState, isLoading: true });
@@ -305,7 +259,8 @@ const ForecastPODetail = ({ FPoMasterId }) => {
       keyWord: forecastState.searchData.keyWord,
       keyWordWeekStart: forecastState.searchData.keyWordWeekStart,
       keyWordWeekEnd: forecastState.searchData.keyWordWeekEnd,
-      keyWordYear: forecastState.searchData.keyWordYear===0?new Date().getFullYear():forecastState.searchData.keyWordYear,
+      keyWordYear:
+        forecastState.searchData.keyWordYear === 0 ? new Date().getFullYear() : forecastState.searchData.keyWordYear,
       showDelete: forecastState.searchData.showDelete,
       FPoMasterId: FPoMasterId,
     };
@@ -322,7 +277,7 @@ const ForecastPODetail = ({ FPoMasterId }) => {
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...forecastState.searchData };
     newSearchData[inputName] = e;
-    if (inputName == "showDelete") {
+    if (inputName == 'showDelete') {
       setForecastState({
         ...forecastState,
         page: 1,
@@ -337,9 +292,7 @@ const ForecastPODetail = ({ FPoMasterId }) => {
     if (
       window.confirm(
         intl.formatMessage({
-          id: forecast.isActived
-            ? "general.confirm_delete"
-            : "general.confirm_redo_deleted",
+          id: forecast.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
         })
       )
     ) {
@@ -347,10 +300,10 @@ const ForecastPODetail = ({ FPoMasterId }) => {
         let res = await forecastService.deleteForecast({
           FPOId: forecast.FPOId,
           row_version: forecast.row_version,
-          FPoMasterId: FPoMasterId
+          FPoMasterId: FPoMasterId,
         });
         if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: "general.success" }));
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchData(FPoMasterId);
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
@@ -361,8 +314,8 @@ const ForecastPODetail = ({ FPoMasterId }) => {
     }
   };
 
-  const [valueStart, setValueStart] = useState("");
-  const [valueEnd, setValueEnd] = useState("");
+  const [valueStart, setValueStart] = useState('');
+  const [valueEnd, setValueEnd] = useState('');
   // useEffect(() => {
   //   if (!_.isEmpty(newDataChild)) {
   //     const data = [newDataChild, ...forecastState.data];
@@ -378,30 +331,19 @@ const ForecastPODetail = ({ FPoMasterId }) => {
   // }, [newDataChild]);
   return (
     <React.Fragment>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="flex-end"
-      >
+      <Grid container direction="row" justifyContent="space-between" alignItems="flex-end">
         <Grid item xs={5}>
-          <MuiButton
-            text="create"
-            color="success"
-            onClick={handleAdd}
-            disabled={FPoMasterId ? false : true}
-          />
+          <MuiButton text="create" color="success" onClick={handleAdd} disabled={FPoMasterId ? false : true} />
         </Grid>
         <Grid item>
           <Box display="flex">
-            <Box sx={{ mr: 2, maxWidth: "120px" }}>
-
+            <Box sx={{ mr: 2, maxWidth: '120px' }}>
               <TextField
                 disabled={FPoMasterId ? false : true}
-                label={intl.formatMessage({ id: "forecast.Year" })}
+                label={intl.formatMessage({ id: 'forecast.Year' })}
                 variant="standard"
                 type="number"
-                sx={{ width: "120px" }}
+                sx={{ width: '120px' }}
                 value={valueYear || new Date().getFullYear()}
                 // inputProps={{ minyear, maxyear }}
                 onChange={(e) => {
@@ -411,8 +353,8 @@ const ForecastPODetail = ({ FPoMasterId }) => {
                   }
                   if (value > maxyear && e.target.value.length === 4) value = maxyear;
                   if (value < minyear && e.target.value.length === 4) value = minyear;
-                  setValueYear(value || "");
-                  handleSearch(value || 0, "keyWordYear");
+                  setValueYear(value || '');
+                  handleSearch(value || 0, 'keyWordYear');
                 }}
               />
               {/* <FormControl sx={{ marginTop: "3px" }}>
@@ -436,54 +378,52 @@ const ForecastPODetail = ({ FPoMasterId }) => {
                   sx={{ width: 120 }}
                 />
               </FormControl> */}
-
             </Box>
-            <Box sx={{ maxWidth: "120px", mr: 2 }}>
+            <Box sx={{ maxWidth: '120px', mr: 2 }}>
               <TextField
                 disabled={FPoMasterId ? false : true}
-                label={intl.formatMessage({ id: "forecast.Week_start" })}
+                label={intl.formatMessage({ id: 'forecast.Week_start' })}
                 variant="standard"
                 type="number"
-                sx={{ width: "120px" }}
+                sx={{ width: '120px' }}
                 value={valueStart}
                 inputProps={{ min, max }}
                 onChange={(e) => {
                   var value = parseInt(e.target.value, 10);
                   if (value > max) value = max;
                   if (value < min) value = min;
-                  setValueStart(value || "");
-                  handleSearch(value || 0, "keyWordWeekStart");
+                  setValueStart(value || '');
+                  handleSearch(value || 0, 'keyWordWeekStart');
                 }}
               />
-
             </Box>
-            <Box sx={{ maxWidth: "120px", mr: 2 }}>
+            <Box sx={{ maxWidth: '120px', mr: 2 }}>
               <TextField
                 disabled={FPoMasterId ? false : true}
-                label={intl.formatMessage({ id: "forecast.Week_end" })}
+                label={intl.formatMessage({ id: 'forecast.Week_end' })}
                 variant="standard"
                 type="number"
-                sx={{ width: "120px" }}
+                sx={{ width: '120px' }}
                 value={valueEnd || currentWeek}
                 // inputProps={{ min, max }}
                 onChange={(e) => {
                   var value = parseInt(e.target.value, 10);
                   if (value > max) value = max;
                   if (value < min) value = min;
-                  setCurrentWeek(value || "");
-                  setValueEnd(value || "");
-                  handleSearch(value || 0, "keyWordWeekEnd");
+                  setCurrentWeek(value || '');
+                  setValueEnd(value || '');
+                  handleSearch(value || 0, 'keyWordWeekEnd');
                 }}
               />
             </Box>
 
-            <Box sx={{ marginTop: "3px" }}>
+            <Box sx={{ marginTop: '3px' }}>
               <MuiSearchField
                 disabled={FPoMasterId ? false : true}
                 label="general.name"
                 name="LineName"
                 onClick={() => fetchData(FPoMasterId)}
-                onChange={(e) => handleSearch(e.target.value, "keyWord")}
+                onChange={(e) => handleSearch(e.target.value, 'keyWord')}
               />
             </Box>
           </Box>
@@ -498,19 +438,17 @@ const ForecastPODetail = ({ FPoMasterId }) => {
         </Grid>
         <Grid item>
           <FormControlLabel
-            sx={{ marginBottom: "3px" }}
+            sx={{ marginBottom: '3px' }}
             control={
               <Switch
                 disabled={FPoMasterId ? false : true}
                 defaultChecked={true}
                 color="primary"
-                onChange={(e) => handleSearch(e.target.checked, "showDelete")}
+                onChange={(e) => handleSearch(e.target.checked, 'showDelete')}
               />
             }
             label={intl.formatMessage({
-              id: forecastState.searchData.showDelete
-                ? "general.data_actived"
-                : "general.data_deleted",
+              id: forecastState.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted',
             })}
           />
         </Grid>
@@ -542,7 +480,7 @@ const ForecastPODetail = ({ FPoMasterId }) => {
         // selectionModel={selectedRow.menuId}
         getRowClassName={(params) => {
           if (
-            _.isEqual(params.row, newData) 
+            _.isEqual(params.row, newData)
             // ||
             // _.isEqual(params.row, newDataChild)
           ) {
@@ -565,7 +503,7 @@ const ForecastPODetail = ({ FPoMasterId }) => {
 };
 
 User_Operations.toString = function () {
-  return "User_Operations";
+  return 'User_Operations';
 };
 
 const mapStateToProps = (state) => {

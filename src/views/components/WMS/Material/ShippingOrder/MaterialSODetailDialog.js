@@ -1,23 +1,14 @@
-import React, { useEffect, useState, useRef } from "react";
-import {
-  MuiDialog,
-  MuiSubmitButton,
-  MuiResetButton,
-  MuiTextField,
-  MuiDateField,
-  MuiAutocomplete,
-  MuiDataGrid
-} from "@controls";
-import { useIntl } from "react-intl";
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import { useFormik } from "formik";
-import * as yup from "yup";
-import { Grid, TextField } from "@mui/material";
-import { iqcService } from "@services";
-import { materialSOService } from "@services";
-import { ErrorAlert, SuccessAlert, isNumber } from '@utils';
-import moment from "moment";
-import _ from "lodash";
+import { CREATE_ACTION } from '@constants/ConfigConstants';
+import { MuiAutocomplete, MuiDataGrid, MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls';
+import { Grid } from '@mui/material';
+import { iqcService, materialSOService } from '@services';
+import { ErrorAlert, isNumber, SuccessAlert } from '@utils';
+import { useFormik } from 'formik';
+import _ from 'lodash';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
+import * as yup from 'yup';
 
 const MaterialSODetailDialog = (props) => {
   const intl = useIntl();
@@ -38,10 +29,9 @@ const MaterialSODetailDialog = (props) => {
   const schema = yup.object().shape({
     MaterialId: yup
       .number()
-      .required(intl.formatMessage({ id: "forecast.MaterialId_required" }))
-      .min(1, intl.formatMessage({ id: "forecast.MaterialId_required" })),
+      .required(intl.formatMessage({ id: 'forecast.MaterialId_required' }))
+      .min(1, intl.formatMessage({ id: 'forecast.MaterialId_required' })),
     // SOrderQty: yup.number().nullable().required(intl.formatMessage({ id: "lot.Qty_required" })).min(1, intl.formatMessage({ id: "lot.Qty_bigger_1" })),
-
   });
 
   const handleReset = () => {
@@ -55,17 +45,7 @@ const MaterialSODetailDialog = (props) => {
     onSubmit: async (values) => onSubmit(values),
   });
 
-  const {
-    handleChange,
-    handleBlur,
-    handleSubmit,
-    values,
-    setFieldValue,
-    errors,
-    touched,
-    isValid,
-    resetForm,
-  } = formik;
+  const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
 
   const handleCloseDialog = () => {
     setDialogState({
@@ -81,13 +61,12 @@ const MaterialSODetailDialog = (props) => {
   };
 
   const onSubmit = async (data) => {
-
     let flag = false;
     for (let i = 0; i < lotArr.length; i++) {
       const element = lotArr[i];
       if (element.RequestQty) {
         flag = true;
-        break
+        break;
       }
     }
 
@@ -107,8 +86,7 @@ const MaterialSODetailDialog = (props) => {
       setNewData([...res.Data]);
       //setDialogState({ ...dialogState, isSubmit: false });
       handleReset();
-    }
-    else {
+    } else {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
       //setDialogState({ ...dialogState, isSubmit: false });
     }
@@ -165,12 +143,10 @@ const MaterialSODetailDialog = (props) => {
     const res = await materialSOService.getLots(materialId);
     if (res && res.Data) {
       setLotArr([...res.Data]);
-    }
-    else
-      setLotArr([]);
+    } else setLotArr([]);
 
     setIsLoading(false);
-  }
+  };
 
   const handleRowSelection = (arrIds) => {
     // const rowSelected = lotArr.filter(item => arrIds.includes(item.Id));
@@ -192,42 +168,41 @@ const MaterialSODetailDialog = (props) => {
   };
 
   const columns = [
-    { field: "Id", headerName: "", hide: true },
+    { field: 'Id', headerName: '', hide: true },
 
     {
-      field: "BinCode",
-      headerName: intl.formatMessage({ id: "lot.BinCode" }),
+      field: 'BinCode',
+      headerName: intl.formatMessage({ id: 'lot.BinCode' }),
       /*flex: 0.7,*/ width: 150,
     },
 
     {
-      field: "LotSerial",
-      headerName: intl.formatMessage({ id: "lot.LotSerial" }),
+      field: 'LotSerial',
+      headerName: intl.formatMessage({ id: 'lot.LotSerial' }),
       /*flex: 0.7,*/ width: 150,
     },
 
     {
-      field: "Qty",
-      headerName: intl.formatMessage({ id: "lot.Qty" }),
+      field: 'Qty',
+      headerName: intl.formatMessage({ id: 'lot.Qty' }),
       /*flex: 0.7,*/ width: 150,
     },
 
     {
-      field: "RequestQty",
-      headerName: intl.formatMessage({ id: "lot.RequestQty" }),
-      description: intl.formatMessage({ id: "material-so-detail.SOrderQty_tip" }),
-      /*flex: 0.7,*/ width: 150, editable: true,
+      field: 'RequestQty',
+      headerName: intl.formatMessage({ id: 'lot.RequestQty' }),
+      description: intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' }),
+      /*flex: 0.7,*/ width: 150,
+      editable: true,
     },
 
     {
-      field: "IncomingDate",
-      headerName: intl.formatMessage({ id: "lot.IncomingDate" }),
+      field: 'IncomingDate',
+      headerName: intl.formatMessage({ id: 'lot.IncomingDate' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
@@ -235,11 +210,11 @@ const MaterialSODetailDialog = (props) => {
 
   const handleRowUpdate = async (newRow) => {
     if (!isNumber(newRow.RequestQty) || newRow.RequestQty < 0) {
-      ErrorAlert(intl.formatMessage({ id: "forecast.OrderQty_required_bigger" }));
+      ErrorAlert(intl.formatMessage({ id: 'forecast.OrderQty_required_bigger' }));
       newRow.RequestQty = 0;
       return newRow;
     }
-    newRow = { ...newRow, RequestQty: parseInt(newRow.RequestQty) }
+    newRow = { ...newRow, RequestQty: parseInt(newRow.RequestQty) };
 
     let newArr = [...lotArr];
     const index = _.findIndex(newArr, (o) => {
@@ -263,11 +238,11 @@ const MaterialSODetailDialog = (props) => {
     //   ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
     //   return selectedRow;
     // }
-  }
+  };
 
   const handleProcessRowUpdateError = React.useCallback((error) => {
-    console.log('update error', error)
-    ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+    console.log('update error', error);
+    ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
   }, []);
 
   useEffect(() => {
@@ -278,13 +253,13 @@ const MaterialSODetailDialog = (props) => {
     return () => {
       isRendered = false;
     };
-  }, [isOpen])
+  }, [isOpen]);
 
   return (
     <MuiDialog
       maxWidth="md"
       title={intl.formatMessage({
-        id: mode == CREATE_ACTION ? "general.create" : "general.modify",
+        id: mode == CREATE_ACTION ? 'general.create' : 'general.modify',
       })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
@@ -292,14 +267,10 @@ const MaterialSODetailDialog = (props) => {
       onClose={handleCloseDialog}
     >
       <form onSubmit={handleSubmit}>
-        <Grid
-          container
-          rowSpacing={2.5}
-          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-        >
+        <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12}>
             <MuiAutocomplete
-              label={intl.formatMessage({ id: "forecast.MaterialId" }) + " *"}
+              label={intl.formatMessage({ id: 'forecast.MaterialId' }) + ' *'}
               fetchDataFunc={getMaterialTypeRawAndSub}
               displayLabel="MaterialCode"
               displayValue="MaterialId"
@@ -308,21 +279,21 @@ const MaterialSODetailDialog = (props) => {
                 mode == CREATE_ACTION
                   ? null
                   : {
-                    MaterialId: initModal.MaterialId,
-                    MaterialCode: initModal.MaterialCode,
-                  }
+                      MaterialId: initModal.MaterialId,
+                      MaterialCode: initModal.MaterialCode,
+                    }
               }
               value={
                 values.MaterialId
                   ? {
-                    MaterialId: values.MaterialId,
-                    MaterialCode: values.MaterialCode,
-                  }
+                      MaterialId: values.MaterialId,
+                      MaterialCode: values.MaterialCode,
+                    }
                   : null
               }
               onChange={async (e, value) => {
-                setFieldValue("MaterialCode", value?.MaterialCode);
-                setFieldValue("MaterialId", value?.MaterialId);
+                setFieldValue('MaterialCode', value?.MaterialCode);
+                setFieldValue('MaterialId', value?.MaterialId);
                 await getLots(value?.MaterialId ?? 0);
               }}
               error={touched.MaterialId && Boolean(errors.MaterialId)}
@@ -363,9 +334,7 @@ const MaterialSODetailDialog = (props) => {
                 setPage(newPage + 1);
               }}
               getRowId={(rows) => rows.Id}
-              onSelectionModelChange={(newSelectedRowId) =>
-                handleRowSelection(newSelectedRowId)
-              }
+              onSelectionModelChange={(newSelectedRowId) => handleRowSelection(newSelectedRowId)}
               onPageSizeChange={(newPageSize) => {
                 setPageSize(newPageSize);
                 setPage(1);
@@ -392,16 +361,10 @@ const MaterialSODetailDialog = (props) => {
           <Grid item xs={12}>
             <Grid container direction="row-reverse">
               <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
-              <MuiResetButton
-                onClick={handleReset}
-                disabled={dialogState.isSubmit}
-              />
+              <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} />
             </Grid>
           </Grid>
-
         </Grid>
-
-
       </form>
     </MuiDialog>
   );

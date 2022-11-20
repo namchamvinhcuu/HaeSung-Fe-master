@@ -1,35 +1,22 @@
-import React, { useState, useEffect, useRef } from "react";
-import ReactDOM from "react-dom";
-import { api_get, api_post, SuccessAlert, ErrorAlert } from "@utils";
-import {
-  useModal,
-  useModal2,
-  SelectBox,
-  ButtonAsync,
-  DataTable,
-  DraggableDialog,
-} from "@basesShared";
-import {
-  Grid,
-  TextField,
-  Button,
-  Box,
-} from "@mui/material";
+import React, { useState, useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
+import { api_get, api_post, SuccessAlert, ErrorAlert } from '@utils';
+import { useModal, useModal2, SelectBox, ButtonAsync, DataTable, DraggableDialog } from '@basesShared';
+import { Grid, TextField, Button, Box } from '@mui/material';
 
-import Modal_Role from "./Modals/Modal_Role";
-import Modal_Menu from "./Modals/Modal_Menu";
+import Modal_Role from './Modals/Modal_Role';
+import Modal_Menu from './Modals/Modal_Menu';
 
 export default function RoleList() {
-  const [mode, setMode] = useState("add");
+  const [mode, setMode] = useState('add');
   const [rowData, setRowData] = useState({});
   const { isShowing, toggle } = useModal();
   const { isShowing2, toggle2 } = useModal2();
 
-
-  const [searchName, setSearchName] = useState("");
+  const [searchName, setSearchName] = useState('');
   const [roleId, setRoleId] = useState();
 
-  const [searchName_Menu, setSearchName_Menu] = useState("");
+  const [searchName_Menu, setSearchName_Menu] = useState('');
 
   const gridRef = useRef();
 
@@ -39,8 +26,8 @@ export default function RoleList() {
   const columns = [
     // { field: "active", headerName: "Use", width: 250, editable: false, renderCell: (params) => (params.row.active ? <Checkbox disabled checked /> : <Checkbox disabled />), },
     {
-      field: "edit",
-      headerName: "Edit",
+      field: 'edit',
+      headerName: 'Edit',
       width: 80,
       disableClickEventBubbling: true,
       renderCell: (params) => {
@@ -49,9 +36,8 @@ export default function RoleList() {
             variant="contained"
             color="primary"
             size="small"
-            onClick={e => {
-
-              editrow(e, params)
+            onClick={(e) => {
+              editrow(e, params);
             }}
           >
             Edit
@@ -60,8 +46,8 @@ export default function RoleList() {
       },
     },
     {
-      field: "delete",
-      headerName: "Delete",
+      field: 'delete',
+      headerName: 'Delete',
       width: 80,
       disableClickEventBubbling: true,
       renderCell: (params) => {
@@ -70,7 +56,9 @@ export default function RoleList() {
             variant="contained"
             color="error"
             size="small"
-            onClick={e => { deleterowrole(e, params) }}
+            onClick={(e) => {
+              deleterowrole(e, params);
+            }}
           >
             Delete
           </Button>
@@ -78,15 +66,15 @@ export default function RoleList() {
       },
     },
 
-    { field: "id", headerName: "ID", hide: true },
-    { field: "name", headerName: "Role Name", width: 450 },
-    { field: "remark", headerName: "Remark", width: 500 },
+    { field: 'id', headerName: 'ID', hide: true },
+    { field: 'name', headerName: 'Role Name', width: 450 },
+    { field: 'remark', headerName: 'Remark', width: 500 },
   ];
 
   const columns_menu = [
     {
-      field: "delete",
-      headerName: "Delete",
+      field: 'delete',
+      headerName: 'Delete',
       width: 80,
       disableClickEventBubbling: true,
       renderCell: (params) => {
@@ -105,21 +93,27 @@ export default function RoleList() {
       },
     },
 
-    { field: "id", headerName: "ID", hide: true },
-    { field: "Name", headerName: "Menu Name", width: 200 },
-    { field: "Code", headerName: "Menu Code", width: 200 },
+    { field: 'id', headerName: 'ID', hide: true },
+    { field: 'Name', headerName: 'Menu Name', width: 200 },
+    { field: 'Code', headerName: 'Menu Code', width: 200 },
     {
-      field: "MenuType", headerName: "Type", width: 100,
+      field: 'MenuType',
+      headerName: 'Type',
+      width: 100,
       renderCell: (params) => {
-        if (params.row.MenuType === 0) return <span style={{ fontSize: 14 }} className="badge badge-info">Folder</span>
-        else return <b >Item</b>
+        if (params.row.MenuType === 0)
+          return (
+            <span style={{ fontSize: 14 }} className="badge badge-info">
+              Folder
+            </span>
+          );
+        else return <b>Item</b>;
       },
-
     },
   ];
 
   const addNewRole = () => {
-    setMode("add");
+    setMode('add');
     setRowData({});
     toggle();
   };
@@ -129,20 +123,19 @@ export default function RoleList() {
   };
 
   const editrow = (e, params) => {
-
     e.stopPropagation();
     var row_data = params.row;
-    setMode("edit");
+    setMode('edit');
     setRowData({ ...row_data, ignore: true });
     toggle();
   };
 
   const deleterowrole = (e, params) => {
     e.stopPropagation();
-    if (window.confirm("Delete the item?")) {
-      api_post("sysRoleaApi/delete", params.row).then(() => {
+    if (window.confirm('Delete the item?')) {
+      api_post('sysRoleaApi/delete', params.row).then(() => {
         refreshTable();
-        setRowData({})
+        setRowData({});
       });
     }
   };
@@ -153,19 +146,19 @@ export default function RoleList() {
       role_id: rowData.id,
       menu_id: params.row.id,
     };
-    if (window.confirm("Delete the item?")) {
-      api_post("sysRoleaApi/delete-menu", infoDelete).then(() => {
+    if (window.confirm('Delete the item?')) {
+      api_post('sysRoleaApi/delete-menu', infoDelete).then(() => {
         refreshTable_menu();
       });
     }
   };
 
   const refreshTable = () => {
-    gridRef.current.refreshGrid().then(() => SuccessAlert("save success"));
+    gridRef.current.refreshGrid().then(() => SuccessAlert('save success'));
   };
 
   const refreshTable_menu = () => {
-    gridRef_menu.current.refreshGrid().then(() => SuccessAlert("save success"));
+    gridRef_menu.current.refreshGrid().then(() => SuccessAlert('save success'));
   };
 
   const addMenu = () => {
@@ -179,13 +172,8 @@ export default function RoleList() {
 
   return (
     <>
-      <Box sx={{ pb: 5, height: "750px", width: "100%" }}>
-        <Grid
-          container
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
+      <Box sx={{ pb: 5, height: '750px', width: '100%' }}>
+        <Grid container direction="row" justifyContent="space-between" alignItems="center">
           <Grid item>
             <Button
               variant="contained"
@@ -203,12 +191,7 @@ export default function RoleList() {
               onChange={(e) => setSearchName(e.target.value)}
               sx={{ borderRadius: 2, mb: 1 }}
             />
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ mx: 3, boxShadow: 1, mb: -4 }}
-              onClick={searchRoles}
-            >
+            <Button variant="contained" color="primary" sx={{ mx: 3, boxShadow: 1, mb: -4 }} onClick={searchRoles}>
               Search
             </Button>
           </Grid>
@@ -217,25 +200,18 @@ export default function RoleList() {
         <DataTable
           sx={{ height: 300 }}
           ref={gridRef}
-          url={"sysRoleaApi"}
+          url={'sysRoleaApi'}
           columns={columns}
           getRowId={(rows) => rows.id}
           onRowClick={(params, event) => {
-
             setRoleId(params.row.id);
-            setRowData(params.row)
+            setRowData(params.row);
           }}
           hideFooter={true}
         />
 
-
         <Box>
-          <Grid
-            container
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
+          <Grid container direction="row" justifyContent="space-between" alignItems="center">
             <Grid item>
               <Button
                 variant="contained"
@@ -254,12 +230,7 @@ export default function RoleList() {
                 sx={{ borderRadius: 2, mb: 1 }}
               />
 
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ mx: 3, boxShadow: 1, mb: -4 }}
-                onClick={searchMenus}
-              >
+              <Button variant="contained" color="primary" sx={{ mx: 3, boxShadow: 1, mb: -4 }} onClick={searchMenus}>
                 Search
               </Button>
             </Grid>
@@ -267,30 +238,16 @@ export default function RoleList() {
 
           <DataTable
             ref={gridRef_menu}
-            url={roleId ? ("sysRoleaApi/get-list-role-menu/" + roleId) : null}
+            url={roleId ? 'sysRoleaApi/get-list-role-menu/' + roleId : null}
             columns={columns_menu}
             getRowId={(rows) => rows.id}
             sx={{ height: 400 }}
           />
         </Box>
 
+        <Modal_Role isShowing={isShowing} hide={toggle} mode={mode} data={rowData} refreshTable={refreshTable} />
 
-        <Modal_Role
-          isShowing={isShowing}
-          hide={toggle}
-          mode={mode}
-          data={rowData}
-          refreshTable={refreshTable}
-        />
-
-        {
-          <Modal_Menu
-            isShowing={isShowing2}
-            hide={toggle2}
-            data={rowData}
-            refreshTable={refreshTable_menu}
-          />
-        }
+        {<Modal_Menu isShowing={isShowing2} hide={toggle2} data={rowData} refreshTable={refreshTable_menu} />}
       </Box>
     </>
   );

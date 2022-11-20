@@ -1,5 +1,5 @@
-import React, { Component, useState, useEffect, useMemo } from "react";
-import { ContentBox } from "@components";
+import React, { Component, useState, useEffect, useMemo } from 'react';
+import { ContentBox } from '@components';
 
 /// by mrhieu84 22-7-2022  ///
 
@@ -14,38 +14,43 @@ const TabPanel = ({ index, ...other }) => {
 
   return (
     <>
-
       <div
         role="tabpanel"
         hidden={false}
         id={`tabpanel-${index}`}
-      // aria-labelledby={`simple-tab-${index}`}
-
+        // aria-labelledby={`simple-tab-${index}`}
       >
-
         {children}
-
       </div>
     </>
   );
-}
+};
 
 const TabPanelMemo = React.memo(
-  ({ name, title, code, breadcrumb_array, ChildComponent, index, index_tab_active, refChild, setRefChild, ...other }) => {
+  ({
+    name,
+    title,
+    code,
+    breadcrumb_array,
+    ChildComponent,
+    index,
+    index_tab_active,
+    refChild,
+    setRefChild,
+    ...other
+  }) => {
     const myRef = React.useRef();
 
     useEffect(() => {
       // console.log(index + " created");
 
-      setRefChild(myRef.current)
+      setRefChild(myRef.current);
       //   var funcTabChange=  myRef.current?.componentTabChange;
       //   funcTabChange &&  funcTabChange(1,1,null,null);
       $(window).scrollTop(0);
-      $(`#tabpanel-${index}`).attr("hidden", false);
+      $(`#tabpanel-${index}`).attr('hidden', false);
 
       // return () => {
-
-
 
       //     funcTabChange &&  funcTabChange(null,null,null,1);
 
@@ -53,7 +58,6 @@ const TabPanelMemo = React.memo(
     }, [index]);
 
     return (
-
       <TabPanel index={index} {...other}>
         <ContentBox
           title={title}
@@ -66,19 +70,17 @@ const TabPanelMemo = React.memo(
         :  <ChildComponent  />)} */}
           {ChildComponent && <ChildComponent ref={myRef} />}
         </ContentBox>
-
       </TabPanel>
     );
   },
   (preProps, nextProps) => {
-
     var isEq = preProps.index === nextProps.index;
     if (isEq) {
       if (nextProps.index_tab_active == nextProps.index) {
         // console.log("tab " + nextProps.index + " selected")
 
         $(window).scrollTop(0);
-        $(`#tabpanel-${nextProps.index}`).attr("hidden", false);// anti flicking, hacked by mrhieu84
+        $(`#tabpanel-${nextProps.index}`).attr('hidden', false); // anti flicking, hacked by mrhieu84
         if (nextProps.refChild) {
           var funcTabChange = nextProps.refChild?.componentTabChange;
           funcTabChange && funcTabChange(1, null);
@@ -89,16 +91,14 @@ const TabPanelMemo = React.memo(
         // console.log(funcTabChange)
         //         funcTabChange && funcTabChange(0);
         //     }
-
       } else if (preProps.index_tab_active == nextProps.index) {
         // console.log("tab " + nextProps.index + " deselected")
 
-        $(`#tabpanel-${nextProps.index}`).attr("hidden", true);// anti flicking, hacked by mrhieu84
+        $(`#tabpanel-${nextProps.index}`).attr('hidden', true); // anti flicking, hacked by mrhieu84
         if (nextProps.refChild) {
           var funcTabChange = nextProps.refChild?.componentTabChange;
           funcTabChange && funcTabChange(null, 1);
         }
-
       }
     }
 
@@ -118,11 +118,10 @@ class TabListContent extends Component {
     const { HistoryElementTabs, index_tab_active } = this.props;
     // console.log(HistoryElementTabs, 'tab')
 
-    return (
-      HistoryElementTabs.length ?
-        HistoryElementTabs.map((ele, index) => {
-
-          return <TabPanelMemo
+    return HistoryElementTabs.length ? (
+      HistoryElementTabs.map((ele, index) => {
+        return (
+          <TabPanelMemo
             name={ele.name}
             code={ele.code}
             key={ele.code}
@@ -130,12 +129,15 @@ class TabListContent extends Component {
             breadcrumb_array={ele.breadcrumb_array}
             ChildComponent={ele.ChildComponent}
             index={ele.index}
-            setRefChild={r => ele.ref = r}
+            setRefChild={(r) => (ele.ref = r)}
             refChild={ele.ref}
             index_tab_active={index_tab_active}
           />
-        }
-        ) : <ContentBox title={""} breadcrumb={[]}></ContentBox>)
+        );
+      })
+    ) : (
+      <ContentBox title={''} breadcrumb={[]}></ContentBox>
+    );
   }
 }
 

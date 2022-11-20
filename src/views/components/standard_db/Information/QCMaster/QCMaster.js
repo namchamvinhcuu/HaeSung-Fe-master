@@ -1,41 +1,27 @@
-import { Store } from "@appstate";
-import { User_Operations } from "@appstate/user";
-import {
-  MuiButton,
-  MuiDataGrid,
-  MuiSearchField,
-  MuiSelectField,
-  MuiAutocomplete
-} from "@controls";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import UndoIcon from "@mui/icons-material/Undo";
-import {
-  Autocomplete,
-  createTheme,
-  ThemeProvider,
-  TextField,
-  Switch,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
-import { CombineDispatchToProps, CombineStateToProps } from "@plugins/helperJS";
-import _ from "lodash";
-import moment from "moment";
-import React, { useEffect, useState } from "react";
-import { useIntl } from "react-intl";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import { ErrorAlert, SuccessAlert } from "@utils";
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import UndoIcon from '@mui/icons-material/Undo';
+import { Switch, Tooltip, Typography } from '@mui/material';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import _ from 'lodash';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { useIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import CreateDialog from "./CreateDialog";
-import ModifyDialog from "./ModifyDialog";
-import { qcMasterService } from "@services";
-import { QCMasterDto } from "@models";
-import QCDetail from "./QCDetail.js";
+import { QCMasterDto } from '@models';
+import { qcMasterService } from '@services';
+import CreateDialog from './CreateDialog';
+import ModifyDialog from './ModifyDialog';
+import QCDetail from './QCDetail.js';
 
 const QCMaster = (props) => {
   const intl = useIntl();
@@ -75,14 +61,9 @@ const QCMaster = (props) => {
     setIsOpenModifyDialog(!isOpenModifyDialog);
   };
 
-
   useEffect(() => {
     fetchData();
-  }, [
-    qCMasterState.page,
-    qCMasterState.pageSize,
-    qCMasterState.searchData.showDelete,
-  ]);
+  }, [qCMasterState.page, qCMasterState.pageSize, qCMasterState.searchData.showDelete]);
 
   useEffect(() => {
     if (!_.isEmpty(newData) && !_.isEqual(newData, QCMasterDto)) {
@@ -116,7 +97,6 @@ const QCMaster = (props) => {
   }, [selectedRow]);
 
   async function fetchData() {
-
     setqCMasterState({ ...qCMasterState, isLoading: true });
     const params = {
       page: qCMasterState.page,
@@ -147,28 +127,26 @@ const QCMaster = (props) => {
     }
   };
   const handleSearch = (e, inputName) => {
-
     let newSearchData = { ...qCMasterState.searchData };
     newSearchData[inputName] = e;
-    if (inputName == "showDelete") {
+    if (inputName == 'showDelete') {
       setqCMasterState({
         ...qCMasterState,
         page: 1,
         searchData: { ...newSearchData },
       });
     }
-    if (inputName == "QCType") {
-      newSearchData = { ...newSearchData, MaterialTypeId: 0 }
-      setqCMasterState({ ...qCMasterState, searchData: { ...newSearchData } })
-    }
-    else {
+    if (inputName == 'QCType') {
+      newSearchData = { ...newSearchData, MaterialTypeId: 0 };
+      setqCMasterState({ ...qCMasterState, searchData: { ...newSearchData } });
+    } else {
       setqCMasterState({ ...qCMasterState, searchData: { ...newSearchData } });
     }
   };
   const handleDelete = async (row) => {
     let message = qCMasterState.searchData.showDelete
-      ? intl.formatMessage({ id: "general.confirm_delete" })
-      : intl.formatMessage({ id: "general.confirm_redo_deleted" });
+      ? intl.formatMessage({ id: 'general.confirm_delete' })
+      : intl.formatMessage({ id: 'general.confirm_redo_deleted' });
     if (window.confirm(message)) {
       try {
         let res = await qcMasterService.deleteQCMaster({
@@ -176,7 +154,7 @@ const QCMaster = (props) => {
           row_version: row.row_version,
         });
         if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: "general.success" }));
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchData();
         }
         if (res && res.HttpResponseCode === 300) {
@@ -189,34 +167,29 @@ const QCMaster = (props) => {
     }
   };
 
-
   const getMaterial = async (qcType) => {
     const res = await qcMasterService.getMaterialForSelect({ qcType: qcType });
     return res;
-
   };
   const getQC = async () => {
     const res = await qcMasterService.getQCTypeForSelect();
     return res;
-
   };
   const columns = [
-    { field: "QCMasterId", headerName: "", flex: 0.3, hide: true },
-    { field: "QCType", headerName: "QCType", flex: 0.3, hide: true },
-    { field: "MaterialTypeId", headerName: "MaterialTypeId", flex: 0.3, hide: true },
+    { field: 'QCMasterId', headerName: '', flex: 0.3, hide: true },
+    { field: 'QCType', headerName: 'QCType', flex: 0.3, hide: true },
+    { field: 'MaterialTypeId', headerName: 'MaterialTypeId', flex: 0.3, hide: true },
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       flex: 0.2,
       filterable: false,
       renderCell: (index) =>
-        index.api.getRowIndex(index.row.QCMasterId) +
-        1 +
-        (qCMasterState.page - 1) * qCMasterState.pageSize,
+        index.api.getRowIndex(index.row.QCMasterId) + 1 + (qCMasterState.page - 1) * qCMasterState.pageSize,
     },
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       flex: 0.2,
       // headerAlign: 'center',
       disableClickEventBubbling: true,
@@ -224,35 +197,26 @@ const QCMaster = (props) => {
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
             <Grid item xs={6}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={toggleModifyDialog}
               >
-                {params.row.isActived ? <EditIcon fontSize="inherit" /> : ""}
+                {params.row.isActived ? <EditIcon fontSize="inherit" /> : ''}
               </IconButton>
             </Grid>
             <Grid item xs={6}>
               <IconButton
                 color="error"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                {params.row.isActived ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
           </Grid>
@@ -260,157 +224,120 @@ const QCMaster = (props) => {
       },
     },
     {
-      field: "QCMasterCode",
-      headerName: intl.formatMessage({ id: "qcMaster.QCMasterCode" }),
+      field: 'QCMasterCode',
+      headerName: intl.formatMessage({ id: 'qcMaster.QCMasterCode' }),
       flex: 0.4,
     },
     {
-      field: "QCTypeName",
-      headerName: intl.formatMessage({ id: "qcMaster.qcType" }),
+      field: 'QCTypeName',
+      headerName: intl.formatMessage({ id: 'qcMaster.qcType' }),
       flex: 0.3,
     },
     {
-      field: "MaterialTypeName",
-      headerName: intl.formatMessage({ id: "qcMaster.MaterialTypeName" }),
+      field: 'MaterialTypeName',
+      headerName: intl.formatMessage({ id: 'qcMaster.MaterialTypeName' }),
       flex: 0.3,
     },
     {
-      field: "Description",
-      headerName: intl.formatMessage({ id: "general.description" }),
+      field: 'Description',
+      headerName: intl.formatMessage({ id: 'general.description' }),
       flex: 0.3,
       renderCell: (params) => {
         return (
           <Tooltip title={params.row.Description} className="col-text-elip">
-            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>
-              {params.row.Description}
-            </Typography>
+            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.Description}</Typography>
           </Tooltip>
         );
       },
     },
-    { field: "isActived", headerName: "isActived", flex: 0.3, hide: true },
+    { field: 'isActived', headerName: 'isActived', flex: 0.3, hide: true },
     {
-      field: "createdName",
-      headerName: intl.formatMessage({ id: "general.createdName" }),
+      field: 'createdName',
+      headerName: intl.formatMessage({ id: 'general.createdName' }),
       flex: 0.3,
     },
     {
-      field: "createdDate",
-      headerName: "Created Date",
+      field: 'createdDate',
+      headerName: 'Created Date',
       flex: 0.3,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
     {
-      field: "modifiedName",
-      headerName: intl.formatMessage({ id: "general.modifiedName" }),
+      field: 'modifiedName',
+      headerName: intl.formatMessage({ id: 'general.modifiedName' }),
       flex: 0.3,
     },
     {
-      field: "modifiedDate",
-      headerName: intl.formatMessage({ id: "general.modifiedDate" }),
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modifiedDate' }),
       flex: 0.3,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
   ];
   return (
     <React.Fragment>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="width-end"
-        sx={{ pr: 1 }}
-      >
+      <Grid container direction="row" justifyContent="space-between" alignItems="width-end" sx={{ pr: 1 }}>
         <Grid item xs={3}>
-          <MuiButton
-            text="create"
-            color="success"
-            onClick={toggleCreateDialog}
-          />
+          <MuiButton text="create" color="success" onClick={toggleCreateDialog} />
         </Grid>
         <Grid item xs>
-          <Grid
-            container
-            columnSpacing={2}
-            direction="row"
-            justifyContent="flex-end"
-            alignItems="flex-end"
-          >
-            <Grid item style={{ width: "21%" }}>
+          <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
+            <Grid item style={{ width: '21%' }}>
               <MuiSearchField
                 fullWidth
                 variant="QCMasterCode"
                 size="small"
                 label="qcMaster.QCMasterCode"
                 onClick={fetchData}
-                onChange={(e) => handleSearch(e.target.value, "QCMasterCode")}
+                onChange={(e) => handleSearch(e.target.value, 'QCMasterCode')}
               />
             </Grid>
 
-            <Grid item style={{ width: "21%" }}>
+            <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
-                label={intl.formatMessage({ id: "qcMaster.qcType" })}
+                label={intl.formatMessage({ id: 'qcMaster.qcType' })}
                 fetchDataFunc={getQC}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, item) => {
-                  handleSearch(
-                    item ? item.commonDetailId ?? null : null,
-                    "QCType"
-                  );
-                  setqcType(item?.commonDetailName || "");
-
+                  handleSearch(item ? item.commonDetailId ?? null : null, 'QCType');
+                  setqcType(item?.commonDetailName || '');
                 }}
                 variant="standard"
               />
-
             </Grid>
-            <Grid item style={{ width: "21%" }}>
-                        <MuiAutocomplete
-                        disabled={qcType ? false : true}
-                        label={intl.formatMessage({ id: "material.MaterialType" })}
-                        fetchDataFunc={() => getMaterial(qcType)}
-                        displayLabel="MaterialTypeName"
-                        displayValue="MaterialTypeId"
-                        key={qcType}
-                        onChange={(e, item) =>
-                          handleSearch(
-                            item ? item.MaterialTypeId ?? null : null,
-                            "MaterialTypeId"
-                          )
-                        }
-                        variant="standard"
-                      />
+            <Grid item style={{ width: '21%' }}>
+              <MuiAutocomplete
+                disabled={qcType ? false : true}
+                label={intl.formatMessage({ id: 'material.MaterialType' })}
+                fetchDataFunc={() => getMaterial(qcType)}
+                displayLabel="MaterialTypeName"
+                displayValue="MaterialTypeId"
+                key={qcType}
+                onChange={(e, item) => handleSearch(item ? item.MaterialTypeId ?? null : null, 'MaterialTypeId')}
+                variant="standard"
+              />
             </Grid>
-            <Grid item style={{ width: "21%" }}>
+            <Grid item style={{ width: '21%' }}>
               <MuiSearchField
                 fullWidth
                 variant="Description"
                 size="small"
                 label="general.description"
                 onClick={fetchData}
-                onChange={(e) => handleSearch(e.target.value, "Description")}
+                onChange={(e) => handleSearch(e.target.value, 'Description')}
               />
             </Grid>
             <Grid item>
-              <MuiButton
-                text="search"
-                color="info"
-                onClick={fetchData}
-                sx={{ m: 0, mr: 2 }}
-              />
+              <MuiButton text="search" color="info" onClick={fetchData} sx={{ m: 0, mr: 2 }} />
             </Grid>
           </Grid>
         </Grid>
@@ -422,14 +349,10 @@ const QCMaster = (props) => {
               <Switch
                 defaultChecked={true}
                 color="primary"
-                onChange={(e) => handleSearch(e.target.checked, "showDelete")}
+                onChange={(e) => handleSearch(e.target.checked, 'showDelete')}
               />
             }
-            label={
-              qCMasterState.searchData.showDelete
-                ? "Active Data"
-                : "Delete Data"
-            }
+            label={qCMasterState.searchData.showDelete ? 'Active Data' : 'Delete Data'}
           />
         </Grid>
       </Grid>
@@ -444,12 +367,8 @@ const QCMaster = (props) => {
         pageSize={qCMasterState.pageSize}
         rowCount={qCMasterState.totalRow}
         rowsPerPageOptions={[5, 10, 20]}
-        onPageChange={(newPage) =>
-          setqCMasterState({ ...qCMasterState, page: newPage + 1 })
-        }
-        onPageSizeChange={(newPageSize) =>
-          setqCMasterState({ ...qCMasterState, pageSize: newPageSize, page: 1 })
-        }
+        onPageChange={(newPage) => setqCMasterState({ ...qCMasterState, page: newPage + 1 })}
+        onPageSizeChange={(newPageSize) => setqCMasterState({ ...qCMasterState, pageSize: newPageSize, page: 1 })}
         onSelectionModelChange={(newSelectedRowId) => {
           handleRowSelection(newSelectedRowId);
         }}
@@ -479,7 +398,7 @@ const QCMaster = (props) => {
 };
 
 User_Operations.toString = function () {
-  return "User_Operations";
+  return 'User_Operations';
 };
 
 const mapStateToProps = (state) => {

@@ -1,17 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react'
-import DeleteIcon from '@mui/icons-material/Delete'
-import EditIcon from '@mui/icons-material/Edit'
-import { Badge, Grid, IconButton, TextField } from '@mui/material'
-import { useIntl } from 'react-intl'
-import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls'
-import { userService, roleService } from '@services'
-import { useModal, useModal2, useModal3 } from "@basesShared"
-import { ErrorAlert, SuccessAlert } from '@utils'
+import { useModal, useModal2, useModal3 } from '@basesShared';
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { Badge, Grid, IconButton } from '@mui/material';
+import { roleService } from '@services';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import React, { useEffect, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
 
-import RoleAddMenuDialog from './RoleAddMenuDialog'
-import RoleAddPermissionDialog from './RoleAddPermissionDialog'
-import RoleDialog from './RoleDialog'
+import RoleAddMenuDialog from './RoleAddMenuDialog';
+import RoleAddPermissionDialog from './RoleAddPermissionDialog';
+import RoleDialog from './RoleDialog';
 
 export default function Role() {
   const intl = useIntl();
@@ -27,8 +27,8 @@ export default function Role() {
     page: 1,
     pageSize: 5,
     searchData: {
-      keyWord: ''
-    }
+      keyWord: '',
+    },
   });
 
   const [permissionState, setPermissionState] = useState({
@@ -38,8 +38,8 @@ export default function Role() {
     page: 1,
     pageSize: 10,
     searchData: {
-      keyWord: ''
-    }
+      keyWord: '',
+    },
   });
 
   const [menuState, setMenuState] = useState({
@@ -49,11 +49,11 @@ export default function Role() {
     page: 1,
     pageSize: 10,
     searchData: {
-      keyWord: ''
-    }
+      keyWord: '',
+    },
   });
 
-  const [newData, setNewData] = useState({})
+  const [newData, setNewData] = useState({});
   const [rowData, setRowData] = useState({});
   const [roleId, setRoleId] = useState(0);
   const [selectMenu, setSelectMenu] = useState([]);
@@ -63,8 +63,8 @@ export default function Role() {
     { field: 'roleId', hide: true },
     { field: 'row_version', hide: true },
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       flex: 0.4,
       disableClickEventBubbling: true,
       sortable: false,
@@ -72,23 +72,23 @@ export default function Role() {
       renderCell: (params) => {
         return (
           <Grid container spacing={1} alignItems="center" justifyContent="center">
-            <Grid item xs={4} style={{ textAlign: "center" }}>
+            <Grid item xs={4} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="delete"
                 color="error"
                 size="small"
-                sx={[{ '&:hover': { border: '1px solid red', }, }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
                 <DeleteIcon fontSize="inherit" />
               </IconButton>
             </Grid>
-            <Grid item xs={4} style={{ textAlign: "center" }}>
+            <Grid item xs={4} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ '&:hover': { border: '1px solid orange', }, }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={() => handleUpdate(params.row)}
               >
                 <EditIcon fontSize="inherit" />
@@ -98,23 +98,24 @@ export default function Role() {
         );
       },
     },
-    { field: 'roleName', headerName: intl.formatMessage({ id: "role.roleName" }), flex: 0.7, },
-
+    { field: 'roleName', headerName: intl.formatMessage({ id: 'role.roleName' }), flex: 0.7 },
   ];
 
   const permissionColumns = [
     { field: 'permissionId', hide: true },
-    { field: 'permissionName', headerName: intl.formatMessage({ id: "permission.permissionName" }), flex: 0.7, },
+    { field: 'permissionName', headerName: intl.formatMessage({ id: 'permission.permissionName' }), flex: 0.7 },
   ];
 
   const menuColumns = [
     { field: 'menuId', hide: true },
-    { field: 'menuName', headerName: intl.formatMessage({ id: "menu.menuName" }), flex: 0.7, },
+    { field: 'menuName', headerName: intl.formatMessage({ id: 'menu.menuName' }), flex: 0.7 },
   ];
 
   useEffect(() => {
     fetchData();
-    return () => { isRendered = false; }
+    return () => {
+      isRendered = false;
+    };
   }, [roleState.page, roleState.pageSize]);
 
   useEffect(() => {
@@ -130,23 +131,22 @@ export default function Role() {
       try {
         let res = await roleService.deleteRole(role.roleId);
         if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: 'general.success' }))
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchData();
-        }
-        else {
-          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
-  }
+  };
 
   const handleRoleClick = async (Id) => {
     setRoleId(Id);
     fetchDataPermission(Id);
     fetchDataMenu(Id);
-  }
+  };
 
   const handleAdd = () => {
     setMode(CREATE_ACTION);
@@ -165,14 +165,13 @@ export default function Role() {
       try {
         let res = await roleService.deleteMenu({ menuIds: selectMenu, roleId: roleId });
         if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: 'general.success' }))
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchDataMenu(roleId);
-        }
-        else {
-          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   };
@@ -182,61 +181,64 @@ export default function Role() {
       try {
         let res = await roleService.deletePermission({ permissionIds: selectPermission, roleId: roleId });
         if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: 'general.success' }))
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchDataPermission(roleId);
-        }
-        else {
-          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   };
 
   async function fetchData() {
     setRoleState({
-      ...roleState
-      , isLoading: true
-
+      ...roleState,
+      isLoading: true,
     });
     const params = {
       page: roleState.page,
       pageSize: roleState.pageSize,
-      keyWord: roleState.searchData.keyWord
-    }
+      keyWord: roleState.searchData.keyWord,
+    };
     const res = await roleService.getRoleList(params);
     if (res && res.Data && isRendered)
       setRoleState({
-        ...roleState
-        , data: res.Data ?? []
-        , totalRow: res.TotalRow
-        , isLoading: false
+        ...roleState,
+        data: res.Data ?? [],
+        totalRow: res.TotalRow,
+        isLoading: false,
       });
   }
 
   async function fetchDataPermission(Id) {
     var Idrole = Id ?? 0;
     const permission = await roleService.GetPermissionByRole(Idrole, {
-      page: permissionState.page, pageSize: permissionState.pageSize,
-      keyWord: permissionState.searchData.keyWord
+      page: permissionState.page,
+      pageSize: permissionState.pageSize,
+      keyWord: permissionState.searchData.keyWord,
     });
     if (permission && permission.Data && isRendered)
       setPermissionState({
-        ...permissionState
-        , data: permission.Data ?? []
-        , totalRow: permission.TotalRow
+        ...permissionState,
+        data: permission.Data ?? [],
+        totalRow: permission.TotalRow,
       });
   }
 
   async function fetchDataMenu(Id) {
     var Idrole = Id ?? 0;
-    const menu = await roleService.GetMenuByRole(Idrole, { page: menuState.page, pageSize: menuState.pageSize, keyWord: menuState.searchData.keyWord });
+    const menu = await roleService.GetMenuByRole(Idrole, {
+      page: menuState.page,
+      pageSize: menuState.pageSize,
+      keyWord: menuState.searchData.keyWord,
+    });
     if (menu && menu.Data && isRendered)
       setMenuState({
-        ...menuState
-        , data: menu.Data ?? []
-        , totalRow: menu.TotalRow
+        ...menuState,
+        data: menu.Data ?? [],
+        totalRow: menu.TotalRow,
       });
   }
 
@@ -244,25 +246,24 @@ export default function Role() {
     let newSearchData = { ...roleState.searchData };
     newSearchData[inputName] = e.target.value;
 
-    setRoleState({ ...roleState, searchData: { ...newSearchData } })
-  }
+    setRoleState({ ...roleState, searchData: { ...newSearchData } });
+  };
 
   //Permission
   const handleSearchPermission = (e, inputName) => {
     let newSearchData = { ...permissionState.searchData };
     newSearchData[inputName] = e.target.value;
 
-    setPermissionState({ ...permissionState, searchData: { ...newSearchData } })
-  }
+    setPermissionState({ ...permissionState, searchData: { ...newSearchData } });
+  };
 
   //Menu
   const handleSearchMenu = (e, inputName) => {
     let newSearchData = { ...menuState.searchData };
     newSearchData[inputName] = e.target.value;
 
-    setMenuState({ ...menuState, searchData: { ...newSearchData } })
-  }
-
+    setMenuState({ ...menuState, searchData: { ...newSearchData } });
+  };
 
   useEffect(() => {
     if (!_.isEmpty(newData) && isRendered) {
@@ -271,9 +272,9 @@ export default function Role() {
         data.pop();
       }
       setRoleState({
-        ...roleState
-        , data: [...data]
-        , totalRow: roleState.totalRow + 1
+        ...roleState,
+        data: [...data],
+        totalRow: roleState.totalRow + 1,
       });
     }
   }, [newData]);
@@ -284,26 +285,23 @@ export default function Role() {
 
   return (
     <React.Fragment>
-      <Grid container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+      <Grid container direction="row" justifyContent="space-between" alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
         <Grid item xs={9}>
-          <MuiButton text="create" color='success' onClick={handleAdd} />
+          <MuiButton text="create" color="success" onClick={handleAdd} />
         </Grid>
         <Grid item>
           <MuiSearchField
             sx={{ width: 210 }}
             fullWidth
             name="keyWord"
-            size='small'
-            label='role.roleName'
+            size="small"
+            label="role.roleName"
             onClick={fetchData}
             onChange={(e) => handleSearch(e, 'keyWord')}
           />
         </Grid>
         <Grid item>
-          <MuiButton text="search" color='info' onClick={fetchData} sx={{ mt: 1, ml: 2 }} />
+          <MuiButton text="search" color="info" onClick={fetchData} sx={{ mt: 1, ml: 2 }} />
         </Grid>
       </Grid>
       <MuiDataGrid
@@ -319,33 +317,44 @@ export default function Role() {
         onPageChange={(newPage) => setRoleState({ ...roleState, page: newPage + 1 })}
         onSelectionModelChange={(newSelectedRowId) => handleRoleClick(newSelectedRowId[0])}
         getRowId={(rows) => rows.roleId}
-        getRowClassName={(params) => { if (_.isEqual(params.row, newData)) return `Mui-created` }}
+        getRowClassName={(params) => {
+          if (_.isEqual(params.row, newData)) return `Mui-created`;
+        }}
       />
 
       <Grid container sx={{ mt: 1 }} spacing={3}>
-        <Grid item xs={6} style={{ paddingTop: 0 }} >
-          <Grid container spacing={4} direction="row"
+        <Grid item xs={6} style={{ paddingTop: 0 }}>
+          <Grid
+            container
+            spacing={4}
+            direction="row"
             justifyContent="space-between"
-            alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+            alignItems="flex-end"
+            sx={{ mb: 1, pr: 1 }}
+          >
             <Grid item xs={6} md={6}>
-              <MuiButton text="Create" color='success' onClick={toggle} disabled={roleId != 0 ? false : true} />
+              <MuiButton text="Create" color="success" onClick={toggle} disabled={roleId != 0 ? false : true} />
               <Badge badgeContent={selectPermission.length} color="warning">
-                <MuiButton text="Delete" color='error' onClick={handleDeletePermission} disabled={selectPermission.length > 0 ? false : true} />
+                <MuiButton
+                  text="Delete"
+                  color="error"
+                  onClick={handleDeletePermission}
+                  disabled={selectPermission.length > 0 ? false : true}
+                />
               </Badge>
             </Grid>
             <Grid item xs={4} md={3}>
               <MuiSearchField
                 name="keyWord"
-                size='small'
-                label='role.PermissionName'
+                size="small"
+                label="role.PermissionName"
                 onClick={() => fetchDataPermission(roleId)}
                 onChange={(e) => handleSearchPermission(e, 'keyWord')}
               />
             </Grid>
-            <Grid item xs={4} md={3} >
-              <MuiButton text="search" color='info' onClick={() => fetchDataPermission(roleId)} sx={{ mt: 1, ml: 2 }} />
+            <Grid item xs={4} md={3}>
+              <MuiButton text="search" color="info" onClick={() => fetchDataPermission(roleId)} sx={{ mt: 1, ml: 2 }} />
             </Grid>
-
           </Grid>
 
           <MuiDataGrid
@@ -359,32 +368,44 @@ export default function Role() {
             rowCount={permissionState.totalRow}
             onPageChange={(newPage) => setPermissionState({ ...permissionState, page: newPage + 1 })}
             checkboxSelection={true}
-            onSelectionModelChange={(ids) => { setSelectPermission(ids) }}
+            onSelectionModelChange={(ids) => {
+              setSelectPermission(ids);
+            }}
             getRowId={(rows) => rows.permissionId}
           />
         </Grid>
 
-        <Grid item xs={6} style={{ paddingTop: 0 }} >
-          <Grid container spacing={4} direction="row"
+        <Grid item xs={6} style={{ paddingTop: 0 }}>
+          <Grid
+            container
+            spacing={4}
+            direction="row"
             justifyContent="space-between"
-            alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+            alignItems="flex-end"
+            sx={{ mb: 1, pr: 1 }}
+          >
             <Grid item xs={6} md={6}>
-              <MuiButton text="Create" color='success' onClick={toggle2} disabled={roleId != 0 ? false : true} />
+              <MuiButton text="Create" color="success" onClick={toggle2} disabled={roleId != 0 ? false : true} />
               <Badge badgeContent={selectMenu.length} color="warning">
-                <MuiButton text="Delete" color='error' onClick={handleDeleteMenu} disabled={selectMenu.length > 0 ? false : true} />
+                <MuiButton
+                  text="Delete"
+                  color="error"
+                  onClick={handleDeleteMenu}
+                  disabled={selectMenu.length > 0 ? false : true}
+                />
               </Badge>
             </Grid>
             <Grid item xs={4} md={3}>
               <MuiSearchField
                 name="keyWord"
-                size='small'
-                label='role.MenuName'
+                size="small"
+                label="role.MenuName"
                 onClick={() => fetchDataMenu(roleId)}
                 onChange={(e) => handleSearchMenu(e, 'keyWord')}
               />
             </Grid>
-            <Grid item xs={4} md={3} >
-              <MuiButton text="search" color='info' onClick={() => fetchDataMenu(roleId)} sx={{ mt: 1, ml: 2 }} />
+            <Grid item xs={4} md={3}>
+              <MuiButton text="search" color="info" onClick={() => fetchDataMenu(roleId)} sx={{ mt: 1, ml: 2 }} />
             </Grid>
           </Grid>
 
@@ -430,6 +451,5 @@ export default function Role() {
         mode={mode}
       />
     </React.Fragment>
-
-  )
+  );
 }

@@ -1,41 +1,24 @@
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
-import { User_Operations } from "@appstate/user";
-import { Store } from "@appstate";
-import {
-  Autocomplete,
-  createTheme,
-  ThemeProvider,
-  TextField,
-  Switch,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import { productService } from "@services";
-import { useIntl } from "react-intl";
-import React, { useEffect, useRef, useState } from "react";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import {
-  MuiButton,
-  MuiDataGrid,
-  MuiSearchField,
-  MuiSelectField,
-  MuiAutocomplete,
-} from "@controls";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
-import moment from "moment";
-import { ProductDto } from "@models";
-import EditIcon from "@mui/icons-material/Edit";
-import UndoIcon from "@mui/icons-material/Undo";
-import CreateDialog from "./CreateProductDialog";
-import ModifyDialog from "./ModifyProductDialog";
-import { ErrorAlert, SuccessAlert } from "@utils";
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import { ProductDto } from '@models';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import UndoIcon from '@mui/icons-material/Undo';
+import { Switch, Tooltip, Typography } from '@mui/material';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
+import { productService } from '@services';
+import { SuccessAlert } from '@utils';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { useIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import CreateDialog from './CreateProductDialog';
+import ModifyDialog from './ModifyProductDialog';
 
 const Product = () => {
   const intl = useIntl();
@@ -80,11 +63,7 @@ const Product = () => {
 
   useEffect(() => {
     fetchData();
-  }, [
-    productState.page,
-    productState.pageSize,
-    productState.searchData.showDelete,
-  ]);
+  }, [productState.page, productState.pageSize, productState.searchData.showDelete]);
 
   useEffect(() => {
     if (!_.isEmpty(newData) && !_.isEqual(newData, ProductDto)) {
@@ -158,8 +137,8 @@ const Product = () => {
   };
   const handleDelete = async (row) => {
     let message = productState.searchData.showDelete
-      ? intl.formatMessage({ id: "general.confirm_delete" })
-      : intl.formatMessage({ id: "general.confirm_redo_deleted" });
+      ? intl.formatMessage({ id: 'general.confirm_delete' })
+      : intl.formatMessage({ id: 'general.confirm_redo_deleted' });
     if (window.confirm(message)) {
       try {
         let res = await productService.deleteProduct({
@@ -167,7 +146,7 @@ const Product = () => {
           row_version: row.row_version,
         });
         if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: "general.success" }));
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchData();
         }
       } catch (error) {
@@ -178,7 +157,7 @@ const Product = () => {
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...productState.searchData };
     newSearchData[inputName] = e;
-    if (inputName == "showDelete") {
+    if (inputName == 'showDelete') {
       //  console.log(productState, inputName)
       setproductState({
         ...productState,
@@ -191,20 +170,18 @@ const Product = () => {
   };
 
   const columns = [
-    { field: "MaterialId", headerName: "", flex: 0.3, hide: true },
+    { field: 'MaterialId', headerName: '', flex: 0.3, hide: true },
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       width: 70,
       filterable: false,
       renderCell: (index) =>
-        index.api.getRowIndex(index.row.MaterialId) +
-        1 +
-        (productState.page - 1) * productState.pageSize,
+        index.api.getRowIndex(index.row.MaterialId) + 1 + (productState.page - 1) * productState.pageSize,
     },
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       width: 80,
       // headerAlign: 'center',
       disableClickEventBubbling: true,
@@ -212,35 +189,26 @@ const Product = () => {
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
             <Grid item xs={6}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={toggleModifyDialog}
               >
-                {params.row.isActived ? <EditIcon fontSize="inherit" /> : ""}
+                {params.row.isActived ? <EditIcon fontSize="inherit" /> : ''}
               </IconButton>
             </Grid>
             <Grid item xs={6}>
               <IconButton
                 color="error"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                {params.row.isActived ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
           </Grid>
@@ -248,96 +216,75 @@ const Product = () => {
       },
     },
     {
-      field: "ModelName",
-      headerName: intl.formatMessage({ id: "product.Model" }),
+      field: 'ModelName',
+      headerName: intl.formatMessage({ id: 'product.Model' }),
       width: 90,
     },
     // { field: "Model", headerName: "Model", hide: true },
-    { field: "MaterialCode", headerName: "Product Code", width: 150, },
+    { field: 'MaterialCode', headerName: 'Product Code', width: 150 },
     // { field: "ProductType", headerName: "Product Type", hide: true },
     {
-      field: "ProductTypeName",
-      headerName: intl.formatMessage({ id: "product.product_type" }),
+      field: 'ProductTypeName',
+      headerName: intl.formatMessage({ id: 'product.product_type' }),
       width: 100,
     },
     {
-      field: "Description",
-      headerName: intl.formatMessage({ id: "product.Description" }),
+      field: 'Description',
+      headerName: intl.formatMessage({ id: 'product.Description' }),
       width: 400,
       renderCell: (params) => {
         return (
           <Tooltip title={params.row.Description} className="col-text-elip">
-            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>
-              {params.row.Description}
-            </Typography>
+            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.Description}</Typography>
           </Tooltip>
         );
       },
     },
     {
-      field: "Inch",
-      headerName: intl.formatMessage({ id: "product.Inch" }),
+      field: 'Inch',
+      headerName: intl.formatMessage({ id: 'product.Inch' }),
       width: 100,
     },
     {
-      field: "UnitName",
-      headerName: intl.formatMessage({ id: "product.Unit" }),
+      field: 'UnitName',
+      headerName: intl.formatMessage({ id: 'product.Unit' }),
       width: 80,
     },
 
     // { field: "isActived", headerName: "isActived", flex: 0.3, hide: true },
     {
-      field: "createdDate",
-      headerName: "Created Date",
+      field: 'createdDate',
+      headerName: 'Created Date',
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
-    { field: "createdName", headerName: "Created By", width: 150 },
+    { field: 'createdName', headerName: 'Created By', width: 150 },
     {
-      field: "modifiedDate",
-      headerName: "Modified Date",
+      field: 'modifiedDate',
+      headerName: 'Modified Date',
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
 
-    { field: "modifiedName", headerName: "Modified By", width: 150 },
+    { field: 'modifiedName', headerName: 'Modified By', width: 150 },
   ];
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="width-end"
-      >
+      <Grid container direction="row" justifyContent="space-between" alignItems="width-end">
         <Grid item xs={3}>
-          <MuiButton
-            text="create"
-            color="success"
-            onClick={toggleCreateDialog}
-          />
+          <MuiButton text="create" color="success" onClick={toggleCreateDialog} />
         </Grid>
         <Grid item xs>
-          <Grid
-            container
-            columnSpacing={2}
-            direction="row"
-            justifyContent="flex-end"
-            alignItems="flex-end"
-          >
+          <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
             {/* <Grid item style={{ width: "21%" }}>
               <Autocomplete
                 options={modelArr}
@@ -391,9 +338,9 @@ const Product = () => {
                 }}
               />
             </Grid> */}
-            <Grid item style={{ width: "21%" }}>
+            <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
-                label={intl.formatMessage({ id: "product.Model" })}
+                label={intl.formatMessage({ id: 'product.Model' })}
                 fetchDataFunc={getModel}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
@@ -405,56 +352,39 @@ const Product = () => {
                 //     }
                 //     : null
                 // }
-                onChange={(e, item) =>
-                  handleSearch(
-                    item ? item.commonDetailId ?? null : null,
-                    "Model"
-                  )
-                }
+                onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Model')}
                 variant="standard"
               />
-
             </Grid>
-            <Grid item style={{ width: "21%" }}>
+            <Grid item style={{ width: '21%' }}>
               <MuiSearchField
                 variant="MaterialCode"
                 label="product.product_code"
                 onClick={fetchData}
-                onChange={(e) => handleSearch(e.target.value, "MaterialCode")}
+                onChange={(e) => handleSearch(e.target.value, 'MaterialCode')}
               />
             </Grid>
-            <Grid item style={{ width: "21%" }}>
+            <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
-                label={intl.formatMessage({ id: "product.product_type" })}
+                label={intl.formatMessage({ id: 'product.product_type' })}
                 fetchDataFunc={getproductType}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
-                onChange={(e, item) =>
-                  handleSearch(
-                    item ? item.commonDetailId ?? null : null,
-                    "ProductType"
-                  )
-                }
+                onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'ProductType')}
                 variant="standard"
               />
-
             </Grid>
 
-            <Grid item style={{ width: "21%" }}>
+            <Grid item style={{ width: '21%' }}>
               <MuiSearchField
                 variant="Description"
                 label="product.Description"
                 onClick={fetchData}
-                onChange={(e) => handleSearch(e.target.value, "Description")}
+                onChange={(e) => handleSearch(e.target.value, 'Description')}
               />
             </Grid>
             <Grid item style={{}}>
-              <MuiButton
-                text="search"
-                color="info"
-                onClick={fetchData}
-                sx={{ mr: 3, mb: 1 }}
-              />
+              <MuiButton text="search" color="info" onClick={fetchData} sx={{ mr: 3, mb: 1 }} />
             </Grid>
           </Grid>
         </Grid>
@@ -466,12 +396,10 @@ const Product = () => {
               <Switch
                 defaultChecked={true}
                 color="primary"
-                onChange={(e) => handleSearch(e.target.checked, "showDelete")}
+                onChange={(e) => handleSearch(e.target.checked, 'showDelete')}
               />
             }
-            label={
-              productState.searchData.showDelete ? "Active Data" : "Delete Data"
-            }
+            label={productState.searchData.showDelete ? 'Active Data' : 'Delete Data'}
           />
         </Grid>
       </Grid>
@@ -487,12 +415,8 @@ const Product = () => {
         pageSize={productState.pageSize}
         rowCount={productState.totalRow}
         rowsPerPageOptions={[5, 10, 20]}
-        onPageChange={(newPage) =>
-          setproductState({ ...productState, page: newPage + 1 })
-        }
-        onPageSizeChange={(newPageSize) =>
-          setproductState({ ...productState, pageSize: newPageSize, page: 1 })
-        }
+        onPageChange={(newPage) => setproductState({ ...productState, page: newPage + 1 })}
+        onPageSizeChange={(newPageSize) => setproductState({ ...productState, pageSize: newPageSize, page: 1 })}
         onSelectionModelChange={(newSelectedRowId) => {
           handleRowSelection(newSelectedRowId);
         }}
@@ -522,7 +446,7 @@ const Product = () => {
 };
 
 User_Operations.toString = function () {
-  return "User_Operations";
+  return 'User_Operations';
 };
 
 const mapStateToProps = (state) => {

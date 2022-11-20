@@ -1,23 +1,17 @@
 const GetLocalStorage = (name) => {
+  if (localStorage.getItem(name) !== 'undefined') {
+    return JSON.parse(localStorage.getItem(name));
+  }
 
-    if (localStorage.getItem(name) !== 'undefined') {
-
-        return JSON.parse(localStorage.getItem(name));
-    }
-
-    return null;
+  return null;
 };
 
 const SetLocalStorage = (name, value) => {
-    localStorage.setItem(name, JSON.stringify(value));
+  localStorage.setItem(name, JSON.stringify(value));
 };
 
 const RemoveLocalStorage = (name) => {
-    localStorage.removeItem(name);
+  localStorage.removeItem(name);
 };
 
-export {
-    GetLocalStorage,
-    SetLocalStorage,
-    RemoveLocalStorage
-}
+export { GetLocalStorage, SetLocalStorage, RemoveLocalStorage };

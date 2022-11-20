@@ -1,4 +1,4 @@
-import * as ConfigConstants from "@constants/ConfigConstants";
+import * as ConfigConstants from '@constants/ConfigConstants';
 class UserManager {
   // constructor(name) {
   //     this.CurrentUser=JSON.parse(localStorage.getItem(ConfigConstants.CURRENT_USER));

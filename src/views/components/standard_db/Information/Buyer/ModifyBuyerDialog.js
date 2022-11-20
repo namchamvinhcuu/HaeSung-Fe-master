@@ -1,13 +1,13 @@
-import { Grid, TextField } from "@mui/material";
-import { ErrorAlert, SuccessAlert } from "@utils";
-import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
-import { useIntl } from "react-intl";
-import * as yup from "yup";
+import { Grid, TextField } from '@mui/material';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import { useFormik } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { useIntl } from 'react-intl';
+import * as yup from 'yup';
 
-import { MuiDialog, MuiSubmitButton, MuiResetButton } from "@controls";
+import { MuiDialog, MuiSubmitButton, MuiResetButton } from '@controls';
 
-import { buyerService } from "@services";
+import { buyerService } from '@services';
 
 const ModifyBuyerDialog = (props) => {
   const intl = useIntl();
@@ -20,12 +20,8 @@ const ModifyBuyerDialog = (props) => {
   });
 
   const schema = yup.object().shape({
-    BuyerCode: yup
-      .string()
-      .required(intl.formatMessage({ id: "general.field_required" })),
-    BuyerName: yup
-      .string()
-      .required(intl.formatMessage({ id: "general.field_required" })),
+    BuyerCode: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
+    BuyerName: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
   });
 
   const formik = useFormik({
@@ -46,17 +42,7 @@ const ModifyBuyerDialog = (props) => {
     },
   });
 
-  const {
-    handleChange,
-    handleBlur,
-    handleSubmit,
-    values,
-    setFieldValue,
-    errors,
-    touched,
-    isValid,
-    resetForm,
-  } = formik;
+  const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
 
   const handleCloseDialog = () => {
     setDialogState({
@@ -73,25 +59,21 @@ const ModifyBuyerDialog = (props) => {
   return (
     <MuiDialog
       maxWidth="sm"
-      title={intl.formatMessage({ id: "general.modify" })}
+      title={intl.formatMessage({ id: 'general.modify' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
       disable_animate={300}
       onClose={handleCloseDialog}
     >
       <form onSubmit={handleSubmit}>
-        <Grid
-          container
-          rowSpacing={2.5}
-          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-        >
+        <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12}>
             <TextField
               autoFocus
               fullWidth
               size="small"
               disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: "buyer.BuyerCode" }) + " *"}
+              label={intl.formatMessage({ id: 'buyer.BuyerCode' }) + ' *'}
               name="BuyerCode"
               value={values.BuyerCode}
               onChange={handleChange}
@@ -104,7 +86,7 @@ const ModifyBuyerDialog = (props) => {
               fullWidth
               size="small"
               disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: "buyer.BuyerName" }) + " *"}
+              label={intl.formatMessage({ id: 'buyer.BuyerName' }) + ' *'}
               name="BuyerName"
               value={values.BuyerName}
               onChange={handleChange}
@@ -119,7 +101,7 @@ const ModifyBuyerDialog = (props) => {
               multiline={true}
               rows={2}
               disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: "buyer.Description" })}
+              label={intl.formatMessage({ id: 'buyer.Description' })}
               name="Description"
               value={values.Description}
               onChange={handleChange}
@@ -132,7 +114,7 @@ const ModifyBuyerDialog = (props) => {
               multiline={true}
               rows={3}
               disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: "buyer.Contact" })}
+              label={intl.formatMessage({ id: 'buyer.Contact' })}
               name="Contact"
               value={values.Contact}
               onChange={handleChange}
@@ -141,10 +123,7 @@ const ModifyBuyerDialog = (props) => {
           <Grid item xs={12}>
             <Grid container direction="row-reverse">
               <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
-              <MuiResetButton
-                onClick={resetForm}
-                disabled={dialogState.isSubmit}
-              />
+              <MuiResetButton onClick={resetForm} disabled={dialogState.isSubmit} />
             </Grid>
           </Grid>
         </Grid>

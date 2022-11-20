@@ -1,23 +1,12 @@
-import { MuiDialog, MuiResetButton, MuiSubmitButton } from "@controls";
-import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  Autocomplete,
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  Radio,
-  RadioGroup,
-  TextField,
-} from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useIntl } from "react-intl";
-import * as yup from "yup";
-import { useFormik } from "formik";
+import { MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls';
+import { Grid, TextField } from '@mui/material';
+import { useFormik } from 'formik';
+import React, { useState } from 'react';
+import { useIntl } from 'react-intl';
+import * as yup from 'yup';
 
-import { staffService } from "@services";
-import { ErrorAlert, SuccessAlert } from "@utils";
-import { margin } from "@mui/system";
+import { staffService } from '@services';
+import { ErrorAlert, SuccessAlert } from '@utils';
 
 const CreateStaffDialog = (props) => {
   const intl = useIntl();
@@ -30,12 +19,8 @@ const CreateStaffDialog = (props) => {
   });
 
   const schema = yup.object().shape({
-    StaffCode: yup
-      .string()
-      .required(intl.formatMessage({ id: "general.field_required" })),
-    StaffName: yup
-      .string()
-      .required(intl.formatMessage({ id: "general.field_required" })),
+    StaffCode: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
+    StaffName: yup.string().required(intl.formatMessage({ id: 'general.field_required' })),
   });
 
   const formik = useFormik({
@@ -54,17 +39,7 @@ const CreateStaffDialog = (props) => {
     },
   });
 
-  const {
-    handleChange,
-    handleBlur,
-    handleSubmit,
-    values,
-    setFieldValue,
-    errors,
-    touched,
-    isValid,
-    resetForm,
-  } = formik;
+  const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
 
   const handleCloseDialog = () => {
     setDialogState({
@@ -77,18 +52,14 @@ const CreateStaffDialog = (props) => {
   return (
     <MuiDialog
       maxWidth="sm"
-      title={intl.formatMessage({ id: "general.create" })}
+      title={intl.formatMessage({ id: 'general.create' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
       disable_animate={300}
       onClose={handleCloseDialog}
     >
       <form onSubmit={handleSubmit}>
-        <Grid
-          container
-          rowSpacing={2.5}
-          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-        >
+        <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12}>
             <Grid container item spacing={2}>
               <Grid item xs={12}>
@@ -97,7 +68,7 @@ const CreateStaffDialog = (props) => {
                   fullWidth
                   size="small"
                   disabled={dialogState.isSubmit}
-                  label={intl.formatMessage({ id: "staff.StaffCode" }) + " *"}
+                  label={intl.formatMessage({ id: 'staff.StaffCode' }) + ' *'}
                   name="StaffCode"
                   value={values.StaffCode}
                   onChange={handleChange}
@@ -110,7 +81,7 @@ const CreateStaffDialog = (props) => {
                   fullWidth
                   size="small"
                   disabled={dialogState.isSubmit}
-                  label={intl.formatMessage({ id: "staff.StaffName" }) + " *"}
+                  label={intl.formatMessage({ id: 'staff.StaffName' }) + ' *'}
                   name="StaffName"
                   value={values.StaffName}
                   onChange={handleChange}
@@ -125,7 +96,7 @@ const CreateStaffDialog = (props) => {
                   multiline={true}
                   rows={3}
                   disabled={dialogState.isSubmit}
-                  label={intl.formatMessage({ id: "staff.Contact" })}
+                  label={intl.formatMessage({ id: 'staff.Contact' })}
                   name="Contact"
                   value={values.Contact}
                   onChange={handleChange}
@@ -137,10 +108,7 @@ const CreateStaffDialog = (props) => {
           <Grid item xs={12}>
             <Grid container direction="row-reverse">
               <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
-              <MuiResetButton
-                onClick={resetForm}
-                disabled={dialogState.isSubmit}
-              />
+              <MuiResetButton onClick={resetForm} disabled={dialogState.isSubmit} />
             </Grid>
           </Grid>
         </Grid>

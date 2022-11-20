@@ -1,39 +1,39 @@
-import { getCurrentWeek } from "@utils";
+import { getCurrentWeek } from '@utils';
 
 const DeliveryOrderDto = {
   DoId: 0,
-  DoCode: "",
+  DoCode: '',
 
   FPOId: 0,
   MaterialId: 0,
   OrderQty: 0,
   RemainQty: 0,
-  PackingNote: "",
-  InvoiceNo: "",
-  Dock: "",
+  PackingNote: '',
+  InvoiceNo: '',
+  Dock: '',
   ETDLoad: new Date(),
   DeliveryTime: new Date(),
-  Remark: "",
-  Truck: "",
+  Remark: '',
+  Truck: '',
 
   FPoMasterId: 0,
-  FPoMasterCode: "",
-  FPoCode: "",
+  FPoMasterCode: '',
+  FPoCode: '',
   Week: getCurrentWeek(),
   Year: new Date().getFullYear(),
-  MaterialCode: "",
+  MaterialCode: '',
   BuyerId: 0,
-  BuyerCode: "",
-  MateirialBuyerCode: "",
+  BuyerCode: '',
+  MateirialBuyerCode: '',
 
   isActived: true,
   createdDate: new Date(),
   createdBy: 0,
-  createdName: "",
+  createdName: '',
   modifiedDate: new Date(),
   modifiedBy: 0,
-  modifiedName: "",
-  row_version: "",
+  modifiedName: '',
+  row_version: '',
 };
 
 export default DeliveryOrderDto;

@@ -1,26 +1,35 @@
-import React, { useEffect, useState, useRef } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
-import { User_Operations } from "@appstate/user";
-import { Store } from "@appstate";
+import React, { useEffect, useState, useRef } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
+import { User_Operations } from '@appstate/user';
+import { Store } from '@appstate';
 
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiTextField, MuiButton, MuiDataGrid, MuiAutocomplete, MuiSelectField } from "@controls";
-import { Autocomplete, Badge, Checkbox, FormControlLabel, Grid, TextField } from "@mui/material";
-import { useIntl } from "react-intl";
-import * as yup from "yup";
-import { actualService } from "@services";
-import { ErrorAlert, SuccessAlert, getCurrentWeek } from "@utils";
-import { useFormik } from "formik";
-import moment from "moment";
-import ActualPrintDialog from "./ActualPrintDialog";
-import { useModal } from "@basesShared";
+import {
+  MuiDialog,
+  MuiResetButton,
+  MuiSubmitButton,
+  MuiTextField,
+  MuiButton,
+  MuiDataGrid,
+  MuiAutocomplete,
+  MuiSelectField,
+} from '@controls';
+import { Autocomplete, Badge, Checkbox, FormControlLabel, Grid, TextField } from '@mui/material';
+import { useIntl } from 'react-intl';
+import * as yup from 'yup';
+import { actualService } from '@services';
+import { ErrorAlert, SuccessAlert, getCurrentWeek } from '@utils';
+import { useFormik } from 'formik';
+import moment from 'moment';
+import ActualPrintDialog from './ActualPrintDialog';
+import { useModal } from '@basesShared';
 
 const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
   const intl = useIntl();
   let isRendered = useRef(true);
   const { isShowing, toggle } = useModal();
-  const [WOInfo, setWOInfo] = useState({ ActualQty: 0, OrderQty: 0, TotalLotQty: 0, Remain: 0, QCMasterId: 0 })
+  const [WOInfo, setWOInfo] = useState({ ActualQty: 0, OrderQty: 0, TotalLotQty: 0, Remain: 0, QCMasterId: 0 });
   const [rowSelected, setRowSelected] = useState([]);
   const [listData, setListData] = useState([]);
   const [dialogState, setDialogState] = useState({ isSubmit: false });
@@ -32,7 +41,7 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
     totalRow: 0,
     page: 1,
     pageSize: 7,
-    WoId: woId
+    WoId: woId,
   });
 
   const defaultValue = {
@@ -41,61 +50,82 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
     LotNumber: 1,
     LotSerial: '',
     QCResult: 'OK',
-    QCId: []
+    QCId: [],
   };
 
-  const QCResultOption = [
-    { QCResult: "OK" },
-    { QCResult: "NG" },
-  ];
+  const QCResultOption = [{ QCResult: 'OK' }, { QCResult: 'NG' }];
 
   const schema = yup.object().shape({
-    Qty: yup.number().nullable().moreThan(0, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
-    LotNumber: yup.number().nullable().moreThan(0, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
-    QCResult: yup.string().nullable().required(intl.formatMessage({ id: "general.field_required" })),
-    QCId: yup.array().nullable()
-      .when("QCResult", (QCResult) => {
-        if (QCResult == "NG") return yup.array().min(1, intl.formatMessage({ id: 'general.field_required' }))
+    Qty: yup
+      .number()
+      .nullable()
+      .moreThan(0, intl.formatMessage({ id: 'general.field_min' }, { min: 1 })),
+    LotNumber: yup
+      .number()
+      .nullable()
+      .moreThan(0, intl.formatMessage({ id: 'general.field_min' }, { min: 1 })),
+    QCResult: yup
+      .string()
+      .nullable()
+      .required(intl.formatMessage({ id: 'general.field_required' })),
+    QCId: yup
+      .array()
+      .nullable()
+      .when('QCResult', (QCResult) => {
+        if (QCResult == 'NG') return yup.array().min(1, intl.formatMessage({ id: 'general.field_required' }));
       }),
   });
 
   const demoColumns = [
     {
-      field: 'id', headerName: '', flex: 0.1, align: 'center',
+      field: 'id',
+      headerName: '',
+      flex: 0.1,
+      align: 'center',
       filterable: false,
-      renderCell: (index) => (index.api.getRowIndex(index.row.Id) + 1) + (state.page - 1) * state.pageSize,
+      renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (state.page - 1) * state.pageSize,
     },
     { field: 'Id', hide: true },
-    { field: 'LotCode', headerName: intl.formatMessage({ id: "actual.LotCode" }), flex: 0.8, hide: true },
-    { field: 'MaterialCode', headerName: intl.formatMessage({ id: "actual.MaterialId" }), flex: 0.5, },
+    { field: 'LotCode', headerName: intl.formatMessage({ id: 'actual.LotCode' }), flex: 0.8, hide: true },
+    { field: 'MaterialCode', headerName: intl.formatMessage({ id: 'actual.MaterialId' }), flex: 0.5 },
     {
-      field: 'QCResult', headerName: intl.formatMessage({ id: "actual.QCResult" }), flex: 0.4,
-      valueFormatter: (params) => params?.value ? "OK" : "NG"
+      field: 'QCResult',
+      headerName: intl.formatMessage({ id: 'actual.QCResult' }),
+      flex: 0.4,
+      valueFormatter: (params) => (params?.value ? 'OK' : 'NG'),
     },
-    { field: 'Qty', headerName: intl.formatMessage({ id: "actual.Qty" }), flex: 0.4, },
-    { field: 'QCCode', headerName: intl.formatMessage({ id: "actual.Qc" }), flex: 0.5, },
+    { field: 'Qty', headerName: intl.formatMessage({ id: 'actual.Qty' }), flex: 0.4 },
+    { field: 'QCCode', headerName: intl.formatMessage({ id: 'actual.Qc' }), flex: 0.5 },
   ];
 
   const columns = [
     {
-      field: 'id', headerName: '', flex: 0.1, align: 'center',
+      field: 'id',
+      headerName: '',
+      flex: 0.1,
+      align: 'center',
       filterable: false,
-      renderCell: (index) => (index.api.getRowIndex(index.row.Id) + 1) + (state.page - 1) * state.pageSize,
+      renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (state.page - 1) * state.pageSize,
     },
     { field: 'Id', hide: true },
-    { field: 'LotCode', headerName: intl.formatMessage({ id: "actual.LotCode" }), flex: 0.8, hide: true },
-    { field: 'LotSerial', headerName: intl.formatMessage({ id: "actual.LotSerial" }), flex: 0.5 },
-    { field: 'MaterialCode', headerName: intl.formatMessage({ id: "actual.MaterialId" }), flex: 0.5, },
+    { field: 'LotCode', headerName: intl.formatMessage({ id: 'actual.LotCode' }), flex: 0.8, hide: true },
+    { field: 'LotSerial', headerName: intl.formatMessage({ id: 'actual.LotSerial' }), flex: 0.5 },
+    { field: 'MaterialCode', headerName: intl.formatMessage({ id: 'actual.MaterialId' }), flex: 0.5 },
     {
-      field: 'QCResult', headerName: intl.formatMessage({ id: "actual.QCResult" }), flex: 0.3,
-      valueFormatter: (params) => params?.value ? "OK" : "NG"
+      field: 'QCResult',
+      headerName: intl.formatMessage({ id: 'actual.QCResult' }),
+      flex: 0.3,
+      valueFormatter: (params) => (params?.value ? 'OK' : 'NG'),
     },
-    { field: 'Qty', headerName: intl.formatMessage({ id: "actual.Qty" }), flex: 0.3, },
-    { field: 'QCCode', headerName: intl.formatMessage({ id: "actual.Qc" }), flex: 0.4, },
-    { field: "createdName", headerName: intl.formatMessage({ id: "general.createdName" }), width: 120, },
+    { field: 'Qty', headerName: intl.formatMessage({ id: 'actual.Qty' }), flex: 0.3 },
+    { field: 'QCCode', headerName: intl.formatMessage({ id: 'actual.Qc' }), flex: 0.4 },
+    { field: 'createdName', headerName: intl.formatMessage({ id: 'general.createdName' }), width: 120 },
     {
-      field: "createdDate", headerName: intl.formatMessage({ id: "general.createdDate" }), width: 150,
-      valueFormatter: (params) => params?.value ? moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss") : null
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.createdDate' }),
+      width: 150,
+      valueFormatter: (params) =>
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
   ];
 
@@ -108,40 +138,32 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
     },
   });
 
-  const {
-    handleChange,
-    handleBlur,
-    handleSubmit,
-    values,
-    setFieldValue,
-    errors,
-    touched,
-    isValid,
-    resetForm,
-  } = formik;
+  const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
 
   useEffect(() => {
     if (isOpen) {
       fetchData(woId);
       getWoInfo(woId, false);
     }
-    return () => { isRendered = false; }
+    return () => {
+      isRendered = false;
+    };
   }, [isOpen]);
 
   async function fetchData(woId) {
     setState({ ...state, isLoading: true });
     const params = {
-      WoId: woId
-    }
+      WoId: woId,
+    };
     const res = await actualService.getByWo(params);
     if (res && res.Data && isRendered)
       setState({
-        ...state
-        , data: res.Data ?? []
-        , dataDemo: []
-        , status: false
-        , totalRow: res.TotalRow
-        , isLoading: false
+        ...state,
+        data: res.Data ?? [],
+        dataDemo: [],
+        status: false,
+        totalRow: res.TotalRow,
+        isLoading: false,
       });
   }
 
@@ -149,14 +171,13 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
     const res = await actualService.getWoInfo({ WoId: woId });
     if (res && res.Data && isRendered) {
       let Remain = res.Data.OrderQty - res.Data.TotalLotQty;
-      setWOInfo({ ...res.Data, Remain: Remain < 0 ? 0 : Remain })
-      if (isSubmit)
-        setUpdateData(res.Data);
+      setWOInfo({ ...res.Data, Remain: Remain < 0 ? 0 : Remain });
+      if (isSubmit) setUpdateData(res.Data);
     }
   }
 
   const handleReset = () => {
-    setState({ ...state, dataDemo: [], status: false })
+    setState({ ...state, dataDemo: [], status: false });
     resetForm();
   };
 
@@ -170,7 +191,7 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
   const handlePrint = () => {
     let data = [];
     for (let i = 0; i < rowSelected.length; i++) {
-      var item = state.data.filter(x => x.Id == rowSelected[i])
+      var item = state.data.filter((x) => x.Id == rowSelected[i]);
       data.push(item[0]);
     }
     setListData(data);
@@ -183,23 +204,27 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
     if (values.QCId) {
       for (let i = 0; i < values.QCId.length; i++) {
         QcName += values.QCId[i].QCCode;
-        if (i != values.QCId.length - 1)
-          QcName += ', ';
+        if (i != values.QCId.length - 1) QcName += ', ';
       }
     }
 
     for (let i = 0; i < values.LotNumber; i++) {
-      data.push({ Id: i, MaterialCode: WOInfo.MaterialCode, Qty: values.Qty, QCResult: values.QCResult == "OK" ? true : false, QCCode: QcName })
+      data.push({
+        Id: i,
+        MaterialCode: WOInfo.MaterialCode,
+        Qty: values.Qty,
+        QCResult: values.QCResult == 'OK' ? true : false,
+        QCCode: QcName,
+      });
     }
-    setState({ ...state, dataDemo: data, status: true })
-  }
+    setState({ ...state, dataDemo: data, status: true });
+  };
 
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
     if (!state.status) {
-      handleDataDemo()
-    }
-    else {
+      handleDataDemo();
+    } else {
       const res = await actualService.createByWo(data);
       if (res && isRendered) {
         if (res.HttpResponseCode === 200) {
@@ -210,9 +235,8 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
           handleReset();
         }
-      }
-      else {
-        ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+      } else {
+        ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
       }
     }
     setDialogState({ ...dialogState, isSubmit: false });
@@ -222,29 +246,24 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
     <React.Fragment>
       <MuiDialog
         maxWidth="lg"
-        title={intl.formatMessage({ id: "general.create" })}
+        title={intl.formatMessage({ id: 'general.create' })}
         isOpen={isOpen}
         disabledCloseBtn={dialogState.isSubmit}
         disable_animate={300}
         onClose={handleCloseDialog}
       >
         <form onSubmit={handleSubmit}>
-          <Grid
-            container
-            rowSpacing={2.5}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-            alignItems="width-end"
-          >
+          <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }} alignItems="width-end">
             <Grid item container spacing={2} xs={12}>
               <Grid item xs={3}>
                 <MuiTextField
                   autoFocus
                   required
                   disabled={state.status ? state.status : dialogState.isSubmit}
-                  label={intl.formatMessage({ id: "actual.Qty" })}
+                  label={intl.formatMessage({ id: 'actual.Qty' })}
                   type="number"
                   name="Qty"
-                  value={values.Qty ?? ""}
+                  value={values.Qty ?? ''}
                   onChange={handleChange}
                   error={touched.Qty && Boolean(errors.Qty)}
                   helperText={touched.Qty && errors.Qty}
@@ -254,10 +273,10 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
                 <MuiTextField
                   required
                   disabled={state.status ? state.status : dialogState.isSubmit}
-                  label={intl.formatMessage({ id: "actual.LotNumber" })}
+                  label={intl.formatMessage({ id: 'actual.LotNumber' })}
                   type="number"
                   name="LotNumber"
-                  value={values.LotNumber ?? ""}
+                  value={values.LotNumber ?? ''}
                   onChange={handleChange}
                   error={touched.LotNumber && Boolean(errors.LotNumber)}
                   helperText={touched.LotNumber && errors.LotNumber}
@@ -266,15 +285,15 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
               <Grid item xs={3}>
                 <MuiSelectField
                   required
-                  value={values.QCResult != "" ? { QCResult: values.QCResult } : null}
+                  value={values.QCResult != '' ? { QCResult: values.QCResult } : null}
                   disabled={state.status ? state.status : dialogState.isSubmit}
-                  label={intl.formatMessage({ id: "actual.QCResult" })}
+                  label={intl.formatMessage({ id: 'actual.QCResult' })}
                   options={QCResultOption}
                   displayLabel="QCResult"
                   displayValue="QCResult"
                   onChange={(e, value) => {
-                    setFieldValue("QCId", []);
-                    setFieldValue("QCResult", value?.QCResult || '');
+                    setFieldValue('QCId', []);
+                    setFieldValue('QCResult', value?.QCResult || '');
                   }}
                   error={touched.QCResult && Boolean(errors.QCResult)}
                   helperText={touched.QCResult && errors.QCResult}
@@ -284,12 +303,12 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
                 <MuiAutocomplete
                   multiple={true}
                   value={values.QCId ? values.QCId : []}
-                  disabled={state.status ? state.status : values.QCResult == "OK" ? true : dialogState.isSubmit}
+                  disabled={state.status ? state.status : values.QCResult == 'OK' ? true : dialogState.isSubmit}
                   label={intl.formatMessage({ id: 'actual.Qc' })}
                   fetchDataFunc={() => actualService.getQcDetail({ QCMasterId: WOInfo.QCMasterId })}
                   displayLabel="QCCode"
                   displayValue="QCId"
-                  onChange={(e, value) => setFieldValue("QCId", value || [])}
+                  onChange={(e, value) => setFieldValue('QCId', value || [])}
                   error={touched.QCId && Boolean(errors.QCId)}
                   helperText={touched.QCId && errors.QCId}
                 />
@@ -314,10 +333,14 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
                 hideFooter
               />
             </Grid>
-            <Grid item xs={12} >
+            <Grid item xs={12}>
               <MuiSubmitButton text="save" loading={dialogState.isSubmit} disabled={!state.status} />
               <Badge badgeContent={rowSelected.length} color="warning">
-                <MuiButton text="print" disabled={rowSelected.length == 0 ? true : false} onClick={() => handlePrint()} />
+                <MuiButton
+                  text="print"
+                  disabled={rowSelected.length == 0 ? true : false}
+                  onClick={() => handlePrint()}
+                />
               </Badge>
             </Grid>
             <Grid item xs={12}>
@@ -342,21 +365,21 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
                 <Grid item xs={4}>
                   <MuiTextField
                     disabled={dialogState.isSubmit}
-                    label={intl.formatMessage({ id: "actual.WoOrderQty" })}
+                    label={intl.formatMessage({ id: 'actual.WoOrderQty' })}
                     value={WOInfo.OrderQty}
                   />
                 </Grid>
                 <Grid item xs={4}>
                   <MuiTextField
                     disabled={dialogState.isSubmit}
-                    label={intl.formatMessage({ id: "actual.TotalLotQty" })}
+                    label={intl.formatMessage({ id: 'actual.TotalLotQty' })}
                     value={WOInfo.TotalLotQty}
                   />
                 </Grid>
                 <Grid item xs={4}>
                   <MuiTextField
                     disabled={dialogState.isSubmit}
-                    label={intl.formatMessage({ id: "actual.Remain" })}
+                    label={intl.formatMessage({ id: 'actual.Remain' })}
                     value={WOInfo.Remain}
                   />
                 </Grid>
@@ -365,17 +388,13 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
           </Grid>
         </form>
       </MuiDialog>
-      <ActualPrintDialog
-        isOpen={isShowing}
-        onClose={toggle}
-        listData={listData}
-      />
-    </React.Fragment >
-  )
-}
+      <ActualPrintDialog isOpen={isShowing} onClose={toggle} listData={listData} />
+    </React.Fragment>
+  );
+};
 
 User_Operations.toString = function () {
-  return "User_Operations";
+  return 'User_Operations';
 };
 
 const mapStateToProps = (state) => {

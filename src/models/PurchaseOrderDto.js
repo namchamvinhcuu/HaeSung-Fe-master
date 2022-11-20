@@ -1,9 +1,9 @@
-import moment from "moment";
+import moment from 'moment';
 
 const PurchaseOrderDto = {
   PoId: 0,
-  PoCode: "",
-  Description: "",
+  PoCode: '',
+  Description: '',
   TotalQty: 0,
   DeliveryDate: moment.utc(),
   RemainQty: 0,
@@ -12,10 +12,10 @@ const PurchaseOrderDto = {
   isActived: true,
   createdDate: moment.utc(),
   createdBy: 0,
-  createdName: "",
+  createdName: '',
   modifiedDate: moment.utc(),
   modifiedBy: 0,
-  modifiedName: "",
+  modifiedName: '',
   row_version: null,
 };
 

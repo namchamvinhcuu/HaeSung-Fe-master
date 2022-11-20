@@ -1,12 +1,3 @@
+import { changeLanguage } from './actions';
 
-import {
-    changeLanguage
-} from './actions'
-
-
-export {
-    changeLanguage
-};
-
-
-
+export { changeLanguage };

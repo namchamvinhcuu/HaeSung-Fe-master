@@ -6,38 +6,27 @@ import { User_Operations } from '@appstate/user';
 import { Store } from '@appstate';
 
 User_Operations.toString = function () {
-    return 'User_Operations';
-}
-
-const mapStateToProps = state => {
-    const {
-        User_Reducer: {
-            language
-        }
-    } = CombineStateToProps(state.AppReducer, [
-        [Store.User_Reducer]
-    ]);
-
-    return {
-        language
-    };
-
+  return 'User_Operations';
 };
 
-const mapDispatchToProps = dispatch => {
+const mapStateToProps = (state) => {
+  const {
+    User_Reducer: { language },
+  } = CombineStateToProps(state.AppReducer, [[Store.User_Reducer]]);
 
-    const {
-        User_Operations: {
-            changeLanguage
-        }
-    } = CombineDispatchToProps(dispatch, bindActionCreators, [
-        [User_Operations]
-    ]);
+  return {
+    language,
+  };
+};
 
-    return {
-        changeLanguage
-    }
+const mapDispatchToProps = (dispatch) => {
+  const {
+    User_Operations: { changeLanguage },
+  } = CombineDispatchToProps(dispatch, bindActionCreators, [[User_Operations]]);
 
+  return {
+    changeLanguage,
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChangeLanguage);

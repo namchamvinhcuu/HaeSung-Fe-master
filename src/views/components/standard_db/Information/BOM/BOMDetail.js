@@ -1,24 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import UndoIcon from "@mui/icons-material/Undo";
-import {
-  FormControlLabel,
-  Grid,
-  IconButton,
-  Switch,
-  TextField,
-  Typography,
-  Tooltip,
-} from "@mui/material";
-import { useIntl } from "react-intl";
-import { MuiButton, MuiDataGrid, MuiSelectField } from "@controls";
-import { bomDetailService, bomService } from "@services";
-import { useModal } from "@basesShared";
-import { ErrorAlert, SuccessAlert } from "@utils";
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import moment from "moment";
-import BOMDetailDialog from "./BOMDetailDialog";
+import React, { useEffect, useRef, useState } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import UndoIcon from '@mui/icons-material/Undo';
+import { FormControlLabel, Grid, IconButton, Switch, TextField, Typography, Tooltip } from '@mui/material';
+import { useIntl } from 'react-intl';
+import { MuiButton, MuiDataGrid, MuiSelectField } from '@controls';
+import { bomDetailService, bomService } from '@services';
+import { useModal } from '@basesShared';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import moment from 'moment';
+import BOMDetailDialog from './BOMDetailDialog';
 
 export default function BOMDetail({ BomId, newDataChild }) {
   const intl = useIntl();
@@ -41,55 +33,43 @@ export default function BOMDetail({ BomId, newDataChild }) {
 
   const columns = [
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       flex: 0.1,
-      align: "center",
+      align: 'center',
       filterable: false,
-      renderCell: (index) =>
-        index.api.getRowIndex(index.row.BomId) +
-        1 +
-        (state.page - 1) * state.pageSize,
+      renderCell: (index) => index.api.getRowIndex(index.row.BomId) + 1 + (state.page - 1) * state.pageSize,
     },
-    { field: "BomId", hide: true },
-    { field: "ParentId", hide: true },
-    { field: "row_version", hide: true },
+    { field: 'BomId', hide: true },
+    { field: 'ParentId', hide: true },
+    { field: 'row_version', hide: true },
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       flex: 0.3,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="delete"
                 color="error"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                {params.row.isActived ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={() => handleUpdate(params.row)}
               >
                 <EditIcon fontSize="inherit" />
@@ -100,76 +80,70 @@ export default function BOMDetail({ BomId, newDataChild }) {
       },
     },
     {
-      field: "BomCode",
-      headerName: intl.formatMessage({ id: "bom.BomCode" }),
+      field: 'BomCode',
+      headerName: intl.formatMessage({ id: 'bom.BomCode' }),
       flex: 0.5,
     },
     {
-      field: "ParentCode",
-      headerName: intl.formatMessage({ id: "bom.ParentCode" }),
+      field: 'ParentCode',
+      headerName: intl.formatMessage({ id: 'bom.ParentCode' }),
       flex: 0.5,
     },
     {
-      field: "MaterialCode",
-      headerName: intl.formatMessage({ id: "bom.MaterialId" }),
+      field: 'MaterialCode',
+      headerName: intl.formatMessage({ id: 'bom.MaterialId' }),
       flex: 0.5,
     },
     {
-      field: "MaterialUnit",
-      headerName: intl.formatMessage({ id: "bom.Unit" }),
+      field: 'MaterialUnit',
+      headerName: intl.formatMessage({ id: 'bom.Unit' }),
       flex: 0.5,
     },
     {
-      field: "BomLevel",
-      headerName: intl.formatMessage({ id: "bom.BomLevel" }),
+      field: 'BomLevel',
+      headerName: intl.formatMessage({ id: 'bom.BomLevel' }),
       flex: 0.5,
     },
     {
-      field: "Amount",
-      headerName: intl.formatMessage({ id: "bom.Amount" }),
+      field: 'Amount',
+      headerName: intl.formatMessage({ id: 'bom.Amount' }),
       flex: 0.5,
     },
     {
-      field: "Remark",
-      headerName: intl.formatMessage({ id: "bom.Remark" }),
+      field: 'Remark',
+      headerName: intl.formatMessage({ id: 'bom.Remark' }),
       flex: 0.7,
       renderCell: (params) => {
         return (
-          <Tooltip title={params.row.Remark ?? ""} className="col-text-elip">
-            <Typography sx={{ fontSize: 14, maxWidth: 300 }}>
-              {params.row.Remark}
-            </Typography>
+          <Tooltip title={params.row.Remark ?? ''} className="col-text-elip">
+            <Typography sx={{ fontSize: 14, maxWidth: 300 }}>{params.row.Remark}</Typography>
           </Tooltip>
         );
       },
     },
     {
-      field: "createdName",
-      headerName: intl.formatMessage({ id: "general.createdName" }),
+      field: 'createdName',
+      headerName: intl.formatMessage({ id: 'general.createdName' }),
       flex: 0.5,
     },
     {
-      field: "createdDate",
-      headerName: intl.formatMessage({ id: "general.createdDate" }),
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.createdDate' }),
       width: 150,
       valueFormatter: (params) =>
-        params?.value
-          ? moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")
-          : null,
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
     {
-      field: "modifiedName",
-      headerName: intl.formatMessage({ id: "general.modifiedName" }),
+      field: 'modifiedName',
+      headerName: intl.formatMessage({ id: 'general.modifiedName' }),
       flex: 0.5,
     },
     {
-      field: "modifiedDate",
-      headerName: intl.formatMessage({ id: "general.modifiedDate" }),
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modifiedDate' }),
       width: 150,
       valueFormatter: (params) =>
-        params?.value
-          ? moment(params?.value).add(7, "hours").format("YYYY-MM-DD HH:mm:ss")
-          : null,
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
   ];
 
@@ -232,9 +206,7 @@ export default function BOMDetail({ BomId, newDataChild }) {
     if (
       window.confirm(
         intl.formatMessage({
-          id: bomDetail.isActived
-            ? "general.confirm_delete"
-            : "general.confirm_redo_deleted",
+          id: bomDetail.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
         })
       )
     ) {
@@ -246,13 +218,13 @@ export default function BOMDetail({ BomId, newDataChild }) {
             row_version: bomDetail.row_version,
           });
           if (res && res.HttpResponseCode === 200) {
-            SuccessAlert(intl.formatMessage({ id: "general.success" }));
+            SuccessAlert(intl.formatMessage({ id: 'general.success' }));
             await fetchData(BomId);
           } else {
             ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
           }
         } else {
-          ErrorAlert(intl.formatMessage({ id: "bom.delete_error" }));
+          ErrorAlert(intl.formatMessage({ id: 'bom.delete_error' }));
         }
       } catch (error) {
         console.log(error);
@@ -294,7 +266,7 @@ export default function BOMDetail({ BomId, newDataChild }) {
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...state.searchData };
     newSearchData[inputName] = e;
-    if (inputName == "showDelete") {
+    if (inputName == 'showDelete') {
       setState({ ...state, page: 1, searchData: { ...newSearchData } });
     } else {
       setState({ ...state, searchData: { ...newSearchData } });
@@ -310,32 +282,18 @@ export default function BOMDetail({ BomId, newDataChild }) {
 
   return (
     <>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="width-end"
-        sx={{ mb: 0, mt: 2 }}
-      >
+      <Grid container direction="row" justifyContent="space-between" alignItems="width-end" sx={{ mb: 0, mt: 2 }}>
         <Grid item xs={8}>
-          <MuiButton
-            text="create"
-            color="success"
-            onClick={handleAdd}
-            sx={{ mt: 1 }}
-            disabled={BomId ? false : true}
-          />
+          <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mt: 1 }} disabled={BomId ? false : true} />
         </Grid>
         <Grid item>
           <MuiSelectField
-            label={intl.formatMessage({ id: "bomDetail.MaterialId" })}
+            label={intl.formatMessage({ id: 'bomDetail.MaterialId' })}
             options={MaterialList}
             displayLabel="MaterialCode"
             displayValue="MaterialId"
             displayGroup="GroupMaterial"
-            onChange={(e, item) =>
-              handleSearch(item ? item.MaterialId ?? null : null, "MaterialId")
-            }
+            onChange={(e, item) => handleSearch(item ? item.MaterialId ?? null : null, 'MaterialId')}
             variant="standard"
             disabled={BomId ? false : true}
             sx={{ width: 250 }}
@@ -358,13 +316,11 @@ export default function BOMDetail({ BomId, newDataChild }) {
                 disabled={BomId ? false : true}
                 defaultChecked={true}
                 color="primary"
-                onChange={(e) => handleSearch(e.target.checked, "showDelete")}
+                onChange={(e) => handleSearch(e.target.checked, 'showDelete')}
               />
             }
             label={intl.formatMessage({
-              id: state.searchData.showDelete
-                ? "general.data_actived"
-                : "general.data_deleted",
+              id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted',
             })}
           />
         </Grid>
@@ -382,11 +338,7 @@ export default function BOMDetail({ BomId, newDataChild }) {
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
         getRowId={(rows) => rows.BomId}
         getRowClassName={(params) => {
-          if (
-            _.isEqual(params.row, newData) ||
-            _.isEqual(params.row, newDataChild)
-          )
-            return `Mui-created`;
+          if (_.isEqual(params.row, newData) || _.isEqual(params.row, newDataChild)) return `Mui-created`;
         }}
         initialState={{ pinnedColumns: { right: ['action'] } }}
       />

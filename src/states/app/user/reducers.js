@@ -1,28 +1,21 @@
-import {
-    CHANGE_LANGUAGE
-} from './types';
-
+import { CHANGE_LANGUAGE } from './types';
 
 const initializeState = {
-    language: 'EN',
+  language: 'EN',
 };
 
 const reducer = (state = initializeState, action) => {
-    let newState = { ...state };
+  let newState = { ...state };
 
-    switch (action.type) {
+  switch (action.type) {
+    case CHANGE_LANGUAGE:
+      newState.language = action.data;
+      break;
 
-        case CHANGE_LANGUAGE:
-            newState.language = action.data
-            break;
-
-        default:
-            break;
-
-    }
-    return { ...newState };
+    default:
+      break;
+  }
+  return { ...newState };
 };
 
 export default reducer;
-
-

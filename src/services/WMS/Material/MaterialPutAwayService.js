@@ -1,5 +1,6 @@
-import { axios } from "@utils";
-const apiName = "api/material-putaway";
+import { axios } from '@utils';
+
+const apiName = 'api/material-putaway';
 
 const get = async (params) => {
   try {
@@ -61,7 +62,7 @@ const getESLData = async (BinCode) => {
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }
-}
+};
 
 const getESLDataByBinId = async (BinId) => {
   try {
@@ -69,6 +70,6 @@ const getESLDataByBinId = async (BinId) => {
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }
-}
+};
 
 export { get, getAilse, getShelf, getBin, scanPutAway, handleDelete, getESLData, getESLDataByBinId };

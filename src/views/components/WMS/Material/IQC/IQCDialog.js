@@ -1,28 +1,21 @@
-import React, {  useState } from "react";
-import {
-  MuiDialog,
-  MuiResetButton,
-  MuiSubmitButton,
-  MuiSelectField,
-  MuiAutocomplete,
-} from "@controls";
-import { useIntl } from "react-intl";
-import { useFormik } from "formik";
-import * as yup from "yup";
-import { Autocomplete, Grid, TextField } from "@mui/material";
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import { iqcService } from "@services";
-import { ErrorAlert, SuccessAlert } from "@utils";
-import { useEffect } from "react";
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { MuiAutocomplete, MuiDialog, MuiResetButton, MuiSelectField, MuiSubmitButton } from '@controls';
+import { Grid, TextField } from '@mui/material';
+import { iqcService } from '@services';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import { useFormik } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { useIntl } from 'react-intl';
+import * as yup from 'yup';
 
 const IQCDialog = (props) => {
   const { initModal, isOpen, onClose, setNewData, setUpdateData, mode } = props;
   // const [materialId, setMaterialId] = useState(0);
   // const [qcList, setQCList] = useState([]);
-  const [QCResult, setQCResult] = useState("");
+  const [QCResult, setQCResult] = useState('');
   const optionQCResult = [
-    { QCResult: "True", QCResultName: "OK" },
-    { QCResult: "False", QCResultName: "NG" },
+    { QCResult: 'True', QCResultName: 'OK' },
+    { QCResult: 'False', QCResultName: 'NG' },
   ];
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({
@@ -32,18 +25,28 @@ const IQCDialog = (props) => {
   const schema = yup.object().shape({
     MaterialId: yup
       .number()
-      .required(intl.formatMessage({ id: "forecast.MaterialId_required" }))
-      .min(1, intl.formatMessage({ id: "forecast.MaterialId_required" })),
-    Qty: yup.number().nullable().required(intl.formatMessage({ id: "lot.Qty_required" })).min(1, intl.formatMessage({ id: "lot.Qty_bigger_1" })),
-    QCResult:  yup.boolean().nullable().required(),
-    QcIDList: yup.array().nullable().when('QCResult', {
-      is: (res) => res === false ,
-      then: yup.array().min(1, intl.formatMessage({ id: "lot.QC_required" })).required(intl.formatMessage({ id: "lot.QC_required" }))
-      // otherwise: yup.string()
-  }),
+      .required(intl.formatMessage({ id: 'forecast.MaterialId_required' }))
+      .min(1, intl.formatMessage({ id: 'forecast.MaterialId_required' })),
+    Qty: yup
+      .number()
+      .nullable()
+      .required(intl.formatMessage({ id: 'lot.Qty_required' }))
+      .min(1, intl.formatMessage({ id: 'lot.Qty_bigger_1' })),
+    QCResult: yup.boolean().nullable().required(),
+    QcIDList: yup
+      .array()
+      .nullable()
+      .when('QCResult', {
+        is: (res) => res === false,
+        then: yup
+          .array()
+          .min(1, intl.formatMessage({ id: 'lot.QC_required' }))
+          .required(intl.formatMessage({ id: 'lot.QC_required' })),
+        // otherwise: yup.string()
+      }),
   });
   const handleReset = () => {
-    setQCResult("")
+    setQCResult('');
     resetForm();
   };
   const handleCloseDialog = () => {
@@ -59,18 +62,8 @@ const IQCDialog = (props) => {
     enableReinitialize: true,
     onSubmit: async (values) => onSubmit(values),
   });
-  const {
-    handleChange,
-    handleBlur,
-    handleSubmit,
-    values,
-    setFieldValue,
-    errors,
-    touched,
-    isValid,
-    resetForm,
-  } = formik;
- 
+  const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
+
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
     if (mode == CREATE_ACTION) {
@@ -104,16 +97,16 @@ const IQCDialog = (props) => {
     const res = await iqcService.getMaterialModelTypeRaw();
     return res;
   };
-  useEffect(()=>{
-       if(mode===UPDATE_ACTION) {
-        getSelectQCByLotId(initModal.Id);
-        // setMaterialId(initModal.MaterialId);
-      }
-      setQCResult("")
-  },[initModal])
+  useEffect(() => {
+    if (mode === UPDATE_ACTION) {
+      getSelectQCByLotId(initModal.Id);
+      // setMaterialId(initModal.MaterialId);
+    }
+    setQCResult('');
+  }, [initModal]);
   const getSelectQCByLotId = async (id) => {
-    const res = await iqcService.getSelectQCByLotId({LotId:id});
-    setFieldValue("QcIDList", res.Data)
+    const res = await iqcService.getSelectQCByLotId({ LotId: id });
+    setFieldValue('QcIDList', res.Data);
     return res;
   };
 
@@ -121,7 +114,7 @@ const IQCDialog = (props) => {
     <MuiDialog
       maxWidth="sm"
       title={intl.formatMessage({
-        id: mode == CREATE_ACTION ? "general.create" : "general.modify",
+        id: mode == CREATE_ACTION ? 'general.create' : 'general.modify',
       })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
@@ -129,14 +122,10 @@ const IQCDialog = (props) => {
       onClose={handleCloseDialog}
     >
       <form onSubmit={handleSubmit}>
-        <Grid
-          container
-          rowSpacing={2.5}
-          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-        >
+        <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12}>
             <MuiAutocomplete
-              label={intl.formatMessage({ id: "forecast.MaterialId" }) + " *"}
+              label={intl.formatMessage({ id: 'forecast.MaterialId' }) + ' *'}
               fetchDataFunc={getMaterialTypeRaw}
               displayLabel="MaterialCode"
               displayValue="MaterialId"
@@ -158,10 +147,10 @@ const IQCDialog = (props) => {
                   : null
               }
               onChange={(e, value) => {
-                setFieldValue("MaterialCode", value?.MaterialCode);
-                setFieldValue("MaterialId", value?.MaterialId);
+                setFieldValue('MaterialCode', value?.MaterialCode);
+                setFieldValue('MaterialId', value?.MaterialId);
                 // setMaterialId(value?.MaterialId);
-                setFieldValue("QcIDList",  [])
+                setFieldValue('QcIDList', []);
               }}
               error={touched.MaterialId && Boolean(errors.MaterialId)}
               helperText={touched.MaterialId && errors.MaterialId}
@@ -187,8 +176,8 @@ const IQCDialog = (props) => {
             <MuiSelectField
               required
               value={{
-                QCResult: values.QCResult ? "True" : "False",
-                QCResultName: values.QCResult ? "OK" : "NG",
+                QCResult: values.QCResult ? 'True' : 'False',
+                QCResultName: values.QCResult ? 'OK' : 'NG',
               }}
               disabled={dialogState.isSubmit}
               label="QC Result"
@@ -197,38 +186,35 @@ const IQCDialog = (props) => {
               displayLabel="QCResultName"
               displayValue="QCResult"
               onChange={(e, item) => {
-                setFieldValue(
-                  "QCResult",
-                  item?.QCResult === "True" ? true : false
-                );
-                setQCResult( item?.QCResult === "True" ? true : false)
+                setFieldValue('QCResult', item?.QCResult === 'True' ? true : false);
+                setQCResult(item?.QCResult === 'True' ? true : false);
               }}
               error={touched.QCResult && Boolean(errors.QCResult)}
               helperText={touched.QCResult && errors.QCResult}
             />
           </Grid>
-         {(QCResult===false || values.QCResult===false) &&<Grid item xs={12}>
-                <MuiAutocomplete
-                  multiple={true}
-                  value={values.QcIDList ? values.QcIDList : []}
-                  label={intl.formatMessage({ id: 'actual.Qc' })}
-                  fetchDataFunc={() => iqcService.getSelectQC({ MaterialId: values?.MaterialId })}
-                  displayLabel="QCCode"
-                  displayValue="QcId"
-                  name="QcIDList"
-                  onChange={(e, value) =>{setFieldValue("QcIDList", value || [])}}
-                  error={touched.QcIDList && Boolean(errors.QcIDList)}
-                  helperText={touched.QcIDList && errors.QcIDList}
-                />
-
-            </Grid>}
+          {(QCResult === false || values.QCResult === false) && (
+            <Grid item xs={12}>
+              <MuiAutocomplete
+                multiple={true}
+                value={values.QcIDList ? values.QcIDList : []}
+                label={intl.formatMessage({ id: 'actual.Qc' })}
+                fetchDataFunc={() => iqcService.getSelectQC({ MaterialId: values?.MaterialId })}
+                displayLabel="QCCode"
+                displayValue="QcId"
+                name="QcIDList"
+                onChange={(e, value) => {
+                  setFieldValue('QcIDList', value || []);
+                }}
+                error={touched.QcIDList && Boolean(errors.QcIDList)}
+                helperText={touched.QcIDList && errors.QcIDList}
+              />
+            </Grid>
+          )}
           <Grid item xs={12}>
             <Grid container direction="row-reverse">
               <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
-              <MuiResetButton
-                onClick={handleReset}
-                disabled={dialogState.isSubmit}
-              />
+              <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} />
             </Grid>
           </Grid>
         </Grid>

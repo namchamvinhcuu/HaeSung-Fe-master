@@ -1,19 +1,19 @@
-import { Store } from "@appstate";
-import { User_Operations } from "@appstate/user";
-import { CombineDispatchToProps, CombineStateToProps } from "@plugins/helperJS";
-import React, { useEffect, useRef, useState } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
+import React, { useEffect, useRef, useState } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from "@controls";
-import { ForecastPODto } from "@models";
-import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import { fixedPOService } from "@services";
-import { ErrorAlert, getCurrentWeek, isNumber, SuccessAlert } from "@utils";
-import _ from "lodash";
-import moment from "moment";
-import { useIntl } from "react-intl";
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import { ForecastPODto } from '@models';
+import { FormControlLabel, Switch, Tooltip, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import { fixedPOService } from '@services';
+import { ErrorAlert, getCurrentWeek, isNumber, SuccessAlert } from '@utils';
+import _ from 'lodash';
+import moment from 'moment';
+import { useIntl } from 'react-intl';
 
 const FixedPO = (props) => {
   let isRendered = useRef(true);
@@ -65,15 +65,12 @@ const FixedPO = (props) => {
     let newSearchData = { ...fixedPOState.searchData };
 
     switch (inputName) {
-      case "MaterialId":
+      case 'MaterialId':
         newSearchData[inputName] = e ? e.MaterialId : ForecastPODto.MaterialId;
-        newSearchData["MaterialCode"] = e
-          ? e.MaterialCode
-          : ForecastPODto.MaterialCode;
+        newSearchData['MaterialCode'] = e ? e.MaterialCode : ForecastPODto.MaterialCode;
         break;
 
       default:
-
         newSearchData[inputName] = parseInt(e.target.value, 10);
         break;
     }
@@ -89,43 +86,41 @@ const FixedPO = (props) => {
   };
 
   const handleRowUpdate = async (newRow) => {
-
     if (!isNumber(newRow.OrderQty) || newRow.OrderQty < 0) {
-      ErrorAlert(intl.formatMessage({ id: "forecast.OrderQty_required_bigger" }));
+      ErrorAlert(intl.formatMessage({ id: 'forecast.OrderQty_required_bigger' }));
       return selectedRow;
     }
-    newRow = { ...newRow, OrderQty: parseInt(newRow.OrderQty) }
+    newRow = { ...newRow, OrderQty: parseInt(newRow.OrderQty) };
     const res = await fixedPOService.modify(newRow);
     if (res && res.HttpResponseCode === 200 && isRendered) {
       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
       setSelectedRow(res.Data);
       return res.Data;
-    }
-    else {
+    } else {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
       return selectedRow;
     }
-  }
+  };
 
   const handleProcessRowUpdateError = React.useCallback((error) => {
-    ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+    ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
   }, []);
 
   const fetchData = async () => {
     let flag = true;
-    let message = "";
+    let message = '';
     const checkObj = { ...fixedPOState.searchData };
     _.forOwn(checkObj, (value, key) => {
       switch (key) {
-        case "Year":
+        case 'Year':
           if (!Number.isInteger(value) || value < 2022 || value > 2050) {
-            message = "general.year_invalid";
+            message = 'general.year_invalid';
             flag = false;
           }
           break;
-        case "Week":
+        case 'Week':
           if (!isNumber(value) || value < 1 || value > 52) {
-            message = "general.week_invalid";
+            message = 'general.week_invalid';
             flag = false;
           }
           break;
@@ -190,93 +185,93 @@ const FixedPO = (props) => {
   }, [selectedRow]);
 
   const columns = [
-    { field: "FPOId", headerName: "", hide: true },
+    { field: 'FPOId', headerName: '', hide: true },
     {
-      field: "id", headerName: "", width: 80, filterable: false,
-      renderCell: (index) => index.api.getRowIndex(index.row.FPOId) + 1 + (fixedPOState.page - 1) * fixedPOState.pageSize,
+      field: 'id',
+      headerName: '',
+      width: 80,
+      filterable: false,
+      renderCell: (index) =>
+        index.api.getRowIndex(index.row.FPOId) + 1 + (fixedPOState.page - 1) * fixedPOState.pageSize,
     },
     {
-      field: "LineName",
-      headerName: intl.formatMessage({ id: "forecast.LineName" }),
+      field: 'LineName',
+      headerName: intl.formatMessage({ id: 'forecast.LineName' }),
       width: 200,
     },
     {
-      field: "FPoMasterCode",
-      headerName: intl.formatMessage({ id: "forecast.FPoMasterCode" }),
+      field: 'FPoMasterCode',
+      headerName: intl.formatMessage({ id: 'forecast.FPoMasterCode' }),
       type: 'number',
       width: 140,
     },
     {
-      field: "MaterialCode",
-      headerName: intl.formatMessage({ id: "forecast.MaterialCode" }),
+      field: 'MaterialCode',
+      headerName: intl.formatMessage({ id: 'forecast.MaterialCode' }),
       width: 150,
     },
 
     {
-      field: "DescriptionMaterial",
-      headerName: intl.formatMessage({ id: "forecast.DescriptionMaterial" }),
+      field: 'DescriptionMaterial',
+      headerName: intl.formatMessage({ id: 'forecast.DescriptionMaterial' }),
       width: 300,
       renderCell: (params) => {
         return (
-          <Tooltip
-            title={params.row.DescriptionMaterial ?? ""}
-            className="col-text-elip"
-          >
-            <Typography sx={{ fontSize: 14 }}>
-              {params.row.DescriptionMaterial}
-            </Typography>
+          <Tooltip title={params.row.DescriptionMaterial ?? ''} className="col-text-elip">
+            <Typography sx={{ fontSize: 14 }}>{params.row.DescriptionMaterial}</Typography>
           </Tooltip>
         );
       },
     },
     {
-      field: "Amount", headerName: intl.formatMessage({ id: "forecast.Amount" }), width: 150,
+      field: 'Amount',
+      headerName: intl.formatMessage({ id: 'forecast.Amount' }),
+      width: 150,
     },
     {
-      field: "OrderQty", headerName: intl.formatMessage({ id: "forecast.OrderQty" }), width: 150, editable: true
+      field: 'OrderQty',
+      headerName: intl.formatMessage({ id: 'forecast.OrderQty' }),
+      width: 150,
+      editable: true,
     },
     {
-      field: "Week",
-      headerName: intl.formatMessage({ id: "forecast.Week" }),
+      field: 'Week',
+      headerName: intl.formatMessage({ id: 'forecast.Week' }),
       width: 100,
     },
     {
-      field: "Year",
-      headerName: intl.formatMessage({ id: "forecast.Year" }),
+      field: 'Year',
+      headerName: intl.formatMessage({ id: 'forecast.Year' }),
       width: 100,
     },
 
     {
-      field: "createdName",
-      headerName: intl.formatMessage({ id: "general.createdName" }),
+      field: 'createdName',
+      headerName: intl.formatMessage({ id: 'general.createdName' }),
       width: 150,
     },
     {
-      field: "createdDate",
-      headerName: intl.formatMessage({ id: "general.created_date" }),
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.created_date' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
     {
-      field: "modifiedName",
-      headerName: intl.formatMessage({ id: "general.modifiedName" }),
+      field: 'modifiedName',
+      headerName: intl.formatMessage({ id: 'general.modifiedName' }),
       width: 150,
     },
     {
-      field: "modifiedDate",
-      headerName: intl.formatMessage({ id: "general.modified_date" }),
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modified_date' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
@@ -284,12 +279,7 @@ const FixedPO = (props) => {
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        spacing={1}
-        justifyContent="flex-end"
-        alignItems="flex-end"
-      >
+      <Grid container spacing={1} justifyContent="flex-end" alignItems="flex-end">
         <Grid item xs={4} sm={3} md={2}>
           <MuiSearchField
             label="forecast.Year"
@@ -297,7 +287,7 @@ const FixedPO = (props) => {
             name="Year"
             value={fixedPOState.searchData.Year}
             onClick={fetchData}
-            onChange={(e) => changeSearchData(e, "Year")}
+            onChange={(e) => changeSearchData(e, 'Year')}
           />
         </Grid>
         <Grid item xs={4} sm={3} md={2}>
@@ -307,7 +297,7 @@ const FixedPO = (props) => {
             name="Week"
             value={fixedPOState.searchData.Week}
             onClick={fetchData}
-            onChange={(e) => changeSearchData(e, "Week")}
+            onChange={(e) => changeSearchData(e, 'Week')}
           />
         </Grid>
         <Grid item xs={4} sm={3} md={2}>
@@ -319,13 +309,13 @@ const FixedPO = (props) => {
             value={
               fixedPOState.searchData.MaterialId !== 0
                 ? {
-                  MaterialId: fixedPOState.searchData.MaterialId,
-                  MaterialCode: fixedPOState.searchData.MaterialCode,
-                }
+                    MaterialId: fixedPOState.searchData.MaterialId,
+                    MaterialCode: fixedPOState.searchData.MaterialCode,
+                  }
                 : null
             }
             onChange={(e, item) => {
-              changeSearchData(item ?? null, "MaterialId");
+              changeSearchData(item ?? null, 'MaterialId');
             }}
             variant="standard"
           />
@@ -335,15 +325,9 @@ const FixedPO = (props) => {
         </Grid>
         <Grid item>
           <FormControlLabel
-            sx={{ mb: 0, ml: "1px" }}
-            control={
-              <Switch
-                defaultChecked={true}
-                color="primary"
-                onChange={(e) => handleshowActivedData(e)}
-              />
-            }
-            label={intl.formatMessage({ id: showActivedData ? "general.data_actived" : "general.data_deleted", })}
+            sx={{ mb: 0, ml: '1px' }}
+            control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleshowActivedData(e)} />}
+            label={intl.formatMessage({ id: showActivedData ? 'general.data_actived' : 'general.data_deleted' })}
           />
         </Grid>
       </Grid>
@@ -360,9 +344,7 @@ const FixedPO = (props) => {
         rowCount={fixedPOState.totalRow}
         onPageChange={(newPage) => setFixedPOState({ ...fixedPOState, page: newPage + 1 })}
         getRowId={(rows) => rows.FPOId}
-        onSelectionModelChange={(newSelectedRowId) =>
-          handleRowSelection(newSelectedRowId)
-        }
+        onSelectionModelChange={(newSelectedRowId) => handleRowSelection(newSelectedRowId)}
         processRowUpdate={handleRowUpdate}
         onProcessRowUpdateError={handleProcessRowUpdateError}
         experimentalFeatures={{ newEditingApi: true }}
@@ -375,15 +357,16 @@ const FixedPO = (props) => {
           }
           return '';
         }}
-        initialState={{ pinnedColumns: { left: ['id', 'LineName', 'FPoMasterCode', 'MaterialCode'], right: ['action'] } }}
+        initialState={{
+          pinnedColumns: { left: ['id', 'LineName', 'FPoMasterCode', 'MaterialCode'], right: ['action'] },
+        }}
       />
-
     </React.Fragment>
   );
 };
 
 User_Operations.toString = function () {
-  return "User_Operations";
+  return 'User_Operations';
 };
 
 const mapStateToProps = (state) => {

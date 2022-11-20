@@ -1,8 +1,8 @@
-import * as React from "react";
-import TextField from "@mui/material/TextField";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import * as React from 'react';
+import TextField from '@mui/material/TextField';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 export default function MuiDateTimeField({
   label,
@@ -17,7 +17,7 @@ export default function MuiDateTimeField({
   required,
 }) {
   let labelFormat = label;
-  if (required) labelFormat += " *";
+  if (required) labelFormat += ' *';
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DateTimePicker
@@ -32,7 +32,7 @@ export default function MuiDateTimeField({
             size="small"
             sx={sx ?? { mb: 0.5 }}
             margin={margin}
-            variant={variant ?? "outlined"}
+            variant={variant ?? 'outlined'}
             {...params}
             error={error}
             helperText={helperText}

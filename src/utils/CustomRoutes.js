@@ -13,9 +13,8 @@ const CustomRouter = ({ basename, children, history }) => {
       history={history}
       basename={basename}
       children={children}
-    //   location={state.location}
-    //   navigationType={state.action}
-
+      //   location={state.location}
+      //   navigationType={state.action}
     />
   );
 };

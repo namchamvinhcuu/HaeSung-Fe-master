@@ -1,28 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { CombineStateToProps, CombineDispatchToProps } from "@plugins/helperJS";
-import { User_Operations } from "@appstate/user";
-import { Store } from "@appstate";
-import { createTheme, ThemeProvider, TextField } from "@mui/material";
-import { buyerService } from "@services";
-import { useIntl } from "react-intl";
-import FormGroup from "@mui/material/FormGroup";
-import Checkbox from "@mui/material/Checkbox";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import { MuiButton, MuiDataGrid, MuiSearchField } from "@controls";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { BuyerDto } from "@models";
-import EditIcon from "@mui/icons-material/Edit";
-import moment from "moment";
-import CreateBuyerDialog from "./CreateBuyerDialog";
-import ModifyBuyerDialog from "./ModifyBuyerDialog";
-import _ from "lodash";
-import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material";
-import UndoIcon from "@mui/icons-material/Undo";
-import { ErrorAlert, SuccessAlert } from "@utils";
+import React, { useEffect, useRef, useState } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
+import { User_Operations } from '@appstate/user';
+import { Store } from '@appstate';
+import { createTheme, ThemeProvider, TextField } from '@mui/material';
+import { buyerService } from '@services';
+import { useIntl } from 'react-intl';
+import FormGroup from '@mui/material/FormGroup';
+import Checkbox from '@mui/material/Checkbox';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { BuyerDto } from '@models';
+import EditIcon from '@mui/icons-material/Edit';
+import moment from 'moment';
+import CreateBuyerDialog from './CreateBuyerDialog';
+import ModifyBuyerDialog from './ModifyBuyerDialog';
+import _ from 'lodash';
+import { FormControlLabel, Switch, Tooltip, Typography } from '@mui/material';
+import UndoIcon from '@mui/icons-material/Undo';
+import { ErrorAlert, SuccessAlert } from '@utils';
 
 const Buyer = (props) => {
   let isRendered = useRef(false);
@@ -104,16 +104,14 @@ const Buyer = (props) => {
     if (
       window.confirm(
         intl.formatMessage({
-          id: showActivedData
-            ? "general.confirm_delete"
-            : "general.confirm_redo_deleted",
+          id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
         })
       )
     ) {
       try {
         let res = await buyerService.deleteBuyer(buyer);
         if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: "general.success" }));
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchData();
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
@@ -176,20 +174,17 @@ const Buyer = (props) => {
   }, [selectedRow]);
 
   const columns = [
-    { field: "BuyerId", headerName: "", hide: true },
+    { field: 'BuyerId', headerName: '', hide: true },
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       width: 70,
       filterable: false,
-      renderCell: (index) =>
-        index.api.getRowIndex(index.row.BuyerId) +
-        1 +
-        (buyerState.page - 1) * buyerState.pageSize,
+      renderCell: (index) => index.api.getRowIndex(index.row.BuyerId) + 1 + (buyerState.page - 1) * buyerState.pageSize,
     },
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       width: 80,
       // headerAlign: 'center',
       disableClickEventBubbling: true,
@@ -197,18 +192,13 @@ const Buyer = (props) => {
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
             <Grid item xs={6}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={toggleModifyDialog}
               >
                 <EditIcon fontSize="inherit" />
@@ -220,14 +210,10 @@ const Buyer = (props) => {
                 aria-label="delete"
                 color="error"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDeleteBuyer(params.row)}
               >
-                {showActivedData ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
+                {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
           </Grid>
@@ -235,18 +221,18 @@ const Buyer = (props) => {
       },
     },
     {
-      field: "BuyerCode",
-      headerName: intl.formatMessage({ id: "buyer.BuyerCode" }),
+      field: 'BuyerCode',
+      headerName: intl.formatMessage({ id: 'buyer.BuyerCode' }),
       /*flex: 0.7,*/ width: 150,
     },
     {
-      field: "BuyerName",
-      headerName: intl.formatMessage({ id: "buyer.BuyerName" }),
+      field: 'BuyerName',
+      headerName: intl.formatMessage({ id: 'buyer.BuyerName' }),
       width: 300,
     },
     {
-      field: "Contact",
-      headerName: intl.formatMessage({ id: "buyer.Contact" }),
+      field: 'Contact',
+      headerName: intl.formatMessage({ id: 'buyer.Contact' }),
       width: 300,
       // renderCell: (params) => {
       //     return (
@@ -257,46 +243,37 @@ const Buyer = (props) => {
       // }
     },
     {
-      field: "Description",
-      headerName: intl.formatMessage({ id: "buyer.Description" }),
+      field: 'Description',
+      headerName: intl.formatMessage({ id: 'buyer.Description' }),
       width: 300,
       renderCell: (params) => {
         return (
-          <Tooltip
-            title={params.row.Description ?? ""}
-            className="col-text-elip"
-          >
-            <Typography sx={{ fontSize: 14, maxWidth: 1500 }}>
-              {params.row.Description}
-            </Typography>
+          <Tooltip title={params.row.Description ?? ''} className="col-text-elip">
+            <Typography sx={{ fontSize: 14, maxWidth: 1500 }}>{params.row.Description}</Typography>
           </Tooltip>
         );
       },
     },
-    { field: "createdName", headerName: "User Create", width: 150 },
+    { field: 'createdName', headerName: 'User Create', width: 150 },
     {
-      field: "createdDate",
-      headerName: intl.formatMessage({ id: "general.created_date" }),
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.created_date' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
 
-    { field: "modifiedName", headerName: "User Update", width: 150 },
+    { field: 'modifiedName', headerName: 'User Update', width: 150 },
     {
-      field: "modifiedDate",
-      headerName: intl.formatMessage({ id: "general.modified_date" }),
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modified_date' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
@@ -306,19 +283,9 @@ const Buyer = (props) => {
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        spacing={2}
-        direction="row"
-        justifyContent="space-between"
-        alignItems="flex-end"
-      >
+      <Grid container spacing={2} direction="row" justifyContent="space-between" alignItems="flex-end">
         <Grid item xs={5}>
-          <MuiButton
-            text="create"
-            color="success"
-            onClick={toggleCreateDialog}
-          />
+          <MuiButton text="create" color="success" onClick={toggleCreateDialog} />
         </Grid>
 
         <Grid item xs>
@@ -326,7 +293,7 @@ const Buyer = (props) => {
             label="general.code"
             name="BuyerCode"
             onClick={fetchData}
-            onChange={(e) => changeSearchData(e, "BuyerCode")}
+            onChange={(e) => changeSearchData(e, 'BuyerCode')}
           />
         </Grid>
 
@@ -335,22 +302,16 @@ const Buyer = (props) => {
             label="general.name"
             name="BuyerName"
             onClick={fetchData}
-            onChange={(e) => changeSearchData(e, "BuyerName")}
+            onChange={(e) => changeSearchData(e, 'BuyerName')}
           />
         </Grid>
 
-        <Grid item xs sx={{ display: "flex", justifyContent: "right" }}>
+        <Grid item xs sx={{ display: 'flex', justifyContent: 'right' }}>
           <MuiButton text="search" color="info" onClick={fetchData} />
           <FormControlLabel
-            sx={{ mb: 0, ml: "1px" }}
-            control={
-              <Switch
-                defaultChecked={true}
-                color="primary"
-                onChange={(e) => handleshowActivedData(e)}
-              />
-            }
-            label={showActivedData ? "Actived" : "Deleted"}
+            sx={{ mb: 0, ml: '1px' }}
+            control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleshowActivedData(e)} />}
+            label={showActivedData ? 'Actived' : 'Deleted'}
           />
         </Grid>
       </Grid>
@@ -385,8 +346,8 @@ const Buyer = (props) => {
         }}
         initialState={{
           pinnedColumns: {
-            left: ["id", "BuyerCode", "BuyerName"],
-            right: ["action"],
+            left: ['id', 'BuyerCode', 'BuyerName'],
+            right: ['action'],
           },
         }}
       />

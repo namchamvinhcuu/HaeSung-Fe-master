@@ -1,28 +1,16 @@
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import {
-  MuiAutocomplete, MuiDateTimeField, MuiDialog,
-  MuiResetButton,
-  MuiSubmitButton, MuiTextField
-} from "@controls";
-import { Grid } from "@mui/material";
-import { deliveryOrderService } from "@services";
-import { ErrorAlert, SuccessAlert } from "@utils";
-import { useFormik } from "formik";
-import moment from "moment";
-import React, { useEffect, useRef, useState } from "react";
-import { useIntl } from "react-intl";
-import * as yup from "yup";
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { MuiAutocomplete, MuiDateTimeField, MuiDialog, MuiResetButton, MuiSubmitButton, MuiTextField } from '@controls';
+import { Grid } from '@mui/material';
+import { deliveryOrderService } from '@services';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import { useFormik } from 'formik';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
+import * as yup from 'yup';
 
 const DeliveryOrderDialog = (props) => {
-  const {
-    initModal,
-    isOpen,
-    onClose,
-    setNewData,
-    setUpdateData,
-    mode,
-    valueOption,
-  } = props;
+  const { initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption } = props;
 
   let isRendered = useRef(true);
   const intl = useIntl();
@@ -35,35 +23,32 @@ const DeliveryOrderDialog = (props) => {
     FPoMasterId: yup
       .number()
       .nullable()
-      .required(intl.formatMessage({ id: "general.field_required" }))
-      .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
+      .required(intl.formatMessage({ id: 'general.field_required' }))
+      .min(1, intl.formatMessage({ id: 'general.field_min' }, { min: 1 })),
     FPOId: yup
       .number()
       .nullable()
-      .required(intl.formatMessage({ id: "general.field_required" }))
-      .min(1, intl.formatMessage({ id: "general.field_required" })),
+      .required(intl.formatMessage({ id: 'general.field_required' }))
+      .min(1, intl.formatMessage({ id: 'general.field_required' })),
     DoCode: yup
       .string()
-      .required(intl.formatMessage({ id: "general.field_required" }))
-      .length(
-        12,
-        intl.formatMessage({ id: "general.field_length" }, { length: 12 })
-      ),
+      .required(intl.formatMessage({ id: 'general.field_required' }))
+      .length(12, intl.formatMessage({ id: 'general.field_length' }, { length: 12 })),
     OrderQty: yup
       .number()
-      .required(intl.formatMessage({ id: "general.field_required" }))
-      .min(1, intl.formatMessage({ id: "general.field_min" }, { min: 1 })),
+      .required(intl.formatMessage({ id: 'general.field_required' }))
+      .min(1, intl.formatMessage({ id: 'general.field_min' }, { min: 1 })),
     ETDLoad: yup
       .date()
-      .typeError(intl.formatMessage({ id: "general.field_invalid" }))
+      .typeError(intl.formatMessage({ id: 'general.field_invalid' }))
       .nullable()
-      .required(intl.formatMessage({ id: "general.field_required" })),
+      .required(intl.formatMessage({ id: 'general.field_required' })),
     DeliveryTime: yup
       .date()
-      .typeError(intl.formatMessage({ id: "general.field_invalid" }))
+      .typeError(intl.formatMessage({ id: 'general.field_invalid' }))
       .nullable()
-      .required(intl.formatMessage({ id: "general.field_required" }))
-      .min(yup.ref("ETDLoad"), "end date can't be before start date"),
+      .required(intl.formatMessage({ id: 'general.field_required' }))
+      .min(yup.ref('ETDLoad'), "end date can't be before start date"),
   });
 
   const formik = useFormik({
@@ -71,10 +56,10 @@ const DeliveryOrderDialog = (props) => {
     initialValues:
       mode === UPDATE_ACTION
         ? {
-          ...initModal,
-          ETDLoad: moment(initModal.ETDLoad).add(7, "hours"),
-          DeliveryTime: moment(initModal.DeliveryTime).add(7, "hours"),
-        }
+            ...initModal,
+            ETDLoad: moment(initModal.ETDLoad).add(7, 'hours'),
+            DeliveryTime: moment(initModal.DeliveryTime).add(7, 'hours'),
+          }
         : { ...initModal },
     enableReinitialize: true,
     onSubmit: async (values, actions) => {
@@ -87,17 +72,7 @@ const DeliveryOrderDialog = (props) => {
     },
   });
 
-  const {
-    handleChange,
-    handleBlur,
-    handleSubmit,
-    values,
-    setFieldValue,
-    errors,
-    touched,
-    isValid,
-    resetForm,
-  } = formik;
+  const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
 
   const handleReset = () => {
     resetForm();
@@ -138,7 +113,7 @@ const DeliveryOrderDialog = (props) => {
           setDialogState({ ...dialogState, isSubmit: false });
         }
       } else {
-        ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+        ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
         setDialogState({ ...dialogState, isSubmit: false });
       }
     }
@@ -163,7 +138,7 @@ const DeliveryOrderDialog = (props) => {
       <MuiDialog
         maxWidth="md"
         title={intl.formatMessage({
-          id: mode == CREATE_ACTION ? "general.create" : "general.modify",
+          id: mode == CREATE_ACTION ? 'general.create' : 'general.modify',
         })}
         isOpen={isOpen}
         disabledCloseBtn={dialogState.isSubmit}
@@ -171,32 +146,28 @@ const DeliveryOrderDialog = (props) => {
         onClose={handleCloseDialog}
       >
         <form onSubmit={handleSubmit}>
-          <Grid
-            container
-            rowSpacing={2.5}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-          >
+          <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <MuiAutocomplete
-                    label={intl.formatMessage({ id: "delivery_order.FPoMasterCode" })}
+                    label={intl.formatMessage({ id: 'delivery_order.FPoMasterCode' })}
                     fetchDataFunc={getPoMasterArr}
                     displayValue="FPoMasterId"
                     displayLabel="FPoMasterCode"
                     value={
                       values.FPoMasterId !== 0
                         ? {
-                          FPoMasterId: values.FPoMasterId,
-                          FPoMasterCode: values.FPoMasterCode,
-                        }
+                            FPoMasterId: values.FPoMasterId,
+                            FPoMasterCode: values.FPoMasterCode,
+                          }
                         : null
                     }
                     onChange={(e, value) => {
-                      setFieldValue("FPoMasterId", value?.FPoMasterId || 0);
-                      setFieldValue("FPoMasterCode", value?.FPoMasterCode || "");
-                      setFieldValue("MaterialId", 0);
-                      setFieldValue("MaterialBuyerCode", "");
+                      setFieldValue('FPoMasterId', value?.FPoMasterId || 0);
+                      setFieldValue('FPoMasterCode', value?.FPoMasterCode || '');
+                      setFieldValue('MaterialId', 0);
+                      setFieldValue('MaterialBuyerCode', '');
                     }}
                     error={touched.FPoMasterId && Boolean(errors.FPoMasterId)}
                     helperText={touched.FPoMasterId && errors.FPoMasterId}
@@ -204,32 +175,32 @@ const DeliveryOrderDialog = (props) => {
                 </Grid>
                 <Grid item xs={3}>
                   <MuiTextField
-                    label={intl.formatMessage({ id: "delivery_order.Year" })}
+                    label={intl.formatMessage({ id: 'delivery_order.Year' })}
                     type="number"
                     name="Year"
                     value={values.Year}
                     onChange={(e, value) => {
-                      setFieldValue("Year", e.target.value);
-                      setFieldValue("MaterialId", 0);
-                      setFieldValue("MaterialBuyerCode", "");
+                      setFieldValue('Year', e.target.value);
+                      setFieldValue('MaterialId', 0);
+                      setFieldValue('MaterialBuyerCode', '');
                     }}
-                  // error={touched.Year && Boolean(errors.Year)}
-                  // helperText={touched.Year && errors.Year}
+                    // error={touched.Year && Boolean(errors.Year)}
+                    // helperText={touched.Year && errors.Year}
                   />
                 </Grid>
                 <Grid item xs={3}>
                   <MuiTextField
-                    label={intl.formatMessage({ id: "delivery_order.Week" })}
+                    label={intl.formatMessage({ id: 'delivery_order.Week' })}
                     type="number"
                     name="Week"
                     value={values.Week}
                     onChange={(e, value) => {
-                      setFieldValue("Week", e.target.value);
-                      setFieldValue("MaterialId", 0);
-                      setFieldValue("MaterialBuyerCode", "");
+                      setFieldValue('Week', e.target.value);
+                      setFieldValue('MaterialId', 0);
+                      setFieldValue('MaterialBuyerCode', '');
                     }}
-                  // error={touched.Week && Boolean(errors.Week)}
-                  // helperText={touched.Week && errors.Week}
+                    // error={touched.Week && Boolean(errors.Week)}
+                    // helperText={touched.Week && errors.Week}
                   />
                 </Grid>
               </Grid>
@@ -240,7 +211,7 @@ const DeliveryOrderDialog = (props) => {
                 <Grid item xs>
                   <MuiAutocomplete
                     label={intl.formatMessage({
-                      id: "delivery_order.MaterialCode",
+                      id: 'delivery_order.MaterialCode',
                     })}
                     fetchDataFunc={getMaterialArr}
                     displayValue="FPOId"
@@ -248,14 +219,14 @@ const DeliveryOrderDialog = (props) => {
                     value={
                       values.FPOId !== 0
                         ? {
-                          FPOId: values.FPOId,
-                          MaterialBuyerCode: values.MaterialBuyerCode,
-                        }
+                            FPOId: values.FPOId,
+                            MaterialBuyerCode: values.MaterialBuyerCode,
+                          }
                         : null
                     }
                     onChange={(e, value) => {
-                      setFieldValue("FPOId", value?.FPOId || 0);
-                      setFieldValue("MaterialBuyerCode", value?.MaterialBuyerCode || "");
+                      setFieldValue('FPOId', value?.FPOId || 0);
+                      setFieldValue('MaterialBuyerCode', value?.MaterialBuyerCode || '');
                     }}
                     error={touched.FPOId && Boolean(errors.FPOId)}
                     helperText={touched.FPOId && errors.FPOId}
@@ -266,7 +237,7 @@ const DeliveryOrderDialog = (props) => {
                     required
                     disabled={dialogState.isSubmit}
                     label={intl.formatMessage({
-                      id: "delivery_order.DoCode",
+                      id: 'delivery_order.DoCode',
                     })}
                     name="DoCode"
                     value={values.DoCode}
@@ -275,7 +246,6 @@ const DeliveryOrderDialog = (props) => {
                     helperText={touched.DoCode && errors.DoCode}
                   />
                 </Grid>
-
               </Grid>
             </Grid>
 
@@ -286,10 +256,10 @@ const DeliveryOrderDialog = (props) => {
                     required
                     disabled={dialogState.isSubmit}
                     label={intl.formatMessage({
-                      id: "delivery_order.ETDLoad",
+                      id: 'delivery_order.ETDLoad',
                     })}
                     value={values.ETDLoad ?? null}
-                    onChange={(e) => setFieldValue("ETDLoad", e)}
+                    onChange={(e) => setFieldValue('ETDLoad', e)}
                     error={touched.ETDLoad && Boolean(errors.ETDLoad)}
                     helperText={touched.ETDLoad && errors.ETDLoad}
                   />
@@ -299,10 +269,10 @@ const DeliveryOrderDialog = (props) => {
                     required
                     disabled={dialogState.isSubmit}
                     label={intl.formatMessage({
-                      id: "delivery_order.DeliveryTime",
+                      id: 'delivery_order.DeliveryTime',
                     })}
                     value={values.DeliveryTime ?? null}
-                    onChange={(e) => setFieldValue("DeliveryTime", e)}
+                    onChange={(e) => setFieldValue('DeliveryTime', e)}
                     error={touched.DeliveryTime && Boolean(errors.DeliveryTime)}
                     helperText={touched.DeliveryTime && errors.DeliveryTime}
                   />
@@ -317,7 +287,7 @@ const DeliveryOrderDialog = (props) => {
                     type="number"
                     disabled={dialogState.isSubmit}
                     label={intl.formatMessage({
-                      id: "delivery_order.OrderQty",
+                      id: 'delivery_order.OrderQty',
                     })}
                     name="OrderQty"
                     value={values.OrderQty}
@@ -333,11 +303,10 @@ const DeliveryOrderDialog = (props) => {
                     value={values.PackingNote}
                     onChange={handleChange}
                     label={intl.formatMessage({
-                      id: "delivery_order.PackingNote",
+                      id: 'delivery_order.PackingNote',
                     })}
                   />
                 </Grid>
-
               </Grid>
             </Grid>
             <Grid item xs={12}>
@@ -349,7 +318,7 @@ const DeliveryOrderDialog = (props) => {
                     value={values.Dock}
                     onChange={handleChange}
                     label={intl.formatMessage({
-                      id: "delivery_order.Dock",
+                      id: 'delivery_order.Dock',
                     })}
                   />
                 </Grid>
@@ -360,7 +329,7 @@ const DeliveryOrderDialog = (props) => {
                     value={values.Truck}
                     onChange={handleChange}
                     label={intl.formatMessage({
-                      id: "delivery_order.Truck",
+                      id: 'delivery_order.Truck',
                     })}
                   />
                 </Grid>
@@ -368,7 +337,6 @@ const DeliveryOrderDialog = (props) => {
             </Grid>
             <Grid item xs={12}>
               <Grid container spacing={2}>
-
                 <Grid item xs>
                   <MuiTextField
                     name="InvoiceNo"
@@ -376,7 +344,7 @@ const DeliveryOrderDialog = (props) => {
                     value={values.InvoiceNo}
                     onChange={handleChange}
                     label={intl.formatMessage({
-                      id: "delivery_order.InvoiceNo",
+                      id: 'delivery_order.InvoiceNo',
                     })}
                   />
                 </Grid>
@@ -387,7 +355,7 @@ const DeliveryOrderDialog = (props) => {
                     value={values.Remark}
                     onChange={handleChange}
                     label={intl.formatMessage({
-                      id: "delivery_order.Remark",
+                      id: 'delivery_order.Remark',
                     })}
                   />
                 </Grid>
@@ -396,10 +364,7 @@ const DeliveryOrderDialog = (props) => {
             <Grid item xs={12}>
               <Grid container direction="row-reverse">
                 <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
-                <MuiResetButton
-                  onClick={handleReset}
-                  disabled={dialogState.isSubmit}
-                />
+                <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} />
               </Grid>
             </Grid>
           </Grid>

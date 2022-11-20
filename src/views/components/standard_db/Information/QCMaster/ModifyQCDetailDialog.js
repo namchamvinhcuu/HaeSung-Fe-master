@@ -1,165 +1,139 @@
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiSelectField } from '@controls'
-import { yupResolver } from '@hookform/resolvers/yup'
-import {
-    Autocomplete,
-    Checkbox, FormControlLabel, Grid, Radio, RadioGroup, TextField
-} from '@mui/material'
-import React, { useEffect, useRef, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { useIntl } from 'react-intl'
-import * as yup from 'yup'
-import { useFormik } from 'formik'
+import { MuiDialog, MuiResetButton, MuiSelectField, MuiSubmitButton } from '@controls';
+import { Grid } from '@mui/material';
+import { useFormik } from 'formik';
+import React, { useEffect, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
+import * as yup from 'yup';
 
-import { qcDetailService } from '@services'
-import { ErrorAlert, SuccessAlert } from '@utils'
-import { QCDetailDto } from "@models"
+import { QCDetailDto } from '@models';
+import { qcDetailService } from '@services';
+import { ErrorAlert, SuccessAlert } from '@utils';
 
 const ModifyQCDetailDialog = (props) => {
+  const intl = useIntl();
 
-    const intl = useIntl();
+  const { initModal, isOpen, onClose, setModifyData } = props;
+  //  console.log(initModal);
+  const clearParent = useRef(null);
 
-    const { initModal, isOpen, onClose, setModifyData } = props;
-    //  console.log(initModal);
-    const clearParent = useRef(null);
+  const [QCCodeArr, setQCCodeArr] = useState([]);
 
-    const [QCCodeArr, setQCCodeArr] = useState([]);
+  const dataModalRef = useRef({ ...initModal });
+  const [dialogState, setDialogState] = useState({
+    ...initModal,
+    isSubmit: false,
+  });
+  const schema = yup.object().shape({
+    QCMasterId: yup.number().required(),
+    QCId: yup
+      .number()
+      .min(1, intl.formatMessage({ id: 'general.field_required' }))
+      .required(intl.formatMessage({ id: 'general.field_required' })),
+  });
 
-    const dataModalRef = useRef({ ...initModal });
-    const [dialogState, setDialogState] = useState({
-        ...initModal,
-        isSubmit: false,
-    })
-    const schema = yup.object().shape({
+  useEffect(() => {
+    if (isOpen) getQC();
+  }, [isOpen]);
 
-        QCMasterId: yup.number().required(),
-        QCId: yup.number().min(1, intl.formatMessage({ id: 'general.field_required' })).required(intl.formatMessage({ id: 'general.field_required' })),
+  const getQC = async () => {
+    const res = await qcDetailService.getStandardQCActive();
+    if (res.HttpResponseCode === 200 && res.Data) {
+      setQCCodeArr([...res.Data]);
+      // console.log(res.Data);
+    } else {
+      setQCCodeArr([]);
+    }
+  };
 
+  useEffect(() => {
+    formik.initialValues = QCDetailDto;
+  }, [initModal]);
 
+  const handleReset = () => {
+    resetForm();
+  };
+
+  const handleCloseDialog = () => {
+    setDialogState({
+      ...dialogState,
     });
+    formik.resetForm();
+    onClose();
+  };
 
+  const formik = useFormik({
+    validationSchema: schema,
+    initialValues: { ...initModal },
 
-    useEffect(() => {
-        if (isOpen)
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      const res = await qcDetailService.modify(values);
+      if (res.HttpResponseCode === 200) {
+        SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        setModifyData({ ...res.Data });
+        setDialogState({ isSubmit: false });
+        handleCloseDialog();
+      } else {
+        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      }
+    },
+  });
+  const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
 
-            getQC();
-    }, [isOpen])
+  return (
+    <MuiDialog
+      maxWidth="sm"
+      title={intl.formatMessage({ id: 'general.modify' })}
+      isOpen={isOpen}
+      disabledCloseBtn={dialogState.isSubmit}
+      disable_animate={300}
+      onClose={handleCloseDialog}
+    >
+      <form onSubmit={handleSubmit}>
+        <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={12}>
+            <Grid container item spacing={2} marginBottom={2}>
+              <Grid item xs={12}>
+                <MuiSelectField
+                  value={
+                    values.QCId
+                      ? {
+                          QCId: values.QCId,
+                          QCCode:
+                            values.Description == null || values.Description == ''
+                              ? values.QCCode
+                              : values.QCCode + ' - ' + values.Description,
+                        }
+                      : null
+                  }
+                  // value={values.QCId ? { QCId: values.QCId, QCCode: values.QCCode  } : null}
+                  disabled={dialogState.isSubmit}
+                  label={intl.formatMessage({ id: 'standardQC.QCCode' }) + ' *'}
+                  options={QCCodeArr}
+                  displayLabel="QCCode"
+                  displayValue="QCId"
+                  onChange={(e, value) => {
+                    setFieldValue('Description', '');
+                    setFieldValue('QCCode', value?.QCCode || '');
+                    setFieldValue('QCId', value?.QCId || '');
+                  }}
+                  error={touched.QCId && Boolean(errors.QCId)}
+                  helperText={touched.QCId && errors.QCId}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
 
+          <Grid item xs={12}>
+            <Grid container direction="row-reverse">
+              <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
+              <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} />
+            </Grid>
+          </Grid>
+        </Grid>
+      </form>
+    </MuiDialog>
+  );
+};
 
-    const getQC = async () => {
-        const res = await qcDetailService.getStandardQCActive();
-        if (res.HttpResponseCode === 200 && res.Data) {
-            setQCCodeArr([...res.Data])
-            // console.log(res.Data);
-        }
-        else {
-            setQCCodeArr([])
-        }
-    }
-
-    useEffect(() => {
-        formik.initialValues = QCDetailDto
-    }, [initModal])
-
-    const handleReset = () => {
-        resetForm();
-    }
-
-    const handleCloseDialog = () => {
-        setDialogState({
-            ...dialogState
-        });
-        formik.resetForm();
-        onClose();
-    }
-
-    const formik = useFormik({
-        validationSchema: schema,
-        initialValues: { ...initModal },
-
-        enableReinitialize: true,
-        onSubmit: async values => {
-            const res = await qcDetailService.modify(values);
-            if (res.HttpResponseCode === 200) {
-                SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
-                setModifyData({ ...res.Data });
-                setDialogState({ isSubmit: false });
-                handleCloseDialog();
-            }
-            else {
-                ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
-            }
-        }
-    });
-    const {
-        handleChange
-        , handleBlur
-        , handleSubmit
-        , values
-        , setFieldValue
-        , errors
-        , touched
-        , isValid
-        , resetForm
-    } = formik;
-
-
-
-    return (
-        <MuiDialog
-            maxWidth='sm'
-            title={intl.formatMessage({ id: 'general.modify' })}
-            isOpen={isOpen}
-            disabledCloseBtn={dialogState.isSubmit}
-            disable_animate={300}
-            onClose={handleCloseDialog}
-        >
-            <form onSubmit={handleSubmit} >
-                <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                    <Grid item xs={12}>
-                        <Grid container item spacing={2} marginBottom={2}>
-
-                            <Grid item xs={12}>
-                                <MuiSelectField
-                                    value={values.QCId ? {
-                                        QCId: values.QCId,
-                                        QCCode: values.Description == null || values.Description == "" ?
-                                            values.QCCode : values.QCCode + ' - ' + values.Description
-                                    } : null}
-                                    // value={values.QCId ? { QCId: values.QCId, QCCode: values.QCCode  } : null}
-                                    disabled={dialogState.isSubmit}
-                                    label={intl.formatMessage({ id: 'standardQC.QCCode' }) + ' *'}
-                                    options={QCCodeArr}
-                                    displayLabel="QCCode"
-                                    displayValue="QCId"
-                                    onChange={(e, value) => {
-                                        setFieldValue("Description", "");
-                                        setFieldValue("QCCode", value?.QCCode || '');
-                                        setFieldValue("QCId", value?.QCId || "");
-                                    }}
-                                    error={touched.QCId && Boolean(errors.QCId)}
-                                    helperText={touched.QCId && errors.QCId}
-                                />
-
-                            </Grid>
-                        </Grid>
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <Grid container direction="row-reverse">
-                            <MuiSubmitButton
-                                text="save"
-                                loading={dialogState.isSubmit}
-                            />
-                            <MuiResetButton
-                                onClick={handleReset}
-                                disabled={dialogState.isSubmit}
-                            />
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </form>
-        </MuiDialog>
-    )
-}
-
-export default ModifyQCDetailDialog
+export default ModifyQCDetailDialog;

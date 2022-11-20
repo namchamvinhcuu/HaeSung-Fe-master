@@ -1,31 +1,25 @@
-import { Store } from "@appstate";
-import { User_Operations } from "@appstate/user";
-import { CombineDispatchToProps, CombineStateToProps } from "@plugins/helperJS";
-import React, { useEffect, useRef, useState } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
+import React, { useEffect, useRef, useState } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import {
-  MuiAutocomplete,
-  MuiButton,
-  MuiDataGrid,
-  MuiDateTimeField,
-  MuiSearchField
-} from "@controls";
-import { WorkOrderDto } from "@models";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import UndoIcon from "@mui/icons-material/Undo";
-import { FormControlLabel, Switch } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
-import { workOrderService } from "@services";
-import { addDays, ErrorAlert, SuccessAlert } from "@utils";
-import _ from "lodash";
-import moment from "moment";
-import { useIntl } from "react-intl";
-import WorkOrderDialog from "./WorkOrderDialog";
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateTimeField, MuiSearchField } from '@controls';
+import { WorkOrderDto } from '@models';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import UndoIcon from '@mui/icons-material/Undo';
+import { FormControlLabel, Switch } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import { workOrderService } from '@services';
+import { addDays, ErrorAlert, SuccessAlert } from '@utils';
+import _ from 'lodash';
+import moment from 'moment';
+import { useIntl } from 'react-intl';
+import WorkOrderDialog from './WorkOrderDialog';
 
 const WorkOrder = (props) => {
   let isRendered = useRef(true);
@@ -94,9 +88,7 @@ const WorkOrder = (props) => {
     if (
       window.confirm(
         intl.formatMessage({
-          id: showActivedData
-            ? "general.confirm_delete"
-            : "general.confirm_redo_deleted",
+          id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
         })
       )
     ) {
@@ -110,7 +102,7 @@ const WorkOrder = (props) => {
             ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
           }
         } else {
-          ErrorAlert(intl.formatMessage({ id: "general.system_error" }));
+          ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
         }
       } catch (error) {
         console.log(error);
@@ -124,15 +116,13 @@ const WorkOrder = (props) => {
     newSearchData[inputName] = e;
 
     switch (inputName) {
-      case "StartSearchingDate":
-      case "EndSearchingDate":
+      case 'StartSearchingDate':
+      case 'EndSearchingDate':
         newSearchData[inputName] = e;
         break;
-      case "MaterialId":
+      case 'MaterialId':
         newSearchData[inputName] = e ? e.MaterialId : WorkOrderDto.MaterialId;
-        newSearchData["MaterialCode"] = e
-          ? e.MaterialCode
-          : WorkOrderDto.MaterialCode;
+        newSearchData['MaterialCode'] = e ? e.MaterialCode : WorkOrderDto.MaterialCode;
         break;
 
       default:
@@ -153,19 +143,19 @@ const WorkOrder = (props) => {
 
   const fetchData = async () => {
     let flag = true;
-    let message = "";
+    let message = '';
     const checkObj = { ...workOrderState.searchData };
     _.forOwn(checkObj, (value, key) => {
       switch (key) {
-        case "StartSearchingDate":
-          if (value == "Invalid Date") {
-            message = "general.StartSearchingDate_invalid";
+        case 'StartSearchingDate':
+          if (value == 'Invalid Date') {
+            message = 'general.StartSearchingDate_invalid';
             flag = false;
           }
           break;
-        case "DeliveryTime":
-          if (value == "Invalid Date") {
-            message = "general.EndSearchingDate_invalid";
+        case 'DeliveryTime':
+          if (value == 'Invalid Date') {
+            message = 'general.EndSearchingDate_invalid';
             flag = false;
           }
           break;
@@ -246,22 +236,20 @@ const WorkOrder = (props) => {
   }, [selectedRow]);
 
   const columns = [
-    { field: "WoId", headerName: "", hide: true },
+    { field: 'WoId', headerName: '', hide: true },
 
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       width: 100,
       filterable: false,
       renderCell: (index) =>
-        index.api.getRowIndex(index.row.WoId) +
-        1 +
-        (workOrderState.page - 1) * workOrderState.pageSize,
+        index.api.getRowIndex(index.row.WoId) + 1 + (workOrderState.page - 1) * workOrderState.pageSize,
     },
 
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       width: 80,
       // headerAlign: 'center',
       disableClickEventBubbling: true,
@@ -269,18 +257,13 @@ const WorkOrder = (props) => {
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
             <Grid item xs={6}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={() => {
                   toggleDialog(UPDATE_ACTION);
                 }}
@@ -294,14 +277,10 @@ const WorkOrder = (props) => {
                 aria-label="delete"
                 color="error"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                {showActivedData ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
+                {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
           </Grid>
@@ -310,82 +289,76 @@ const WorkOrder = (props) => {
     },
 
     {
-      field: "WoCode",
-      headerName: intl.formatMessage({ id: "work_order.WoCode" }),
+      field: 'WoCode',
+      headerName: intl.formatMessage({ id: 'work_order.WoCode' }),
       /*flex: 0.7,*/ width: 120,
     },
 
     {
-      field: "MaterialCode",
-      headerName: intl.formatMessage({ id: "work_order.MaterialCode" }),
+      field: 'MaterialCode',
+      headerName: intl.formatMessage({ id: 'work_order.MaterialCode' }),
       /*flex: 0.7,*/ width: 120,
     },
 
     {
-      field: "FPoMasterCode",
-      headerName: intl.formatMessage({ id: "work_order.FPoMasterCode" }),
+      field: 'FPoMasterCode',
+      headerName: intl.formatMessage({ id: 'work_order.FPoMasterCode' }),
       /*flex: 0.7,*/ width: 120,
     },
 
     {
-      field: "OrderQty",
-      headerName: intl.formatMessage({ id: "work_order.OrderQty" }),
+      field: 'OrderQty',
+      headerName: intl.formatMessage({ id: 'work_order.OrderQty' }),
       /*flex: 0.7,*/ width: 120,
     },
 
     {
-      field: "ActualQty",
-      headerName: intl.formatMessage({ id: "work_order.ActualQty" }),
+      field: 'ActualQty',
+      headerName: intl.formatMessage({ id: 'work_order.ActualQty' }),
       /*flex: 0.7,*/ width: 120,
     },
 
     {
-      field: "StartDate",
-      headerName: intl.formatMessage({ id: "work_order.StartDate" }),
+      field: 'StartDate',
+      headerName: intl.formatMessage({ id: 'work_order.StartDate' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
 
     {
-      field: "createdName",
-      headerName: intl.formatMessage({ id: "general.createdName" }),
+      field: 'createdName',
+      headerName: intl.formatMessage({ id: 'general.createdName' }),
       width: 150,
     },
 
     {
-      field: "createdDate",
-      headerName: intl.formatMessage({ id: "general.created_date" }),
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.created_date' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
 
     {
-      field: "modifiedName",
-      headerName: intl.formatMessage({ id: "general.modifiedName" }),
+      field: 'modifiedName',
+      headerName: intl.formatMessage({ id: 'general.modifiedName' }),
       width: 150,
     },
 
     {
-      field: "modifiedDate",
-      headerName: intl.formatMessage({ id: "general.modified_date" }),
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modified_date' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
@@ -393,12 +366,7 @@ const WorkOrder = (props) => {
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        spacing={2}
-        justifyContent="flex-end"
-        alignItems="flex-end"
-      >
+      <Grid container spacing={2} justifyContent="flex-end" alignItems="flex-end">
         <Grid item xs={1.5}>
           <MuiButton
             text="create"
@@ -414,13 +382,13 @@ const WorkOrder = (props) => {
             label="work_order.WoCode"
             name="WoCode"
             onClick={fetchData}
-            onChange={(e) => changeSearchData(e, "WoCode")}
+            onChange={(e) => changeSearchData(e, 'WoCode')}
           />
         </Grid>
 
         <Grid item xs>
           <MuiAutocomplete
-            label={intl.formatMessage({ id: "work_order.MaterialCode" })}
+            label={intl.formatMessage({ id: 'work_order.MaterialCode' })}
             fetchDataFunc={getSearchMaterialArr}
             displayLabel="MaterialCode"
             displayValue="MaterialId"
@@ -428,13 +396,13 @@ const WorkOrder = (props) => {
             value={
               workOrderState.searchData.MaterialId !== 0
                 ? {
-                  MaterialId: workOrderState.searchData.MaterialId,
-                  MaterialCode: workOrderState.searchData.MaterialCode,
-                }
+                    MaterialId: workOrderState.searchData.MaterialId,
+                    MaterialCode: workOrderState.searchData.MaterialCode,
+                  }
                 : null
             }
             onChange={(e, item) => {
-              changeSearchData(item ?? null, "MaterialId");
+              changeSearchData(item ?? null, 'MaterialId');
             }}
             variant="standard"
           />
@@ -444,11 +412,11 @@ const WorkOrder = (props) => {
           <MuiDateTimeField
             disabled={workOrderState.isLoading}
             label={intl.formatMessage({
-              id: "general.StartSearchingDate",
+              id: 'general.StartSearchingDate',
             })}
             value={workOrderState.searchData.StartSearchingDate}
             onChange={(e) => {
-              changeSearchData(e, "StartSearchingDate");
+              changeSearchData(e, 'StartSearchingDate');
             }}
             variant="standard"
           />
@@ -458,37 +426,27 @@ const WorkOrder = (props) => {
           <MuiDateTimeField
             disabled={workOrderState.isLoading}
             label={intl.formatMessage({
-              id: "general.EndSearchingDate",
+              id: 'general.EndSearchingDate',
             })}
             value={workOrderState.searchData.EndSearchingDate}
             onChange={(e) => {
-              changeSearchData(e, "EndSearchingDate");
+              changeSearchData(e, 'EndSearchingDate');
             }}
             variant="standard"
           />
         </Grid>
 
         <Grid item xs={2.5}>
-          <Grid
-            container
-            justifyContent="space-around"
-            alignItems="flex-end"
-          >
+          <Grid container justifyContent="space-around" alignItems="flex-end">
             <Grid item>
               <MuiButton text="search" color="info" onClick={fetchData} />
             </Grid>
 
             <Grid item>
               <FormControlLabel
-                sx={{ mb: 0, ml: "1px" }}
-                control={
-                  <Switch
-                    defaultChecked={true}
-                    color="primary"
-                    onChange={(e) => handleshowActivedData(e)}
-                  />
-                }
-                label={showActivedData ? "Actived" : "Deleted"}
+                sx={{ mb: 0, ml: '1px' }}
+                control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleshowActivedData(e)} />}
+                label={showActivedData ? 'Actived' : 'Deleted'}
               />
             </Grid>
           </Grid>
@@ -510,9 +468,7 @@ const WorkOrder = (props) => {
           setDeliveryOrderState({ ...workOrderState, page: newPage + 1 });
         }}
         getRowId={(rows) => rows.WoId}
-        onSelectionModelChange={(newSelectedRowId) =>
-          handleRowSelection(newSelectedRowId)
-        }
+        onSelectionModelChange={(newSelectedRowId) => handleRowSelection(newSelectedRowId)}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) {
             return `Mui-created`;
@@ -534,7 +490,7 @@ const WorkOrder = (props) => {
 };
 
 User_Operations.toString = function () {
-  return "User_Operations";
+  return 'User_Operations';
 };
 
 const mapStateToProps = (state) => {

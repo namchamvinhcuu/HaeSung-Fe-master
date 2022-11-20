@@ -1,8 +1,5 @@
-import { createBrowserHistory } from "history";
+import { createBrowserHistory } from 'history';
 const historyApp = createBrowserHistory();
 
 const historyDashboard = createBrowserHistory();
-export {
-  historyDashboard,
-  historyApp
-};
+export { historyDashboard, historyApp };

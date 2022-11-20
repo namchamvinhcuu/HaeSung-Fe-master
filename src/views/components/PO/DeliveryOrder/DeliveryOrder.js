@@ -1,33 +1,26 @@
-import { Store } from "@appstate";
-import { User_Operations } from "@appstate/user";
-import { CombineDispatchToProps, CombineStateToProps } from "@plugins/helperJS";
-import React, { useEffect, useRef, useState } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
+import React, { useEffect, useRef, useState } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import { CREATE_ACTION, UPDATE_ACTION } from "@constants/ConfigConstants";
-import {
-  MuiAutocomplete,
-  MuiButton,
-  MuiDataGrid,
-  MuiDateTimeField,
-  MuiSearchField,
-  MuiSelectField,
-} from "@controls";
-import { DeliveryOrderDto } from "@models";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import UndoIcon from "@mui/icons-material/Undo";
-import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
-import { deliveryOrderService } from "@services";
-import { addDays, ErrorAlert } from "@utils";
-import _ from "lodash";
-import moment from "moment";
-import { useIntl } from "react-intl";
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { MuiButton, MuiDataGrid, MuiDateTimeField, MuiSearchField } from '@controls';
+import { DeliveryOrderDto } from '@models';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import UndoIcon from '@mui/icons-material/Undo';
+import { FormControlLabel, Switch, Tooltip, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import { deliveryOrderService } from '@services';
+import { addDays, ErrorAlert } from '@utils';
+import _ from 'lodash';
+import moment from 'moment';
+import { useIntl } from 'react-intl';
 
-import DeliveryOrderDialog from "./DeliveryOrderDialog";
+import DeliveryOrderDialog from './DeliveryOrderDialog';
 
 const DeliveryOrder = (props) => {
   let isRendered = useRef(true);
@@ -96,9 +89,7 @@ const DeliveryOrder = (props) => {
     if (
       window.confirm(
         intl.formatMessage({
-          id: showActivedData
-            ? "general.confirm_delete"
-            : "general.confirm_redo_deleted",
+          id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
         })
       )
     ) {
@@ -121,23 +112,19 @@ const DeliveryOrder = (props) => {
     newSearchData[inputName] = e;
 
     switch (inputName) {
-      case "ETDLoad":
-      case "DeliveryTime":
+      case 'ETDLoad':
+      case 'DeliveryTime':
         newSearchData[inputName] = e;
         break;
-      case "FPoMasterId":
+      case 'FPoMasterId':
         newSearchData[inputName] = e ? e.FPoMasterId : DeliveryOrderDto.FPoMasterId;
-        newSearchData["FPoMasterCode"] = e ? e.FPoMasterCode : DeliveryOrderDto.FPoMasterCode;
+        newSearchData['FPoMasterCode'] = e ? e.FPoMasterCode : DeliveryOrderDto.FPoMasterCode;
         newSearchData.MaterialId = 0;
-        newSearchData.MaterialCode = "";
+        newSearchData.MaterialCode = '';
         break;
-      case "MaterialId":
-        newSearchData[inputName] = e
-          ? e.MaterialId
-          : DeliveryOrderDto.MaterialId;
-        newSearchData["MaterialCode"] = e
-          ? e.MaterialCode
-          : DeliveryOrderDto.MaterialCode;
+      case 'MaterialId':
+        newSearchData[inputName] = e ? e.MaterialId : DeliveryOrderDto.MaterialId;
+        newSearchData['MaterialCode'] = e ? e.MaterialCode : DeliveryOrderDto.MaterialCode;
         break;
       default:
         newSearchData[inputName] = e.target.value;
@@ -163,19 +150,19 @@ const DeliveryOrder = (props) => {
 
   const fetchData = async () => {
     let flag = true;
-    let message = "";
+    let message = '';
     const checkObj = { ...deliveryOrderState.searchData };
     _.forOwn(checkObj, (value, key) => {
       switch (key) {
-        case "ETDLoad":
-          if (value == "Invalid Date") {
-            message = "delivery_order.ETDLoad_invalid";
+        case 'ETDLoad':
+          if (value == 'Invalid Date') {
+            message = 'delivery_order.ETDLoad_invalid';
             flag = false;
           }
           break;
-        case "DeliveryTime":
-          if (value == "Invalid Date") {
-            message = "delivery_order.DeliveryTime_invalid";
+        case 'DeliveryTime':
+          if (value == 'Invalid Date') {
+            message = 'delivery_order.DeliveryTime_invalid';
             flag = false;
           }
           break;
@@ -266,22 +253,20 @@ const DeliveryOrder = (props) => {
   }, [selectedRow]);
 
   const columns = [
-    { field: "DoId", headerName: "", hide: true },
+    { field: 'DoId', headerName: '', hide: true },
 
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       width: 100,
       filterable: false,
       renderCell: (index) =>
-        index.api.getRowIndex(index.row.DoId) +
-        1 +
-        (deliveryOrderState.page - 1) * deliveryOrderState.pageSize,
+        index.api.getRowIndex(index.row.DoId) + 1 + (deliveryOrderState.page - 1) * deliveryOrderState.pageSize,
     },
 
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       width: 80,
       // headerAlign: 'center',
       disableClickEventBubbling: true,
@@ -289,18 +274,13 @@ const DeliveryOrder = (props) => {
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
             <Grid item xs={6}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={() => {
                   toggleDialog(UPDATE_ACTION);
                 }}
@@ -314,14 +294,10 @@ const DeliveryOrder = (props) => {
                 aria-label="delete"
                 color="error"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                {showActivedData ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
+                {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
           </Grid>
@@ -330,173 +306,152 @@ const DeliveryOrder = (props) => {
     },
 
     {
-      field: "DoCode",
-      headerName: intl.formatMessage({ id: "delivery_order.DoCode" }),
+      field: 'DoCode',
+      headerName: intl.formatMessage({ id: 'delivery_order.DoCode' }),
       /*flex: 0.7,*/ width: 120,
     },
 
     {
-      field: "FPoCode",
-      headerName: intl.formatMessage({ id: "delivery_order.PoCode" }),
+      field: 'FPoCode',
+      headerName: intl.formatMessage({ id: 'delivery_order.PoCode' }),
       /*flex: 0.7,*/ width: 120,
     },
 
     {
-      field: "MaterialCode",
-      headerName: intl.formatMessage({ id: "delivery_order.MaterialCode" }),
+      field: 'MaterialCode',
+      headerName: intl.formatMessage({ id: 'delivery_order.MaterialCode' }),
       /*flex: 0.7,*/ width: 120,
     },
 
     {
-      field: "OrderQty",
-      headerName: intl.formatMessage({ id: "delivery_order.OrderQty" }),
+      field: 'OrderQty',
+      headerName: intl.formatMessage({ id: 'delivery_order.OrderQty' }),
       /*flex: 0.7,*/ width: 120,
     },
 
     {
-      field: "RemainQty",
-      headerName: intl.formatMessage({ id: "delivery_order.RemainQty" }),
+      field: 'RemainQty',
+      headerName: intl.formatMessage({ id: 'delivery_order.RemainQty' }),
       /*flex: 0.7,*/ width: 120,
     },
 
     {
-      field: "PackingNote",
-      headerName: intl.formatMessage({ id: "delivery_order.PackingNote" }),
+      field: 'PackingNote',
+      headerName: intl.formatMessage({ id: 'delivery_order.PackingNote' }),
       width: 200,
       renderCell: (params) => {
         return (
-          <Tooltip
-            title={params.row.PackingNote ?? ""}
-            className="col-text-elip"
-          >
-            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>
-              {params.row.PackingNote}
-            </Typography>
+          <Tooltip title={params.row.PackingNote ?? ''} className="col-text-elip">
+            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.PackingNote}</Typography>
           </Tooltip>
         );
       },
     },
 
     {
-      field: "InvoiceNo",
-      headerName: intl.formatMessage({ id: "delivery_order.InvoiceNo" }),
+      field: 'InvoiceNo',
+      headerName: intl.formatMessage({ id: 'delivery_order.InvoiceNo' }),
       width: 150,
       renderCell: (params) => {
         return (
-          <Tooltip title={params.row.InvoiceNo ?? ""} className="col-text-elip">
-            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>
-              {params.row.InvoiceNo}
-            </Typography>
+          <Tooltip title={params.row.InvoiceNo ?? ''} className="col-text-elip">
+            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.InvoiceNo}</Typography>
           </Tooltip>
         );
       },
     },
 
     {
-      field: "Dock",
-      headerName: intl.formatMessage({ id: "delivery_order.Dock" }),
+      field: 'Dock',
+      headerName: intl.formatMessage({ id: 'delivery_order.Dock' }),
       width: 150,
       renderCell: (params) => {
         return (
-          <Tooltip title={params.row.Dock ?? ""} className="col-text-elip">
-            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>
-              {params.row.Dock}
-            </Typography>
+          <Tooltip title={params.row.Dock ?? ''} className="col-text-elip">
+            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.Dock}</Typography>
           </Tooltip>
         );
       },
     },
 
     {
-      field: "ETDLoad",
-      headerName: intl.formatMessage({ id: "delivery_order.ETDLoad" }),
+      field: 'ETDLoad',
+      headerName: intl.formatMessage({ id: 'delivery_order.ETDLoad' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
 
     {
-      field: "DeliveryTime",
-      headerName: intl.formatMessage({ id: "delivery_order.DeliveryTime" }),
+      field: 'DeliveryTime',
+      headerName: intl.formatMessage({ id: 'delivery_order.DeliveryTime' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
 
     {
-      field: "Remark",
-      headerName: intl.formatMessage({ id: "delivery_order.Remark" }),
+      field: 'Remark',
+      headerName: intl.formatMessage({ id: 'delivery_order.Remark' }),
       width: 150,
       renderCell: (params) => {
         return (
-          <Tooltip title={params.row.Remark ?? ""} className="col-text-elip">
-            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>
-              {params.row.Remark}
-            </Typography>
+          <Tooltip title={params.row.Remark ?? ''} className="col-text-elip">
+            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.Remark}</Typography>
           </Tooltip>
         );
       },
     },
 
     {
-      field: "Truck",
-      headerName: intl.formatMessage({ id: "delivery_order.Truck" }),
+      field: 'Truck',
+      headerName: intl.formatMessage({ id: 'delivery_order.Truck' }),
       width: 150,
       renderCell: (params) => {
         return (
-          <Tooltip title={params.row.Truck ?? ""} className="col-text-elip">
-            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>
-              {params.row.Truck}
-            </Typography>
+          <Tooltip title={params.row.Truck ?? ''} className="col-text-elip">
+            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.Truck}</Typography>
           </Tooltip>
         );
       },
     },
 
     {
-      field: "createdName",
-      headerName: intl.formatMessage({ id: "general.createdName" }),
+      field: 'createdName',
+      headerName: intl.formatMessage({ id: 'general.createdName' }),
       width: 150,
     },
 
     {
-      field: "createdDate",
-      headerName: intl.formatMessage({ id: "general.created_date" }),
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.created_date' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
 
     {
-      field: "modifiedName",
-      headerName: intl.formatMessage({ id: "general.modifiedName" }),
+      field: 'modifiedName',
+      headerName: intl.formatMessage({ id: 'general.modifiedName' }),
       width: 150,
     },
 
     {
-      field: "modifiedDate",
-      headerName: intl.formatMessage({ id: "general.modified_date" }),
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modified_date' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
@@ -504,13 +459,7 @@ const DeliveryOrder = (props) => {
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        spacing={2}
-        direction="row"
-        justifyContent="space-between"
-        alignItems="flex-end"
-      >
+      <Grid container spacing={2} direction="row" justifyContent="space-between" alignItems="flex-end">
         <Grid item xs={1.5}>
           <MuiButton
             text="create"
@@ -526,7 +475,7 @@ const DeliveryOrder = (props) => {
             label="delivery_order.DoCode"
             name="DoCode"
             onClick={fetchData}
-            onChange={(e) => changeSearchData(e, "DoCode")}
+            onChange={(e) => changeSearchData(e, 'DoCode')}
           />
         </Grid>
 
@@ -576,11 +525,11 @@ const DeliveryOrder = (props) => {
           <MuiDateTimeField
             disabled={deliveryOrderState.isLoading}
             label={intl.formatMessage({
-              id: "delivery_order.ETDLoad",
+              id: 'delivery_order.ETDLoad',
             })}
             value={deliveryOrderState.searchData.ETDLoad}
             onChange={(e) => {
-              changeSearchData(e, "ETDLoad");
+              changeSearchData(e, 'ETDLoad');
             }}
             variant="standard"
           />
@@ -590,28 +539,22 @@ const DeliveryOrder = (props) => {
           <MuiDateTimeField
             disabled={deliveryOrderState.isLoading}
             label={intl.formatMessage({
-              id: "delivery_order.DeliveryTime",
+              id: 'delivery_order.DeliveryTime',
             })}
             value={deliveryOrderState.searchData.DeliveryTime}
             onChange={(e) => {
-              changeSearchData(e, "DeliveryTime");
+              changeSearchData(e, 'DeliveryTime');
             }}
             variant="standard"
           />
         </Grid>
 
-        <Grid item xs={2} sx={{ display: "flex", justifyContent: "right" }}>
+        <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'right' }}>
           <MuiButton text="search" color="info" onClick={fetchData} />
           <FormControlLabel
-            sx={{ mb: 0, ml: "1px" }}
-            control={
-              <Switch
-                defaultChecked={true}
-                color="primary"
-                onChange={(e) => handleshowActivedData(e)}
-              />
-            }
-            label={showActivedData ? "Actived" : "Deleted"}
+            sx={{ mb: 0, ml: '1px' }}
+            control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleshowActivedData(e)} />}
+            label={showActivedData ? 'Actived' : 'Deleted'}
           />
         </Grid>
       </Grid>
@@ -631,9 +574,7 @@ const DeliveryOrder = (props) => {
           setDeliveryOrderState({ ...deliveryOrderState, page: newPage + 1 });
         }}
         getRowId={(rows) => rows.DoId}
-        onSelectionModelChange={(newSelectedRowId) =>
-          handleRowSelection(newSelectedRowId)
-        }
+        onSelectionModelChange={(newSelectedRowId) => handleRowSelection(newSelectedRowId)}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) {
             return `Mui-created`;
@@ -655,7 +596,7 @@ const DeliveryOrder = (props) => {
 };
 
 User_Operations.toString = function () {
-  return "User_Operations";
+  return 'User_Operations';
 };
 
 const mapStateToProps = (state) => {

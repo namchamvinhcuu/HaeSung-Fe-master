@@ -1,6 +1,6 @@
-import { axios } from "@utils";
+import { axios } from '@utils';
 
-const API = "/api/delivery-order";
+const API = '/api/delivery-order';
 
 export const get = async (params) => {
   try {

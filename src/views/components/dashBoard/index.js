@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { NavBar, TabListContent } from "@containers";
+import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { NavBar, TabListContent } from '@containers';
 
-import SiderBar from "./sidebar";
-import Footer_DashBoard from "./footer";
-import { ToastContainer, toast } from "react-toastify";
-import ShortUniqueId from "short-unique-id";
-import { api_post, api_get, GetMenus_LoginUser, eventBus } from "@utils";
-import { Treeview } from "@static/js/adminlte.js";
-import * as SignalR from '@microsoft/signalr'
+import SiderBar from './sidebar';
+import Footer_DashBoard from './footer';
+import { ToastContainer, toast } from 'react-toastify';
+import ShortUniqueId from 'short-unique-id';
+import { api_post, api_get, GetMenus_LoginUser, eventBus } from '@utils';
+import { Treeview } from '@static/js/adminlte.js';
+import * as SignalR from '@microsoft/signalr';
 import * as ConfigConstants from '@constants/ConfigConstants';
-import { withRouter } from "react-router";
+import { withRouter } from 'react-router';
 import { historyApp, historyDashboard, firstLogin } from '@utils';
 import CustomRouter from '@utils/CustomRoutes';
 
@@ -52,21 +52,20 @@ class DashBoard extends Component {
 
   componentWillUnmount() {
     if (this.newConnection) {
-      this.newConnection.stop().then(() => console.log("websocket is disconnected"));
+      this.newConnection.stop().then(() => console.log('websocket is disconnected'));
       this.newConnection = null;
     }
   }
 
   componentDidMount() {
-
     (async () => {
-      var Treeview_slideMenu = new Treeview($("#main-slidebar-menu"), {
+      var Treeview_slideMenu = new Treeview($('#main-slidebar-menu'), {
         accordion: false,
         animationSpeed: 300,
         expandSidebar: false,
         sidebarButtonSelector: '[data-widget="pushmenu"]',
         trigger: '[data-widget="treeview"] .nav-link',
-        widget: "treeview",
+        widget: 'treeview',
       });
       Treeview_slideMenu.init();
 
@@ -117,16 +116,13 @@ class DashBoard extends Component {
 
       //   // if (messObj.typestring=="notifyupload") {
       //   //   eventBus.dispatch("new_file_uploaded", messObj.data);
-      //   // }  
+      //   // }
       // });
-
     })();
-
-
   }
 
   onTabChange(value) {
-    this.setState({ tab: value })
+    this.setState({ tab: value });
   }
 
   render() {
@@ -136,7 +132,6 @@ class DashBoard extends Component {
 
         <div className="container-fluid">
           <CustomRouter history={historyDashboard}>
-
             <ToastContainer
               theme="colored"
               position="bottom-right"
@@ -154,20 +149,20 @@ class DashBoard extends Component {
             <SiderBar Menus={this.html} FullNameLogin={this.Fullname} />
 
             <Switch>
-
               {this.showRouters}
               {/* <Route path="menu">
                   <Menu />
                 </Route> */}
 
-              {<Route path="/"
-                render={(props) => {
-                  var isFromLogin = firstLogin.isfirst;
-                  firstLogin.isfirst = null;
-                  return isFromLogin ? <this.Component_Default  {...props} /> : null
-                }}
-              />
-
+              {
+                <Route
+                  path="/"
+                  render={(props) => {
+                    var isFromLogin = firstLogin.isfirst;
+                    firstLogin.isfirst = null;
+                    return isFromLogin ? <this.Component_Default {...props} /> : null;
+                  }}
+                />
               }
             </Switch>
             <TabListContent />
@@ -176,12 +171,8 @@ class DashBoard extends Component {
           </CustomRouter>
         </div>
         {/* </ThemeProvider> */}
-
       </>
     );
   }
-
-
-
 }
 export default withRouter(DashBoard);

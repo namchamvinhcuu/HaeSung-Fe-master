@@ -1,6 +1,6 @@
-import { axios } from "@utils";
+import { axios } from '@utils';
 
-const API = "/api/work-order";
+const API = '/api/work-order';
 
 export const get = async (params) => {
   try {
@@ -25,7 +25,7 @@ export const getSearchMaterialArr = async (BomLv, BomId) => {
     return await axios.get(`${API}/get-search-material`, {
       params: {
         BomLv: BomLv,
-        BomId: BomId
+        BomId: BomId,
       },
     });
   } catch (error) {

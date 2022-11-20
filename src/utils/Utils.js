@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from 'moment';
 const calDateAgo = (date) => {
   var date = moment(date);
 
@@ -7,32 +7,32 @@ const calDateAgo = (date) => {
   var interval = seconds / 31536000;
 
   if (interval > 1) {
-    return Math.floor(interval) + " years ago";
+    return Math.floor(interval) + ' years ago';
   }
   interval = seconds / 2592000;
   if (interval > 1) {
-    return Math.floor(interval) + " months ago";
+    return Math.floor(interval) + ' months ago';
   }
   interval = seconds / 86400;
   if (interval > 1) {
-    return Math.floor(interval) + " days ago";
+    return Math.floor(interval) + ' days ago';
   }
   interval = seconds / 3600;
   if (interval > 1) {
-    return Math.floor(interval) + " hours ago";
+    return Math.floor(interval) + ' hours ago';
   }
   interval = seconds / 60;
   if (interval > 1) {
-    return Math.floor(interval) + " minutes ago";
+    return Math.floor(interval) + ' minutes ago';
   }
-  return Math.floor(seconds) + " seconds ago";
+  return Math.floor(seconds) + ' seconds ago';
 };
 
 function toCamel(o) {
   var newO, origKey, newKey, value;
   if (o instanceof Array) {
     return o.map(function (value) {
-      if (typeof value === "object") {
+      if (typeof value === 'object') {
         value = toCamel(value);
       }
       return value;
@@ -41,14 +41,9 @@ function toCamel(o) {
     newO = {};
     for (origKey in o) {
       if (o.hasOwnProperty(origKey)) {
-        newKey = (
-          origKey.charAt(0).toLowerCase() + origKey.slice(1) || origKey
-        ).toString();
+        newKey = (origKey.charAt(0).toLowerCase() + origKey.slice(1) || origKey).toString();
         value = o[origKey];
-        if (
-          value instanceof Array ||
-          (value !== null && value.constructor === Object)
-        ) {
+        if (value instanceof Array || (value !== null && value.constructor === Object)) {
           value = toCamel(value);
         }
         newO[newKey] = value;

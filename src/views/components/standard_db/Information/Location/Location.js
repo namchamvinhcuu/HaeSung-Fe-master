@@ -1,24 +1,16 @@
-import {
-  MuiAutocomplete, MuiButton,
-  MuiDataGrid, MuiSearchField
-} from "@controls";
-import { LocationDto } from "@models";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import UndoIcon from "@mui/icons-material/Undo";
-import {
-  FormControlLabel,
-  Grid,
-  IconButton,
-  Switch
-} from "@mui/material";
-import { locationService } from "@services";
-import { ErrorAlert, SuccessAlert } from "@utils";
-import moment from "moment";
-import React, { useEffect, useRef, useState } from "react";
-import { useIntl } from "react-intl";
-import CreateLocationDialog from "./CreateLocationDialog";
-import ModifyLocationDialog from "./ModifyLocationDialog";
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import { LocationDto } from '@models';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import UndoIcon from '@mui/icons-material/Undo';
+import { FormControlLabel, Grid, IconButton, Switch } from '@mui/material';
+import { locationService } from '@services';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
+import CreateLocationDialog from './CreateLocationDialog';
+import ModifyLocationDialog from './ModifyLocationDialog';
 
 const Location = (props) => {
   const intl = useIntl();
@@ -31,7 +23,7 @@ const Location = (props) => {
     page: 1,
     pageSize: 20,
     searchData: {
-      keyWord: "",
+      keyWord: '',
       AreaId: null,
       showDelete: true,
     },
@@ -55,57 +47,46 @@ const Location = (props) => {
 
   const columns = [
     {
-      field: "id",
-      headerName: "",
+      field: 'id',
+      headerName: '',
       flex: 0.01,
-      align: "center",
+      align: 'center',
       filterable: false,
       renderCell: (index) =>
-        index.api.getRowIndex(index.row.LocationId) +
-        1 +
-        (locationState.page - 1) * locationState.pageSize,
+        index.api.getRowIndex(index.row.LocationId) + 1 + (locationState.page - 1) * locationState.pageSize,
     },
-    { field: "LocationId", hide: true },
-    { field: "row_version", hide: true },
+    { field: 'LocationId', hide: true },
+    { field: 'row_version', hide: true },
     {
-      field: "action",
-      headerName: "",
+      field: 'action',
+      headerName: '',
       width: 100,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid orange" } }]}
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={toggleModifyDialog}
               >
                 <EditIcon fontSize="inherit" />
               </IconButton>
             </Grid>
-            <Grid item xs={6} style={{ textAlign: "center" }}>
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="delete"
                 color="error"
                 size="small"
-                sx={[{ "&:hover": { border: "1px solid red" } }]}
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                {params.row.isActived ? (
-                  <DeleteIcon fontSize="inherit" />
-                ) : (
-                  <UndoIcon fontSize="inherit" />
-                )}
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
           </Grid>
@@ -113,38 +94,34 @@ const Location = (props) => {
       },
     },
     {
-      field: "LocationCode",
-      headerName: intl.formatMessage({ id: "location.LocationCode" }),
+      field: 'LocationCode',
+      headerName: intl.formatMessage({ id: 'location.LocationCode' }),
       flex: 0.5,
     },
     {
-      field: "AreaName",
-      headerName: intl.formatMessage({ id: "location.AreaId" }),
+      field: 'AreaName',
+      headerName: intl.formatMessage({ id: 'location.AreaId' }),
       flex: 0.5,
     },
-    { field: "createdName", headerName: "User Create", width: 150 },
+    { field: 'createdName', headerName: 'User Create', width: 150 },
     {
-      field: "createdDate",
-      headerName: intl.formatMessage({ id: "general.created_date" }),
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.created_date' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
-    { field: "modifiedName", headerName: "User Update", width: 150 },
+    { field: 'modifiedName', headerName: 'User Update', width: 150 },
     {
-      field: "modifiedDate",
-      headerName: intl.formatMessage({ id: "general.modified_date" }),
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modified_date' }),
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value)
-            .add(7, "hours")
-            .format("YYYY-MM-DD HH:mm:ss");
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
@@ -159,11 +136,7 @@ const Location = (props) => {
 
   useEffect(() => {
     fetchData();
-  }, [
-    locationState.page,
-    locationState.pageSize,
-    locationState.searchData.showDelete,
-  ]);
+  }, [locationState.page, locationState.pageSize, locationState.searchData.showDelete]);
 
   useEffect(() => {
     if (!_.isEmpty(newData) && isRendered && !_.isEqual(newData, LocationDto)) {
@@ -180,11 +153,7 @@ const Location = (props) => {
   }, [newData]);
 
   useEffect(() => {
-    if (
-      !_.isEmpty(selectedRow) &&
-      !_.isEqual(selectedRow, LocationDto) &&
-      isRendered
-    ) {
+    if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, LocationDto) && isRendered) {
       let newArr = [...locationState.data];
       const index = _.findIndex(newArr, function (o) {
         return o.LocationId == selectedRow.LocationId;
@@ -201,9 +170,7 @@ const Location = (props) => {
     if (
       window.confirm(
         intl.formatMessage({
-          id: location.isActived
-            ? "general.confirm_delete"
-            : "general.confirm_redo_deleted",
+          id: location.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
         })
       )
     ) {
@@ -213,7 +180,7 @@ const Location = (props) => {
           row_version: location.row_version,
         });
         if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: "general.success" }));
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchData();
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
@@ -238,7 +205,7 @@ const Location = (props) => {
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...locationState.searchData };
     newSearchData[inputName] = e;
-    if (inputName == "showDelete") {
+    if (inputName == 'showDelete') {
       setLocationState({
         ...locationState,
         page: 1,
@@ -278,28 +245,13 @@ const Location = (props) => {
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="width-end"
-      >
+      <Grid container direction="row" justifyContent="space-between" alignItems="width-end">
         <Grid item xs={3}>
-          <MuiButton
-            text="create"
-            color="success"
-            onClick={toggleCreateDialog}
-          />
+          <MuiButton text="create" color="success" onClick={toggleCreateDialog} />
         </Grid>
         <Grid item xs>
-          <Grid
-            container
-            columnSpacing={2}
-            direction="row"
-            justifyContent="flex-end"
-            alignItems="flex-end"
-          >
-            <Grid item style={{ width: "21%" }}>
+          <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
+            <Grid item style={{ width: '21%' }}>
               <MuiSearchField
                 //sx={{ width: 220}}
                 fullWidth
@@ -307,21 +259,16 @@ const Location = (props) => {
                 size="small"
                 label="location.LocationCode"
                 onClick={fetchData}
-                onChange={(e) => handleSearch(e.target.value, "keyWord")}
+                onChange={(e) => handleSearch(e.target.value, 'keyWord')}
               />
             </Grid>
-            <Grid item style={{ width: "21%" }}>
+            <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
-                label={intl.formatMessage({ id: "location.AreaId" })}
+                label={intl.formatMessage({ id: 'location.AreaId' })}
                 fetchDataFunc={getArea}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
-                onChange={(e, item) =>
-                  handleSearch(
-                    item ? item.commonDetailId ?? null : null,
-                    "AreaId"
-                  )
-                }
+                onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'AreaId')}
                 variant="standard"
               />
               {/* <MuiSelectField
@@ -340,12 +287,7 @@ const Location = (props) => {
               /> */}
             </Grid>
             <Grid item>
-              <MuiButton
-                text="search"
-                color="info"
-                onClick={fetchData}
-                sx={{ mt: 1, mr: 3 }}
-              />
+              <MuiButton text="search" color="info" onClick={fetchData} sx={{ mt: 1, mr: 3 }} />
             </Grid>
           </Grid>
         </Grid>
@@ -357,13 +299,11 @@ const Location = (props) => {
               <Switch
                 defaultChecked={true}
                 color="primary"
-                onChange={(e) => handleSearch(e.target.checked, "showDelete")}
+                onChange={(e) => handleSearch(e.target.checked, 'showDelete')}
               />
             }
             label={intl.formatMessage({
-              id: locationState.searchData.showDelete
-                ? "location.data_actived"
-                : "location.data_deleted",
+              id: locationState.searchData.showDelete ? 'location.data_actived' : 'location.data_deleted',
             })}
           />
         </Grid>

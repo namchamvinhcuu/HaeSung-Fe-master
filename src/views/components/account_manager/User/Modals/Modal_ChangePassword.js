@@ -1,15 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from 'react';
 
-import { api_post } from "@utils";
-import {
-  TextField,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
-import {
-  DraggableDialog,
-} from "@basesShared";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { api_post } from '@utils';
+import { TextField, InputAdornment, IconButton } from '@mui/material';
+import { DraggableDialog } from '@basesShared';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 const Modal_ChangePassword = ({ isShowing, hide, data, refreshTable }) => {
   const [info, setInfo] = useState({});
   const [showEyeCur, setShowEyeCur] = useState(false);
@@ -19,15 +13,13 @@ const Modal_ChangePassword = ({ isShowing, hide, data, refreshTable }) => {
   }, [data]);
 
   const handleSave = () => {
-    return api_post("account/update_password", { ...info, Id: info.id }).then(
-      (res) => {
-        refreshTable();
-        hide();
-      }
-    );
+    return api_post('account/update_password', { ...info, Id: info.id }).then((res) => {
+      refreshTable();
+      hide();
+    });
   };
   const _handleKeyDown = (e) => {
-    if (e.key == " ") {
+    if (e.key == ' ') {
       e.preventDefault();
     } else {
       setInfo({ ...info, location_name: e.target.value });
@@ -54,10 +46,10 @@ const Modal_ChangePassword = ({ isShowing, hide, data, refreshTable }) => {
       isShowing={isShowing}
       hide={hide}
       onSave={handleSave}
-      title={"Change Password"}
+      title={'Change Password'}
     >
       <TextField
-        type={showEyeNew ? "text" : "password"}
+        type={showEyeNew ? 'text' : 'password'}
         autoFocus
         required={true}
         margin="dense"
@@ -69,15 +61,13 @@ const Modal_ChangePassword = ({ isShowing, hide, data, refreshTable }) => {
         InputProps={{
           endAdornment: (
             <InputAdornment position="start">
-              <IconButton onClick={() => setShowEyeNew(!showEyeNew)}>
-                {iconNew}
-              </IconButton>
+              <IconButton onClick={() => setShowEyeNew(!showEyeNew)}>{iconNew}</IconButton>
             </InputAdornment>
           ),
         }}
       />
       <TextField
-        type={showEyeCur ? "text" : "password"}
+        type={showEyeCur ? 'text' : 'password'}
         autoComplete="off"
         required={true}
         margin="dense"
@@ -88,9 +78,7 @@ const Modal_ChangePassword = ({ isShowing, hide, data, refreshTable }) => {
         InputProps={{
           endAdornment: (
             <InputAdornment position="start">
-              <IconButton onClick={() => setShowEyeCur(!showEyeCur)}>
-                {iconCur}
-              </IconButton>
+              <IconButton onClick={() => setShowEyeCur(!showEyeCur)}>{iconCur}</IconButton>
             </InputAdornment>
           ),
         }}

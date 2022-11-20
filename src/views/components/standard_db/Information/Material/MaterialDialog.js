@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField, MuiAutocomplete } from '@controls'
-import { Autocomplete, Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
-import { useIntl } from 'react-intl'
-import * as yup from 'yup'
-import { materialService } from '@services'
-import { ErrorAlert, SuccessAlert } from '@utils'
 import { CREATE_ACTION } from '@constants/ConfigConstants';
-import { useFormik } from 'formik'
+import { MuiAutocomplete, MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls';
+import { Grid, TextField } from '@mui/material';
+import { materialService } from '@services';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import { useFormik } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { useIntl } from 'react-intl';
+import * as yup from 'yup';
 
 const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
   const intl = useIntl();
@@ -15,19 +15,38 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   const [UnitList, setUnitList] = useState([]);
 
   const schema = yup.object().shape({
-    MaterialCode: yup.string().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
-      .matches(/(\w{4})-(\w{6})/, intl.formatMessage({ id: "general.field_format" }, { format: '****-******' })),
-    MaterialType: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    Unit: yup.number().nullable()
-      .when("MaterialTypeName", (MaterialTypeName) => {
-        if (MaterialTypeName !== "BARE MATERIAL")
-          return yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+    MaterialCode: yup
+      .string()
+      .nullable()
+      .required(intl.formatMessage({ id: 'general.field_required' }))
+      .matches(/(\w{4})-(\w{6})/, intl.formatMessage({ id: 'general.field_format' }, { format: '****-******' })),
+    MaterialType: yup
+      .number()
+      .nullable()
+      .required(intl.formatMessage({ id: 'general.field_required' })),
+    Unit: yup
+      .number()
+      .nullable()
+      .when('MaterialTypeName', (MaterialTypeName) => {
+        if (MaterialTypeName !== 'BARE MATERIAL')
+          return yup
+            .number()
+            .nullable()
+            .required(intl.formatMessage({ id: 'general.field_required' }));
       }),
-    QCMasterId: yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' })),
-    SupplierId: yup.number().nullable()
-      .when("MaterialTypeName", (MaterialTypeName) => {
-        if (MaterialTypeName !== "BARE MATERIAL")
-          return yup.number().nullable().required(intl.formatMessage({ id: 'general.field_required' }))
+    QCMasterId: yup
+      .number()
+      .nullable()
+      .required(intl.formatMessage({ id: 'general.field_required' })),
+    SupplierId: yup
+      .number()
+      .nullable()
+      .when('MaterialTypeName', (MaterialTypeName) => {
+        if (MaterialTypeName !== 'BARE MATERIAL')
+          return yup
+            .number()
+            .nullable()
+            .required(intl.formatMessage({ id: 'general.field_required' }));
       }),
   });
 
@@ -35,7 +54,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     validationSchema: schema,
     initialValues: mode == CREATE_ACTION ? defaultValue : initModal,
     enableReinitialize: true,
-    onSubmit: async values => onSubmit(values)
+    onSubmit: async (values) => onSubmit(values),
   });
 
   const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
@@ -43,49 +62,46 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   useEffect(() => {
     // getSupplier();
     getUnit();
-  }, [])
+  }, []);
 
   const handleReset = () => {
     resetForm();
-  }
+  };
 
   const handleCloseDialog = () => {
     resetForm();
     onClose();
-  }
+  };
 
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
 
     if (mode == CREATE_ACTION) {
-      if (data.MaterialTypeName == "BARE MATERIAL") {
-        var unitBare = UnitList.filter(x => x.commonDetailName == "PCS");
+      if (data.MaterialTypeName == 'BARE MATERIAL') {
+        var unitBare = UnitList.filter((x) => x.commonDetailName == 'PCS');
         data.Unit = unitBare[0].commonDetailId;
       }
 
       const res = await materialService.createMaterial(data);
       if (res.HttpResponseCode === 200 && res.Data) {
-        SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
         setNewData({ ...res.Data });
         setDialogState({ ...dialogState, isSubmit: false });
         handleReset();
-      }
-      else {
-        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+      } else {
+        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         setDialogState({ ...dialogState, isSubmit: false });
       }
-    }
-    else {
+    } else {
       const res = await materialService.modifyMaterial(data);
       if (res.HttpResponseCode === 200) {
-        SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }))
+        SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
         setUpdateData({ ...res.Data });
         setDialogState({ ...dialogState, isSubmit: false });
         handleReset();
         handleCloseDialog();
-      }
-      else {
-        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }))
+      } else {
+        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         setDialogState({ ...dialogState, isSubmit: false });
       }
     }
@@ -108,21 +124,21 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
   return (
     <MuiDialog
-      maxWidth='md'
+      maxWidth="md"
       title={intl.formatMessage({ id: mode == CREATE_ACTION ? 'general.create' : 'general.modify' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
       disable_animate={300}
       onClose={handleCloseDialog}
     >
-      <form onSubmit={handleSubmit} >
+      <form onSubmit={handleSubmit}>
         <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={6}>
             <TextField
               autoFocus
               fullWidth
-              size='small'
-              name='MaterialCode'
+              size="small"
+              name="MaterialCode"
               inputProps={{ maxLength: 11 }}
               disabled={dialogState.isSubmit}
               value={values.MaterialCode}
@@ -135,28 +151,31 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           <Grid item xs={6}>
             <MuiAutocomplete
               required
-              value={values.MaterialType ? { commonDetailId: values.MaterialType, commonDetailName: values.MaterialTypeName } : null}
+              value={
+                values.MaterialType
+                  ? { commonDetailId: values.MaterialType, commonDetailName: values.MaterialTypeName }
+                  : null
+              }
               disabled={dialogState.isSubmit}
               label={intl.formatMessage({ id: 'material.MaterialType' })}
               fetchDataFunc={materialService.getMaterialType}
               displayLabel="commonDetailName"
               displayValue="commonDetailId"
               onChange={(e, value) => {
-                if (value?.commonDetailName == "BARE MATERIAL") {
-                  setFieldValue("SupplierName", '');
-                  setFieldValue("SupplierId", null);
-                  var unitBare = UnitList.filter(x => x.commonDetailName == "PCS");
-                  setFieldValue("UnitName", unitBare[0].commonDetailName);
-                  setFieldValue("Unit", unitBare[0].commonDetailId);
+                if (value?.commonDetailName == 'BARE MATERIAL') {
+                  setFieldValue('SupplierName', '');
+                  setFieldValue('SupplierId', null);
+                  var unitBare = UnitList.filter((x) => x.commonDetailName == 'PCS');
+                  setFieldValue('UnitName', unitBare[0].commonDetailName);
+                  setFieldValue('Unit', unitBare[0].commonDetailId);
+                } else {
+                  setFieldValue('UnitName', '');
+                  setFieldValue('Unit', null);
                 }
-                else {
-                  setFieldValue("UnitName", '');
-                  setFieldValue("Unit", null);
-                }
-                setFieldValue("QCMasterCode", '');
-                setFieldValue("QCMasterId", null);
-                setFieldValue("MaterialTypeName", value?.commonDetailName || '');
-                setFieldValue("MaterialType", value?.commonDetailId || '');
+                setFieldValue('QCMasterCode', '');
+                setFieldValue('QCMasterId', null);
+                setFieldValue('MaterialTypeName', value?.commonDetailName || '');
+                setFieldValue('MaterialType', value?.commonDetailId || '');
               }}
               error={touched.MaterialType && Boolean(errors.MaterialType)}
               helperText={touched.MaterialType && errors.MaterialType}
@@ -167,14 +186,18 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               <MuiAutocomplete
                 required
                 value={values.SupplierId ? { SupplierId: values.SupplierId, SupplierName: values.SupplierName } : null}
-                disabled={values.MaterialTypeName == "BARE MATERIAL" || values.MaterialType == null ? true : dialogState.isSubmit}
+                disabled={
+                  values.MaterialTypeName == 'BARE MATERIAL' || values.MaterialType == null
+                    ? true
+                    : dialogState.isSubmit
+                }
                 label={intl.formatMessage({ id: 'material.SupplierId' })}
                 fetchDataFunc={getSupplier}
                 displayLabel="SupplierName"
                 displayValue="SupplierId"
                 onChange={(e, value) => {
-                  setFieldValue("SupplierName", value?.SupplierName || '');
-                  setFieldValue("SupplierId", value?.SupplierId || '');
+                  setFieldValue('SupplierName', value?.SupplierName || '');
+                  setFieldValue('SupplierId', value?.SupplierId || '');
                 }}
                 error={touched.SupplierId && Boolean(errors.SupplierId)}
                 helperText={touched.SupplierId && errors.SupplierId}
@@ -190,8 +213,8 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                 displayLabel="QCMasterCode"
                 displayValue="QCMasterId"
                 onChange={(e, value) => {
-                  setFieldValue("QCMasterCode", value?.QCMasterCode || '');
-                  setFieldValue("QCMasterId", value?.QCMasterId || '');
+                  setFieldValue('QCMasterCode', value?.QCMasterCode || '');
+                  setFieldValue('QCMasterId', value?.QCMasterId || '');
                 }}
                 error={touched.QCMasterId && Boolean(errors.QCMasterId)}
                 helperText={touched.QCMasterId && errors.QCMasterId}
@@ -202,14 +225,14 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
             <MuiAutocomplete
               required
               value={values.Unit ? { commonDetailId: values.Unit, commonDetailName: values.UnitName } : null}
-              disabled={values.MaterialTypeName == "BARE MATERIAL" ? true : dialogState.isSubmit}
+              disabled={values.MaterialTypeName == 'BARE MATERIAL' ? true : dialogState.isSubmit}
               label={intl.formatMessage({ id: 'material.Unit' })}
               fetchDataFunc={materialService.getUnit}
               displayLabel="commonDetailName"
               displayValue="commonDetailId"
               onChange={(e, value) => {
-                setFieldValue("UnitName", value?.commonDetailName || '');
-                setFieldValue("Unit", value?.commonDetailId || '');
+                setFieldValue('UnitName', value?.commonDetailName || '');
+                setFieldValue('Unit', value?.commonDetailId || '');
               }}
               error={touched.Unit && Boolean(errors.Unit)}
               helperText={touched.Unit && errors.Unit}
@@ -218,8 +241,8 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           <Grid item xs={6}>
             <TextField
               fullWidth
-              size='small'
-              name='Description'
+              size="small"
+              name="Description"
               disabled={dialogState.isSubmit}
               value={values.Description}
               onChange={handleChange}
@@ -229,8 +252,8 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           <Grid item xs={6}>
             <TextField
               fullWidth
-              size='small'
-              name='Grade'
+              size="small"
+              name="Grade"
               disabled={dialogState.isSubmit}
               value={values.Grade}
               onChange={handleChange}
@@ -240,8 +263,8 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           <Grid item xs={6}>
             <TextField
               fullWidth
-              size='small'
-              name='Color'
+              size="small"
+              name="Color"
               disabled={dialogState.isSubmit}
               value={values.Color}
               onChange={handleChange}
@@ -251,8 +274,8 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           <Grid item xs={6}>
             <TextField
               fullWidth
-              size='small'
-              name='ResinType'
+              size="small"
+              name="ResinType"
               disabled={dialogState.isSubmit}
               value={values.ResinType}
               onChange={handleChange}
@@ -262,8 +285,8 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           <Grid item xs={6}>
             <TextField
               fullWidth
-              size='small'
-              name='FlameClass'
+              size="small"
+              name="FlameClass"
               disabled={dialogState.isSubmit}
               value={values.FlameClass}
               onChange={handleChange}
@@ -278,9 +301,9 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
           </Grid>
         </Grid>
       </form>
-    </MuiDialog >
-  )
-}
+    </MuiDialog>
+  );
+};
 
 const defaultValue = {
   MaterialId: null,
@@ -301,4 +324,4 @@ const defaultValue = {
   FlameClass: '',
 };
 
-export default MaterialDialog
+export default MaterialDialog;
