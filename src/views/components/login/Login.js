@@ -59,6 +59,7 @@ const Login = (props) => {
   };
   const { values, setValues, handleInputChange } = useFormCustom(initModal);
 
+  const [buttonState, setButtonState] = React.useState('loaded');
   const dataModalRef = useRef(initModal);
 
   const [isSubmit, setIsSubmit] = useState(false);
@@ -73,7 +74,10 @@ const Login = (props) => {
   };
   const handleDownload = async (e) => {
     try {
+      setButtonState('loading');
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       await versionAppService.downloadApp();
+      setButtonState('loaded');
     } catch (error) {
       console.log(`ERROR: ${error}`);
     }
@@ -290,7 +294,9 @@ const Login = (props) => {
                 style={{ width: '100%', marginTop: '25px' }}
                 type="submit"
                 onClick={() => handleDownload()}
+                disabled={buttonState === 'loading'}
               >
+                {buttonState === 'loaded' ? props.children : 'Loading...'}
                 <span className="d-block" aria-hidden="true">
                   <div className="d-flex" style={{ color: 'white' }}>
                     <PhoneAndroidIcon />
