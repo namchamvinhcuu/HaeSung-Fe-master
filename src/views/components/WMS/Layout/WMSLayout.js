@@ -9,7 +9,7 @@ import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiTextField } from '@controls
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import IconButton from '@mui/material/IconButton';
-import { ErrorAlert, SuccessAlert } from '@utils';
+import { ErrorAlert, isNumber, SuccessAlert } from '@utils';
 import _ from 'lodash';
 import moment from 'moment';
 import { useIntl } from 'react-intl';
@@ -24,8 +24,8 @@ import axios from 'axios';
 import Konva from 'konva';
 
 import { useModal, useModal2 } from '@basesShared';
-import { Button, ButtonGroup } from '@mui/material';
-import { locationService, materialPutAwayService, wmsLayoutService, eslService } from '@services';
+import { Button, ButtonGroup, Tooltip, Typography } from '@mui/material';
+import { locationService, materialPutAwayService, wmsLayoutService, eslService, iqcService } from '@services';
 import WMSLayoutPrintBinDialog from './WMSLayoutPrintBinDialog';
 import WMSLayoutPrintLotDialog from './WMSLayoutPrintLotDialog';
 
@@ -86,7 +86,7 @@ const WMSLayout = (props) => {
   const scale = area.width / SCENE_BASE_WIDTH;
 
   const [rects, setRects] = useState(generateShapes());
-
+  const [updateData, setUpdateData] = useState({});
   const [selectedShelfId, setSelectedShelfId] = useState(0);
 
   const [BinId, setBinId] = useState(0);
@@ -97,6 +97,8 @@ const WMSLayout = (props) => {
     page: 1,
     pageSize: 7,
   });
+
+  // const [selectedRow, setSelectedRow] = useState({});
 
   const columns = [
     { field: 'Id', headerName: '', hide: true },
@@ -110,7 +112,34 @@ const WMSLayout = (props) => {
     //{ field: "LotCode", headerName: "Lot Code", flex: 0.6, },
     { field: 'MaterialCode', headerName: 'Material Code', flex: 0.4 },
     { field: 'LotSerial', headerName: 'LotSerial', flex: 0.3 },
-    { field: 'Qty', headerName: 'Qty', flex: 0.3 },
+    {
+      field: 'Qty',
+      headerName: 'Qty',
+      flex: 0.3,
+      editable: true,
+      renderCell: (params) => {
+        return (
+          <Tooltip title={intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' })}>
+            <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.Qty}</Typography>
+          </Tooltip>
+        );
+      },
+    },
+    // {
+    //   field: 'SOrderQty',
+    //   headerName: intl.formatMessage({ id: 'material-so-detail.SOrderQty' }),
+    //   /*flex: 0.7,*/ width: 150,
+    //   editable: true,
+    //   renderCell: (params) => {
+    //     return (
+    //       <Tooltip
+    //         title={params.row.MsoDetailStatus ? '' : intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' })}
+    //       >
+    //         <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.SOrderQty}</Typography>
+    //       </Tooltip>
+    //     );
+    //   },
+    // },
     {
       field: 'IncomingDate',
       headerName: 'Incoming Date',
@@ -542,6 +571,18 @@ const WMSLayout = (props) => {
     };
   }, [area.width]);
 
+  // const handleRowSelection = (arrIds) => {
+  //   const rowSelected = lotState.data.filter(function (item) {
+  //     return item.Id === arrIds[0];
+  //   });
+
+  //   if (rowSelected && rowSelected.length > 0) {
+  //     setSelectedRow({ ...rowSelected[0] });
+  //   } else {
+  //     // setSelectedRow({ ...WorkOrderDto });
+  //   }
+  // };
+
   useEffect(() => {
     drawingDetailFunc();
     setBinId(0);
@@ -552,6 +593,65 @@ const WMSLayout = (props) => {
     // drawingDetailFunc();
   }, [BinId]);
 
+  const handleRowUpdate = async (newRow) => {
+    const index = _.findIndex(lotState.data, function (o) {
+      return o.Id == newRow.Id;
+    });
+    var oldRow = lotState.data[index];
+
+    if (newRow.Qty == oldRow.Qty) {
+      return oldRow;
+    }
+    setLotState({ ...lotState, isSubmit: true });
+    console.log('newRow', newRow);
+    if (!isNumber(newRow.Qty) || newRow.Qty < 0) {
+      ErrorAlert(intl.formatMessage({ id: 'forecast.OrderQty_required_bigger' }));
+      // newRow.Qty = 0;
+      return oldRow;
+    }
+    newRow = { ...newRow, Qty: parseInt(newRow.Qty) };
+    // const res = await iqcService.modifyIQC({
+    //   ...newRow,
+    // });
+    const res = await wmsLayoutService.modifyQty({
+      ...newRow,
+    });
+    if (res.HttpResponseCode === 200 && res.Data) {
+      console.log(res.Data, 'abc');
+      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      setUpdateData(res.Data);
+      setLotState({ ...lotState, isSubmit: false });
+      await eslService.updateESLDataByBinId(newRow.BinId);
+
+      return res.Data;
+      // return newRow;
+    } else {
+      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      setLotState({ ...lotState, isSubmit: false });
+      const index = _.findIndex(lotState.data, function (o) {
+        return o.Id == newRow.Id;
+      });
+
+      return lotState.data[index];
+    }
+  };
+
+  useEffect(() => {
+    if (!_.isEmpty(updateData) && !_.isEqual(updateData) && isRendered) {
+      let newArr = [...lotState.data];
+      const index = _.findIndex(newArr, function (o) {
+        return o.Id == updateData.Id;
+      });
+      if (index !== -1) {
+        newArr[index] = updateData;
+      }
+      setLotState({ ...lotState, data: [...newArr] });
+    }
+  }, [updateData]);
+  const handleProcessRowUpdateError = React.useCallback((error) => {
+    console.log('update error', error);
+    ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
+  }, []);
   return (
     <React.Fragment>
       <Grid container direction="row" justifyContent="space-between" spacing={2}>
@@ -710,6 +810,9 @@ const WMSLayout = (props) => {
             </Grid>
             <Grid item>
               <MuiDataGrid
+                processRowUpdate={handleRowUpdate}
+                onProcessRowUpdateError={handleProcessRowUpdateError}
+                experimentalFeatures={{ newEditingApi: true }}
                 showLoading={lotState.isLoading}
                 isPagingServer={true}
                 headerHeight={45}
@@ -721,6 +824,7 @@ const WMSLayout = (props) => {
                 onPageChange={(newPage) => setLotState({ ...lotState, page: newPage + 1 })}
                 onPageSizeChange={(newPageSize) => setLotState({ ...lotState, page: 1, pageSize: newPageSize })}
                 getRowId={(rows) => rows.Id}
+                // onSelectionModelChange={(newSelectedRowId) => handleRowSelection(newSelectedRowId)}
                 //getRowClassName={(params) => { if (_.isEqual(params.row, newData)) return `Mui-created`; }}
                 initialState={{ pinnedColumns: { right: ['action'] } }}
               />
