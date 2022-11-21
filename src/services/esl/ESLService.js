@@ -19,7 +19,7 @@ export const updateESLDataByBinId = async (binId) => {
   let res = await getESLDataByBinId(binId);
 
   if (_.isEqual(res.data, initialESLData)) {
-    const response = await axiosInstance.get(`${apiName}/get-bin?binId=${binId}`);
+    const response = await axiosInstance.get(`${apiName}/get-bin-by-id?binId=${binId}`);
 
     if (response && response.Data) {
       res.data.LOCATION = response.Data.BinCode;
@@ -43,6 +43,45 @@ export const updateESLDataByBinId = async (binId) => {
 
   //   res.data.ITEM_NAME = item_name;
   // }
+
+  res.id = res.data.LOCATION;
+  dataList.push(res);
+
+  if (dataList.length > 0)
+    try {
+      await axios.post('http://118.69.130.73:9001/articles', {
+        dataList: dataList,
+      });
+      // console.log(response)
+    } catch (error) {
+      console.log(error);
+    }
+};
+
+export const getESLDataByBinCode = async (binCode) => {
+  try {
+    return await axiosInstance.get(`${apiName}/get-els-data-by-binCode?BinCode=${binCode}`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+export const updateESLDataByBinCode = async (binCode) => {
+  let dataList = [];
+
+  let res = await getESLDataByBinCode(binCode);
+
+  if (_.isEqual(res.data, initialESLData)) {
+    const response = await axiosInstance.get(`${apiName}/get-bin-by-code?binCode=${binCode}`);
+
+    if (response && response.Data) {
+      res.data.LOCATION = response.Data.BinCode;
+      res.data.SHELVE_LEVEL = response.Data.BinLevel;
+    } else {
+      res.data.LOCATION = '';
+      res.data.SHELVE_LEVEL = 0;
+    }
+  }
 
   res.id = res.data.LOCATION;
   dataList.push(res);

@@ -341,7 +341,7 @@ const IQC = (props) => {
             <Grid item sx={{ width: '170px' }}>
               <MuiDateField
                 disabled={iqcState.isLoading}
-                label="Start QC Date"
+                label="From QC Date"
                 value={iqcState.searchData.searchStartDay}
                 onChange={(e) => {
                   handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchStartDay');
@@ -352,7 +352,7 @@ const IQC = (props) => {
             <Grid item sx={{ width: '170px' }}>
               <MuiDateField
                 disabled={iqcState.isLoading}
-                label="End QC Date"
+                label="To QC Date"
                 value={iqcState.searchData.searchEndDay}
                 onChange={(e) => {
                   handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchEndDay');
