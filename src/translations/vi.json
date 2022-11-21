@@ -463,6 +463,7 @@
     "SOrderQty_tip": "Double click để chỉnh sửa",
     "LotSerial": "Lot Serial",
     "BinCode": "Mã Bin",
+    "BinId": "Bin Id",
     "MsoDetailStatus_edit": "Không thể sửa vì trạng thái",
     "MsoId_required": "Shipping Order không đươc để trống",
     "Material_required": "Liệu không được để trống",

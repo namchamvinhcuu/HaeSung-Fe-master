@@ -463,6 +463,7 @@
     "SOrderQty_tip": "Double click to edit",
     "LotSerial": "Lot Serial",
     "BinCode": "Bin Code",
+    "BinId": "Bin Id",
     "MsoDetailStatus_edit": "Cannot update because status",
     "MsoId_required": "Shipping Order cannot be blank",
     "Material_required": "Material cannot be blank",

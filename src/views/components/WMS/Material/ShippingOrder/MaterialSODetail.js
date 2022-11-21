@@ -209,10 +209,14 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
       /*flex: 0.7,*/ width: 150,
     },
   ];
+
   const columnsFromPicking = [
     { field: 'MsoDetailId', headerName: '', hide: true },
-    // { field: "MsoId", headerName: "", hide: true },
-    // { field: "MaterialId", headerName: "", hide: true },
+    {
+      field: 'BinId',
+      headerName: intl.formatMessage({ id: 'material-so-detail.BinId' }),
+      hide: true,
+    },
 
     {
       field: 'id',
@@ -252,22 +256,43 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
       headerName: intl.formatMessage({ id: 'material-so-detail.SOrderQty' }),
       /*flex: 0.7,*/ width: 150,
     },
+
     {
-      field: 'Button',
-      headerName: 'Action',
+      field: 'BinCode',
+      headerName: intl.formatMessage({ id: 'material-so-detail.BinCode' }),
+      /*flex: 0.7,*/ width: 150,
+    },
+    {
+      field: 'action',
+      headerName: '',
       align: 'center',
+      width: 250,
       renderCell: (params) => {
         return (
-          <Button
-            disabled={params.row.MsoDetailStatus}
-            variant="contained"
-            color="success"
-            size="small"
-            sx={{ textTransform: 'capitalize', fontSize: '14px' }}
-            onClick={() => handleConfirm(params)}
-          >
-            {params.row.MsoDetailStatus ? <span style={{ color: 'rgba(0,0,0,0.7)' }}>Picked</span> : 'Picking'}
-          </Button>
+          <>
+            <Button
+              disabled={params.row.MsoDetailStatus}
+              variant="contained"
+              color="success"
+              size="small"
+              sx={{ textTransform: 'capitalize', fontSize: '14px', width: '100px' }}
+              onClick={() => handleConfirm(params)}
+            >
+              {params.row.MsoDetailStatus ? <span style={{ color: 'rgba(0,0,0,0.7)' }}>Picked</span> : 'Picking'}
+            </Button>
+
+            <Button
+              // disabled={params.row.MsoDetailStatus}
+              variant="contained"
+              color="secondary"
+              size="small"
+              sx={{ textTransform: 'capitalize', fontSize: '14px', marginLeft: '5px' }}
+              onClick={() => handleFindBin(params.row.BinId)}
+            >
+              {/* {params.row.MsoDetailStatus ? <span style={{ color: 'rgba(0,0,0,0.7)' }}>Picked</span> : 'Picking'} */}
+              Find Bin
+            </Button>
+          </>
         );
       },
     },
@@ -287,10 +312,16 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
       width: 150,
     },
   ];
+
+  const handleFindBin = async (binId) => {
+    const res = await eslService.findBinByBinId(binId);
+  };
+
   const handleConfirm = (params) => {
     toggle2();
     setRowConfirm(params.row);
   };
+
   const handleAdd = () => {
     setMode(CREATE_ACTION);
     setRowData({ ...MaterialSODetailDto });
@@ -421,8 +452,6 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
   );
 };
 
-const initialESLData = { ITEM_NAME: '', LOCATION: '', SHELVE_LEVEL: -32768 };
-
 const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
   const intl = useIntl();
   const lotInputRef = useRef();
@@ -462,36 +491,11 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
       setUpdateData({ ...res.Data });
       hide();
 
-      // await updateESLData(rowConfirmData.BinCode);
       await eslService.updateESLDataByBinCode(rowConfirmData.BinCode);
     } else {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
     }
   };
-
-  // const updateESLData = async (binCode) => {
-  //   let dataList = [];
-
-  //   let res = await materialSOService.getESLDataByBinCode(binCode);
-
-  //   if (_.isEqual(res.data, initialESLData)) {
-  //     res.data.LOCATION = binCode;
-  //     res.data.SHELVE_LEVEL = binLevel;
-  //   }
-
-  //   res.id = `${binCode}`;
-  //   dataList.push(res);
-
-  //   if (dataList.length > 0)
-  //     try {
-  //       let response = await axios.post('http://118.69.130.73:9001/articles', {
-  //         dataList: dataList,
-  //       });
-  //       console.log(response);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  // };
 
   useEffect(() => {
     lotInputRef.current = inputRef;

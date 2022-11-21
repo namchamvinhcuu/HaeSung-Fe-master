@@ -96,3 +96,26 @@ export const updateESLDataByBinCode = async (binCode) => {
       console.log(error);
     }
 };
+
+export const findBinByBinId = async (binId) => {
+  const response = await axiosInstance.get(`${apiName}/get-bin-by-id?binId=${binId}`);
+
+  if (response && response.Data) {
+    let ESLCode = response.Data.ESLCode;
+    let putArr = [
+      {
+        color: 'BLUE',
+        duration: '10s',
+        labelCode: ESLCode,
+        patternId: 0,
+      },
+    ];
+
+    try {
+      const res = await axios.put('http://118.69.130.73:9001/labels/contents/led', putArr);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
