@@ -329,7 +329,7 @@ const MaterialPutAway = (props) => {
         <Grid item>
           <MuiDateField
             disabled={putAwayState.isLoading}
-            label="Start Incoming Date"
+            label="From Incoming Date"
             value={putAwayState.searchData.searchStartDay}
             onChange={(e) => {
               handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchStartDay');
@@ -340,7 +340,7 @@ const MaterialPutAway = (props) => {
         <Grid item>
           <MuiDateField
             disabled={putAwayState.isLoading}
-            label="End Incoming Date"
+            label="To Incoming Date"
             value={putAwayState.searchData.searchEndDay}
             onChange={(e) => {
               handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchEndDay');
