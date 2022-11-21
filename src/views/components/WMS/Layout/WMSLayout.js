@@ -25,7 +25,7 @@ import Konva from 'konva';
 
 import { useModal, useModal2 } from '@basesShared';
 import { Button, ButtonGroup } from '@mui/material';
-import { locationService, materialPutAwayService, wmsLayoutService } from '@services';
+import { locationService, materialPutAwayService, wmsLayoutService, eslService } from '@services';
 import WMSLayoutPrintBinDialog from './WMSLayoutPrintBinDialog';
 import WMSLayoutPrintLotDialog from './WMSLayoutPrintLotDialog';
 
@@ -153,8 +153,11 @@ const WMSLayout = (props) => {
       try {
         let res = await materialPutAwayService.handleDelete(lot);
         if (res && res.HttpResponseCode === 200) {
-          await updateESLData(lot.BinId, lot.BinCode);
           await getDataLot();
+
+          // await updateESLData(lot.BinId, lot.BinCode);
+
+          await eslService.updateESLDataByBinId(lot.BinId);
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         }
@@ -164,17 +167,17 @@ const WMSLayout = (props) => {
     }
   };
 
-  const updateESLData = async (bin_Id, Bin_Code) => {
-    let res = await materialPutAwayService.getESLDataByBinId(bin_Id);
-    if (res) {
-      res.id = `${Bin_Code}`;
-      try {
-        await axios.post('http://118.69.130.73:9001/articles', { dataList: [res] });
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
+  // const updateESLData = async (bin_Id, Bin_Code) => {
+  //   let res = await materialPutAwayService.getESLDataByBinId(bin_Id);
+  //   if (res) {
+  //     res.id = `${Bin_Code}`;
+  //     try {
+  //       await axios.post('http://118.69.130.73:9001/articles', { dataList: [res] });
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  // };
 
   const fetchData = async (refresh) => {
     if (!refresh) {

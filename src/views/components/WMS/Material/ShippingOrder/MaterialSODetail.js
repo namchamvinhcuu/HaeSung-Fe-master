@@ -10,7 +10,7 @@ import { Box, Button, Dialog, DialogContent, DialogTitle, Tooltip, Typography } 
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
-import { materialSOService } from '@services';
+import { materialSOService, eslService } from '@services';
 import { ErrorAlert, isNumber, SuccessAlert } from '@utils';
 import _ from 'lodash';
 import moment from 'moment';
@@ -19,8 +19,6 @@ import { useIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import MaterialSODetailDialog from './MaterialSODetailDialog';
-
-import axios from 'axios';
 
 const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
   let isRendered = useRef(true);
@@ -463,35 +461,37 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
       setUpdateData({ ...res.Data });
       hide();
-      await updateESLData(rowConfirmData.BinCode);
+
+      // await updateESLData(rowConfirmData.BinCode);
+      await eslService.updateESLDataByBinCode(rowConfirmData.BinCode);
     } else {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
     }
   };
 
-  const updateESLData = async (binCode) => {
-    let dataList = [];
+  // const updateESLData = async (binCode) => {
+  //   let dataList = [];
 
-    let res = await materialSOService.getESLDataByBinCode(binCode);
+  //   let res = await materialSOService.getESLDataByBinCode(binCode);
 
-    if (_.isEqual(res.data, initialESLData)) {
-      res.data.LOCATION = binCode;
-      res.data.SHELVE_LEVEL = binLevel;
-    }
+  //   if (_.isEqual(res.data, initialESLData)) {
+  //     res.data.LOCATION = binCode;
+  //     res.data.SHELVE_LEVEL = binLevel;
+  //   }
 
-    res.id = `${binCode}`;
-    dataList.push(res);
+  //   res.id = `${binCode}`;
+  //   dataList.push(res);
 
-    if (dataList.length > 0)
-      try {
-        let response = await axios.post('http://118.69.130.73:9001/articles', {
-          dataList: dataList,
-        });
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-      }
-  };
+  //   if (dataList.length > 0)
+  //     try {
+  //       let response = await axios.post('http://118.69.130.73:9001/articles', {
+  //         dataList: dataList,
+  //       });
+  //       console.log(response);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  // };
 
   useEffect(() => {
     lotInputRef.current = inputRef;

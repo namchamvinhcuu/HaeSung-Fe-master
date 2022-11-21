@@ -5,8 +5,8 @@ import { LotDto } from '@models';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Grid, IconButton } from '@mui/material';
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
-import { materialPutAwayService, eslService } from '@services';
-import { addDays, ErrorAlert, SuccessAlert } from '@utils';
+import { eslService, materialPutAwayService } from '@services';
+import { ErrorAlert, SuccessAlert } from '@utils';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -14,8 +14,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import _ from 'lodash';
-
-import axios from 'axios';
 
 const MaterialPutAway = (props) => {
   let isRendered = useRef(true);
