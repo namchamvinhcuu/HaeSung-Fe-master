@@ -5,8 +5,8 @@ import { LotDto } from '@models';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Grid, IconButton } from '@mui/material';
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
-import { materialPutAwayService } from '@services';
-import { addDays, ErrorAlert, SuccessAlert } from '@utils';
+import { eslService, materialPutAwayService } from '@services';
+import { ErrorAlert, SuccessAlert } from '@utils';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -14,8 +14,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import _ from 'lodash';
-
-import axios from 'axios';
 
 const MaterialPutAway = (props) => {
   let isRendered = useRef(true);
@@ -40,8 +38,6 @@ const MaterialPutAway = (props) => {
       BinCode: binCode,
     },
   });
-
-  const initialESLData = { ITEM_NAME: '', LOCATION: '', SHELVE_LEVEL: -32768 };
 
   const keyPress = async (e) => {
     if (e.key === 'Enter') {
@@ -74,7 +70,7 @@ const MaterialPutAway = (props) => {
         let res = await materialPutAwayService.handleDelete(lot);
         if (res && res.HttpResponseCode === 200) {
           await fetchData();
-          await updateESLData(lot.BinId);
+          await eslService.updateESLDataByBinId(lot.BinId);
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         }
@@ -165,60 +161,7 @@ const MaterialPutAway = (props) => {
     lotInputRef.current.value = '';
     lotInputRef.current.focus();
 
-    // let dataList = []
-
-    // let res = await materialPutAwayService.getESLDataByBinId(binId);
-    // if (res && res.data && !_.isEqual(res.data, initialESLData)) {
-    //   res.id = `Bin-${binCode}`;
-    //   dataList.push(res);
-    // }
-    // if (dataList.length > 0)
-    //   try {
-    //     let response = await axios.post('http://118.69.130.73:9001/articles', { dataList: dataList });
-    //     // console.log(response)
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-
-    await updateESLData(binId);
-  };
-
-  const updateESLData = async (bin_Id) => {
-    let dataList = [];
-
-    let res = await materialPutAwayService.getESLDataByBinId(bin_Id);
-
-    if (_.isEqual(res.data, initialESLData)) {
-      res.data.LOCATION = binCode;
-      res.data.SHELVE_LEVEL = binLevel;
-    }
-    // else {
-    //   let item_name = '';
-
-    //   let splitItem = res.data.ITEM_NAME.split(',');
-    //   for (let i = 0; i < splitItem.length; i++) {
-    //     item_name += splitItem[i].trim() + (' ', 22 + (i - splitItem[i].trim().length))
-    //   }
-
-    //   // let str = item_name.join("", res.data.ITEM_NAME.split(',').select(a => a.trim()).select((a, index) => {
-    //   //   return a + (' ', 22 + index - a.length);
-    //   // }));
-
-    //   res.data.ITEM_NAME = item_name;
-    // }
-
-    res.id = `${binCode}`;
-    dataList.push(res);
-
-    if (dataList.length > 0)
-      try {
-        let response = await axios.post('http://118.69.130.73:9001/articles', {
-          dataList: dataList,
-        });
-        // console.log(response)
-      } catch (error) {
-        console.log(error);
-      }
+    await eslService.updateESLDataByBinId(binId);
   };
 
   const columns = [
