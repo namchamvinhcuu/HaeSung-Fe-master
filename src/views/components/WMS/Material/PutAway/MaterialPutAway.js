@@ -316,27 +316,20 @@ const MaterialPutAway = (props) => {
       ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
     }
   };
+
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...putAwayState.searchData };
-
     newSearchData[inputName] = e;
-    // if (inputName == 'showDelete') {
-    //   setIQCState({
-    //     ...iqcState,
-    //     page: 1,
-    //     searchData: { ...newSearchData },
-    //   });
-    // } else {
     setPutAwayState({ ...putAwayState, searchData: { ...newSearchData } });
-    // }
   };
+
   return (
     <React.Fragment>
       <Grid container spacing={2} direction="row" justifyContent="flex-end" alignItems="center">
         <Grid item>
           <MuiDateField
             disabled={putAwayState.isLoading}
-            label="End QC Date"
+            label="Start Incoming Date"
             value={putAwayState.searchData.searchStartDay}
             onChange={(e) => {
               handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchStartDay');
@@ -347,7 +340,7 @@ const MaterialPutAway = (props) => {
         <Grid item>
           <MuiDateField
             disabled={putAwayState.isLoading}
-            label="End QC Date"
+            label="End Incoming Date"
             value={putAwayState.searchData.searchEndDay}
             onChange={(e) => {
               handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchEndDay');
