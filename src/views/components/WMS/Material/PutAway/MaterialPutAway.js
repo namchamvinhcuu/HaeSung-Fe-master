@@ -35,8 +35,9 @@ const MaterialPutAway = (props) => {
     page: 1,
     pageSize: 20,
     searchData: {
-      searchStartDay: addDays(initETDLoad, -1),
+      searchStartDay: initETDLoad,
       searchEndDay: initETDLoad,
+      BinCode: binCode,
     },
   });
 
@@ -105,6 +106,9 @@ const MaterialPutAway = (props) => {
     const params = {
       page: putAwayState.page,
       pageSize: putAwayState.pageSize,
+      BinCode: binCode,
+      searchStartDay: putAwayState.searchData.searchStartDay,
+      searchEndDay: putAwayState.searchData.searchEndDay,
     };
 
     const res = await materialPutAwayService.get(params);
@@ -312,9 +316,49 @@ const MaterialPutAway = (props) => {
       ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
     }
   };
+  const handleSearch = (e, inputName) => {
+    let newSearchData = { ...putAwayState.searchData };
 
+    newSearchData[inputName] = e;
+    // if (inputName == 'showDelete') {
+    //   setIQCState({
+    //     ...iqcState,
+    //     page: 1,
+    //     searchData: { ...newSearchData },
+    //   });
+    // } else {
+    setPutAwayState({ ...putAwayState, searchData: { ...newSearchData } });
+    // }
+  };
   return (
     <React.Fragment>
+      <Grid container spacing={2} direction="row" justifyContent="flex-end" alignItems="center">
+        <Grid item>
+          <MuiDateField
+            disabled={putAwayState.isLoading}
+            label="End QC Date"
+            value={putAwayState.searchData.searchStartDay}
+            onChange={(e) => {
+              handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchStartDay');
+            }}
+            variant="standard"
+          />
+        </Grid>
+        <Grid item>
+          <MuiDateField
+            disabled={putAwayState.isLoading}
+            label="End QC Date"
+            value={putAwayState.searchData.searchEndDay}
+            onChange={(e) => {
+              handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchEndDay');
+            }}
+            variant="standard"
+          />
+        </Grid>
+        <Grid item sx={{ ml: -0.5 }}>
+          <MuiButton text="search" color="info" onClick={fetchData} />
+        </Grid>
+      </Grid>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item sx={{ ml: 2 }}>
           <Grid container spacing={2}>
@@ -384,30 +428,6 @@ const MaterialPutAway = (props) => {
               <MuiButton text="scan" color="success" onClick={scanBtnClick} />
             </Grid>
           </Grid>
-        </Grid>
-      </Grid>
-      <Grid container spacing={2} direction="row" justifyContent="flex-start" alignItems="center">
-        <Grid item sx={{ ml: 2 }}>
-          <MuiDateField
-            disabled={putAwayState.isLoading}
-            label="End QC Date"
-            value={putAwayState.searchData.searchStartDay}
-            onChange={(e) => {
-              handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchStartDay');
-            }}
-            variant="standard"
-          />
-        </Grid>
-        <Grid item>
-          <MuiDateField
-            disabled={putAwayState.isLoading}
-            label="End QC Date"
-            value={putAwayState.searchData.searchEndDay}
-            onChange={(e) => {
-              handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchEndDay');
-            }}
-            variant="standard"
-          />
         </Grid>
       </Grid>
 
