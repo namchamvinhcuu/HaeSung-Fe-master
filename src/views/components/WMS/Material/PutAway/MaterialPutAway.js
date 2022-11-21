@@ -370,6 +370,7 @@ const MaterialPutAway = (props) => {
                 displayValue="LocationId"
                 onChange={(e, item) => {
                   setBinId(0);
+                  setBinCode(0);
                   handleInputChange(item ? item?.LocationId ?? null : null, 'LocationId');
                   setLocationId(item?.LocationId);
                 }}
@@ -386,6 +387,7 @@ const MaterialPutAway = (props) => {
                 displayValue="ShelfId"
                 onChange={(e, item) => {
                   setBinId(0);
+                  setBinCode(0);
                   handleInputChange(item ? item?.ShelfId ?? null : null, 'ShelfId');
                   setShelfId(item?.ShelfId);
                 }}
