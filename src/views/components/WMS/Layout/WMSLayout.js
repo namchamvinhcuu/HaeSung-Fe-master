@@ -316,7 +316,10 @@ const WMSLayout = (props) => {
       pageSize: lotState.pageSize,
       BinId: BinId,
     });
-
+    const singleBin = await wmsLayoutService.getBinById({ BinId: BinId });
+    if (res && res.Data) {
+      setESLCode(singleBin?.Data?.ESLCode);
+    }
     if (res && res.Data) {
       setLotState({
         ...lotState,
@@ -324,7 +327,6 @@ const WMSLayout = (props) => {
         totalRow: res.TotalRow,
         isLoading: false,
       });
-      setESLCode(res?.Data[0]?.ESLCode);
     }
   }
 
@@ -667,20 +669,20 @@ const WMSLayout = (props) => {
     let inputVal = '';
 
     if (eslInputRef.current.value) {
-      inputVal = eslInputRef.current.value.trim();
+      inputVal = eslInputRef.current.value.trim().toUpperCase();
     }
+    const singleBinCheck = await wmsLayoutService.getBinById({ BinId: BinId });
 
-    if (eslInputRef.current.value === lotState.data[0]?.ESLCode) {
+    if (inputVal === singleBinCheck?.Data?.ESLCode) {
       return;
     }
     //  eslInputRef.current.value = '';
     await handleScanESLCode(inputVal);
-
-    eslInputRef.current.focus();
+    // eslInputRef.current.blur();
   };
 
   const handleScanESLCode = async (inputValue) => {
-    const res = await wmsLayoutService.scanESLCode({ ESLCode: inputValue, BinId: lotState.data[0]?.BinId });
+    const res = await wmsLayoutService.scanESLCode({ ESLCode: inputValue, BinId: BinId });
     if (res === 'general.success') {
       // setUpdateData(res.Data);
       SuccessAlert(intl.formatMessage({ id: res }));
@@ -837,26 +839,21 @@ const WMSLayout = (props) => {
             </Grid>
 
             <Item id="detail-konva" style={{ maxHeight: '260px' }} />
-            <Grid container spacing={2} justifyContent="space-between">
-              <Grid item sx={{ mt: 2, mb: 2, textAlign: 'right', display: 'flex', alignItems: 'center' }} sm={8} md={8}>
+            <Grid container spacing={2} justifyContent="space-between" alignItems="center">
+              <Grid item sx={{ mt: 2, mb: 2, textAlign: 'right', display: 'flex', alignItems: 'center' }} sm={7} md={7}>
                 <MuiTextField
                   key={ESLCode}
                   ref={eslInputRef}
                   label="ESLCode"
                   defaultValue={ESLCode}
-                  disabled={lotState.data.length > 0 ? false : true}
+                  disabled={BinId > 0 ? false : true}
                   // autoFocus={focus}
                   // value={lotInputRef.current.value}
                   onChange={handleESLInputChange}
                   onKeyDown={keyPress}
                   inputProps={{ maxLength: 12 }}
                 />
-                <MuiButton
-                  text="scan"
-                  color="success"
-                  onClick={scanBtnClick}
-                  disabled={lotState.data.length > 0 ? false : true}
-                />
+                <MuiButton text="scan" color="success" onClick={scanBtnClick} disabled={BinId > 0 ? false : true} />
               </Grid>
               <Grid item sx={{ mt: 2, mb: 2, textAlign: 'right' }}>
                 <MuiButton

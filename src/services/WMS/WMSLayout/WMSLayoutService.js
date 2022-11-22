@@ -67,3 +67,11 @@ export const scanESLCode = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+export const getBinById = async (params) => {
+  try {
+    return await axios.get(`${API}/get-bin-by-id`, { params: params });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
