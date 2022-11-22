@@ -119,3 +119,116 @@ export const findBinByBinId = async (binId) => {
     }
   }
 };
+
+export const createBinOnESLServer = async (binCode, articleId) => {
+  if (!articleId) {
+    articleId = 'Bin-1';
+  }
+
+  let eslURL = 'http://118.69.130.73:9001/dashboardWeb/common/articles?store=DEFAULT_STATION_CODE&company=Auto&SI';
+  let postData = [
+    {
+      articleId: binCode,
+      articleName: '',
+      nfcUrl: '',
+      data: {
+        STORE_CODE: null,
+        ARTICLE_ID: articleId,
+        BARCODE: null,
+        ITEM_NAME: null,
+        ALIAS: null,
+        SALE_PRICE: null,
+        LIST_PRICE: null,
+        UNIT_PRICE: null,
+        ORIGIN: null,
+        MANUFACTURER: null,
+        TYPE: null,
+        WEIGHT: null,
+        WEIGHT_UNIT: null,
+        UNIT_PRICE_UNIT: null,
+        UNIT_DIMENSION: null,
+        A_MARKER: null,
+        R_MARKER: null,
+        CATEGORY1: null,
+        CATEGORY2: null,
+        CATEGORY3: null,
+        CATEGORY4: null,
+        CATEGORY5: null,
+        DISPLAY_TYPE: null,
+        DISPLAY_TYPE2: null,
+        DISPLAY_TYPE3: null,
+        NFC_URL: null,
+        ETC_0: null,
+        ETC_1: null,
+        ETC_2: null,
+        ETC_3: null,
+        ETC_4: null,
+        ETC_5: null,
+        ETC_6: null,
+        ETC_7: null,
+        ETC_8: null,
+        ETC_9: null,
+        TEST1: null,
+      },
+    },
+  ];
+  try {
+    return await axios.post(eslURL, postData);
+    // return res;
+  } catch (error) {
+    console.log('error', error);
+  }
+};
+
+export const linkESLTagWithBin = async (binCode, eslCode) => {
+  let eslURL = 'http://118.69.130.73:9001/dashboardWeb/common/labels/link?store=DEFAULT_STATION_CODE';
+  let postData = {
+    assignList: [
+      {
+        articleIdList: [binCode],
+        labelCode: eslCode,
+      },
+    ],
+  };
+
+  try {
+    return await axios.post(eslURL, postData);
+  } catch (error) {
+    console.log('error', error);
+  }
+};
+
+export const unLinkESLTagWithBin = async (eslCode) => {
+  let eslURL = 'http://118.69.130.73:9001/dashboardWeb/common/labels/unlink?store=DEFAULT_STATION_CODE';
+  let postData = {
+    unAssignList: [eslCode],
+  };
+
+  axios
+    .post(eslURL, postData)
+    .then((response) => {
+      console.log(response);
+      return response;
+    })
+    .catch((err) => {
+      console.log(err.response);
+      return err.response;
+    });
+
+  // try {
+  //   return await axios.post(eslURL, postData);
+  // } catch (error) {
+  //   return error.response;
+  // }
+};
+
+export const getRegisteredESLTags = async () => {
+  let eslURL =
+    'http://118.69.130.73:9001/dashboardWeb/common/labels?company=Auto&SI&size=10&sort=&store=DEFAULT_STATION_CODE&page=0&isLabelAlive=true';
+
+  try {
+    return await axios.get(eslURL);
+  } catch (error) {
+    return error.response;
+  }
+};

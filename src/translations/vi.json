@@ -142,6 +142,9 @@
     "newPassword_required": "Mật khẩu mới không được để trống",
     "roleName": "Role"
   },
+  "esl": {
+    "tag_unregistrated": "Thẻ ESL chưa được đăng ký"
+  },
   "product": {
     "product_code": "Product Code",
     "product_type": "Loại sản phẩm",

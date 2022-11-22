@@ -45,8 +45,7 @@ const Item = styled(Paper)(({ theme }) => ({
 const WMSLayout = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
-  let masterStage;
-  let detailStage;
+
   const { isShowing, toggle } = useModal();
   const { isShowing2, toggle2 } = useModal2();
   const initLocation = {
@@ -90,6 +89,7 @@ const WMSLayout = (props) => {
   const [selectedShelfId, setSelectedShelfId] = useState(0);
   const eslInputRef = useRef(null);
   const [BinId, setBinId] = useState(0);
+  const [binCode, setBinCode] = useState('');
   const [lotState, setLotState] = useState({
     isLoading: false,
     data: [],
@@ -97,8 +97,6 @@ const WMSLayout = (props) => {
     page: 1,
     pageSize: 7,
   });
-
-  // const [selectedRow, setSelectedRow] = useState({});
 
   const columns = [
     { field: 'Id', headerName: '', hide: true },
@@ -109,7 +107,6 @@ const WMSLayout = (props) => {
       filterable: false,
       renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (lotState.page - 1) * lotState.pageSize,
     },
-    //{ field: "LotCode", headerName: "Lot Code", flex: 0.6, },
     { field: 'MaterialCode', headerName: 'Material Code', flex: 0.4 },
     { field: 'LotSerial', headerName: 'LotSerial', flex: 0.3 },
     {
@@ -125,21 +122,6 @@ const WMSLayout = (props) => {
         );
       },
     },
-    // {
-    //   field: 'SOrderQty',
-    //   headerName: intl.formatMessage({ id: 'material-so-detail.SOrderQty' }),
-    //   /*flex: 0.7,*/ width: 150,
-    //   editable: true,
-    //   renderCell: (params) => {
-    //     return (
-    //       <Tooltip
-    //         title={params.row.MsoDetailStatus ? '' : intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' })}
-    //       >
-    //         <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.SOrderQty}</Typography>
-    //       </Tooltip>
-    //     );
-    //   },
-    // },
     {
       field: 'IncomingDate',
       headerName: 'Incoming Date',
@@ -183,9 +165,6 @@ const WMSLayout = (props) => {
         let res = await materialPutAwayService.handleDelete(lot);
         if (res && res.HttpResponseCode === 200) {
           await getDataLot();
-
-          // await updateESLData(lot.BinId, lot.BinCode);
-
           await eslService.updateESLDataByBinId(lot.BinId);
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
@@ -195,18 +174,6 @@ const WMSLayout = (props) => {
       }
     }
   };
-
-  // const updateESLData = async (bin_Id, Bin_Code) => {
-  //   let res = await materialPutAwayService.getESLDataByBinId(bin_Id);
-  //   if (res) {
-  //     res.id = `${Bin_Code}`;
-  //     try {
-  //       await axios.post('http://118.69.130.73:9001/articles', { dataList: [res] });
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  // };
 
   const fetchData = async (refresh) => {
     if (!refresh) {
@@ -260,20 +227,10 @@ const WMSLayout = (props) => {
         break;
     }
 
-    // newState[inputName] = e;
-    // if (inputName === "commonDetailId") {
-    //     newState.Location = {
-    //         ...initLocation
-    //     };
-    // }
-
     setWMSLayoutState({ ...newState });
   };
 
   const handleCreate = async () => {
-    // const removeProp = 'Location';
-    // const { [removeProp]: remove, ...rest } = wmsLayoutState;
-
     const { Location, ShelfCode, TotalLevel, BinPerLevel } = wmsLayoutState;
 
     const params = {
@@ -491,6 +448,7 @@ const WMSLayout = (props) => {
 
           box.on('click', () => {
             setBinId(box.attrs.binId);
+            setBinCode(box.attrs.name);
 
             let layerChild = layer.children;
             let groupArr = layerChild.slice(1);
@@ -503,7 +461,7 @@ const WMSLayout = (props) => {
                 }
               }
             }
-            box.stroke('#000000');
+            box.stroke('#FF0000');
           });
 
           box.on('mouseenter', function () {
@@ -539,21 +497,6 @@ const WMSLayout = (props) => {
 
   useEffect(() => {
     const container = document.querySelector('#master-konva');
-
-    // masterStage = new Konva.Stage({
-    //     container: 'master-konva',
-    //     width: container.offsetWidth - 16,
-    //     height: container.offsetHeight - 80,
-    //     // width: 1500,
-    //     // height: 1500,
-    // });
-
-    // detailStage = new Konva.Stage({
-    //     container: 'detail-konva',
-    //     width: container.offsetWidth - 16,
-    //     height: container.offsetHeight - 80,
-    // });
-
     setArea({
       width: container.offsetWidth - 16,
       height: container.offsetHeight - 80,
@@ -574,18 +517,6 @@ const WMSLayout = (props) => {
     };
   }, [area.width]);
 
-  // const handleRowSelection = (arrIds) => {
-  //   const rowSelected = lotState.data.filter(function (item) {
-  //     return item.Id === arrIds[0];
-  //   });
-
-  //   if (rowSelected && rowSelected.length > 0) {
-  //     setSelectedRow({ ...rowSelected[0] });
-  //   } else {
-  //     // setSelectedRow({ ...WorkOrderDto });
-  //   }
-  // };
-
   useEffect(() => {
     drawingDetailFunc();
     setBinId(0);
@@ -593,7 +524,6 @@ const WMSLayout = (props) => {
 
   useEffect(() => {
     getDataLot();
-    // drawingDetailFunc();
   }, [BinId]);
 
   const handleRowUpdate = async (newRow) => {
@@ -605,16 +535,15 @@ const WMSLayout = (props) => {
     if (newRow.Qty == oldRow.Qty) {
       return oldRow;
     }
+
     setLotState({ ...lotState, isSubmit: true });
     if (!isNumber(newRow.Qty) || newRow.Qty < 0) {
       ErrorAlert(intl.formatMessage({ id: 'forecast.OrderQty_required_bigger' }));
-      // newRow.Qty = 0;
       return oldRow;
     }
+
     newRow = { ...newRow, Qty: parseInt(newRow.Qty) };
-    // const res = await iqcService.modifyIQC({
-    //   ...newRow,
-    // });
+
     const res = await wmsLayoutService.modifyQty({
       ...newRow,
     });
@@ -625,7 +554,6 @@ const WMSLayout = (props) => {
       await eslService.updateESLDataByBinId(newRow.BinId);
 
       return res.Data;
-      // return newRow;
     } else {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
       setLotState({ ...lotState, isSubmit: false });
@@ -651,7 +579,6 @@ const WMSLayout = (props) => {
   }, [updateData]);
 
   const handleProcessRowUpdateError = React.useCallback((error) => {
-    console.log('update error', error);
     ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
   }, []);
 
@@ -676,18 +603,66 @@ const WMSLayout = (props) => {
     if (inputVal === singleBinCheck?.Data?.ESLCode) {
       return;
     }
-    //  eslInputRef.current.value = '';
+
     await handleScanESLCode(inputVal);
-    // eslInputRef.current.blur();
   };
 
   const handleScanESLCode = async (inputValue) => {
-    const res = await wmsLayoutService.scanESLCode({ ESLCode: inputValue, BinId: BinId });
-    if (res === 'general.success') {
-      // setUpdateData(res.Data);
-      SuccessAlert(intl.formatMessage({ id: res }));
+    let flag = false;
+    let articleList = [];
+
+    const getRegisteredESLTags = await eslService.getRegisteredESLTags();
+    if (getRegisteredESLTags.status === 200) {
+      let eslTagArr = getRegisteredESLTags.data.labelList;
+      for (let i = 0; i < eslTagArr.length; i++) {
+        if (eslTagArr[i].labelCode === inputValue) {
+          flag = true;
+          articleList = [...eslTagArr[i].articleList];
+          console.log(articleList);
+          break;
+        } else {
+          ErrorAlert(intl.formatMessage({ id: 'esl.tag_unregistrated' }));
+          return;
+        }
+      }
     } else {
-      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      // getRegisteredESLTags() return  error
+      return;
+    }
+
+    if (flag) {
+      if (articleList.length) {
+        await eslService.unLinkESLTagWithBin(inputValue);
+        await wmsLayoutService.unLinkESL({ ESLCode: inputValue });
+        // for (let i = 0; i < articleList.length; i++) {
+        //   if (articleList[i].articleId === binCode) {
+        //     console.log('aaaa');
+
+        //     break;
+        //   }
+        // }
+      }
+
+      const res = await wmsLayoutService.scanESLCode({ ESLCode: inputValue, BinId: BinId });
+
+      if (res === 'general.success') {
+        // setUpdateData(res.Data);
+        SuccessAlert(intl.formatMessage({ id: res }));
+
+        // Create/Update ESL
+        const createResponse = await eslService.createBinOnESLServer(binCode, 'Bin-1');
+        if (createResponse.status === 200) {
+          // Link ESL-Bin
+          const linkResponse = await eslService.linkESLTagWithBin(binCode, inputValue);
+          if (linkResponse.status === 200) {
+            // Update ESL Data
+            await eslService.updateESLDataByBinId(BinId);
+          }
+        }
+      } else {
+        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        return;
+      }
     }
   };
 
@@ -839,6 +814,7 @@ const WMSLayout = (props) => {
             </Grid>
 
             <Item id="detail-konva" style={{ maxHeight: '260px' }} />
+
             <Grid container spacing={2} justifyContent="space-between" alignItems="center">
               <Grid item sx={{ mt: 2, mb: 2, textAlign: 'right', display: 'flex', alignItems: 'center' }} sm={7} md={7}>
                 <MuiTextField

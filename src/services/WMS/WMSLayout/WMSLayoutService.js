@@ -75,3 +75,14 @@ export const getBinById = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+export const unLinkESL = async (params) => {
+  try {
+    const res = await axios.put(`${API}/unlink-esl`, {
+      ...params,
+    });
+    return res;
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};

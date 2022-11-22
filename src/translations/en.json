@@ -142,6 +142,9 @@
     "newPassword_required": "New Password is required",
     "roleName": "Role"
   },
+  "esl": {
+    "tag_unregistrated": "ESL Tag is un-registrated"
+  },
   "product": {
     "product_code": "Product Code",
     "product_type": "Product Type",
