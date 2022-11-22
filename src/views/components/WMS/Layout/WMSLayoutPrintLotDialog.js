@@ -69,7 +69,9 @@ const WMSLayoutPrintLotDialog = ({ BinId, isOpen, onClose }) => {
                           {item.Qty + ' ' + item.UnitName}
                         </td>
                         <td style={{ ...style.cell, width: '25%' }}>Vendor</td>
-                        <td style={{ ...style.cell, width: '25%' }}>HANLIM</td>
+                        <td style={{ ...style.cell, width: '25%' }}>
+                          {item?.SupplierCode ? item?.SupplierCode : 'HANLIM'}
+                        </td>
                       </tr>
                       <tr>
                         <td style={style.cell}>LOT No.</td>

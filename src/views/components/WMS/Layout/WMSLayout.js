@@ -84,11 +84,11 @@ const WMSLayout = (props) => {
   });
 
   const scale = area.width / SCENE_BASE_WIDTH;
-
+  const [ESLCode, setESLCode] = useState('');
   const [rects, setRects] = useState(generateShapes());
   const [updateData, setUpdateData] = useState({});
   const [selectedShelfId, setSelectedShelfId] = useState(0);
-
+  const eslInputRef = useRef(null);
   const [BinId, setBinId] = useState(0);
   const [lotState, setLotState] = useState({
     isLoading: false,
@@ -311,20 +311,21 @@ const WMSLayout = (props) => {
 
   async function getDataLot() {
     setLotState({ ...lotState, isLoading: true });
-
     const res = await wmsLayoutService.getLotByBinId({
       page: lotState.page,
       pageSize: lotState.pageSize,
       BinId: BinId,
     });
 
-    if (res && res.Data)
+    if (res && res.Data) {
       setLotState({
         ...lotState,
         data: res.Data ?? [],
         totalRow: res.TotalRow,
         isLoading: false,
       });
+      setESLCode(res?.Data[0]?.ESLCode);
+    }
   }
 
   const handleDragStart = (e) => {
@@ -603,7 +604,6 @@ const WMSLayout = (props) => {
       return oldRow;
     }
     setLotState({ ...lotState, isSubmit: true });
-    console.log('newRow', newRow);
     if (!isNumber(newRow.Qty) || newRow.Qty < 0) {
       ErrorAlert(intl.formatMessage({ id: 'forecast.OrderQty_required_bigger' }));
       // newRow.Qty = 0;
@@ -617,7 +617,6 @@ const WMSLayout = (props) => {
       ...newRow,
     });
     if (res.HttpResponseCode === 200 && res.Data) {
-      console.log(res.Data, 'abc');
       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
       setUpdateData(res.Data);
       setLotState({ ...lotState, isSubmit: false });
@@ -648,10 +647,48 @@ const WMSLayout = (props) => {
       setLotState({ ...lotState, data: [...newArr] });
     }
   }, [updateData]);
+
   const handleProcessRowUpdateError = React.useCallback((error) => {
     console.log('update error', error);
     ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
   }, []);
+
+  const handleESLInputChange = (e) => {
+    eslInputRef.current.value = e.target.value;
+  };
+
+  const keyPress = async (e) => {
+    if (e.key === 'Enter') {
+      await scanBtnClick();
+    }
+  };
+
+  const scanBtnClick = async () => {
+    let inputVal = '';
+
+    if (eslInputRef.current.value) {
+      inputVal = eslInputRef.current.value.trim();
+    }
+
+    if (eslInputRef.current.value === lotState.data[0]?.ESLCode) {
+      return;
+    }
+    //  eslInputRef.current.value = '';
+    await handleScanESLCode(inputVal);
+
+    eslInputRef.current.focus();
+  };
+
+  const handleScanESLCode = async (inputValue) => {
+    const res = await wmsLayoutService.scanESLCode({ ESLCode: inputValue, BinId: lotState.data[0]?.BinId });
+    if (res === 'general.success') {
+      // setUpdateData(res.Data);
+      SuccessAlert(intl.formatMessage({ id: res }));
+    } else {
+      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    }
+  };
+
   return (
     <React.Fragment>
       <Grid container direction="row" justifyContent="space-between" spacing={2}>
@@ -800,13 +837,35 @@ const WMSLayout = (props) => {
             </Grid>
 
             <Item id="detail-konva" style={{ maxHeight: '260px' }} />
-            <Grid item sx={{ mt: 2, mb: 2, textAlign: 'right' }}>
-              <MuiButton
-                text="print"
-                sx={{ mt: 0, mb: 0 }}
-                onClick={toggle2}
-                disabled={lotState.data.length > 0 ? false : true}
-              />
+            <Grid container spacing={2} justifyContent="space-between">
+              <Grid item sx={{ mt: 2, mb: 2, textAlign: 'right', display: 'flex', alignItems: 'center' }} sm={8} md={8}>
+                <MuiTextField
+                  key={ESLCode}
+                  ref={eslInputRef}
+                  label="ESLCode"
+                  defaultValue={ESLCode}
+                  disabled={lotState.data.length > 0 ? false : true}
+                  // autoFocus={focus}
+                  // value={lotInputRef.current.value}
+                  onChange={handleESLInputChange}
+                  onKeyDown={keyPress}
+                  inputProps={{ maxLength: 12 }}
+                />
+                <MuiButton
+                  text="scan"
+                  color="success"
+                  onClick={scanBtnClick}
+                  disabled={lotState.data.length > 0 ? false : true}
+                />
+              </Grid>
+              <Grid item sx={{ mt: 2, mb: 2, textAlign: 'right' }}>
+                <MuiButton
+                  text="print"
+                  sx={{ mt: 0, mb: 0 }}
+                  onClick={toggle2}
+                  disabled={lotState.data.length > 0 ? false : true}
+                />
+              </Grid>
             </Grid>
             <Grid item>
               <MuiDataGrid

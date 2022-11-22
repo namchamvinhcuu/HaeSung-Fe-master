@@ -49,9 +49,20 @@ export const getLotByBinId = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
 export const modifyQty = async (params) => {
   try {
     return await axios.put(`${API}/modify-qty`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+export const scanESLCode = async (params) => {
+  try {
+    return await axios.put(`${API}/scan-esl-code`, {
+      ...params,
+    });
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }
