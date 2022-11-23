@@ -274,7 +274,7 @@ const WMSLayout = (props) => {
       BinId: BinId,
     });
     const singleBin = await wmsLayoutService.getBinById({ BinId: BinId });
-    if (res && res.Data) {
+    if (singleBin && singleBin.Data) {
       setESLCode(singleBin?.Data?.ESLCode);
     }
     if (res && res.Data) {
