@@ -619,7 +619,8 @@ const WMSLayout = (props) => {
       if (getRegisteredESLTag.status !== 200) {
         ErrorAlert(intl.formatMessage({ id: 'esl.tag_unregistrated' }));
       } else {
-        await wmsLayoutService.unLinkESL({ ESLCode: inputValue });
+        let unLinkResponse = await wmsLayoutService.unLinkESL({ ESLCode: inputValue });
+        console.log('unLinkResponse', unLinkResponse);
 
         // articleList = getRegisteredESLTag.data.labelList;
         // if (articleList.length > 0) {
