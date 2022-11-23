@@ -233,6 +233,7 @@
     "SupplierId": "Suppliers",
     "Description": "Description",
     "Grade": "Grade",
+    "StockQty": "StockQty",
     "Color": "Color",
     "ResinType": "Resin Type",
     "FlameClass": "Flame Class",
