@@ -542,7 +542,7 @@ const WMSLayout = (props) => {
       return oldRow;
     }
 
-    newRow = { ...newRow, Qty: parseInt(newRow.Qty) };
+    newRow = { ...newRow, Qty: newRow.Qty };
 
     const res = await wmsLayoutService.modifyQty({
       ...newRow,
@@ -856,7 +856,7 @@ const WMSLayout = (props) => {
             <Grid container spacing={2} justifyContent="space-between" alignItems="center">
               <Grid item sx={{ mt: 2, mb: 2, textAlign: 'right', display: 'flex', alignItems: 'center' }} sm={7} md={7}>
                 <MuiTextField
-                  key={ESLCode}
+                  key={[ESLCode, BinId]}
                   ref={eslInputRef}
                   label="ESLCode"
                   defaultValue={ESLCode}
