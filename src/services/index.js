@@ -41,6 +41,7 @@ import * as materialPutAwayService from './WMS/Material/MaterialPutAwayService';
 
 import * as materialSOService from './WMS/Material/MaterialSOService';
 import * as materialReportService from './WMS/Material/MaterialReportService';
+import * as materialStockService from './WMS/Material/MaterialStockService';
 
 import * as eslService from './esl/ESLService';
 
@@ -83,4 +84,5 @@ export {
   mmsReportService,
   materialReportService,
   eslService,
+  materialStockService,
 };
