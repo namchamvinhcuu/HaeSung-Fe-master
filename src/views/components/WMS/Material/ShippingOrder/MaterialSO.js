@@ -4,16 +4,33 @@ import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
+import CloseIcon from '@mui/icons-material/Close';
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import { MuiButton, MuiDataGrid, MuiDateField, MuiSearchField } from '@controls';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UndoIcon from '@mui/icons-material/Undo';
-import { FormControlLabel, Switch } from '@mui/material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  Icon,
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography,
+  Zoom,
+} from '@mui/material';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
-
+import ReactToPrint from 'react-to-print';
 import { addDays, ErrorAlert, SuccessAlert } from '@utils';
 import _ from 'lodash';
 import moment from 'moment';
@@ -21,14 +38,17 @@ import { useIntl } from 'react-intl';
 
 import { MaterialSOMasterDto } from '@models';
 import { materialSOService } from '@services';
-
+import { useModal, useModal2 } from '@basesShared';
 import { MaterialSODetail, MaterialSODialog } from '@components';
 
 const MaterialSO = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
+  const { isShowing, toggle } = useModal();
   const [MsoId, setMsoId] = useState(null);
   const [MsoStatus, setMsoStatus] = useState(false);
+  const [dataChild, setDataChild] = useState('');
+  const [dataParent, setDataParent] = useState('');
   const [materialSOState, setMaterialSOState] = useState({
     isLoading: false,
     data: [],
@@ -358,16 +378,26 @@ const MaterialSO = (props) => {
       });
     }
   }, [selectedRow]);
-
+  const getDataChild = (data) => {
+    setDataChild(data);
+  };
   return (
     <React.Fragment>
       <Grid container spacing={2} justifyContent="flex-end" alignItems="flex-end">
-        <Grid item xs={1.5}>
+        <Grid item xs={2.5} className="d-flex">
           <MuiButton
             text="create"
             color="success"
             onClick={() => {
               toggleDialog(CREATE_ACTION);
+            }}
+          />
+          <MuiButton
+            disabled={dataParent.MsoId > 0 ? false : true}
+            text="print"
+            color="secondary"
+            onClick={() => {
+              toggle();
             }}
           />
         </Grid>
@@ -441,6 +471,9 @@ const MaterialSO = (props) => {
           setMaterialSOState({ ...materialSOState, page: newPage + 1 });
         }}
         getRowId={(rows) => rows.MsoId}
+        onRowClick={(e) => {
+          setDataParent(e?.row);
+        }}
         onSelectionModelChange={(newSelectedRowId) => {
           handleRowSelection(newSelectedRowId);
           setMsoId(newSelectedRowId[0]);
@@ -464,11 +497,123 @@ const MaterialSO = (props) => {
         mode={mode}
       />
 
-      <MaterialSODetail MsoId={MsoId} fromPicking={false} MsoStatus={MsoStatus} />
+      <MaterialSODetail MsoId={MsoId} fromPicking={false} MsoStatus={MsoStatus} onGetDataChild={getDataChild} />
+
+      {isShowing && <Material_Info isShowing={true} hide={toggle} dataParent={dataParent} dataChild={dataChild} />}
     </React.Fragment>
   );
 };
-
+const Material_Info = ({ isShowing, hide, dataParent, dataChild }) => {
+  const gmtDateTime = new Date().toISOString();
+  const componentPringtRef = React.useRef();
+  const DialogTransition = React.forwardRef(function DialogTransition(props, ref) {
+    return <Zoom direction="up" ref={ref} {...props} />;
+  });
+  const style = {
+    titleCell: {
+      padding: '3px 5px',
+      border: '1px solid black',
+      fontWeight: 600,
+      fontSize: '20px',
+    },
+    dataCell: {
+      padding: '3px 5px',
+      border: '1px solid black',
+      fontSize: '18px',
+    },
+    titleMain: {
+      border: '1px solid black',
+      height: '50px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '60px',
+    },
+  };
+  return (
+    <Dialog open={isShowing} maxWidth="lg" fullWidth TransitionComponent={DialogTransition} transitionDuration={300}>
+      <DialogTitle
+        sx={{
+          p: 1,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Typography sx={{ fontWeight: 600, fontSize: '22px' }}>Shipping Order</Typography>
+        <IconButton aria-label="delete" size="small" onClick={() => hide()} sx={{ backgroundColor: 'rgba(0,0,0,0.1)' }}>
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent ref={componentPringtRef} sx={{ mt: 2 }}>
+        <Grid container flexDirection="row" alignItems="center" justifyContent="center" textAlign="center">
+          <Grid
+            item
+            xs={3}
+            md={3}
+            style={style.titleMain}
+            sx={{
+              borderRight: 'none !important',
+            }}
+          >
+            <Typography sx={{ fontSize: '30px', fontWeight: 800 }}>HANLIM</Typography>
+          </Grid>
+          <Grid item xs={5.5} md={5.5} style={style.titleMain}>
+            <Typography sx={{ fontSize: '25px', fontWeight: 700 }}>SO Code: {dataParent?.MsoCode}</Typography>
+          </Grid>
+          <Grid item xs={3.5} md={3.5} sx={{ border: '1px solid black', height: '60px', borderLeft: 'none' }}>
+            <Box sx={{ borderBottom: '1px solid black' }}>
+              <Typography sx={{ fontSize: '18px' }}>
+                SO DueDate: {moment(dataParent?.DueDate).format('YYYY-MM-DD')}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography sx={{ fontSize: '18px' }}>Requester: {dataParent?.Requester}</Typography>
+            </Box>
+          </Grid>
+        </Grid>
+        <Typography sx={{ fontSize: '20px', fontWeight: 600, margin: '5px 0px' }}>Material Detail List</Typography>
+        <TableContainer>
+          <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
+            <TableBody>
+              <TableRow>
+                <TableCell style={style.titleCell}>Material</TableCell>
+                <TableCell style={style.titleCell}>Order Qty</TableCell>
+                <TableCell style={style.titleCell}>Lot Serial</TableCell>
+                <TableCell style={style.titleCell}>Bin Code</TableCell>
+              </TableRow>
+              {dataChild?.map((item, index) => {
+                return (
+                  <TableRow key={`MATERIALDetail_${index}`}>
+                    <TableCell style={style.dataCell}>{item?.MaterialColorCode}</TableCell>
+                    <TableCell style={style.dataCell}>{item?.SOrderQty}</TableCell>
+                    <TableCell style={style.dataCell}>{item?.LotSerial}</TableCell>
+                    <TableCell style={style.dataCell}>{item?.BinCode}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Typography textAlign="right" sx={{ mt: 1 }}>
+          <b>Date Time:</b> {moment(gmtDateTime).format('YYYY-MM-DD HH:mm:ss')}
+        </Typography>
+      </DialogContent>
+      <DialogActions sx={{ pt: 1 }}>
+        <ReactToPrint
+          trigger={() => {
+            return (
+              <Button variant="contained" color="primary">
+                Print
+              </Button>
+            );
+          }}
+          content={() => componentPringtRef.current}
+        />
+      </DialogActions>
+    </Dialog>
+  );
+};
 User_Operations.toString = function () {
   return 'User_Operations';
 };
