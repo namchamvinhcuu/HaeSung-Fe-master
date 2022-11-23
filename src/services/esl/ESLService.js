@@ -3,6 +3,7 @@ import { axios as axiosInstance } from '@utils';
 import _ from 'lodash';
 
 const apiName = 'api/esl';
+const eslApi = 'http://118.69.130.73:9001';
 const initialESLData = { ITEM_NAME: '', LOCATION: '', SHELVE_LEVEL: -32768 };
 
 export const getESLDataByBinId = async (binId) => {
@@ -49,7 +50,7 @@ export const updateESLDataByBinId = async (binId) => {
 
   if (dataList.length > 0)
     try {
-      await axios.post('http://118.69.130.73:9001/articles', {
+      await axios.post(`${eslApi}/articles`, {
         dataList: dataList,
       });
       // console.log(response)
@@ -88,7 +89,7 @@ export const updateESLDataByBinCode = async (binCode) => {
 
   if (dataList.length > 0)
     try {
-      await axios.post('http://118.69.130.73:9001/articles', {
+      await axios.post(`${eslApi}/articles`, {
         dataList: dataList,
       });
       // console.log(response)
@@ -112,7 +113,7 @@ export const findBinByBinId = async (binId) => {
     ];
 
     try {
-      const res = await axios.put('http://118.69.130.73:9001/labels/contents/led', putArr);
+      const res = await axios.put(`${eslApi}/labels/contents/led`, putArr);
       console.log(res);
     } catch (error) {
       console.log(error);
@@ -125,7 +126,7 @@ export const createBinOnESLServer = async (binCode, articleId) => {
     articleId = 'Bin-1';
   }
 
-  let eslURL = 'http://118.69.130.73:9001/dashboardWeb/common/articles?store=DEFAULT_STATION_CODE&company=Auto&SI';
+  let eslURL = `${eslApi}/dashboardWeb/common/articles?store=DEFAULT_STATION_CODE&company=Auto&SI`;
   let postData = [
     {
       articleId: binCode,
@@ -181,11 +182,13 @@ export const createBinOnESLServer = async (binCode, articleId) => {
 };
 
 export const linkESLTagWithBin = async (binCode, eslCode) => {
-  let eslURL = 'http://118.69.130.73:9001/dashboardWeb/common/labels/link?store=DEFAULT_STATION_CODE';
+  let eslURL = `${eslApi}/dashboardWeb/common/labels/link?store=DEFAULT_STATION_CODE`;
+  let articleIdList = [];
+  articleIdList.push(binCode);
   let postData = {
     assignList: [
       {
-        articleIdList: [binCode],
+        articleIdList: [...articleIdList],
         labelCode: eslCode,
       },
     ],
@@ -199,9 +202,11 @@ export const linkESLTagWithBin = async (binCode, eslCode) => {
 };
 
 export const unLinkESLTagWithBin = async (eslCode) => {
-  let eslURL = 'http://118.69.130.73:9001/dashboardWeb/common/labels/unlink?store=DEFAULT_STATION_CODE';
+  let eslURL = `${eslApi}/dashboardWeb/common/labels/unlink?store=DEFAULT_STATION_CODE`;
+  let unAssignList = [];
+  unAssignList.push(eslCode);
   let postData = {
-    unAssignList: [eslCode],
+    unAssignList: [...unAssignList],
   };
 
   axios
@@ -223,8 +228,17 @@ export const unLinkESLTagWithBin = async (eslCode) => {
 };
 
 export const getRegisteredESLTags = async () => {
-  let eslURL =
-    'http://118.69.130.73:9001/dashboardWeb/common/labels?company=Auto&SI&size=10&sort=&store=DEFAULT_STATION_CODE&page=0&isLabelAlive=true';
+  let eslURL = `${eslApi}/dashboardWeb/common/labels?company=Auto&SI&size=10&sort=&store=DEFAULT_STATION_CODE&page=0&isLabelAlive=true`;
+
+  try {
+    return await axios.get(eslURL);
+  } catch (error) {
+    return error.response;
+  }
+};
+
+export const getRegisteredESLTagByCode = async (eslCode) => {
+  let eslURL = `${eslApi}/dashboardWeb/common/labels?company=Auto%26SI&store=DEFAULT_STATION_CODE&isLabelAlive=true&label=${eslCode}`;
 
   try {
     return await axios.get(eslURL);

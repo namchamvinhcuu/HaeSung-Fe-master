@@ -611,59 +611,97 @@ const WMSLayout = (props) => {
     let flag = false;
     let articleList = [];
 
-    const getRegisteredESLTags = await eslService.getRegisteredESLTags();
-    if (getRegisteredESLTags.status === 200) {
-      let eslTagArr = getRegisteredESLTags.data.labelList;
-      for (let i = 0; i < eslTagArr.length; i++) {
-        if (eslTagArr[i].labelCode === inputValue) {
-          flag = true;
-          articleList = [...eslTagArr[i].articleList];
-          console.log(articleList);
-          break;
-        } else {
-          ErrorAlert(intl.formatMessage({ id: 'esl.tag_unregistrated' }));
-          return;
-        }
-      }
+    if (!inputValue || inputValue.length !== 12) {
+      ErrorAlert(intl.formatMessage({ id: 'esl.tag_unregistrated' }));
     } else {
-      // getRegisteredESLTags() return  error
-      return;
-    }
-
-    if (flag) {
-      if (articleList.length) {
-        await eslService.unLinkESLTagWithBin(inputValue);
+      const getRegisteredESLTag = await eslService.getRegisteredESLTagByCode(inputValue);
+      console.log(getRegisteredESLTag, 'getRegisteredESLTag');
+      if (getRegisteredESLTag.status !== 200) {
+        ErrorAlert(intl.formatMessage({ id: 'esl.tag_unregistrated' }));
+      } else {
         await wmsLayoutService.unLinkESL({ ESLCode: inputValue });
-        // for (let i = 0; i < articleList.length; i++) {
-        //   if (articleList[i].articleId === binCode) {
-        //     console.log('aaaa');
 
-        //     break;
-        //   }
+        // articleList = getRegisteredESLTag.data.labelList;
+        // if (articleList.length > 0) {
+
+        //   // await eslService.unLinkESLTagWithBin(inputValue);
         // }
       }
 
-      const res = await wmsLayoutService.scanESLCode({ ESLCode: inputValue, BinId: BinId });
-
-      if (res === 'general.success') {
-        // setUpdateData(res.Data);
-        SuccessAlert(intl.formatMessage({ id: res }));
-
-        // Create/Update ESL
-        const createResponse = await eslService.createBinOnESLServer(binCode, 'Bin-1');
-        if (createResponse.status === 200) {
-          // Link ESL-Bin
-          const linkResponse = await eslService.linkESLTagWithBin(binCode, inputValue);
-          if (linkResponse.status === 200) {
-            // Update ESL Data
-            await eslService.updateESLDataByBinId(BinId);
+      // Create/Update ESL
+      const createResponse = await eslService.createBinOnESLServer(binCode, 'Bin-1');
+      console.log('create', createResponse);
+      if (createResponse.status === 200) {
+        // Link ESL-Bin
+        const linkResponse = await eslService.linkESLTagWithBin(binCode, inputValue);
+        console.log('link', linkResponse);
+        if (linkResponse.status === 200) {
+          // Update ESL Data
+          await eslService.updateESLDataByBinId(BinId);
+          const res = await wmsLayoutService.scanESLCode({ ESLCode: inputValue, BinId: BinId });
+          if (res === 'general.success') {
+            // setUpdateData(res.Data);
+            SuccessAlert(intl.formatMessage({ id: res }));
+          } else {
+            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
           }
         }
-      } else {
-        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-        return;
       }
     }
+
+    // const getRegisteredESLTags = await eslService.getRegisteredESLTags();
+    // if (getRegisteredESLTags.status === 200) {
+    //   let eslTagArr = getRegisteredESLTags.data.labelList;
+    //   for (let i = 0; i < eslTagArr.length; i++) {
+    //     if (eslTagArr[i].labelCode === inputValue) {
+    //       flag = true;
+    //       articleList = [...eslTagArr[i].articleList];
+    //       console.log(articleList);
+    //       break;
+    //     } else {
+    //       ErrorAlert(intl.formatMessage({ id: 'esl.tag_unregistrated' }));
+    //       return;
+    //     }
+    //   }
+    // } else {
+    //   // getRegisteredESLTags() return  error
+    //   return;
+    // }
+
+    // if (flag) {
+    //   if (articleList.length) {
+    //     await eslService.unLinkESLTagWithBin(inputValue);
+    //     await wmsLayoutService.unLinkESL({ ESLCode: inputValue });
+    //     // for (let i = 0; i < articleList.length; i++) {
+    //     //   if (articleList[i].articleId === binCode) {
+    //     //     console.log('aaaa');
+
+    //     //     break;
+    //     //   }
+    //     // }
+    //   }
+
+    //   const res = await wmsLayoutService.scanESLCode({ ESLCode: inputValue, BinId: BinId });
+
+    //   if (res === 'general.success') {
+    //     // setUpdateData(res.Data);
+    //     SuccessAlert(intl.formatMessage({ id: res }));
+
+    //     // Create/Update ESL
+    //     const createResponse = await eslService.createBinOnESLServer(binCode, 'Bin-1');
+    //     if (createResponse.status === 200) {
+    //       // Link ESL-Bin
+    //       const linkResponse = await eslService.linkESLTagWithBin(binCode, inputValue);
+    //       if (linkResponse.status === 200) {
+    //         // Update ESL Data
+    //         await eslService.updateESLDataByBinId(BinId);
+    //       }
+    //     }
+    //   } else {
+    //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //     return;
+    //   }
+    // }
   };
 
   return (
