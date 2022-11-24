@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateTimeField, MuiSearchField } from '@controls';
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateField, MuiSearchField } from '@controls';
 import Grid from '@mui/material/Grid';
 import { mmsReportService, workOrderService } from '@services';
 import { addDays, ErrorAlert } from '@utils';
@@ -227,7 +227,7 @@ const MMSReport = (props) => {
           />
         </Grid>
         <Grid item sx={{ width: 220 }}>
-          <MuiDateTimeField
+          <MuiDateField
             disabled={state.isLoading}
             label={intl.formatMessage({ id: 'general.StartSearchingDate' })}
             value={state.searchData.StartSearchingDate}
@@ -236,7 +236,7 @@ const MMSReport = (props) => {
           />
         </Grid>
         <Grid item sx={{ width: 220 }}>
-          <MuiDateTimeField
+          <MuiDateField
             disabled={state.isLoading}
             label={intl.formatMessage({ id: 'general.EndSearchingDate' })}
             value={state.searchData.EndSearchingDate}

@@ -205,7 +205,7 @@ const KPIDashboard = (props) => {
         enabled: true,
       },
       title: {
-        text: 'Work Order Dashboard',
+        text: `${moment(new Date()).add(7, 'hours').format('YYYY/MM/DD')} Work Order Dashboard`,
       },
       // subtitle: {
       // 	text: 'Source: ' +

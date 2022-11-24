@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
-import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateTimeField, MuiSearchField } from '@controls';
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateField, MuiSearchField } from '@controls';
 import { WorkOrderDto } from '@models';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -409,7 +409,7 @@ const WorkOrder = (props) => {
         </Grid>
 
         <Grid item>
-          <MuiDateTimeField
+          <MuiDateField
             disabled={workOrderState.isLoading}
             label={intl.formatMessage({
               id: 'general.StartSearchingDate',
@@ -423,7 +423,7 @@ const WorkOrder = (props) => {
         </Grid>
 
         <Grid item xs>
-          <MuiDateTimeField
+          <MuiDateField
             disabled={workOrderState.isLoading}
             label={intl.formatMessage({
               id: 'general.EndSearchingDate',
