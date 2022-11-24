@@ -61,7 +61,9 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus, onGetDataChild }) => 
         data: [...data],
         totalRow: materialSODetailState.totalRow + newDataArr.length,
       });
-      onGetDataChild(data);
+      {
+        !fromPicking && onGetDataChild(data);
+      }
     }
   }, [newDataArr]);
 
@@ -75,6 +77,9 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus, onGetDataChild }) => 
         newArr[index] = updateData;
       }
       setMaterialSODetailState({ ...materialSODetailState, data: [...newArr] });
+      {
+        !fromPicking && onGetDataChild(newArr);
+      }
     }
   }, [updateData]);
 
@@ -125,7 +130,9 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus, onGetDataChild }) => 
         totalRow: res.TotalRow,
         isLoading: false,
       });
-      onGetDataChild(res.Data ?? []);
+      {
+        !fromPicking && onGetDataChild(res.Data ?? []);
+      }
     }
   };
 
