@@ -36,6 +36,7 @@ import * as fixedPOService from './PO/purchase-order/FixedPOService';
 import * as iqcService from './WMS/Material/IQCService';
 import * as materialReceivingService from './WMS/Material/MaterialReceivingService';
 import * as wipReceivingService from './WMS/WIP/WIPReceivingService';
+import * as wipStockService from './WMS/WIP/WIPStockService';
 import * as wmsLayoutService from './WMS/WMSLayout/WMSLayoutService';
 import * as materialPutAwayService from './WMS/Material/MaterialPutAwayService';
 
@@ -85,4 +86,5 @@ export {
   materialReportService,
   eslService,
   materialStockService,
+  wipStockService,
 };
