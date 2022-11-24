@@ -84,6 +84,7 @@ const Display = (props) => {
       fontSize: 26,
       color: '#fff',
       fontWeight: '600',
+      minHeight: '130px',
     },
   };
 
@@ -97,13 +98,13 @@ const Display = (props) => {
       <FullScreen handle={handle} style={{ height: '100%' }}>
         <div style={{ height: '100%', backgroundColor: '#000' }}>
           <div style={{ display: 'flex', height: '5%', backgroundColor: '#6c757d' }}>
-            <div style={{ ...style.grid, width: '50%' }}>
+            <div style={{ ...style.grid, width: '50%', minHeight: 'unset' }}>
               <h2 style={{ margin: 0, fontWeight: '600', fontFamily: 'cursive' }}>
                 <HomeIcon sx={{ fontSize: 33, mr: 2, mb: 1 }} />
                 HANLIM
               </h2>
             </div>
-            <div style={{ ...style.grid, width: '50%' }}>
+            <div style={{ ...style.grid, width: '50%', minHeight: 'unset' }}>
               <h2 style={{ margin: 0, fontWeight: '600', fontFamily: 'cursive' }}>
                 <ScheduleIcon sx={{ fontSize: 33, mr: 2, mb: 1 }} />
                 <Clock format={'DD/MM/YYYY (HH:mm:ss)'} ticking={true} />
