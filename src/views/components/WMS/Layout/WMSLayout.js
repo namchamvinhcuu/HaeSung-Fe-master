@@ -868,7 +868,13 @@ const WMSLayout = (props) => {
                   onKeyDown={keyPress}
                   inputProps={{ maxLength: 12 }}
                 />
-                <MuiButton text="scan" color="success" onClick={scanBtnClick} disabled={BinId > 0 ? false : true} />
+                <MuiButton
+                  text="scan"
+                  color="success"
+                  onClick={scanBtnClick}
+                  disabled={BinId > 0 ? false : true}
+                  sx={{ whiteSpace: 'nowrap' }}
+                />
               </Grid>
               <Grid item sx={{ mt: 2, mb: 2, textAlign: 'right' }}>
                 <MuiButton

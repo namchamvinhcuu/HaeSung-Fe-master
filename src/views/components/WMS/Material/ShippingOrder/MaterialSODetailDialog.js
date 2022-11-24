@@ -214,7 +214,7 @@ const MaterialSODetailDialog = (props) => {
       newRow.RequestQty = 0;
       return newRow;
     }
-    newRow = { ...newRow, RequestQty: parseInt(newRow.RequestQty) };
+    newRow = { ...newRow, RequestQty: newRow.RequestQty };
 
     let newArr = [...lotArr];
     const index = _.findIndex(newArr, (o) => {

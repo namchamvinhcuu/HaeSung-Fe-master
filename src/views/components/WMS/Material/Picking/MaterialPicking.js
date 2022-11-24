@@ -171,11 +171,11 @@ const MaterialPicking = (props) => {
       renderCell: (params) => {
         return params.row.MsoStatus ? (
           <span className="badge badge-success" style={{ fontSize: '13px' }}>
-            DONE
+            {intl.formatMessage({ id: 'material-so-master.MsoStatus_true' })}
           </span>
         ) : (
           <span className="badge badge-danger" style={{ fontSize: '13px' }}>
-            NOT YET
+            {intl.formatMessage({ id: 'material-so-master.MsoStatus_false' })}
           </span>
         );
       },

@@ -272,11 +272,16 @@ const MaterialSO = (props) => {
       field: 'MsoStatus',
       headerName: intl.formatMessage({ id: 'material-so-master.MsoStatus' }),
       /*flex: 0.7,*/ width: 120,
+      align: 'center',
       renderCell: (params) => {
         return params.row.MsoStatus ? (
-          <b style={{ color: 'green' }}>{intl.formatMessage({ id: 'material-so-master.MsoStatus_true' })}</b>
+          <span className="badge badge-success" style={{ fontSize: '13px' }}>
+            {intl.formatMessage({ id: 'material-so-master.MsoStatus_true' })}
+          </span>
         ) : (
-          <b style={{ color: 'red' }}>{intl.formatMessage({ id: 'material-so-master.MsoStatus_false' })}</b>
+          <span className="badge badge-danger" style={{ fontSize: '13px' }}>
+            {intl.formatMessage({ id: 'material-so-master.MsoStatus_false' })}
+          </span>
         );
       },
     },
@@ -504,8 +509,9 @@ const MaterialSO = (props) => {
   );
 };
 const Material_Info = ({ isShowing, hide, dataParent, dataChild }) => {
-  const gmtDateTime = new Date().toISOString();
+  const utcDateTime = new Date().toUTCString();
   const componentPringtRef = React.useRef();
+  const intl = useIntl();
   const DialogTransition = React.forwardRef(function DialogTransition(props, ref) {
     return <Zoom direction="up" ref={ref} {...props} />;
   });
@@ -559,7 +565,9 @@ const Material_Info = ({ isShowing, hide, dataParent, dataChild }) => {
             <Typography sx={{ fontSize: '30px', fontWeight: 800 }}>HANLIM</Typography>
           </Grid>
           <Grid item xs={5.5} md={5.5} style={style.titleMain}>
-            <Typography sx={{ fontSize: '25px', fontWeight: 700 }}>SO Code: {dataParent?.MsoCode}</Typography>
+            <Typography sx={{ fontSize: '25px', fontWeight: 700 }}>
+              {intl.formatMessage({ id: 'material-so-detail.MsoCode' })}: {dataParent?.MsoCode}
+            </Typography>
           </Grid>
           <Grid item xs={3.5} md={3.5} sx={{ border: '1px solid black', height: '60px', borderLeft: 'none' }}>
             <Box sx={{ borderBottom: '1px solid black' }}>
@@ -568,7 +576,9 @@ const Material_Info = ({ isShowing, hide, dataParent, dataChild }) => {
               </Typography>
             </Box>
             <Box>
-              <Typography sx={{ fontSize: '18px' }}>Requester: {dataParent?.Requester}</Typography>
+              <Typography sx={{ fontSize: '18px' }}>
+                {intl.formatMessage({ id: 'material-so-master.Requester' })}: {dataParent?.Requester}
+              </Typography>
             </Box>
           </Grid>
         </Grid>
@@ -577,18 +587,38 @@ const Material_Info = ({ isShowing, hide, dataParent, dataChild }) => {
           <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
             <TableBody>
               <TableRow>
-                <TableCell style={style.titleCell}>Material</TableCell>
-                <TableCell style={style.titleCell}>Order Qty</TableCell>
-                <TableCell style={style.titleCell}>Lot Serial</TableCell>
-                <TableCell style={style.titleCell}>Bin Code</TableCell>
+                <TableCell style={style.titleCell}>
+                  {intl.formatMessage({
+                    id: 'material-so-detail.MaterialColorCode',
+                  })}
+                </TableCell>
+                <TableCell style={style.titleCell}>
+                  {intl.formatMessage({
+                    id: 'general.description',
+                  })}
+                </TableCell>
+                <TableCell style={style.titleCell}>
+                  {intl.formatMessage({ id: 'material-so-detail.SOrderQty' })}
+                </TableCell>
+                <TableCell style={style.titleCell}>
+                  {intl.formatMessage({ id: 'material-so-detail.LotSerial' })}
+                </TableCell>
+                <TableCell style={style.titleCell}>
+                  {intl.formatMessage({ id: 'material-so-detail.BinCode' })}
+                </TableCell>
               </TableRow>
               {dataChild?.map((item, index) => {
                 return (
                   <TableRow key={`MATERIALDetail_${index}`}>
                     <TableCell style={style.dataCell}>{item?.MaterialColorCode}</TableCell>
+                    <TableCell style={style.dataCell}>{item?.Description}</TableCell>
                     <TableCell style={style.dataCell}>{item?.SOrderQty}</TableCell>
-                    <TableCell style={style.dataCell}>{item?.LotSerial}</TableCell>
-                    <TableCell style={style.dataCell}>{item?.BinCode}</TableCell>
+                    <TableCell style={style.dataCell} sx={{ whiteSpace: 'nowrap !important' }}>
+                      {item?.LotSerial}
+                    </TableCell>
+                    <TableCell style={style.dataCell} sx={{ whiteSpace: 'nowrap !important' }}>
+                      {item?.BinCode}
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -596,7 +626,7 @@ const Material_Info = ({ isShowing, hide, dataParent, dataChild }) => {
           </Table>
         </TableContainer>
         <Typography textAlign="right" sx={{ mt: 1 }}>
-          <b>Date Time:</b> {moment(gmtDateTime).format('YYYY-MM-DD HH:mm:ss')}
+          <b>Date Time:</b> {moment(utcDateTime).format('YYYY-MM-DD HH:mm:ss')}
         </Typography>
       </DialogContent>
       <DialogActions sx={{ pt: 1 }}>

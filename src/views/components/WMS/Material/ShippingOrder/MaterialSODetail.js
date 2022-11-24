@@ -187,6 +187,13 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus, onGetDataChild }) => 
       /*flex: 0.7,*/ width: 200,
     },
     {
+      field: 'Description',
+      headerName: intl.formatMessage({
+        id: 'general.description',
+      }),
+      /*flex: 0.7,*/ width: 200,
+    },
+    {
       field: 'SOrderQty',
       headerName: intl.formatMessage({ id: 'material-so-detail.SOrderQty' }),
       /*flex: 0.7,*/ width: 150,
@@ -346,7 +353,7 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus, onGetDataChild }) => 
       ErrorAlert(intl.formatMessage({ id: 'forecast.OrderQty_required_bigger' }));
       newRow.SOrderQty = 0;
     }
-    newRow = { ...newRow, SOrderQty: parseInt(newRow.SOrderQty) };
+    newRow = { ...newRow, SOrderQty: newRow.SOrderQty };
 
     const res = await materialSOService.modifyMsoDetail(newRow);
     if (res.HttpResponseCode === 200 && res.Data) {
