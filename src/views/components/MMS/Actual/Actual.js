@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 
 import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateTimeField, MuiSearchField } from '@controls';
 import Grid from '@mui/material/Grid';
-import { workOrderService } from '@services';
+import { workOrderService, actualService } from '@services';
 import { addDays, ErrorAlert } from '@utils';
 import _ from 'lodash';
 import moment from 'moment';
@@ -30,6 +30,7 @@ const Actual = (props) => {
     pageSize: 20,
     searchData: {
       WoCode: '',
+      MaterialId: 0,
       StartSearchingDate: initStartDate,
       EndSearchingDate: addDays(initStartDate, 30),
       showDelete: true,
@@ -181,7 +182,7 @@ const Actual = (props) => {
         isActived: state.searchData.showDelete,
       };
 
-      const res = await workOrderService.get(params);
+      const res = await actualService.get(params);
 
       if (res && isRendered)
         setState({
