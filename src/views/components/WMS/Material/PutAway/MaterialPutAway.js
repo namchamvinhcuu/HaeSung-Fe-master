@@ -291,7 +291,7 @@ const MaterialPutAway = (props) => {
             variant="standard"
           />
         </Grid>
-        <Grid item sx={{ ml: -0.5 }}>
+        <Grid item sx={{ ml: 0.5 }}>
           <MuiButton text="search" color="info" onClick={fetchData} />
         </Grid>
       </Grid>

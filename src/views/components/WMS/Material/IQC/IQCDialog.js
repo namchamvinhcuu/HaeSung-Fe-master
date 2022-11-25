@@ -31,7 +31,7 @@ const IQCDialog = (props) => {
       .number()
       .nullable()
       .required(intl.formatMessage({ id: 'lot.Qty_required' }))
-      .min(1, intl.formatMessage({ id: 'lot.Qty_bigger_1' })),
+      .min(0, intl.formatMessage({ id: 'lot.Qty_bigger_1' })),
     QCResult: yup.boolean().nullable().required(),
     QcIDList: yup
       .array()

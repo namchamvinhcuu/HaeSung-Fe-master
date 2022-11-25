@@ -61,6 +61,7 @@ const MaterialReportDetail = ({ LotId }) => {
         params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
   ];
+
   async function fetchData(LotId) {
     setIQCDetailState({ ...iqcStateDetail, isLoading: true });
     const params = {
@@ -68,7 +69,7 @@ const MaterialReportDetail = ({ LotId }) => {
       pageSize: iqcStateDetail.pageSize,
       LotId: LotId,
     };
-    console.log('params', params);
+
     const res = await materialReportService.getReportDetail(params);
     if (res && res.Data && isRendered)
       setIQCDetailState({
@@ -78,9 +79,11 @@ const MaterialReportDetail = ({ LotId }) => {
         isLoading: false,
       });
   }
+
   useEffect(() => {
     fetchData(LotId);
   }, [iqcStateDetail.page, iqcStateDetail.pageSize, LotId]);
+
   useEffect(() => {
     return () => {
       isRendered = false;
@@ -110,6 +113,7 @@ const MaterialReportDetail = ({ LotId }) => {
       console.log(`ERROR: ${error}`);
     }
   };
+
   return (
     <React.Fragment>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">

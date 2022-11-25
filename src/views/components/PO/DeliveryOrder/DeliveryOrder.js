@@ -550,7 +550,7 @@ const DeliveryOrder = (props) => {
         </Grid>
 
         <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'right' }}>
-          <MuiButton text="search" color="info" onClick={fetchData} />
+          <MuiButton text="search" color="info" onClick={fetchData} sx={{ whiteSpace: 'nowrap' }} />
           <FormControlLabel
             sx={{ mb: 0, ml: '1px' }}
             control={<Switch defaultChecked={true} color="primary" onChange={(e) => handleshowActivedData(e)} />}
