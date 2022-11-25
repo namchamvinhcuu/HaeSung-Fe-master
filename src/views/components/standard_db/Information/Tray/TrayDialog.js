@@ -52,8 +52,7 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
   };
 
   const handleCloseDialog = () => {
-    document.getElementById('upload-excel').value = '';
-    document.getElementById('upload-excel').text = '';
+    setSelectedFile(null);
     resetForm();
     onClose();
   };
@@ -138,7 +137,7 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
 
       handleSubmitFile(rows);
     });
-    document.getElementById('upload-excel').value = '';
+    // document.getElementById('upload-excel').value = '';
     document.getElementById('upload-excel').text = '';
     setSelectedFile(null);
     setDialogState({ ...dialogState, isSubmit: false });

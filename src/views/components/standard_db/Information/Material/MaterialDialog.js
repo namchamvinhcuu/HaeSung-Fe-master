@@ -77,8 +77,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
   const handleCloseDialog = () => {
     resetForm();
-    document.getElementById('excelinput').value = null;
-    document.getElementById('excelinput').text = '';
+    setSelectedFile(null);
     onClose();
   };
 
@@ -190,7 +189,6 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
       handleSubmitFile(rows);
     });
-    document.getElementById('excelinput').value = null;
     document.getElementById('excelinput').text = '';
 
     setSelectedFile(null);
