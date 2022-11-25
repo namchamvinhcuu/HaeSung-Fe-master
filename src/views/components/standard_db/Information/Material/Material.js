@@ -35,7 +35,7 @@ export default function Material() {
   const [newData, setNewData] = useState({});
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
-  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const columns = [
     {
@@ -289,7 +289,7 @@ export default function Material() {
       prop: 'ProcessName',
       type: String,
     },
-    Location: {
+    'Location Name': {
       prop: 'Location',
       type: String,
       required: true,
@@ -305,7 +305,7 @@ export default function Material() {
     WorkingDate: {
       prop: 'WorkingDate',
       required: true,
-      type: Date,
+      type: String,
     },
     Shift: {
       prop: 'Shift',
@@ -346,20 +346,23 @@ export default function Material() {
     readXlsxFile(selectedFile, { schema }).then(({ rows, errors }) => {
       // `errors` list items have shape: `{ row, column, error, reason?, value?, type? }`.
       errors.length === 0;
+      console.log('errors: ', errors);
 
       rows ===
         [
           {
             ProcessName: 'Casting',
-            Location: 'Casting 1',
+            'Location Name': 'Casting 1',
             OrderQty: 7000,
-            WorkingDate: new Date(2022, 4, 8),
+            WorkingDate: '2022-04-11',
             Shift: 'Day',
           },
         ];
 
       console.log(rows);
     });
+
+    setSelectedFile(null);
   };
 
   const changeHandler = (event) => {
