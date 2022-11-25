@@ -21,6 +21,13 @@ const VersionApp = ({ t, ...props }) => {
   const intl = useIntl();
   const { isShowing, toggle } = useModal();
 
+  const versionAppDto = {
+    id_app: 0,
+    // version: 0,
+    app_version: 0,
+    file: '',
+  };
+
   const [info, setInfo] = useState({
     ...versionAppDto,
   });
@@ -28,12 +35,6 @@ const VersionApp = ({ t, ...props }) => {
   const [data, setData] = useState([versionAppDto]);
   const [error, setError] = useState({});
   const [selectedFile, setSelectedFile] = useState();
-
-  const versionAppDto = {
-    id_app: 0,
-    version: 0,
-    file: '',
-  };
 
   useEffect(() => {
     window.i18n.changeLanguage(language.toString().toLowerCase());
@@ -72,11 +73,11 @@ const VersionApp = ({ t, ...props }) => {
       return ErrorAlert('Chưa chọn file update');
     }
 
-    if (data.version) {
+    if (data.app_version) {
       const formData = new FormData();
       formData.append('file', selectedFile);
       formData.append('id_app', info.id_app);
-      formData.append('version', data.version);
+      formData.append('app_version', data.app_version);
 
       const res = await versionAppService.modify(formData);
       if (res.HttpResponseCode === 200) {
@@ -86,7 +87,10 @@ const VersionApp = ({ t, ...props }) => {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
       }
     } else {
-      setError({ ...error, Version: data.version == undefined || data.version == '' ? 'This field is required.' : '' });
+      setError({
+        ...error,
+        app_version: data.app_version == undefined || data.app_version == '' ? 'This field is required.' : '',
+      });
     }
   };
 
@@ -99,7 +103,7 @@ const VersionApp = ({ t, ...props }) => {
               <>
                 <AndroidIcon sx={{ fontSize: 180, margin: 'auto', display: 'block' }} />
                 <p style={{ fontWeight: 600, fontSize: '28px' }}> {info.name_file}</p>
-                <p>Version: {info.version}</p>
+                <p>Version: {info.app_version}</p>
                 <p>Date: {info.change_date}</p>
                 <Button variant="outlined" sx={{ m: 1 }} startIcon={<DownloadIcon />} onClick={() => handleDownload()}>
                   {t('Download')}
@@ -115,14 +119,14 @@ const VersionApp = ({ t, ...props }) => {
               <Divider light style={{ marginBottom: '20px' }} />
               <TextField
                 fullWidth
-                type="number"
+                type="text"
                 margin="dense"
                 label="Version"
                 onChange={(e) => {
-                  setData({ ...data, version: e.target.value });
+                  setData({ ...data, app_version: e.target.value });
                   setError({
                     ...error,
-                    version:
+                    app_version:
                       e.target.value == ''
                         ? 'This field is required.'
                         : e.target.value.length > 8
@@ -130,8 +134,8 @@ const VersionApp = ({ t, ...props }) => {
                         : '',
                   });
                 }}
-                error={error.version ? true : false}
-                helperText={error.version ? error.version : ''}
+                error={error.app_version ? true : false}
+                helperText={error.app_version ? error.app_version : ''}
               />
               <input type="file" name="file" onChange={changeHandler} style={{ float: 'left', marginTop: '20px' }} />
               <div style={{ marginBottom: '20px' }}>
