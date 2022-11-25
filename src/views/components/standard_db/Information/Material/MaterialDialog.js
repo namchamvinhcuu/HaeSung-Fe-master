@@ -77,6 +77,8 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
   const handleCloseDialog = () => {
     resetForm();
+    document.getElementById('excelinput').value = null;
+    document.getElementById('excelinput').text = '';
     onClose();
   };
 
@@ -130,47 +132,47 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   };
 
   const schema = {
-    MaterialCode: {
+    'CIS CODE': {
       prop: 'MaterialCode',
       type: String,
       required: true,
     },
-    MaterialTypeCode: {
+    'MATERIAL TYPE': {
       prop: 'MaterialTypeCode',
       type: String,
       required: true,
     },
-    UnitCode: {
+    UNIT: {
       prop: 'UnitCode',
       type: String,
       required: true,
     },
-    QCMasterCode: {
+    'QC MASTER': {
       prop: 'QCMasterCode',
       required: true,
       type: String,
     },
-    SupplierCode: {
+    MAKER: {
       prop: 'SupplierCode',
       type: String,
     },
-    Grade: {
+    GRADE: {
       prop: 'Grade',
       type: String,
     },
-    Color: {
+    COLOR: {
       prop: 'Color',
       type: String,
     },
-    ResinType: {
+    'RESIN TYPE': {
       prop: 'ResinType',
       type: String,
     },
-    FlameClass: {
+    'FLAME CLASS': {
       prop: 'FlameClass',
       type: String,
     },
-    Description: {
+    REMARK: {
       prop: 'Description',
       type: String,
     },
@@ -188,6 +190,8 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
       handleSubmitFile(rows);
     });
+    document.getElementById('excelinput').value = null;
+    document.getElementById('excelinput').text = '';
 
     setSelectedFile(null);
     setDialogState({ ...dialogState, isSubmit: false });
@@ -222,9 +226,9 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
       disable_animate={300}
       onClose={handleCloseDialog}
     >
-      <TabContext value={value}>
+      <TabContext value={value ?? 'tab1'}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList onChange={handleChangeTab} aria-label="lab API tabs example">
+          <TabList onChange={handleChangeTab}>
             <Tab label="Single" value="tab1" />
             <Tab label="Excel" value="tab2" />
           </TabList>
@@ -408,7 +412,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
         <TabPanel value="tab2">
           <Grid>
             <Grid item xs={12} sx={{ p: 3 }}>
-              <input type="file" name="file" onChange={changeHandler} />
+              <input type="file" name="file" id="excelinput" onChange={changeHandler} />
             </Grid>
             <Grid item xs={12}>
               <Grid container direction="row-reverse">
