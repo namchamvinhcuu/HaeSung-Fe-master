@@ -49,4 +49,12 @@ const GetListPrintQR = async (params) => {
   }
 };
 
-export { getTrayList, createTray, modifyTray, deleteTray, GetTrayType, GetListPrintQR };
+const createTrayByExcel = async (params) => {
+  try {
+    return await axios.post(`${apiName}/create-by-excel`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+export { getTrayList, createTray, modifyTray, deleteTray, GetTrayType, GetListPrintQR, createTrayByExcel };

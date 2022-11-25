@@ -348,6 +348,7 @@ export default function Tray() {
         isOpen={isShowing}
         onClose={toggle}
         mode={mode}
+        fetchData={fetchData}
       />
       {isShowing2 && <Modal_Qr_Code isShowing={true} hide={toggle2} rowSelected={rowSelected} />}
     </React.Fragment>
