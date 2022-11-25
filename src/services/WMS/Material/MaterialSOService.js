@@ -90,3 +90,11 @@ export const getESLDataByBinCode = async (binCode) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+export const getDataPrint = async (params) => {
+  try {
+    return await axios.get(`${API}/get-data-print`, { params: { ...params } });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
