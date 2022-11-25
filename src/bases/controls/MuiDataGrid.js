@@ -416,7 +416,7 @@ const MuiDataGrid = (props) => {
   //     return [...rows]
   // }
 
-  const dynamicHeight = Math.min(pageSize * (rowHeight ?? 32) + 96, gridHeight ?? 740) + 'px';
+  const dynamicHeight = Math.min(pageSize * (rowHeight ?? 32) + 100, gridHeight ?? 750) + 'px';
 
   return (
     <React.Fragment>

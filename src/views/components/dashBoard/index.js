@@ -167,7 +167,7 @@ class DashBoard extends Component {
             </Switch>
             <TabListContent />
 
-            <Footer_DashBoard />
+            {/* <Footer_DashBoard /> */}
           </CustomRouter>
         </div>
         {/* </ThemeProvider> */}

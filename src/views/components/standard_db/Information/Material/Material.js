@@ -4,13 +4,14 @@ import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from '@contro
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UndoIcon from '@mui/icons-material/Undo';
-import { FormControlLabel, Grid, IconButton, Switch, Tooltip, Typography } from '@mui/material';
+import { FormControlLabel, Grid, IconButton, Switch, Tooltip, Typography, Stack, TextField } from '@mui/material';
 import { materialService } from '@services';
 import { ErrorAlert, SuccessAlert } from '@utils';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import MaterialDialog from './MaterialDialog';
+import readXlsxFile from 'read-excel-file';
 
 export default function Material() {
   const intl = useIntl();
@@ -34,6 +35,7 @@ export default function Material() {
   const [newData, setNewData] = useState({});
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const columns = [
     {
@@ -281,8 +283,98 @@ export default function Material() {
       });
   }
 
+  const schema = {
+    Process: {
+      // JSON object property name.
+      prop: 'ProcessName',
+      type: String,
+    },
+    'Location Name': {
+      prop: 'Location',
+      type: String,
+      required: true,
+    },
+    // Nested object example.
+    // 'COURSE' here is not a real Excel file column name,
+    // it can be any string — it's just for code readability.
+    OrderQty: {
+      prop: 'OrderQty',
+      type: Number,
+      required: true,
+    },
+    WorkingDate: {
+      prop: 'WorkingDate',
+      required: true,
+      type: String,
+    },
+    Shift: {
+      prop: 'Shift',
+      type: String,
+      oneOf: ['Day', 'Night'],
+    },
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      ErrorAlert('Chưa chọn file update');
+      return;
+    }
+
+    // if (data.version) {
+    //   const formData = new FormData();
+    //   formData.append('file', selectedFile);
+    //   formData.append('id_app', info.id_app);
+    //   formData.append('version', data.version);
+
+    //   const res = await versionAppService.modify(formData);
+    //   if (res.HttpResponseCode === 200) {
+    //     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //     setInfo({ ...res.Data });
+    //   } else {
+    //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //   }
+    // } else {
+    //   setError({ ...error, Version: data.version == undefined || data.version == '' ? 'This field is required.' : '' });
+    // }
+
+    // readXlsxFile(selectedFile).then((rows) => {
+    //   // `rows` is an array of rows
+    //   console.log(rows);
+    //   // each row being an array of cells.
+    // });
+
+    readXlsxFile(selectedFile, { schema }).then(({ rows, errors }) => {
+      // `errors` list items have shape: `{ row, column, error, reason?, value?, type? }`.
+      errors.length === 0;
+      console.log('errors: ', errors);
+
+      rows ===
+        [
+          {
+            ProcessName: 'Casting',
+            'Location Name': 'Casting 1',
+            OrderQty: 7000,
+            WorkingDate: '2022-04-11',
+            Shift: 'Day',
+          },
+        ];
+
+      console.log(rows);
+    });
+
+    setSelectedFile(null);
+  };
+
+  const changeHandler = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
   return (
     <React.Fragment>
+      <Stack direction="row" justifyContent="end" alignItems="center">
+        <input type="file" name="file" onChange={changeHandler} />
+        <MuiButton text="upload" variant="outlined" color="success" onClick={handleUpload} />
+      </Stack>
       <Grid container direction="row" justifyContent="space-between" alignItems="width-end">
         <Grid item xs={3}>
           <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mt: 1 }} />
@@ -360,9 +452,9 @@ export default function Material() {
         page={state.page - 1}
         pageSize={state.pageSize}
         rowCount={state.totalRow}
-        rowsPerPageOptions={[5, 10, 20]}
+        // rowsPerPageOptions={[5, 10, 20]}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
-        onPageSizeChange={(newPageSize) => setState({ ...state, pageSize: newPageSize, page: 1 })}
+        // onPageSizeChange={(newPageSize) => setState({ ...state, pageSize: newPageSize, page: 1 })}
         getRowId={(rows) => rows.MaterialId}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;

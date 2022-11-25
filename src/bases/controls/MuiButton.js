@@ -8,6 +8,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 import CropFreeIcon from '@mui/icons-material/CropFree';
 import { styled } from '@mui/material/styles';
 import { FormattedMessage } from 'react-intl';
@@ -45,6 +46,8 @@ const MuiButton = React.forwardRef((props, ref) => {
         return <LocalPrintshopIcon />;
       case 'scan':
         return <CropFreeIcon />;
+      case 'upload':
+        return <FileUploadIcon />;
       default:
         return <DeleteIcon />;
     }
