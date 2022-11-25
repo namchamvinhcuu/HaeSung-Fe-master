@@ -1,6 +1,6 @@
-import { CREATE_ACTION } from '@constants/ConfigConstants';
-import { MuiAutocomplete, MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls';
-import { Grid, TextField } from '@mui/material';
+import { CREATE_ACTION, BASE_URL } from '@constants/ConfigConstants';
+import { MuiAutocomplete, MuiDialog, MuiResetButton, MuiSubmitButton, MuiButton } from '@controls';
+import { Box, Grid, Link, TextField } from '@mui/material';
 import { materialService } from '@services';
 import { ErrorAlert, SuccessAlert } from '@utils';
 import { useFormik } from 'formik';
@@ -8,13 +8,20 @@ import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import * as yup from 'yup';
 
-const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption }) => {
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import readXlsxFile from 'read-excel-file';
+
+const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption, fetchData }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
   // const [SupplierList, setSupplierList] = useState([]);
   const [UnitList, setUnitList] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  const schema = yup.object().shape({
+  const schemaY = yup.object().shape({
     MaterialCode: yup
       .string()
       .nullable()
@@ -51,7 +58,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   });
 
   const formik = useFormik({
-    validationSchema: schema,
+    validationSchema: schemaY,
     initialValues: mode == CREATE_ACTION ? defaultValue : initModal,
     enableReinitialize: true,
     onSubmit: async (values) => onSubmit(values),
@@ -122,6 +129,90 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     }
   };
 
+  const schema = {
+    MaterialCode: {
+      prop: 'MaterialCode',
+      type: String,
+      required: true,
+    },
+    MaterialTypeCode: {
+      prop: 'MaterialTypeCode',
+      type: String,
+      required: true,
+    },
+    UnitCode: {
+      prop: 'UnitCode',
+      type: String,
+      required: true,
+    },
+    QCMasterCode: {
+      prop: 'QCMasterCode',
+      required: true,
+      type: String,
+    },
+    SupplierCode: {
+      prop: 'SupplierCode',
+      type: String,
+    },
+    Grade: {
+      prop: 'Grade',
+      type: String,
+    },
+    Color: {
+      prop: 'Color',
+      type: String,
+    },
+    ResinType: {
+      prop: 'ResinType',
+      type: String,
+    },
+    FlameClass: {
+      prop: 'FlameClass',
+      type: String,
+    },
+    Description: {
+      prop: 'Description',
+      type: String,
+    },
+  };
+
+  const handleUpload = async () => {
+    setDialogState({ ...dialogState, isSubmit: true });
+    if (!selectedFile) {
+      ErrorAlert('Chưa chọn file update');
+      return;
+    }
+
+    readXlsxFile(selectedFile, { schema }).then(({ rows, errors }) => {
+      errors.length === 0;
+
+      handleSubmitFile(rows);
+    });
+
+    setSelectedFile(null);
+    setDialogState({ ...dialogState, isSubmit: false });
+  };
+
+  const handleSubmitFile = async (rows) => {
+    const res = await materialService.createMaterialByExcel(rows);
+    if (res.HttpResponseCode === 200) {
+      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      fetchData();
+      handleCloseDialog();
+    } else {
+      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    }
+  };
+
+  const changeHandler = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const [value, setValue] = React.useState('tab1');
+  const handleChangeTab = (event, newValue) => {
+    setValue(newValue);
+  };
+
   return (
     <MuiDialog
       maxWidth="md"
@@ -131,176 +222,211 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
       disable_animate={300}
       onClose={handleCloseDialog}
     >
-      <form onSubmit={handleSubmit}>
-        <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={6}>
-            <TextField
-              autoFocus
-              fullWidth
-              size="small"
-              name="MaterialCode"
-              inputProps={{ maxLength: 11 }}
-              disabled={dialogState.isSubmit}
-              value={values.MaterialCode}
-              onChange={handleChange}
-              label={intl.formatMessage({ id: 'material.MaterialCode' }) + ' *'}
-              error={touched.MaterialCode && Boolean(errors.MaterialCode)}
-              helperText={touched.MaterialCode && errors.MaterialCode}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <MuiAutocomplete
-              required
-              value={
-                values.MaterialType
-                  ? { commonDetailId: values.MaterialType, commonDetailName: values.MaterialTypeName }
-                  : null
-              }
-              disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: 'material.MaterialType' })}
-              fetchDataFunc={materialService.getMaterialType}
-              displayLabel="commonDetailName"
-              displayValue="commonDetailId"
-              onChange={(e, value) => {
-                if (value?.commonDetailName == 'BARE MATERIAL') {
-                  setFieldValue('SupplierName', '');
-                  setFieldValue('SupplierId', null);
-                  var unitBare = UnitList.filter((x) => x.commonDetailName == 'PCS');
-                  setFieldValue('UnitName', unitBare[0].commonDetailName);
-                  setFieldValue('Unit', unitBare[0].commonDetailId);
-                } else {
-                  setFieldValue('UnitName', '');
-                  setFieldValue('Unit', null);
-                }
-                setFieldValue('QCMasterCode', '');
-                setFieldValue('QCMasterId', null);
-                setFieldValue('MaterialTypeName', value?.commonDetailName || '');
-                setFieldValue('MaterialType', value?.commonDetailId || '');
-              }}
-              error={touched.MaterialType && Boolean(errors.MaterialType)}
-              helperText={touched.MaterialType && errors.MaterialType}
-            />
-          </Grid>
-          <Grid item container spacing={2}>
-            <Grid item xs={6}>
-              <MuiAutocomplete
-                required
-                value={values.SupplierId ? { SupplierId: values.SupplierId, SupplierName: values.SupplierName } : null}
-                disabled={
-                  values.MaterialTypeName == 'BARE MATERIAL' || values.MaterialType == null
-                    ? true
-                    : dialogState.isSubmit
-                }
-                label={intl.formatMessage({ id: 'material.SupplierId' })}
-                fetchDataFunc={getSupplier}
-                displayLabel="SupplierName"
-                displayValue="SupplierId"
-                onChange={(e, value) => {
-                  setFieldValue('SupplierName', value?.SupplierName || '');
-                  setFieldValue('SupplierId', value?.SupplierId || '');
-                }}
-                error={touched.SupplierId && Boolean(errors.SupplierId)}
-                helperText={touched.SupplierId && errors.SupplierId}
-              />
+      <TabContext value={value}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <TabList onChange={handleChangeTab} aria-label="lab API tabs example">
+            <Tab label="Single" value="tab1" />
+            <Tab label="Excel" value="tab2" />
+          </TabList>
+        </Box>
+        <TabPanel value="tab1">
+          <form onSubmit={handleSubmit}>
+            <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+              <Grid item xs={6}>
+                <TextField
+                  autoFocus
+                  fullWidth
+                  size="small"
+                  name="MaterialCode"
+                  inputProps={{ maxLength: 11 }}
+                  disabled={dialogState.isSubmit}
+                  value={values.MaterialCode}
+                  onChange={handleChange}
+                  label={intl.formatMessage({ id: 'material.MaterialCode' }) + ' *'}
+                  error={touched.MaterialCode && Boolean(errors.MaterialCode)}
+                  helperText={touched.MaterialCode && errors.MaterialCode}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <MuiAutocomplete
+                  required
+                  value={
+                    values.MaterialType
+                      ? { commonDetailId: values.MaterialType, commonDetailName: values.MaterialTypeName }
+                      : null
+                  }
+                  disabled={dialogState.isSubmit}
+                  label={intl.formatMessage({ id: 'material.MaterialType' })}
+                  fetchDataFunc={materialService.getMaterialType}
+                  displayLabel="commonDetailName"
+                  displayValue="commonDetailId"
+                  onChange={(e, value) => {
+                    if (value?.commonDetailName == 'BARE MATERIAL') {
+                      setFieldValue('SupplierName', '');
+                      setFieldValue('SupplierId', null);
+                      var unitBare = UnitList.filter((x) => x.commonDetailName == 'PCS');
+                      setFieldValue('UnitName', unitBare[0].commonDetailName);
+                      setFieldValue('Unit', unitBare[0].commonDetailId);
+                    } else {
+                      setFieldValue('UnitName', '');
+                      setFieldValue('Unit', null);
+                    }
+                    setFieldValue('QCMasterCode', '');
+                    setFieldValue('QCMasterId', null);
+                    setFieldValue('MaterialTypeName', value?.commonDetailName || '');
+                    setFieldValue('MaterialType', value?.commonDetailId || '');
+                  }}
+                  error={touched.MaterialType && Boolean(errors.MaterialType)}
+                  helperText={touched.MaterialType && errors.MaterialType}
+                />
+              </Grid>
+              <Grid item container spacing={2}>
+                <Grid item xs={6}>
+                  <MuiAutocomplete
+                    required
+                    value={
+                      values.SupplierId ? { SupplierId: values.SupplierId, SupplierName: values.SupplierName } : null
+                    }
+                    disabled={
+                      values.MaterialTypeName == 'BARE MATERIAL' || values.MaterialType == null
+                        ? true
+                        : dialogState.isSubmit
+                    }
+                    label={intl.formatMessage({ id: 'material.SupplierId' })}
+                    fetchDataFunc={getSupplier}
+                    displayLabel="SupplierName"
+                    displayValue="SupplierId"
+                    onChange={(e, value) => {
+                      setFieldValue('SupplierName', value?.SupplierName || '');
+                      setFieldValue('SupplierId', value?.SupplierId || '');
+                    }}
+                    error={touched.SupplierId && Boolean(errors.SupplierId)}
+                    helperText={touched.SupplierId && errors.SupplierId}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <MuiAutocomplete
+                    required
+                    value={
+                      values.QCMasterId ? { QCMasterId: values.QCMasterId, QCMasterCode: values.QCMasterCode } : null
+                    }
+                    disabled={values.MaterialType == null ? true : dialogState.isSubmit}
+                    label={intl.formatMessage({ id: 'material.QCMasterId' })}
+                    fetchDataFunc={() => materialService.getQCMasterByMaterialType(values.MaterialType)}
+                    displayLabel="QCMasterCode"
+                    displayValue="QCMasterId"
+                    onChange={(e, value) => {
+                      setFieldValue('QCMasterCode', value?.QCMasterCode || '');
+                      setFieldValue('QCMasterId', value?.QCMasterId || '');
+                    }}
+                    error={touched.QCMasterId && Boolean(errors.QCMasterId)}
+                    helperText={touched.QCMasterId && errors.QCMasterId}
+                  />
+                </Grid>
+              </Grid>
+              <Grid item xs={6}>
+                <MuiAutocomplete
+                  required
+                  value={values.Unit ? { commonDetailId: values.Unit, commonDetailName: values.UnitName } : null}
+                  disabled={values.MaterialTypeName == 'BARE MATERIAL' ? true : dialogState.isSubmit}
+                  label={intl.formatMessage({ id: 'material.Unit' })}
+                  fetchDataFunc={materialService.getUnit}
+                  displayLabel="commonDetailName"
+                  displayValue="commonDetailId"
+                  onChange={(e, value) => {
+                    setFieldValue('UnitName', value?.commonDetailName || '');
+                    setFieldValue('Unit', value?.commonDetailId || '');
+                  }}
+                  error={touched.Unit && Boolean(errors.Unit)}
+                  helperText={touched.Unit && errors.Unit}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  name="Description"
+                  disabled={dialogState.isSubmit}
+                  value={values.Description}
+                  onChange={handleChange}
+                  label={intl.formatMessage({ id: 'material.Description' })}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  name="Grade"
+                  disabled={dialogState.isSubmit}
+                  value={values.Grade}
+                  onChange={handleChange}
+                  label={intl.formatMessage({ id: 'material.Grade' })}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  name="Color"
+                  disabled={dialogState.isSubmit}
+                  value={values.Color}
+                  onChange={handleChange}
+                  label={intl.formatMessage({ id: 'material.Color' })}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  name="ResinType"
+                  disabled={dialogState.isSubmit}
+                  value={values.ResinType}
+                  onChange={handleChange}
+                  label={intl.formatMessage({ id: 'material.ResinType' })}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  name="FlameClass"
+                  disabled={dialogState.isSubmit}
+                  value={values.FlameClass}
+                  onChange={handleChange}
+                  label={intl.formatMessage({ id: 'material.FlameClass' })}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container direction="row-reverse">
+                  <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
+                  <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} />
+                </Grid>
+              </Grid>
             </Grid>
-            <Grid item xs={6}>
-              <MuiAutocomplete
-                required
-                value={values.QCMasterId ? { QCMasterId: values.QCMasterId, QCMasterCode: values.QCMasterCode } : null}
-                disabled={values.MaterialType == null ? true : dialogState.isSubmit}
-                label={intl.formatMessage({ id: 'material.QCMasterId' })}
-                fetchDataFunc={() => materialService.getQCMasterByMaterialType(values.MaterialType)}
-                displayLabel="QCMasterCode"
-                displayValue="QCMasterId"
-                onChange={(e, value) => {
-                  setFieldValue('QCMasterCode', value?.QCMasterCode || '');
-                  setFieldValue('QCMasterId', value?.QCMasterId || '');
-                }}
-                error={touched.QCMasterId && Boolean(errors.QCMasterId)}
-                helperText={touched.QCMasterId && errors.QCMasterId}
-              />
+          </form>
+        </TabPanel>
+        <TabPanel value="tab2">
+          <Grid>
+            <Grid item xs={12} sx={{ p: 3 }}>
+              <input type="file" name="file" onChange={changeHandler} />
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container direction="row-reverse">
+                <MuiButton text="upload" color="success" onClick={handleUpload} />
+                <MuiButton
+                  text="excel"
+                  variant="outlined"
+                  color="primary"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href = `${BASE_URL}/TemplateImport/Material.xlsx`;
+                  }}
+                />
+              </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <MuiAutocomplete
-              required
-              value={values.Unit ? { commonDetailId: values.Unit, commonDetailName: values.UnitName } : null}
-              disabled={values.MaterialTypeName == 'BARE MATERIAL' ? true : dialogState.isSubmit}
-              label={intl.formatMessage({ id: 'material.Unit' })}
-              fetchDataFunc={materialService.getUnit}
-              displayLabel="commonDetailName"
-              displayValue="commonDetailId"
-              onChange={(e, value) => {
-                setFieldValue('UnitName', value?.commonDetailName || '');
-                setFieldValue('Unit', value?.commonDetailId || '');
-              }}
-              error={touched.Unit && Boolean(errors.Unit)}
-              helperText={touched.Unit && errors.Unit}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              size="small"
-              name="Description"
-              disabled={dialogState.isSubmit}
-              value={values.Description}
-              onChange={handleChange}
-              label={intl.formatMessage({ id: 'material.Description' })}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              size="small"
-              name="Grade"
-              disabled={dialogState.isSubmit}
-              value={values.Grade}
-              onChange={handleChange}
-              label={intl.formatMessage({ id: 'material.Grade' })}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              size="small"
-              name="Color"
-              disabled={dialogState.isSubmit}
-              value={values.Color}
-              onChange={handleChange}
-              label={intl.formatMessage({ id: 'material.Color' })}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              size="small"
-              name="ResinType"
-              disabled={dialogState.isSubmit}
-              value={values.ResinType}
-              onChange={handleChange}
-              label={intl.formatMessage({ id: 'material.ResinType' })}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              size="small"
-              name="FlameClass"
-              disabled={dialogState.isSubmit}
-              value={values.FlameClass}
-              onChange={handleChange}
-              label={intl.formatMessage({ id: 'material.FlameClass' })}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container direction="row-reverse">
-              <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
-              <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} />
-            </Grid>
-          </Grid>
-        </Grid>
-      </form>
+        </TabPanel>
+      </TabContext>
     </MuiDialog>
   );
 };

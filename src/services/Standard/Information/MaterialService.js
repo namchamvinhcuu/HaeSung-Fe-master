@@ -18,6 +18,14 @@ const createMaterial = async (params) => {
   }
 };
 
+const createMaterialByExcel = async (params) => {
+  try {
+    return await axios.post(`${apiName}/create-by-excel`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
 const modifyMaterial = async (params) => {
   try {
     return await axios.put(`${apiName}/update`, params);
@@ -77,6 +85,7 @@ const getQCMasterByMaterialType = async (materialTypeId) => {
 export {
   getMaterialList,
   createMaterial,
+  createMaterialByExcel,
   modifyMaterial,
   deleteMaterial,
   getMaterialType,
