@@ -47,8 +47,6 @@ const MaterialSO = (props) => {
   const { isShowing, toggle } = useModal();
   const [MsoId, setMsoId] = useState(null);
   const [MsoStatus, setMsoStatus] = useState(false);
-  const [dataChild, setDataChild] = useState('');
-  const [dataParent, setDataParent] = useState('');
   const [materialSOState, setMaterialSOState] = useState({
     isLoading: false,
     data: [],
@@ -383,9 +381,7 @@ const MaterialSO = (props) => {
       });
     }
   }, [selectedRow]);
-  const getDataChild = (data) => {
-    setDataChild(data);
-  };
+
   return (
     <React.Fragment>
       <Grid container spacing={2} justifyContent="flex-end" alignItems="flex-end">
@@ -398,7 +394,7 @@ const MaterialSO = (props) => {
             }}
           />
           <MuiButton
-            disabled={dataParent.MsoId > 0 ? false : true}
+            disabled={MsoId > 0 ? false : true}
             text="print"
             color="secondary"
             onClick={() => {
@@ -476,9 +472,6 @@ const MaterialSO = (props) => {
           setMaterialSOState({ ...materialSOState, page: newPage + 1 });
         }}
         getRowId={(rows) => rows.MsoId}
-        onRowClick={(e) => {
-          setDataParent(e?.row);
-        }}
         onSelectionModelChange={(newSelectedRowId) => {
           handleRowSelection(newSelectedRowId);
           setMsoId(newSelectedRowId[0]);
@@ -502,19 +495,28 @@ const MaterialSO = (props) => {
         mode={mode}
       />
 
-      <MaterialSODetail MsoId={MsoId} fromPicking={false} MsoStatus={MsoStatus} onGetDataChild={getDataChild} />
+      <MaterialSODetail MsoId={MsoId} fromPicking={false} MsoStatus={MsoStatus} />
 
-      {isShowing && <Material_Info isShowing={true} hide={toggle} dataParent={dataParent} dataChild={dataChild} />}
+      {isShowing && <Material_Info isShowing={true} hide={toggle} MsoId={MsoId} />}
     </React.Fragment>
   );
 };
-const Material_Info = ({ isShowing, hide, dataParent, dataChild }) => {
+const Material_Info = ({ isShowing, hide, MsoId }) => {
+  const [dataPrint, setDataPrint] = useState('');
+
+  useEffect(async () => {
+    const data = await materialSOService.getDataPrint({ MsoId: MsoId });
+    setDataPrint(data);
+  }, []);
+
   const utcDateTime = new Date().toUTCString();
   const componentPringtRef = React.useRef();
   const intl = useIntl();
+
   const DialogTransition = React.forwardRef(function DialogTransition(props, ref) {
     return <Zoom direction="up" ref={ref} {...props} />;
   });
+
   const style = {
     titleCell: {
       padding: '3px 5px',
@@ -566,18 +568,18 @@ const Material_Info = ({ isShowing, hide, dataParent, dataChild }) => {
           </Grid>
           <Grid item xs={5.5} md={5.5} style={style.titleMain}>
             <Typography sx={{ fontSize: '25px', fontWeight: 700 }}>
-              {intl.formatMessage({ id: 'material-so-detail.MsoCode' })}: {dataParent?.MsoCode}
+              {intl.formatMessage({ id: 'material-so-detail.MsoCode' })}: {dataPrint?.parent?.MsoCode}
             </Typography>
           </Grid>
           <Grid item xs={3.5} md={3.5} sx={{ border: '1px solid black', height: '60px', borderLeft: 'none' }}>
             <Box sx={{ borderBottom: '1px solid black' }}>
               <Typography sx={{ fontSize: '18px' }}>
-                SO DueDate: {moment(dataParent?.DueDate).format('YYYY-MM-DD')}
+                SO DueDate: {moment(dataPrint?.parent?.DueDate).format('YYYY-MM-DD')}
               </Typography>
             </Box>
             <Box>
               <Typography sx={{ fontSize: '18px' }}>
-                {intl.formatMessage({ id: 'material-so-master.Requester' })}: {dataParent?.Requester}
+                {intl.formatMessage({ id: 'material-so-master.Requester' })}: {dataPrint?.parent?.Requester}
               </Typography>
             </Box>
           </Grid>
@@ -597,7 +599,7 @@ const Material_Info = ({ isShowing, hide, dataParent, dataChild }) => {
                     id: 'general.description',
                   })}
                 </TableCell>
-                <TableCell style={style.titleCell}>
+                <TableCell style={style.titleCell} sx={{ whiteSpace: 'nowrap !important' }}>
                   {intl.formatMessage({ id: 'material-so-detail.SOrderQty' })}
                 </TableCell>
                 <TableCell style={style.titleCell}>
@@ -607,12 +609,14 @@ const Material_Info = ({ isShowing, hide, dataParent, dataChild }) => {
                   {intl.formatMessage({ id: 'material-so-detail.BinCode' })}
                 </TableCell>
               </TableRow>
-              {dataChild?.map((item, index) => {
+              {dataPrint?.detail?.map((item, index) => {
                 return (
                   <TableRow key={`MATERIALDetail_${index}`}>
                     <TableCell style={style.dataCell}>{item?.MaterialColorCode}</TableCell>
                     <TableCell style={style.dataCell}>{item?.Description}</TableCell>
-                    <TableCell style={style.dataCell}>{item?.SOrderQty}</TableCell>
+                    <TableCell style={style.dataCell} sx={{ whiteSpace: 'nowrap !important' }}>
+                      {item?.SOrderQty}
+                    </TableCell>
                     <TableCell style={style.dataCell} sx={{ whiteSpace: 'nowrap !important' }}>
                       {item?.LotSerial}
                     </TableCell>

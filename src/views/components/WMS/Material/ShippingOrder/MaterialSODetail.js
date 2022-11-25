@@ -20,7 +20,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import MaterialSODetailDialog from './MaterialSODetailDialog';
 
-const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus, onGetDataChild }) => {
+const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
   let isRendered = useRef(true);
   const { isShowing2, toggle2 } = useModal2();
   const intl = useIntl();
@@ -61,9 +61,6 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus, onGetDataChild }) => 
         data: [...data],
         totalRow: materialSODetailState.totalRow + newDataArr.length,
       });
-      {
-        !fromPicking && onGetDataChild(data);
-      }
     }
   }, [newDataArr]);
 
@@ -77,9 +74,6 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus, onGetDataChild }) => 
         newArr[index] = updateData;
       }
       setMaterialSODetailState({ ...materialSODetailState, data: [...newArr] });
-      {
-        !fromPicking && onGetDataChild(newArr);
-      }
     }
   }, [updateData]);
 
@@ -130,9 +124,6 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus, onGetDataChild }) => 
         totalRow: res.TotalRow,
         isLoading: false,
       });
-      {
-        !fromPicking && onGetDataChild(res.Data ?? []);
-      }
     }
   };
 
