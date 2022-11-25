@@ -23,7 +23,7 @@ const VersionApp = ({ t, ...props }) => {
 
   const versionAppDto = {
     id_app: 0,
-    version: 0,
+    // version: 0,
     app_version: 0,
     file: '',
   };
@@ -103,7 +103,7 @@ const VersionApp = ({ t, ...props }) => {
               <>
                 <AndroidIcon sx={{ fontSize: 180, margin: 'auto', display: 'block' }} />
                 <p style={{ fontWeight: 600, fontSize: '28px' }}> {info.name_file}</p>
-                <p>Version: {info.version}</p>
+                <p>Version: {info.app_version}</p>
                 <p>Date: {info.change_date}</p>
                 <Button variant="outlined" sx={{ m: 1 }} startIcon={<DownloadIcon />} onClick={() => handleDownload()}>
                   {t('Download')}
