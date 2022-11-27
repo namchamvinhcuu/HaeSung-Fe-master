@@ -23,8 +23,8 @@ const VersionApp = ({ t, ...props }) => {
 
   const versionAppDto = {
     id_app: 0,
-    // version: 0,
     app_version: 0,
+    url: '',
     file: '',
   };
 
@@ -78,6 +78,7 @@ const VersionApp = ({ t, ...props }) => {
       formData.append('file', selectedFile);
       formData.append('id_app', info.id_app);
       formData.append('app_version', data.app_version);
+      formData.append('url', data.url);
 
       const res = await versionAppService.modify(formData);
       if (res.HttpResponseCode === 200) {
@@ -90,6 +91,7 @@ const VersionApp = ({ t, ...props }) => {
       setError({
         ...error,
         app_version: data.app_version == undefined || data.app_version == '' ? 'This field is required.' : '',
+        url: data.url == undefined || data.url == '' ? 'This field is required.' : '',
       });
     }
   };
@@ -98,14 +100,14 @@ const VersionApp = ({ t, ...props }) => {
     <>
       <Box sx={{ pb: 3, height: 700, width: '100%' }}>
         <div>
-          <Card sx={{ margin: 'auto', width: 500, textAlign: 'center', mt: 5 }}>
+          <Card sx={{ margin: 'auto', width: 700, textAlign: 'center', mt: 5 }}>
             {info != null ? (
               <>
                 <AndroidIcon sx={{ fontSize: 180, margin: 'auto', display: 'block' }} />
                 <p style={{ fontWeight: 600, fontSize: '28px' }}> {info.name_file}</p>
                 <p>Version: {info.app_version}</p>
                 <p>Date: {info.change_date}</p>
-                <Button variant="outlined" sx={{ m: 1 }} startIcon={<DownloadIcon />} onClick={() => handleDownload()}>
+                <Button variant="contained" sx={{ m: 1 }} startIcon={<DownloadIcon />} onClick={() => handleDownload()}>
                   {t('Download')}
                 </Button>
               </>
@@ -137,10 +139,25 @@ const VersionApp = ({ t, ...props }) => {
                 error={error.app_version ? true : false}
                 helperText={error.app_version ? error.app_version : ''}
               />
+              <TextField
+                fullWidth
+                type="text"
+                margin="dense"
+                label="Url"
+                onChange={(e) => {
+                  setData({ ...data, url: e.target.value });
+                  setError({
+                    ...error,
+                    url: e.target.value == '' ? 'This field is required.' : '',
+                  });
+                }}
+                error={error.url ? true : false}
+                helperText={error.url ? error.url : ''}
+              />
               <input type="file" name="file" onChange={changeHandler} style={{ float: 'left', marginTop: '20px' }} />
               <div style={{ marginBottom: '20px' }}>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   sx={{ mt: 3, width: '100%', height: '56px' }}
                   startIcon={<FileUploadIcon />}
                   onClick={() => handleUpload()}
