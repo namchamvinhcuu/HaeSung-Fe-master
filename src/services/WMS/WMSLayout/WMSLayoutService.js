@@ -76,12 +76,28 @@ export const getBinById = async (params) => {
   }
 };
 
+export const getBinByCode = async (params) => {
+  try {
+    return await axios.get(`${API}/get-bin-by-code`, { params: params });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
 export const unLinkESL = async (params) => {
   try {
     const res = await axios.put(`${API}/unlink-esl`, {
       ...params,
     });
     return res;
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+export const getBinsMapping = async (params) => {
+  try {
+    return await axios.get(`${API}/get-bins-mapping`, { params: { ...params } });
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }

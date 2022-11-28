@@ -72,4 +72,22 @@ const getESLDataByBinId = async (BinId) => {
   }
 };
 
-export { get, getAilse, getShelf, getBin, scanPutAway, handleDelete, getESLData, getESLDataByBinId };
+const getESLDataByBinCode = async (binCode) => {
+  try {
+    return await axios.get(`${apiName}/get-els-data-by-binCode?BinCode=${binCode}`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+export {
+  get,
+  getAilse,
+  getShelf,
+  getBin,
+  scanPutAway,
+  handleDelete,
+  getESLData,
+  getESLDataByBinId,
+  getESLDataByBinCode,
+};
