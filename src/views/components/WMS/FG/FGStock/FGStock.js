@@ -1,24 +1,21 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
-import { User_Operations } from '@appstate/user';
-import { Store } from '@appstate';
 
 import moment from 'moment';
 
-import PropTypes from 'prop-types';
-import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import { DataGridPro } from '@mui/x-data-grid-pro';
+import Typography from '@mui/material/Typography';
+import PropTypes from 'prop-types';
 
 import { useIntl } from 'react-intl';
 
-import { ErrorAlert, SuccessAlert } from '@utils';
-import { MuiButton, MuiDataGrid, MuiAutocomplete, MuiSearchField } from '@controls';
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
 
 import { ProductDto } from '@models';
 import { fgStockService, productService } from '@services';

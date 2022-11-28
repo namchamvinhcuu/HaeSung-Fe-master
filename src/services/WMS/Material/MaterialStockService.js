@@ -34,4 +34,12 @@ const getSupplier = async () => {
   }
 };
 
+export const getLotStock = async (params) => {
+  try {
+    return await axios.get(`${apiName}/get-lot-stock`, { params: { ...params } });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
 export { getMaterialList, getMaterialType, getUnit, getSupplier };
