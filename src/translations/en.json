@@ -152,6 +152,7 @@
     "Inch": "Inch",
     "Model": "Model",
     "Description": "Description",
+    "StockQty": "Stock Qty",
     "duplicated_name": "Product Code: duplicated name",
     "InchFormatError": "Inch: Format error. Please re-enter using the proper format. (9.3)",
     "productCode_required": "Product Code is required",
@@ -475,5 +476,12 @@
     "SOrderQty_required": "OrderQty cannot be blank",
     "SOrderQty_GreaterThan_0": "OrderQty must be greater than 0 ",
     "SQty_Format": "OrderQty format is invalid (7.3) "
+  },
+  "MappingBin":{
+    "BinId": "Bin Id",
+    "BinCode": "Bin Code",
+    "BinLevel": "Bin Level",
+    "BinIndex": "Bin Index",
+    "ESLCode": "ESL Code"
   }
 }

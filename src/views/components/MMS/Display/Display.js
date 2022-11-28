@@ -16,11 +16,13 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import HomeIcon from '@mui/icons-material/Home';
 import { Button, Grid } from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import { match } from 'ramda';
 
 const Display = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
   const handle = useFullScreenHandle();
+  const [colWidth, setColWidth] = useState(33);
   const [data, setData] = useState({ totalOrderQty: 0, totalActualQty: 0, totalEfficiency: 0, data: [] });
   const [connection, setConnection] = useState(
     new HubConnectionBuilder()
@@ -41,10 +43,15 @@ const Display = (props) => {
 
   const startConnection = async () => {
     try {
-      connection.on('WorkOrderGetDisplay', (data) => {
-        if (data) {
-          setData(data);
-          console.log(data);
+      connection.on('WorkOrderGetDisplay', (res) => {
+        if (res) {
+          setData(res);
+          if (res.data.length > 0) {
+            console.log(data.data);
+            let width = 100 / (data.data.length + 1);
+            setColWidth(width);
+          }
+          //console.log(data);
         }
       });
       connection.onclose((e) => {
@@ -113,15 +120,15 @@ const Display = (props) => {
           </div>
           <div style={{ height: '95%' }}>
             <div style={{ height: '20%', display: 'flex' }}>
-              <div style={{ ...style.grid, width: '33%', backgroundColor: '#9370db' }}>
+              <div style={{ ...style.grid, width: '33.3333%', backgroundColor: '#9370db' }}>
                 <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Total Target</h2>
                 <h1 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{data.totalOrderQty}</h1>
               </div>
-              <div style={{ ...style.grid, width: '34%', backgroundColor: '#00c6bb' }}>
+              <div style={{ ...style.grid, width: '33.3333%', backgroundColor: '#00c6bb' }}>
                 <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Total Actual</h2>
                 <h1 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{data.totalActualQty}</h1>
               </div>
-              <div style={{ ...style.grid, width: '33%', backgroundColor: '#e9a424' }}>
+              <div style={{ ...style.grid, width: '33.3333%', backgroundColor: '#e9a424' }}>
                 <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Avg Efficiency</h2>
                 <h1 style={{ fontWeight: '600', fontFamily: 'cursive' }}>
                   {data.totalEfficiency > 100 ? 100 : Math.round(data.totalEfficiency)}%
@@ -129,7 +136,7 @@ const Display = (props) => {
               </div>
             </div>
             <div style={{ height: '80%', display: 'flex' }}>
-              <div style={{ width: '33%', height: '100%' }}>
+              <div style={{ width: `${colWidth}%`, height: '100%' }}>
                 <div style={{ ...style.grid, height: '25%', border: 'solid 1px #434242', backgroundColor: '#f00' }}>
                   <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>WO</h2>
                 </div>
@@ -149,7 +156,7 @@ const Display = (props) => {
                   let efficiency = Math.round((item.actualQty / item.orderQty) * 100);
 
                   return (
-                    <div style={{ width: '33%', height: '100%' }} key={index}>
+                    <div style={{ width: `${colWidth}%`, height: '100%' }} key={index}>
                       <div style={{ ...style.grid, height: '25%', display: 'grid', border: 'solid 1px #222222' }}>
                         <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{item.woCode}</h2>
                       </div>

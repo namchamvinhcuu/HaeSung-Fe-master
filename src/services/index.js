@@ -46,6 +46,7 @@ import * as materialStockService from './WMS/Material/MaterialStockService';
 
 import * as eslService from './esl/ESLService';
 import * as fgReceivingService from './WMS/FG/FGReceivingService';
+import * as fgStockService from './WMS/FG/FGStockService';
 
 export {
   loginService,
@@ -89,4 +90,5 @@ export {
   materialStockService,
   wipStockService,
   fgReceivingService,
+  fgStockService,
 };

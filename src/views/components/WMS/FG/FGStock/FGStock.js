@@ -5,16 +5,20 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import moment from 'moment';
+
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Tooltip from '@mui/material/Tooltip';
 import PropTypes from 'prop-types';
-import { materialStockService } from '@services';
+
 import { useIntl } from 'react-intl';
-import moment from 'moment';
+
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+
+import { ProductDto } from '@models';
+import { fgStockService, productService } from '@services';
 
 const DetailPanelContent = ({ row: rowProp }) => {
   let isDetailRendered = useRef(true);
@@ -34,10 +38,10 @@ const DetailPanelContent = ({ row: rowProp }) => {
       const params = {
         page: detailPanelState.page,
         pageSize: detailPanelState.pageSize,
-        MaterialId: detailPanelState.MaterialId,
+        MatetialId: detailPanelState.MaterialId,
       };
 
-      const res = await materialStockService.getLotStock(params);
+      const res = await fgStockService.getLotStock(params);
 
       setDetailPanelState({
         ...detailPanelState,
@@ -100,14 +104,14 @@ const DetailPanelContent = ({ row: rowProp }) => {
 
   return (
     <Stack sx={{ py: 2, height: '100%', boxSizing: 'border-box' }} direction="column">
-      <Paper sx={{ flex: 1, mx: 'auto', width: '80%', p: 1 }}>
+      <Paper sx={{ flex: 1, mx: 'auto', width: '95%', p: 1 }}>
         <Stack direction="column" spacing={1} sx={{ height: 1 }}>
-          <Typography variant="h6">{`Material Code: ${rowProp.MaterialCode}`}</Typography>
+          <Typography variant="h6">{`Assy Code: ${rowProp.MaterialCode}`}</Typography>
           <Grid container>
             <Grid item md={6}>
               <Typography variant="body2" align="right" color="textSecondary"></Typography>
-              <Typography variant="body1">Type: {rowProp.MaterialTypeName}</Typography>
-              <Typography variant="body1">supplier: {rowProp.SupplierName}</Typography>
+              <Typography variant="body1">Model: {rowProp.ModelName}</Typography>
+              <Typography variant="body1">Type: {rowProp.ProductTypeName}</Typography>
             </Grid>
             <Grid item md={6}>
               <Typography variant="body2" align="right" color="textSecondary"></Typography>
@@ -148,196 +152,177 @@ DetailPanelContent.propTypes = {
   row: PropTypes.object.isRequired,
 };
 
-const MaterialStock = (props) => {
-  const intl = useIntl();
+const FGStock = (props) => {
   let isRendered = useRef(true);
-  const [state, setState] = useState({
+
+  const lotInputRef = useRef(null);
+  const intl = useIntl();
+
+  const [fgStockState, setFGStockState] = useState({
     isLoading: false,
     data: [],
     totalRow: 0,
     page: 1,
     pageSize: 20,
     searchData: {
-      keyWord: '',
-      MaterialType: null,
-      Unit: null,
-      SupplierId: null,
-      showDelete: true,
+      Model: null,
+      MaterialCode: '',
+      ProductType: 0,
+      Description: '',
+      //   ...ProductDto,
     },
   });
 
+  const [selectedRow, setSelectedRow] = useState({
+    ...ProductDto,
+  });
+
+  const fetchData = async () => {
+    if (isRendered) {
+      setFGStockState({ ...fgStockState, isLoading: true });
+      const params = {
+        page: fgStockState.page,
+        pageSize: fgStockState.pageSize,
+        Model: fgStockState.searchData.Model,
+        MaterialCode: fgStockState.searchData.MaterialCode,
+        ProductType: fgStockState.searchData.ProductType,
+        Description: fgStockState.searchData.Description,
+      };
+
+      const res = await fgStockService.getFGStock(params);
+
+      setFGStockState({
+        ...fgStockState,
+        data: [...res.Data],
+        totalRow: res.TotalRow,
+        isLoading: false,
+      });
+    }
+  };
+
+  const getproductType = async () => {
+    return await productService.getProductType();
+  };
+
+  const getModel = async () => {
+    return await productService.getProductModel();
+  };
+
+  const handleRowSelection = (arrIds) => {
+    const rowSelected = fgStockState.data.filter(function (item) {
+      return item.MaterialId === arrIds[0];
+    });
+    if (rowSelected && rowSelected.length > 0) {
+      setSelectedRow({ ...rowSelected[0] });
+    } else {
+      setSelectedRow({ ...ProductDto });
+    }
+  };
+
+  const handleSearch = (e, inputName) => {
+    console.log('e: ', e);
+    console.log('inputName: ', inputName);
+    let newSearchData = { ...fgStockState.searchData };
+    newSearchData[inputName] = e;
+    setFGStockState({ ...fgStockState, searchData: { ...newSearchData } });
+  };
+
   const columns = [
+    { field: 'MaterialId', headerName: '', hide: true },
     {
       field: 'id',
       headerName: '',
       width: 70,
-      align: 'center',
       filterable: false,
-      renderCell: (index) => index.api.getRowIndex(index.row.MaterialId) + 1 + (state.page - 1) * state.pageSize,
+      renderCell: (index) =>
+        index.api.getRowIndex(index.row.MaterialId) + 1 + (fgStockState.page - 1) * fgStockState.pageSize,
     },
-    { field: 'MaterialId', hide: true },
-    { field: 'row_version', hide: true },
+
     {
-      field: 'MaterialCode',
-      headerName: intl.formatMessage({ id: 'material.MaterialCode' }),
+      field: 'ModelName',
+      headerName: intl.formatMessage({ id: 'product.Model' }),
       width: 150,
     },
+    { field: 'MaterialCode', headerName: 'Product Code', width: 200 },
     {
-      field: 'StockQty',
-      align: 'right',
-      headerName: intl.formatMessage({ id: 'material.StockQty' }),
-      width: 120,
-    },
-    {
-      field: 'MaterialTypeName',
-      headerName: intl.formatMessage({ id: 'material.MaterialType' }),
-      width: 150,
-    },
-    {
-      field: 'UnitName',
-      headerName: intl.formatMessage({ id: 'material.Unit' }),
-      width: 120,
-    },
-    {
-      field: 'QCMasterCode',
-      headerName: intl.formatMessage({ id: 'material.QCMasterId' }),
-      width: 150,
-    },
-    {
-      field: 'SupplierName',
-      headerName: intl.formatMessage({ id: 'material.SupplierId' }),
+      field: 'ProductTypeName',
+      headerName: intl.formatMessage({ id: 'product.product_type' }),
       width: 200,
-      renderCell: (params) => {
-        return (
-          <Tooltip title={params.row.SupplierName ?? ''} className="col-text-elip">
-            <Typography sx={{ fontSize: 14 }}>{params.row.SupplierName}</Typography>
-          </Tooltip>
-        );
-      },
     },
     {
       field: 'Description',
-      headerName: intl.formatMessage({ id: 'material.Description' }),
-      width: 200,
-      renderCell: (params) => {
-        return (
-          <Tooltip title={params.row.Description ?? ''} className="col-text-elip">
-            <Typography sx={{ fontSize: 14 }}>{params.row.Description}</Typography>
-          </Tooltip>
-        );
-      },
+      headerName: intl.formatMessage({ id: 'product.Description' }),
+      width: 400,
     },
     {
-      field: 'Grade',
-      headerName: intl.formatMessage({ id: 'material.Grade' }),
-      width: 120,
+      field: 'Inch',
+      headerName: intl.formatMessage({ id: 'product.Inch' }),
+      width: 100,
     },
     {
-      field: 'Color',
-      headerName: intl.formatMessage({ id: 'material.Color' }),
-      width: 120,
-    },
-    {
-      field: 'ResinType',
-      headerName: intl.formatMessage({ id: 'material.ResinType' }),
-      width: 120,
-    },
-    {
-      field: 'FlameClass',
-      headerName: intl.formatMessage({ id: 'material.FlameClass' }),
-      width: 120,
+      field: 'StockQty',
+      headerName: intl.formatMessage({ id: 'product.StockQty' }),
+      width: 150,
     },
   ];
-
-  //useEffect
-  useEffect(() => {
-    fetchData();
-    return () => {
-      isRendered = false;
-    };
-  }, [state.page, state.pageSize, state.searchData.showDelete]);
-
-  const handleSearch = (e, inputName) => {
-    let newSearchData = { ...state.searchData };
-    newSearchData[inputName] = e;
-    if (inputName == 'showDelete') {
-      setState({ ...state, page: 1, searchData: { ...newSearchData } });
-    } else {
-      setState({ ...state, searchData: { ...newSearchData } });
-    }
-  };
-
-  async function fetchData() {
-    setState({ ...state, isLoading: true });
-    const params = {
-      page: state.page,
-      pageSize: state.pageSize,
-      keyWord: state.searchData.keyWord,
-      MaterialType: state.searchData.MaterialType,
-      Unit: state.searchData.Unit,
-      SupplierId: state.searchData.SupplierId,
-      showDelete: state.searchData.showDelete,
-    };
-    const res = await materialStockService.getMaterialList(params);
-    if (res && res.Data && isRendered)
-      setState({
-        ...state,
-        data: res.Data ?? [],
-        totalRow: res.TotalRow,
-        isLoading: false,
-      });
-  }
 
   const getDetailPanelContent = React.useCallback(({ row }) => <DetailPanelContent row={row} />, []);
 
   const getDetailPanelHeight = React.useCallback(() => 450, []);
 
+  useEffect(() => {
+    fetchData();
+
+    return () => {
+      isRendered = false;
+    };
+  }, [fgStockState.page, fgStockState.pageSize]);
+
   return (
     <React.Fragment>
-      <Grid container direction="row" justifyContent="space-between" alignItems="width-end">
-        <Grid item xs={3}></Grid>
+      <Grid container direction="row" justifyContent="space-between" alignItems="flex-end">
         <Grid item xs>
           <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
             <Grid item style={{ width: '21%' }}>
+              <MuiAutocomplete
+                label={intl.formatMessage({ id: 'product.Model' })}
+                fetchDataFunc={getModel}
+                displayLabel="commonDetailName"
+                displayValue="commonDetailId"
+                onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Model')}
+                variant="standard"
+              />
+            </Grid>
+
+            <Grid item style={{ width: '21%' }}>
+              <MuiAutocomplete
+                label={intl.formatMessage({ id: 'product.product_type' })}
+                fetchDataFunc={getproductType}
+                displayLabel="commonDetailName"
+                displayValue="commonDetailId"
+                onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'ProductType')}
+                variant="standard"
+              />
+            </Grid>
+
+            <Grid item style={{ width: '21%' }}>
               <MuiSearchField
-                variant="keyWord"
-                label="general.code"
+                variant="MaterialCode"
+                label="product.product_code"
                 onClick={fetchData}
-                onChange={(e) => handleSearch(e.target.value, 'keyWord')}
+                onChange={(e) => handleSearch(e.target.value, 'MaterialCode')}
               />
             </Grid>
+
             <Grid item style={{ width: '21%' }}>
-              <MuiAutocomplete
-                label={intl.formatMessage({ id: 'material.MaterialType' })}
-                fetchDataFunc={materialStockService.getMaterialType}
-                displayLabel="commonDetailName"
-                displayValue="commonDetailId"
-                onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'MaterialType')}
-                variant="standard"
+              <MuiSearchField
+                variant="Description"
+                label="product.Description"
+                onClick={fetchData}
+                onChange={(e) => handleSearch(e.target.value, 'Description')}
               />
             </Grid>
-            <Grid item style={{ width: '21%' }}>
-              <MuiAutocomplete
-                label={intl.formatMessage({ id: 'material.Unit' })}
-                fetchDataFunc={materialStockService.getUnit}
-                displayLabel="commonDetailName"
-                displayValue="commonDetailId"
-                onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Unit')}
-                variant="standard"
-              />
-            </Grid>
-            <Grid item style={{ width: '21%' }}>
-              <MuiAutocomplete
-                label={intl.formatMessage({ id: 'material.SupplierId' })}
-                fetchDataFunc={materialStockService.getSupplier}
-                displayLabel="SupplierName"
-                displayValue="SupplierId"
-                onChange={(e, item) => handleSearch(item ? item.SupplierId ?? null : null, 'SupplierId')}
-                variant="standard"
-                fullWidth
-              />
-            </Grid>
-            <Grid item>
+            <Grid item style={{}}>
               <MuiButton text="search" color="info" onClick={fetchData} sx={{ mr: 3, mb: 1 }} />
             </Grid>
           </Grid>
@@ -345,22 +330,21 @@ const MaterialStock = (props) => {
       </Grid>
 
       <MuiDataGrid
-        showLoading={state.isLoading}
+        showLoading={fgStockState.isLoading}
         isPagingServer={true}
         headerHeight={45}
         columns={columns}
-        rows={state.data}
-        page={state.page - 1}
-        pageSize={state.pageSize}
-        rowCount={state.totalRow}
-        rowsPerPageOptions={[5, 10, 20]}
-        onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
-        onPageSizeChange={(newPageSize) => setState({ ...state, pageSize: newPageSize, page: 1 })}
+        rows={fgStockState.data}
+        page={fgStockState.page - 1}
+        pageSize={fgStockState.pageSize}
+        rowCount={fgStockState.totalRow}
+        onPageChange={(newPage) => setFGStockState({ ...fgStockState, page: newPage + 1 })}
+        onPageSizeChange={(newPageSize) => setFGStockState({ ...fgStockState, pageSize: newPageSize, page: 1 })}
+        onSelectionModelChange={(newSelectedRowId) => {
+          handleRowSelection(newSelectedRowId);
+        }}
         getRowId={(rows) => rows.MaterialId}
-        // getRowClassName={(params) => {
-        //   if (_.isEqual(params.row, newData)) return `Mui-created`;
-        // }}
-        initialState={{ pinnedColumns: { left: ['id', 'MaterialCode', 'StockQty'], right: ['action'] } }}
+        initialState={{ pinnedColumns: { left: ['id', 'MaterialCode'] } }}
         rowThreshold={0}
         getDetailPanelHeight={getDetailPanelHeight}
         getDetailPanelContent={getDetailPanelContent}
@@ -389,4 +373,4 @@ const mapDispatchToProps = (dispatch) => {
   return { changeLanguage };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MaterialStock);
+export default connect(mapStateToProps, mapDispatchToProps)(FGStock);
