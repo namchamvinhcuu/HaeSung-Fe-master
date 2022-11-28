@@ -475,5 +475,12 @@
     "SOrderQty_required": "OrderQty cannot be blank",
     "SOrderQty_GreaterThan_0": "OrderQty must be greater than 0 ",
     "SQty_Format": "OrderQty format is invalid (7.3) "
+  },
+  "MappingBin":{
+    "BinId": "Bin Id",
+    "BinCode": "Bin Code",
+    "BinLevel": "Bin Level",
+    "BinIndex": "Bin Index",
+    "ESLCode": "ESL Code"
   }
 }
