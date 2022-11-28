@@ -9,3 +9,11 @@ export const getFGStock = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+export const getLotStock = async (params) => {
+  try {
+    return await axios.get(`${apiName}/get-lot-stock`, { params: { ...params } });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
