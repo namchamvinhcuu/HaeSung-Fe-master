@@ -59,4 +59,19 @@ const deleteProduct = async (params) => {
   }
 };
 
-export { getProductList, getProductModel, getProductType, createProduct, modifyProduct, deleteProduct };
+const createProductByExcel = async (params) => {
+  try {
+    return await axios.post(`${apiProduct}/create-by-excel`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+export {
+  getProductList,
+  getProductModel,
+  getProductType,
+  createProduct,
+  modifyProduct,
+  deleteProduct,
+  createProductByExcel,
+};

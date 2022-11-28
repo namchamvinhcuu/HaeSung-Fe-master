@@ -434,6 +434,7 @@ const Product = () => {
         setNewData={setNewData}
         isOpen={isOpenCreateDialog}
         onClose={toggleCreateDialog}
+        fetchData={fetchData}
       />
       <ModifyDialog
         initModal={selectedRow}
