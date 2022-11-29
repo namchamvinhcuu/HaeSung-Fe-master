@@ -35,7 +35,7 @@ const MMSReportLotGrid = ({ woId }) => {
       filterable: false,
       renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (state.page - 1) * state.pageSize,
     },
-    { field: 'LotCode', headerName: intl.formatMessage({ id: 'actual.LotCode' }), flex: 0.7 },
+    { field: 'LotSerial', headerName: intl.formatMessage({ id: 'actual.LotSerial' }), flex: 0.5 },
     { field: 'MaterialCode', headerName: intl.formatMessage({ id: 'actual.MaterialId' }), flex: 0.5 },
     {
       field: 'QCResult',
