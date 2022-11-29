@@ -506,7 +506,7 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
                               <b style={{ fontSize: '22px' }}>{item?.MaterialColorCode}</b>
                             </TableCell>
                             <TableCell rowSpan={2} sx={{ textAlign: 'center' }} style={style.borderBot}>
-                              <QRCode value={`${item?.LotCode}`} size={80} />
+                              <QRCode value={`${item?.Id}`} size={80} />
                             </TableCell>
                           </TableRow>
                           <TableRow>
@@ -529,13 +529,12 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
                           </TableRow>
                           <TableRow>
                             <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>LOT No.</TableCell>
-                            <TableCell
-                              style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
-                              sx={{ backgroundColor: 'yellow' }}
-                            ></TableCell>
-                            <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
-                              20212221
+                            <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                              {item?.Id}
                             </TableCell>
+                            {/* <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                              20212221
+                            </TableCell> */}
                             <TableCell sx={{ textAlign: 'center' }} style={style.borderBot}>
                               {item?.QCResult ? 'OK' : 'NG'}
                             </TableCell>
