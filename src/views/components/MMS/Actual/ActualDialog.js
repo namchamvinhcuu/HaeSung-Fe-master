@@ -86,7 +86,6 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
       renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (state.page - 1) * state.pageSize,
     },
     { field: 'Id', hide: true },
-    { field: 'LotCode', headerName: intl.formatMessage({ id: 'actual.LotCode' }), flex: 0.8, hide: true },
     { field: 'MaterialCode', headerName: intl.formatMessage({ id: 'actual.MaterialId' }), flex: 0.5 },
     {
       field: 'QCResult',
@@ -108,7 +107,6 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
       renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (state.page - 1) * state.pageSize,
     },
     { field: 'Id', hide: true },
-    { field: 'LotCode', headerName: intl.formatMessage({ id: 'actual.LotCode' }), flex: 0.8, hide: true },
     { field: 'LotSerial', headerName: intl.formatMessage({ id: 'actual.LotSerial' }), flex: 0.5 },
     { field: 'MaterialCode', headerName: intl.formatMessage({ id: 'actual.MaterialId' }), flex: 0.5 },
     {
