@@ -43,7 +43,7 @@ const ActualPrintDialog = ({ listData, isOpen, onClose }) => {
                           {item.MaterialCode}
                         </td>
                         <td style={style.cell} rowSpan="2">
-                          <QRCode value={`${item.LotCode}`} size={90} />
+                          <QRCode value={`${item.Id}`} size={90} />
                         </td>
                       </tr>
                       <tr>
