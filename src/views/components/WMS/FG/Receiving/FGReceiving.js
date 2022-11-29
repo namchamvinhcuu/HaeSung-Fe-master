@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import { useIntl } from 'react-intl';
-import { ErrorAlert, SuccessAlert } from '@utils';
+import { ErrorAlert, SuccessAlert, isNumber } from '@utils';
 import { MuiButton, MuiDataGrid, MuiTextField } from '@controls';
 import { LotDto } from '@models';
 
@@ -50,16 +50,20 @@ const FGReceiving = (props) => {
   };
 
   const handleReceivingLot = async (inputValue) => {
-    const res = await fgReceivingService.scan({ LotCode: inputValue });
-    if (res && isRendered) {
-      if (res.HttpResponseCode === 200 && res.Data) {
-        setNewData({ ...res.Data });
-        SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    if (isNumber(inputValue)) {
+      const res = await fgReceivingService.scan({ Id: inputValue });
+      if (res && isRendered) {
+        if (res.HttpResponseCode === 200 && res.Data) {
+          setNewData({ ...res.Data });
+          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        }
       } else {
-        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
       }
     } else {
-      ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
+      ErrorAlert(intl.formatMessage({ id: 'general.no_data' }));
     }
   };
   const fetchData = async () => {
@@ -185,7 +189,6 @@ const FGReceiving = (props) => {
     },
   ];
   const handleDelete = async (lot) => {
-    console.log(lot, 'LOT');
     if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
       try {
         let res = await fgReceivingService.handleDelete(lot);

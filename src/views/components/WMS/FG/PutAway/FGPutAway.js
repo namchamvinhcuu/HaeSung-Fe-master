@@ -6,7 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Grid, IconButton } from '@mui/material';
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
 import { eslService, fgPutAwayService } from '@services';
-import { ErrorAlert, SuccessAlert } from '@utils';
+import { ErrorAlert, SuccessAlert, isNumber } from '@utils';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -231,25 +231,29 @@ const FGPutAway = (props) => {
   ];
 
   const handlePutAway = async (inputValue) => {
-    if (inputValue.binId === 0 || inputValue.binId == undefined || inputValue.lot.trim() === '') {
-      ErrorAlert(intl.formatMessage({ id: 'lot.binAndLot_required' }));
-      return;
-    }
-    const res = await fgPutAwayService.scanPutAway({
-      LotId: inputValue.lot.trim(),
-      BinId: inputValue.binId,
-    });
+    if (isNumber(inputValue)) {
+      if (inputValue.binId === 0 || inputValue.binId == undefined || inputValue.lot.trim() === '') {
+        ErrorAlert(intl.formatMessage({ id: 'lot.binAndLot_required' }));
+        return;
+      }
+      const res = await fgPutAwayService.scanPutAway({
+        LotId: inputValue.lot.trim(),
+        BinId: inputValue.binId,
+      });
 
-    if (res && isRendered) {
-      if (res.HttpResponseCode === 200 && res.Data) {
-        setNewData({ ...res.Data });
-        lotInputRef.current.value;
-        SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      if (res && isRendered) {
+        if (res.HttpResponseCode === 200 && res.Data) {
+          setNewData({ ...res.Data });
+          lotInputRef.current.value;
+          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        }
       } else {
-        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
       }
     } else {
-      ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
+      ErrorAlert(intl.formatMessage({ id: 'general.no_data' }));
     }
   };
 

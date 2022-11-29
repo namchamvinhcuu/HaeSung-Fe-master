@@ -11,7 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Grid } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { wipReceivingService } from '@services';
-import { ErrorAlert, SuccessAlert } from '@utils';
+import { ErrorAlert, SuccessAlert, isNumber } from '@utils';
 import moment from 'moment';
 import { useIntl } from 'react-intl';
 
@@ -64,7 +64,6 @@ const WIPReceiving = (props) => {
         );
       },
     },
-    { field: 'LotCode', headerName: 'Lot Code', flex: 0.6 },
     { field: 'MaterialColorCode', headerName: 'Material Code', flex: 0.4 },
     { field: 'Qty', headerName: 'Qty', flex: 0.3 },
     {
@@ -128,17 +127,21 @@ const WIPReceiving = (props) => {
   };
 
   const handleDelete = async (lot) => {
-    if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
-      try {
-        let res = await wipReceivingService.handleDelete(lot);
-        if (res && res.HttpResponseCode === 200) {
-          await fetchData();
-        } else {
-          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    if (isNumber(inputValue)) {
+      if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
+        try {
+          let res = await wipReceivingService.handleDelete(lot);
+          if (res && res.HttpResponseCode === 200) {
+            await fetchData();
+          } else {
+            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
       }
+    } else {
+      ErrorAlert(intl.formatMessage({ id: 'general.no_data' }));
     }
   };
 
@@ -158,7 +161,7 @@ const WIPReceiving = (props) => {
   };
 
   const handleReceivingLot = async (inputValue) => {
-    const res = await wipReceivingService.receivingLot({ LotCode: inputValue });
+    const res = await wipReceivingService.receivingLot({ Id: inputValue });
     if (res && isRendered) {
       if (res.HttpResponseCode === 200 && res.Data) {
         setNewData({ ...res.Data });
@@ -181,7 +184,7 @@ const WIPReceiving = (props) => {
             <Grid item sx={{ width: '400px', marginBottom: '15px' }}>
               <MuiTextField
                 ref={lotInputRef}
-                label={intl.formatMessage({ id: 'actual.LotCode' })}
+                label={'Lot'}
                 autoFocus={focus}
                 onChange={(e) => (lotInputRef.current.value = e.target.value)}
                 onKeyDown={keyPress}
