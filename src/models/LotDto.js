@@ -1,6 +1,6 @@
 const LotDto = {
   Id: 0,
-  LotCode: '',
+  // LotCode: '',
   MaterialId: 0,
   LotStatus: false,
   Qty: 0,

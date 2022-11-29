@@ -408,7 +408,6 @@
     "LotNumber": "Lot Number",
     "LotSerial": "Lot Serial",
     "totalQtylot_GreaterThan_ActualQty": "SL vượt quá số lương cho phép",
-    "LotCode": "Lot Code",
     "MaterialId": "Assy Code",
     "LotStatus": "Lot Status",
     "WoOrderQty": "Wo Order Qty",

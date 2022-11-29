@@ -5,17 +5,16 @@ import { LotDto } from '@models';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Grid, IconButton } from '@mui/material';
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
-import { eslService, materialPutAwayService } from '@services';
+import { eslService, fgPutAwayService } from '@services';
 import { ErrorAlert, SuccessAlert } from '@utils';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
 import _ from 'lodash';
 
-const MaterialPutAway = (props) => {
+const FGPutAway = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
   const initETDLoad = new Date();
@@ -25,7 +24,6 @@ const MaterialPutAway = (props) => {
   const [shelfId, setShelfId] = useState(0);
   const [binId, setBinId] = useState(0);
   const [binCode, setBinCode] = useState('');
-  const [binLevel, setBinLevel] = useState(0);
   const [putAwayState, setPutAwayState] = useState({
     isLoading: false,
     data: [],
@@ -46,17 +44,17 @@ const MaterialPutAway = (props) => {
   };
 
   const getAilse = async () => {
-    const res = await materialPutAwayService.getAilse();
+    const res = await fgPutAwayService.getAilse();
     return res;
   };
 
   const getShelf = async (id) => {
-    const res = await materialPutAwayService.getShelf({ LocationId: id });
+    const res = await fgPutAwayService.getShelf({ LocationId: id });
     return res;
   };
 
   const getBin = async (id) => {
-    const res = await materialPutAwayService.getBin({ ShelfId: id });
+    const res = await fgPutAwayService.getBin({ ShelfId: id });
     return res;
   };
 
@@ -67,7 +65,7 @@ const MaterialPutAway = (props) => {
   const handleDelete = async (lot) => {
     if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
       try {
-        let res = await materialPutAwayService.handleDelete(lot);
+        let res = await fgPutAwayService.handleDelete(lot);
         if (res && res.HttpResponseCode === 200) {
           await fetchData();
           await eslService.updateESLDataByBinId(lot.BinId);
@@ -84,7 +82,8 @@ const MaterialPutAway = (props) => {
     let newState = { ...putAwayState };
     newState[inputName] = e;
     if (inputName === 'LocationId') {
-      (newState.ShelfId = null), (newState.BinId = null);
+      newState.ShelfId = null;
+      newState.BinId = null;
     } else {
       if (inputName === 'ShelfId') {
         newState.BinId = null;
@@ -107,7 +106,7 @@ const MaterialPutAway = (props) => {
       searchEndDay: putAwayState.searchData.searchEndDay,
     };
 
-    const res = await materialPutAwayService.get(params);
+    const res = await fgPutAwayService.get(params);
     if (res && isRendered)
       setPutAwayState({
         ...putAwayState,
@@ -166,7 +165,6 @@ const MaterialPutAway = (props) => {
 
   const columns = [
     { field: 'Id', headerName: '', hide: true },
-
     {
       field: 'id',
       headerName: '',
@@ -174,7 +172,6 @@ const MaterialPutAway = (props) => {
       filterable: false,
       renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (putAwayState.page - 1) * putAwayState.pageSize,
     },
-
     {
       field: 'action',
       headerName: '',
@@ -201,31 +198,26 @@ const MaterialPutAway = (props) => {
         );
       },
     },
-
     {
       field: 'MaterialColorCode',
       headerName: 'Material Code',
       width: 250,
     },
-
     {
       field: 'LotSerial',
       headerName: 'Lot Serial',
       width: 250,
     },
-
     {
       field: 'Qty',
       headerName: 'Qty',
       width: 100,
     },
-
     {
       field: 'LocationCode',
       headerName: 'Bin',
       width: 250,
     },
-
     {
       field: 'IncomingDate',
       headerName: 'Incoming Date',
@@ -243,7 +235,7 @@ const MaterialPutAway = (props) => {
       ErrorAlert(intl.formatMessage({ id: 'lot.binAndLot_required' }));
       return;
     }
-    const res = await materialPutAwayService.scanPutAway({
+    const res = await fgPutAwayService.scanPutAway({
       LotId: inputValue.lot.trim(),
       BinId: inputValue.binId,
     });
@@ -251,6 +243,7 @@ const MaterialPutAway = (props) => {
     if (res && isRendered) {
       if (res.HttpResponseCode === 200 && res.Data) {
         setNewData({ ...res.Data });
+        lotInputRef.current.value;
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
       } else {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
@@ -342,7 +335,6 @@ const MaterialPutAway = (props) => {
                   handleInputChange(item ? item?.BinId ?? null : null, 'BinId');
                   setBinId(item?.BinId);
                   setBinCode(item?.BinCode);
-                  setBinLevel(item?.BinLevel);
                 }}
                 variant="standard"
               />
@@ -354,10 +346,9 @@ const MaterialPutAway = (props) => {
           <Grid container spacing={2}>
             <Grid item sx={{ width: '600px', mt: 0.5 }}>
               <MuiTextField
+                autoFocus
                 ref={lotInputRef}
                 label="Lot"
-                // autoFocus={focus}
-                // value={lotInputRef.current.value}
                 onChange={handleLotInputChange}
                 onKeyDown={keyPress}
               />
@@ -373,8 +364,6 @@ const MaterialPutAway = (props) => {
         showLoading={putAwayState.isLoading}
         isPagingServer={true}
         headerHeight={45}
-        // rowHeight={30}
-        // gridHeight={736}
         columns={columns}
         rows={putAwayState.data}
         page={putAwayState.page - 1}
@@ -384,17 +373,7 @@ const MaterialPutAway = (props) => {
         onPageChange={(newPage) => {
           setPutAwayState({ ...putAwayState, page: newPage + 1 });
         }}
-        onPageSizeChange={(newPageSize) => {
-          setPutAwayState({
-            ...putAwayState,
-            page: 1,
-            pageSize: newPageSize,
-          });
-        }}
         getRowId={(rows) => rows.Id}
-        // onSelectionModelChange={(newSelectedRowId) =>
-        //     handleRowSelection(newSelectedRowId)
-        // }
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) {
             return `Mui-created`;
@@ -426,4 +405,4 @@ const mapDispatchToProps = (dispatch) => {
   return { changeLanguage };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MaterialPutAway);
+export default connect(mapStateToProps, mapDispatchToProps)(FGPutAway);
