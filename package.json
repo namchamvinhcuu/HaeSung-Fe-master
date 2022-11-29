@@ -84,6 +84,7 @@
     "react-device-detect": "^1.7.5",
     "react-dom": "^17.0.0",
     "react-draggable": "^4.4.5",
+    "react-excel-renderer": "^1.1.0",
     "react-frame-component": "^5.2.3",
     "react-full-screen": "^1.1.1",
     "react-hook-form": "^7.33.1",

@@ -347,6 +347,7 @@ const Staff = (props) => {
         setNewData={setNewData}
         isOpen={isOpenCreateDialog}
         onClose={toggleCreateDialog}
+        fetchData={fetchData}
       />
       <ModifyStaffDialog
         initModal={selectedRow}

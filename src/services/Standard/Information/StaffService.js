@@ -42,5 +42,12 @@ const deleteStaff = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 };
+const createStaffByExcel = async (params) => {
+  try {
+    return await axios.post(`${apiStaff}/create-by-excel`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
 
-export { getStaffList, createStaff, modifyStaff, deleteStaff };
+export { getStaffList, createStaff, modifyStaff, deleteStaff, createStaffByExcel };

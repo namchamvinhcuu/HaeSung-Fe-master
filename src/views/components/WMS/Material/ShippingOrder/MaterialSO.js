@@ -33,6 +33,7 @@ import IconButton from '@mui/material/IconButton';
 import ReactToPrint from 'react-to-print';
 import { addDays, ErrorAlert, SuccessAlert } from '@utils';
 import _ from 'lodash';
+import { debounce } from 'lodash';
 import moment from 'moment';
 import { useIntl } from 'react-intl';
 
@@ -80,7 +81,7 @@ const MaterialSO = (props) => {
     setIsOpenDialog(!isOpenDialog);
   };
 
-  const changeSearchData = async (e, inputName) => {
+  const changeSearchData = (e, inputName) => {
     let newSearchData = { ...materialSOState.searchData };
 
     newSearchData[inputName] = e;

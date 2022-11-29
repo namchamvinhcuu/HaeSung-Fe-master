@@ -5,12 +5,17 @@ import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useIntl } from 'react-intl';
+
+import { debounce } from 'lodash';
+
 const MuiSearchField = React.forwardRef((props, ref) => {
   const intl = useIntl();
   const { label, name, type, value, disabled, onClick, onChange } = props;
+
+  let timer;
 
   const handleMouseDown = (event) => {
     event.preventDefault();
@@ -22,6 +27,23 @@ const MuiSearchField = React.forwardRef((props, ref) => {
       onClick();
     }
   };
+
+  const handleChange = () => {
+    timer = setTimeout(() => onChange(), 200);
+  };
+
+  useEffect(() => {
+    // if (inputRef) {
+    //   timer = setTimeout(() => lotInputRef.current.focus(), 500);
+    // }
+
+    return () => {
+      if (timer) {
+        console.log('clear timer');
+        clearTimeout(timer);
+      }
+    };
+  }, []);
 
   return (
     // <FormControl sx={{ mb: 0.5, width: "100%" }} disabled={disabled} variant="standard">
@@ -56,8 +78,8 @@ const MuiSearchField = React.forwardRef((props, ref) => {
       label={intl.formatMessage({ id: label })}
       disabled={disabled ?? false}
       name={name}
-      value={value}
-      onChange={onChange}
+      // value={value}
+      onChange={debounce(onChange, 200)}
       onKeyDown={keyPress}
     />
   );
