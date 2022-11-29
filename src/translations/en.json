@@ -297,6 +297,7 @@
     "Week": "Week",
     "Year": "Year",
     "Amount": "Total Qty",
+    "StockQty": "Stock Qty",
     "OrderQty": "Fixed Qty",
     "MaterialId_required": "Material Code is required",
     "LineId_required": "Line Name is required",
