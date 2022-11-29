@@ -497,6 +497,7 @@ const ForecastPODetail = ({ FPoMasterId }) => {
         onClose={toggle}
         mode={mode}
         FPoMasterId={FPoMasterId}
+        fetchData={fetchData}
       />
     </React.Fragment>
   );

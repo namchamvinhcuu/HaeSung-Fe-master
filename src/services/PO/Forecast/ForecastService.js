@@ -111,6 +111,13 @@ const downloadReport = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 };
+const createDetailByExcel = async (params) => {
+  try {
+    return await axios.post(`${apiName}/create-by-excel`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
 
 export {
   getMaterialModel,
@@ -123,4 +130,5 @@ export {
   getBuyerModel,
   getForecastPOReport,
   downloadReport,
+  createDetailByExcel,
 };
