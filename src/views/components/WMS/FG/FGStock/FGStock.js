@@ -193,7 +193,7 @@ const FGStock = (props) => {
 
       setFGStockState({
         ...fgStockState,
-        data: [...res.Data],
+        data: res.Data ? [...res.Data] : [],
         totalRow: res.TotalRow,
         isLoading: false,
       });
