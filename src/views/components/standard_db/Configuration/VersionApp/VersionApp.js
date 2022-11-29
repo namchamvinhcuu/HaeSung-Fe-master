@@ -34,7 +34,8 @@ const VersionApp = ({ t, ...props }) => {
 
   const [data, setData] = useState([versionAppDto]);
   const [error, setError] = useState({});
-  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [inputKey, setInputKey] = useState(null);
 
   useEffect(() => {
     window.i18n.changeLanguage(language.toString().toLowerCase());
@@ -56,8 +57,15 @@ const VersionApp = ({ t, ...props }) => {
       }
   };
 
-  const changeHandler = (event) => {
+  const changeHandler = async (event) => {
+    // await resetInputFile();
     setSelectedFile(event.target.files[0]);
+  };
+
+  const resetInputFile = async () => {
+    const randomKey = Math.random().toString(36);
+    setInputKey(randomKey);
+    setSelectedFile(null);
   };
 
   const handleDownload = async (e) => {
@@ -73,7 +81,7 @@ const VersionApp = ({ t, ...props }) => {
       return ErrorAlert('Chưa chọn file update');
     }
 
-    if (data.app_version) {
+    if (data.app_version && data.url) {
       const formData = new FormData();
       formData.append('file', selectedFile);
       formData.append('id_app', info.id_app);
@@ -84,6 +92,7 @@ const VersionApp = ({ t, ...props }) => {
       if (res.HttpResponseCode === 200) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
         setInfo({ ...res.Data });
+        await resetInputFile();
       } else {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
       }
@@ -154,7 +163,13 @@ const VersionApp = ({ t, ...props }) => {
                 error={error.url ? true : false}
                 helperText={error.url ? error.url : ''}
               />
-              <input type="file" name="file" onChange={changeHandler} style={{ float: 'left', marginTop: '20px' }} />
+              <input
+                type="file"
+                name="file"
+                key={inputKey || ''}
+                onChange={changeHandler}
+                style={{ float: 'left', marginTop: '20px' }}
+              />
               <div style={{ marginBottom: '20px' }}>
                 <Button
                   variant="contained"
