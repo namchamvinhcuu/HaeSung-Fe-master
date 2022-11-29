@@ -216,10 +216,10 @@ const CreateStaffDialog = (props) => {
         </TabPanel>
         <TabPanel value="tab2">
           <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-            <Grid item xs={12} sx={{ p: 3 }}>
+            <Grid item xs={6} sx={{ p: 3 }}>
               <input type="file" name="file" id="excelinput" required onChange={changeHandler} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <Grid container direction="row-reverse">
                 <MuiButton text="upload" color="success" onClick={handleUpload} />
                 <MuiButton
