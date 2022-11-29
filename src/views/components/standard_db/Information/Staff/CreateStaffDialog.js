@@ -1,10 +1,10 @@
 import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiButton } from '@controls';
-import { Box, Grid, TextField } from '@mui/material';
+import { Alert, Box, Grid, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import * as yup from 'yup';
-
+import { ExcelRenderer } from 'react-excel-renderer';
 import { staffService } from '@services';
 import { ErrorAlert, SuccessAlert } from '@utils';
 import Tab from '@mui/material/Tab';
@@ -53,7 +53,7 @@ const CreateStaffDialog = (props) => {
       ...dialogState,
     });
     resetForm();
-    setSelectedFile(null);
+    setRowsExcel(null);
     onClose();
   };
   const schema = {
@@ -74,21 +74,22 @@ const CreateStaffDialog = (props) => {
   };
 
   const handleUpload = async () => {
-    setDialogState({ ...dialogState, isSubmit: true });
-    if (!selectedFile) {
+
+    if (!movies) {
       ErrorAlert('Chưa chọn file update');
-      return ;
+      // fetchData();
+       //return false;
+      //handleCloseDialog();
+    } else
+    {
+      setDialogState({ ...dialogState, isSubmit: true });
+      readXlsxFile(movies, { schema }).then(({ rows, errors }) => {
+        handleSubmitFile(rows);
+      });
+      document.getElementById('excelinput').text = '';
+      setRowsExcel(null);
+      setDialogState({ ...dialogState, isSubmit: false });
     }
-
-    readXlsxFile(selectedFile, { schema }).then(({ rows, errors }) => {
-      errors.length === 0;
-      // console.log(rows);
-      handleSubmitFile(rows);
-    });
-    document.getElementById('excelinput').text = '';
-
-    setSelectedFile(null);
-    setDialogState({ ...dialogState, isSubmit: false });
   };
 
   const handleSubmitFile = async (rows) => {
@@ -102,8 +103,36 @@ const CreateStaffDialog = (props) => {
     }
   };
 
+  const [movies, setMovies] = useState(null);
+  const [rowsExcel, setRowsExcel] = useState([]);
+  // const changeHandler = ($event) => {
+  //   const files = $event.target.files;
+  //   if (files.length) {
+  //     const file = files[0];
+  //     const reader = new FileReader();
+  //     reader.onload = (event) => {
+  //       console.log(event)
+  //         const wb = event.target.result;
+  //         const sheets = wb.SheetNames;
+  //         if (sheets.length) {
+  //             const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
+  //             setMovies(rows)
+  //         }
+  //     }
+  //     reader.readAsArrayBuffer(file);
+  // }
+  // };
+
   const changeHandler = (event) => {
-    setSelectedFile(event.target.files[0]);
+    const files = event.target.files[0];
+    setMovies(files);
+    ExcelRenderer(files, (err, resp) => {
+      if (err) {
+        console.log(err);
+      } else {
+        setRowsExcel(resp.rows.splice(1, resp.rows.length));
+      }
+    });
   };
 
   const [value, setValue] = React.useState('tab1');
@@ -113,7 +142,7 @@ const CreateStaffDialog = (props) => {
 
   return (
     <MuiDialog
-      maxWidth="sm"
+      maxWidth="md"
       title={intl.formatMessage({ id: 'general.create' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
@@ -186,9 +215,9 @@ const CreateStaffDialog = (props) => {
           </form>
         </TabPanel>
         <TabPanel value="tab2">
-          <Grid>
+          <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
             <Grid item xs={12} sx={{ p: 3 }}>
-              <input type="file" name="file" id="excelinput" onChange={changeHandler} />
+              <input type="file" name="file" id="excelinput" required onChange={changeHandler} />
             </Grid>
             <Grid item xs={12}>
               <Grid container direction="row-reverse">
@@ -203,6 +232,41 @@ const CreateStaffDialog = (props) => {
                   }}
                 />
               </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <div className="row">
+                <div className="col-sm-12 mt-2">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Staff Code</th>
+                        <th scope="col">Staff Name</th>
+                        <th scope="col">Contact</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {/* <OutTable data={rowsExcel} columns={columnExcel} tableClassName="ExcelTable" tableHeaderRowClass="heading" /> */}
+                      {rowsExcel?.length ? (
+                        rowsExcel.map((value, index) => (
+                          <tr key={index}>
+                            <th scope="row">{index + 1}</th>
+                            <td>{value[0]}</td>
+                            <td>{value[1]}</td>
+                            <td>{value[2]}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="5" className="text-center">
+                            No data
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </Grid>
           </Grid>
         </TabPanel>
