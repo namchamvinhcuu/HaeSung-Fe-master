@@ -323,6 +323,7 @@
     "Week": "Tuần",
     "Year": "Năm",
     "Amount": "Số lượng",
+    "StockQty": "Tồn kho",
     "OrderQty": "Xác nhận SL",
     "MaterialId_required": "Mã Material không được để trống",
     "LineId_required": "Tên Line không được để trống ",

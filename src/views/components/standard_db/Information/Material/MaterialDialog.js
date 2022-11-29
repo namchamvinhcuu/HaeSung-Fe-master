@@ -231,7 +231,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
             <Tab label="Excel" value="tab2" />
           </TabList>
         </Box>
-        <TabPanel value="tab1">
+        <TabPanel value="tab1" sx={{ p: 0, pt: 2 }}>
           <form onSubmit={handleSubmit}>
             <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
               <Grid item xs={6}>
@@ -282,49 +282,47 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                   helperText={touched.MaterialType && errors.MaterialType}
                 />
               </Grid>
-              <Grid item container spacing={2}>
-                <Grid item xs={6}>
-                  <MuiAutocomplete
-                    required
-                    value={
-                      values.SupplierId ? { SupplierId: values.SupplierId, SupplierName: values.SupplierName } : null
-                    }
-                    disabled={
-                      values.MaterialTypeName == 'BARE MATERIAL' || values.MaterialType == null
-                        ? true
-                        : dialogState.isSubmit
-                    }
-                    label={intl.formatMessage({ id: 'material.SupplierId' })}
-                    fetchDataFunc={getSupplier}
-                    displayLabel="SupplierName"
-                    displayValue="SupplierId"
-                    onChange={(e, value) => {
-                      setFieldValue('SupplierName', value?.SupplierName || '');
-                      setFieldValue('SupplierId', value?.SupplierId || '');
-                    }}
-                    error={touched.SupplierId && Boolean(errors.SupplierId)}
-                    helperText={touched.SupplierId && errors.SupplierId}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <MuiAutocomplete
-                    required
-                    value={
-                      values.QCMasterId ? { QCMasterId: values.QCMasterId, QCMasterCode: values.QCMasterCode } : null
-                    }
-                    disabled={values.MaterialType == null ? true : dialogState.isSubmit}
-                    label={intl.formatMessage({ id: 'material.QCMasterId' })}
-                    fetchDataFunc={() => materialService.getQCMasterByMaterialType(values.MaterialType)}
-                    displayLabel="QCMasterCode"
-                    displayValue="QCMasterId"
-                    onChange={(e, value) => {
-                      setFieldValue('QCMasterCode', value?.QCMasterCode || '');
-                      setFieldValue('QCMasterId', value?.QCMasterId || '');
-                    }}
-                    error={touched.QCMasterId && Boolean(errors.QCMasterId)}
-                    helperText={touched.QCMasterId && errors.QCMasterId}
-                  />
-                </Grid>
+              <Grid item xs={6}>
+                <MuiAutocomplete
+                  required
+                  value={
+                    values.SupplierId ? { SupplierId: values.SupplierId, SupplierName: values.SupplierName } : null
+                  }
+                  disabled={
+                    values.MaterialTypeName == 'BARE MATERIAL' || values.MaterialType == null
+                      ? true
+                      : dialogState.isSubmit
+                  }
+                  label={intl.formatMessage({ id: 'material.SupplierId' })}
+                  fetchDataFunc={getSupplier}
+                  displayLabel="SupplierName"
+                  displayValue="SupplierId"
+                  onChange={(e, value) => {
+                    setFieldValue('SupplierName', value?.SupplierName || '');
+                    setFieldValue('SupplierId', value?.SupplierId || '');
+                  }}
+                  error={touched.SupplierId && Boolean(errors.SupplierId)}
+                  helperText={touched.SupplierId && errors.SupplierId}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <MuiAutocomplete
+                  required
+                  value={
+                    values.QCMasterId ? { QCMasterId: values.QCMasterId, QCMasterCode: values.QCMasterCode } : null
+                  }
+                  disabled={values.MaterialType == null ? true : dialogState.isSubmit}
+                  label={intl.formatMessage({ id: 'material.QCMasterId' })}
+                  fetchDataFunc={() => materialService.getQCMasterByMaterialType(values.MaterialType)}
+                  displayLabel="QCMasterCode"
+                  displayValue="QCMasterId"
+                  onChange={(e, value) => {
+                    setFieldValue('QCMasterCode', value?.QCMasterCode || '');
+                    setFieldValue('QCMasterId', value?.QCMasterId || '');
+                  }}
+                  error={touched.QCMasterId && Boolean(errors.QCMasterId)}
+                  helperText={touched.QCMasterId && errors.QCMasterId}
+                />
               </Grid>
               <Grid item xs={6}>
                 <MuiAutocomplete
@@ -407,7 +405,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
             </Grid>
           </form>
         </TabPanel>
-        <TabPanel value="tab2">
+        <TabPanel value="tab2" sx={{ p: 0 }}>
           <Grid>
             <Grid item xs={12} sx={{ p: 3 }}>
               <input type="file" name="file" id="excelinput" onChange={changeHandler} />
