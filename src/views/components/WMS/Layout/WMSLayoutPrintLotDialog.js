@@ -75,8 +75,10 @@ const WMSLayoutPrintLotDialog = ({ BinId, isOpen, onClose }) => {
                       </tr>
                       <tr>
                         <td style={style.cell}>LOT No.</td>
-                        <td style={style.cell}></td>
-                        <td style={style.cell}></td>
+                        <td style={style.cell} colSpan="2">
+                          {item.Id}
+                        </td>
+                        {/* <td style={style.cell}></td> */}
                         <td style={style.cell}>{item.QCResult ? 'OK' : 'NG'}</td>
                       </tr>
                       <tr>
