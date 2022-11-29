@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl';
 import * as yup from 'yup';
 
 import moment from 'moment';
+import { debounce } from 'lodash';
 
 import { CREATE_ACTION } from '@constants/ConfigConstants';
 
@@ -13,6 +14,8 @@ import { MuiDateField, MuiDialog, MuiResetButton, MuiSubmitButton, MuiTextField 
 import { materialSOService } from '@services';
 
 const MaterialSODialog = (props) => {
+  console.log('re-render');
+
   const intl = useIntl();
   let isRendered = useRef(true);
   const { initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption } = props;
@@ -125,6 +128,7 @@ const MaterialSODialog = (props) => {
               name="Requester"
               value={values.Requester ?? ''}
               onChange={handleChange}
+              // onChange={(e) => debounce(setFieldValue('Requester', e.target.value), 200)}
               onBlur={handleBlur}
               error={touched.Requester && Boolean(errors.Requester)}
               helperText={touched.Requester && errors.Requester}

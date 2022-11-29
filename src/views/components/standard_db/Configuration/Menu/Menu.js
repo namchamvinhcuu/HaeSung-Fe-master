@@ -15,6 +15,7 @@ import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
 import { menuService } from '@services';
 
 import _ from 'lodash';
+import { debounce } from 'lodash';
 import CreateMenuDialog from './CreateMenuDialog';
 import ModifyMenuDialog from './ModifyMenuDialog';
 
@@ -75,6 +76,13 @@ const Menu = (props) => {
       setSelectedRow({ ...initMenuModel });
     }
   };
+
+  // const changeSearchData = debounce((e, inputName) => {
+  //   let newSearchData = { ...menuState.searchData };
+  //   newSearchData[inputName] = e.target.value;
+
+  //   setMenuState({ ...menuState, searchData: { ...newSearchData } });
+  // }, 300);
 
   const changeSearchData = (e, inputName) => {
     let newSearchData = { ...menuState.searchData };
