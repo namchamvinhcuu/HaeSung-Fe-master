@@ -23,12 +23,13 @@ import { ErrorAlert, SuccessAlert, getCurrentWeek } from '@utils';
 import { useFormik } from 'formik';
 import moment from 'moment';
 import ActualPrintDialog from './ActualPrintDialog';
-import { useModal } from '@basesShared';
+import { useModal, useModal2 } from '@basesShared';
 
 const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
   const intl = useIntl();
   let isRendered = useRef(true);
   const { isShowing, toggle } = useModal();
+  const { isShowing2, toggle2 } = useModal2();
   const [WOInfo, setWOInfo] = useState({ ActualQty: 0, OrderQty: 0, TotalLotQty: 0, Remain: 0, QCMasterId: 0 });
   const [rowSelected, setRowSelected] = useState([]);
   const [listData, setListData] = useState([]);
@@ -193,7 +194,7 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
       data.push(item[0]);
     }
     setListData(data);
-    toggle();
+    toggle2();
   };
 
   const handleDataDemo = () => {
@@ -386,7 +387,7 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
           </Grid>
         </form>
       </MuiDialog>
-      <ActualPrintDialog isOpen={isShowing} onClose={toggle} listData={listData} />
+      {isShowing2 && <ActualPrintDialog isShowing={true} hide={toggle2} listData={listData} />}
     </React.Fragment>
   );
 };

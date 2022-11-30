@@ -492,7 +492,10 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
             <Box>
               {listPrint?.map((item, index) => {
                 return (
-                  <Box sx={{ border: '1px solid black', mb: 2, maxWidth: '450px' }} key={`IQCQRCODE_${index}`}>
+                  <Box
+                    sx={{ border: '1px solid black', mb: 2, maxWidth: '450px', pageBreakAfter: 'always' }}
+                    key={`IQCQRCODE_${index}`}
+                  >
                     <TableContainer sx={{ overflowX: 'hidden' }}>
                       <Table>
                         <TableBody>
