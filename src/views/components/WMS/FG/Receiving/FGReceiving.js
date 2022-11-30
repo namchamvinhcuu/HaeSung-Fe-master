@@ -50,20 +50,16 @@ const FGReceiving = (props) => {
   };
 
   const handleReceivingLot = async (inputValue) => {
-    if (isNumber(inputValue)) {
-      const res = await fgReceivingService.scan({ Id: inputValue });
-      if (res && isRendered) {
-        if (res.HttpResponseCode === 200 && res.Data) {
-          setNewData({ ...res.Data });
-          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-        } else {
-          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-        }
+    const res = await fgReceivingService.scan({ LotId: inputValue });
+    if (res && isRendered) {
+      if (res.HttpResponseCode === 200 && res.Data) {
+        setNewData({ ...res.Data });
+        SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
       } else {
-        ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
+        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
       }
     } else {
-      ErrorAlert(intl.formatMessage({ id: 'general.no_data' }));
+      ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
     }
   };
   const fetchData = async () => {

@@ -38,7 +38,7 @@ const DetailPanelContent = ({ row: rowProp }) => {
       const params = {
         page: detailPanelState.page,
         pageSize: detailPanelState.pageSize,
-        MatetialId: detailPanelState.MaterialId,
+        MaterialId: detailPanelState.MaterialId,
       };
 
       const res = await fgStockService.getLotStock(params);
@@ -193,7 +193,7 @@ const FGStock = (props) => {
 
       setFGStockState({
         ...fgStockState,
-        data: [...res.Data],
+        data: res.Data ? [...res.Data] : [],
         totalRow: res.TotalRow,
         isLoading: false,
       });

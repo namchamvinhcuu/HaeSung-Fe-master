@@ -127,21 +127,17 @@ const WIPReceiving = (props) => {
   };
 
   const handleDelete = async (lot) => {
-    if (isNumber(inputValue)) {
-      if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
-        try {
-          let res = await wipReceivingService.handleDelete(lot);
-          if (res && res.HttpResponseCode === 200) {
-            await fetchData();
-          } else {
-            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-          }
-        } catch (error) {
-          console.log(error);
+    if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
+      try {
+        let res = await wipReceivingService.handleDelete(lot);
+        if (res && res.HttpResponseCode === 200) {
+          await fetchData();
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         }
+      } catch (error) {
+        console.log(error);
       }
-    } else {
-      ErrorAlert(intl.formatMessage({ id: 'general.no_data' }));
     }
   };
 
@@ -161,7 +157,7 @@ const WIPReceiving = (props) => {
   };
 
   const handleReceivingLot = async (inputValue) => {
-    const res = await wipReceivingService.receivingLot({ Id: inputValue });
+    const res = await wipReceivingService.receivingLot({ LotId: String(inputValue) });
     if (res && isRendered) {
       if (res.HttpResponseCode === 200 && res.Data) {
         setNewData({ ...res.Data });

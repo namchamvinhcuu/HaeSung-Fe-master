@@ -231,30 +231,30 @@ const FGPutAway = (props) => {
   ];
 
   const handlePutAway = async (inputValue) => {
-    if (isNumber(inputValue)) {
-      if (inputValue.binId === 0 || inputValue.binId == undefined || inputValue.lot.trim() === '') {
-        ErrorAlert(intl.formatMessage({ id: 'lot.binAndLot_required' }));
-        return;
-      }
-      const res = await fgPutAwayService.scanPutAway({
-        LotId: inputValue.lot.trim(),
-        BinId: inputValue.binId,
-      });
+    //if (isNumber(inputValue)) {
+    if (inputValue.binId === 0 || inputValue.binId == undefined || inputValue.lot.trim() === '') {
+      ErrorAlert(intl.formatMessage({ id: 'lot.binAndLot_required' }));
+      return;
+    }
+    const res = await fgPutAwayService.scanPutAway({
+      LotId: String(inputValue.lot.trim()),
+      BinId: String(inputValue.binId),
+    });
 
-      if (res && isRendered) {
-        if (res.HttpResponseCode === 200 && res.Data) {
-          setNewData({ ...res.Data });
-          lotInputRef.current.value;
-          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-        } else {
-          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-        }
+    if (res && isRendered) {
+      if (res.HttpResponseCode === 200 && res.Data) {
+        setNewData({ ...res.Data });
+        lotInputRef.current.value;
+        SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
       } else {
-        ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
+        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
       }
     } else {
-      ErrorAlert(intl.formatMessage({ id: 'general.no_data' }));
+      ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
     }
+    // } else {
+    //   ErrorAlert(intl.formatMessage({ id: 'general.no_data' }));
+    // }
   };
 
   const handleSearch = (e, inputName) => {
