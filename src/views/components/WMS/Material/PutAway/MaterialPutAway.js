@@ -245,8 +245,8 @@ const MaterialPutAway = (props) => {
       return;
     }
     const res = await materialPutAwayService.scanPutAway({
-      LotId: inputValue.lot.trim(),
-      BinId: inputValue.binId,
+      LotId: String(inputValue.lot.trim()),
+      BinId: String(inputValue.binId),
     });
 
     if (res && isRendered) {

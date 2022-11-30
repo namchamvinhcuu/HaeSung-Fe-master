@@ -157,7 +157,7 @@ const WIPReceiving = (props) => {
   };
 
   const handleReceivingLot = async (inputValue) => {
-    const res = await wipReceivingService.receivingLot({ Id: inputValue });
+    const res = await wipReceivingService.receivingLot({ LotId: String(inputValue) });
     if (res && isRendered) {
       if (res.HttpResponseCode === 200 && res.Data) {
         setNewData({ ...res.Data });

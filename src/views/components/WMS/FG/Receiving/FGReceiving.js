@@ -50,7 +50,7 @@ const FGReceiving = (props) => {
   };
 
   const handleReceivingLot = async (inputValue) => {
-    const res = await fgReceivingService.scan({ Id: inputValue });
+    const res = await fgReceivingService.scan({ LotId: inputValue });
     if (res && isRendered) {
       if (res.HttpResponseCode === 200 && res.Data) {
         setNewData({ ...res.Data });
