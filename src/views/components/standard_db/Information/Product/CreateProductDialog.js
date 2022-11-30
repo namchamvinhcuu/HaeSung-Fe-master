@@ -89,6 +89,7 @@ const CreateDialog = (props) => {
   };
   const [value, setValue] = React.useState('tab1');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [dataReadFile, setDataReadFile] = useState([]);
   const schema = {
     'PRODUCT CODE': {
       prop: 'ProductCode',
@@ -121,6 +122,14 @@ const CreateDialog = (props) => {
 
   const changeHandler = (event) => {
     setSelectedFile(event.target.files[0]);
+
+    if (event.target.files[0].name !== 'Product.xlsx') {
+      ErrorAlert('Vui lòng chọn File Product.xlsx');
+    }
+
+    readXlsxFile(event.target.files[0]).then(function (data) {
+      setDataReadFile(data);
+    });
   };
 
   const handleSubmitFile = async (rows) => {
@@ -146,14 +155,16 @@ const CreateDialog = (props) => {
 
       handleSubmitFile(rows);
     });
+
     // document.getElementById('upload-excel').value = '';
     document.getElementById('upload-excel-product').text = '';
     setSelectedFile(null);
     setDialogState({ ...dialogState, isSubmit: false });
   };
+
   return (
     <MuiDialog
-      maxWidth="sm"
+      maxWidth="md"
       title={intl.formatMessage({ id: 'general.create' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
@@ -303,6 +314,38 @@ const CreateDialog = (props) => {
               </Grid>
             </Grid>
           </Grid>
+          <Box sx={{ mt: 2 }}>
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  {dataReadFile[0] && <th scope="col">STT</th>}
+                  {dataReadFile[0]?.map((item, index) => {
+                    return (
+                      <th key={`TITLE ${index}`} scope="col">
+                        {item}
+                      </th>
+                    );
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {dataReadFile?.slice(1)?.map((item, index) => {
+                  return (
+                    <tr key={`ITEM${index}`}>
+                      <td scope="col" className="text-center">
+                        {index + 1}
+                      </td>
+                      <td scope="col">{item[0]}</td>
+                      <td scope="col">{item[1]}</td>
+                      <td scope="col">{item[2]}</td>
+                      <td scope="col">{item[3]}</td>
+                      <td scope="col">{item[4]}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </Box>
         </TabPanel>
       </TabContext>
     </MuiDialog>
