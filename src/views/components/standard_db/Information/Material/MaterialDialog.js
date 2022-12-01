@@ -4,7 +4,7 @@ import { Box, Grid, Link, TextField } from '@mui/material';
 import { materialService } from '@services';
 import { ErrorAlert, SuccessAlert } from '@utils';
 import { useFormik } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useIntl } from 'react-intl';
 import * as yup from 'yup';
 
@@ -21,6 +21,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   const [UnitList, setUnitList] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [dataReadFile, setDataReadFile] = useState([]);
+  const refFile = useRef();
 
   const schemaY = yup.object().shape({
     MaterialCode: yup
@@ -182,7 +183,6 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     setDialogState({ ...dialogState, isSubmit: true });
     if (!selectedFile) {
       ErrorAlert('Chưa chọn file update');
-      return;
     }
 
     readXlsxFile(selectedFile, { schema }).then(({ rows, errors }) => {
@@ -193,6 +193,9 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     document.getElementById('excelinput').text = '';
 
     setSelectedFile(null);
+    refFile.current.value = '';
+    refFile.current.text = '';
+    setDataReadFile([]);
     setDialogState({ ...dialogState, isSubmit: false });
   };
 
@@ -416,11 +419,16 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
         <TabPanel value="tab2" sx={{ p: 0 }}>
           <Grid>
             <Grid item xs={12} sx={{ p: 3 }}>
-              <input type="file" name="file" id="excelinput" onChange={changeHandler} />
+              <input type="file" name="file" id="excelinput" onChange={changeHandler} ref={refFile} />
             </Grid>
             <Grid item xs={12}>
               <Grid container direction="row-reverse">
-                <MuiButton text="upload" color="success" onClick={handleUpload} />
+                <MuiButton
+                  text="upload"
+                  color="success"
+                  onClick={handleUpload}
+                  disabled={selectedFile ? false : true}
+                />
                 <MuiButton
                   text="excel"
                   variant="outlined"

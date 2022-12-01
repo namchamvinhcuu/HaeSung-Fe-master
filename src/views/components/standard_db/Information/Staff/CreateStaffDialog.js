@@ -1,7 +1,7 @@
 import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiButton } from '@controls';
 import { Alert, Box, Grid, TextField } from '@mui/material';
 import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useIntl } from 'react-intl';
 import * as yup from 'yup';
 import { ExcelRenderer } from 'react-excel-renderer';
@@ -19,7 +19,7 @@ const CreateStaffDialog = (props) => {
 
   const { initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption, fetchData } = props;
   const [selectedFile, setSelectedFile] = useState(null);
-
+  const refFile = useRef();
   const [dialogState, setDialogState] = useState({
     ...initModal,
     isSubmit: false,
@@ -74,20 +74,20 @@ const CreateStaffDialog = (props) => {
   };
 
   const handleUpload = async () => {
-
     if (!movies) {
       ErrorAlert('Chưa chọn file update');
       // fetchData();
-       //return false;
+      //return false;
       //handleCloseDialog();
-    } else
-    {
+    } else {
       setDialogState({ ...dialogState, isSubmit: true });
       readXlsxFile(movies, { schema }).then(({ rows, errors }) => {
         handleSubmitFile(rows);
       });
       document.getElementById('excelinput').text = '';
       setRowsExcel(null);
+      refFile.current.value = '';
+      refFile.current.text = '';
       setDialogState({ ...dialogState, isSubmit: false });
     }
   };
@@ -217,7 +217,7 @@ const CreateStaffDialog = (props) => {
         <TabPanel value="tab2">
           <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
             <Grid item xs={6} sx={{ p: 3 }}>
-              <input type="file" name="file" id="excelinput" required onChange={changeHandler} />
+              <input type="file" name="file" id="excelinput" required onChange={changeHandler} ref={refFile} />
             </Grid>
             <Grid item xs={6}>
               <Grid container direction="row-reverse">

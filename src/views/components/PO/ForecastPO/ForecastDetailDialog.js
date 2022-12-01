@@ -216,7 +216,6 @@ const ForecastDetailDialog = (props) => {
     setDialogState({ ...dialogState, isSubmit: true });
     if (!selectedFile) {
       ErrorAlert('Chưa chọn file update');
-      return;
     }
 
     readXlsxFile(selectedFile, { schema }).then(({ rows, errors }) => {
@@ -229,6 +228,7 @@ const ForecastDetailDialog = (props) => {
     setSelectedFile(null);
     refFile.current.value = '';
     refFile.current.text = '';
+    setDataReadFile([]);
     setDialogState({ ...dialogState, isSubmit: false });
   };
   return (
@@ -441,7 +441,12 @@ const ForecastDetailDialog = (props) => {
 
             <Grid item xs={12}>
               <Grid container direction="row-reverse">
-                <MuiButton text="upload" color="success" onClick={handleUpload} />
+                <MuiButton
+                  text="upload"
+                  color="success"
+                  onClick={handleUpload}
+                  disabled={selectedFile ? false : true}
+                />
                 <MuiButton
                   text="excel"
                   variant="outlined"

@@ -18,6 +18,7 @@ const CreateDialog = (props) => {
   const { initModal, isOpen, onClose, setNewData, fetchData } = props;
   const regex = /^([a-z0-9]{4})-([a-z0-9]{6})+$/gi;
   const dataModalRef = useRef({ ...initModal });
+  const refFile = useRef();
   const [dialogState, setDialogState] = useState({
     isSubmit: false,
   });
@@ -147,7 +148,6 @@ const CreateDialog = (props) => {
     setDialogState({ ...dialogState, isSubmit: true });
     if (!selectedFile) {
       ErrorAlert('Chưa chọn file update');
-      return;
     }
 
     readXlsxFile(selectedFile, { schema }).then(({ rows, errors }) => {
@@ -159,6 +159,9 @@ const CreateDialog = (props) => {
     // document.getElementById('upload-excel').value = '';
     document.getElementById('upload-excel-product').text = '';
     setSelectedFile(null);
+    refFile.current.value = '';
+    refFile.current.text = '';
+    setDataReadFile([]);
     setDialogState({ ...dialogState, isSubmit: false });
   };
 
@@ -297,11 +300,16 @@ const CreateDialog = (props) => {
         <TabPanel value="tab2">
           <Grid>
             <Grid item xs={12} sx={{ p: 3 }}>
-              <input type="file" name="file" onChange={changeHandler} id="upload-excel-product" />
+              <input type="file" name="file" onChange={changeHandler} id="upload-excel-product" ref={refFile} />
             </Grid>
             <Grid item xs={12}>
               <Grid container direction="row-reverse">
-                <MuiButton text="upload" color="success" onClick={handleUpload} />
+                <MuiButton
+                  text="upload"
+                  color="success"
+                  onClick={handleUpload}
+                  disabled={selectedFile ? false : true}
+                />
                 <MuiButton
                   text="excel"
                   variant="outlined"
