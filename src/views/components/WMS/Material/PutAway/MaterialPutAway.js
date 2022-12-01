@@ -304,7 +304,7 @@ const MaterialPutAway = (props) => {
           <Grid container spacing={2}>
             <Grid item sx={{ width: '215px' }}>
               <MuiAutocomplete
-                label="Aisle"
+                label={intl.formatMessage({ id: 'wms-layout.aisle' })}
                 fetchDataFunc={getAilse}
                 displayLabel="LocationCode"
                 displayValue="LocationId"
@@ -321,7 +321,7 @@ const MaterialPutAway = (props) => {
             <Grid item sx={{ width: '215px' }}>
               <MuiAutocomplete
                 key={locationId}
-                label="Shelf"
+                label={intl.formatMessage({ id: 'wms-layout.shelf' })}
                 fetchDataFunc={() => getShelf(locationId)}
                 displayLabel="ShelfCode"
                 displayValue="ShelfId"

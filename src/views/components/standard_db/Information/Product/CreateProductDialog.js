@@ -123,8 +123,8 @@ const CreateDialog = (props) => {
   const changeHandler = (event) => {
     setSelectedFile(event.target.files[0]);
 
-    if (event.target.files[0].name !== 'Product.xlsx') {
-      ErrorAlert('Vui lòng chọn File Product.xlsx');
+    if (event.target.files[0]?.name !== 'Product.xlsx') {
+      ErrorAlert(intl.formatMessage({ id: 'Files.Product' }));
     }
 
     readXlsxFile(event.target.files[0]).then(function (data) {
@@ -329,20 +329,29 @@ const CreateDialog = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {dataReadFile?.slice(1)?.map((item, index) => {
-                  return (
-                    <tr key={`ITEM${index}`}>
-                      <td scope="col" className="text-center">
-                        {index + 1}
-                      </td>
-                      <td scope="col">{item[0]}</td>
-                      <td scope="col">{item[1]}</td>
-                      <td scope="col">{item[2]}</td>
-                      <td scope="col">{item[3]}</td>
-                      <td scope="col">{item[4]}</td>
-                    </tr>
-                  );
-                })}
+                {dataReadFile?.slice(1).length > 0 ? (
+                  dataReadFile?.slice(1)?.map((item, index) => {
+                    return (
+                      <tr key={`ITEM${index}`}>
+                        <td scope="col">{index + 1}</td>
+                        {item?.map((data, index) => {
+                          return (
+                            <td key={`DATA${index}`} scope="col">
+                              {data}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="100" className="text-center">
+                      <i className="fa fa-database" aria-hidden="true" style={{ fontSize: '35px', opacity: 0.6 }} />
+                      <h3 style={{ opacity: 0.6, marginTop: '5px' }}>No Data</h3>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </Box>

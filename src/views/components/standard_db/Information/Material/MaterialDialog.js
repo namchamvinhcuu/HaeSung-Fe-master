@@ -20,6 +20,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   // const [SupplierList, setSupplierList] = useState([]);
   const [UnitList, setUnitList] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [dataReadFile, setDataReadFile] = useState([]);
 
   const schemaY = yup.object().shape({
     MaterialCode: yup
@@ -208,6 +209,13 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
   const changeHandler = (event) => {
     setSelectedFile(event.target.files[0]);
+    if (event.target.files[0]?.name !== 'Material.xlsx') {
+      ErrorAlert(intl.formatMessage({ id: 'Files.Material' }));
+    }
+
+    readXlsxFile(event.target.files[0]).then(function (data) {
+      setDataReadFile(data);
+    });
   };
 
   const [value, setValue] = React.useState('tab1');
@@ -217,7 +225,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
   return (
     <MuiDialog
-      maxWidth="md"
+      maxWidth="lg"
       title={intl.formatMessage({ id: mode == CREATE_ACTION ? 'general.create' : 'general.modify' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
@@ -425,6 +433,47 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               </Grid>
             </Grid>
           </Grid>
+          <Box sx={{ mt: 2 }}>
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  {dataReadFile[0] && <th scope="col">STT</th>}
+                  {dataReadFile[0]?.map((item, index) => {
+                    return (
+                      <th key={`TITLE ${index}`} scope="col">
+                        {item}
+                      </th>
+                    );
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {dataReadFile?.slice(1).length > 0 ? (
+                  dataReadFile?.slice(1)?.map((item, index) => {
+                    return (
+                      <tr key={`ITEM${index}`}>
+                        <td scope="col">{index + 1}</td>
+                        {item?.map((data, index) => {
+                          return (
+                            <td key={`DATA${index}`} scope="col">
+                              {data}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="100" className="text-center">
+                      <i className="fa fa-database" aria-hidden="true" style={{ fontSize: '35px', opacity: 0.6 }} />
+                      <h3 style={{ opacity: 0.6, marginTop: '5px' }}>No Data</h3>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </Box>
         </TabPanel>
       </TabContext>
     </MuiDialog>

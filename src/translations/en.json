@@ -483,5 +483,10 @@
     "BinLevel": "Bin Level",
     "BinIndex": "Bin Index",
     "ESLCode": "ESL Code"
+  },
+  "Files":{
+    "Product" : "Please choose File Product.xlsx",
+    "Material" :"Please choose File Material.xlsx",
+    "ForecastPODetail" :"Please choose File ForecastPODetail.xlsx"
   }
 }
