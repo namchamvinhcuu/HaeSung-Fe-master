@@ -22,7 +22,7 @@ const Display = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
   const handle = useFullScreenHandle();
-  const [colWidth, setColWidth] = useState(33);
+  const [colWidth, setColWidth] = useState(50);
   const [data, setData] = useState({ totalOrderQty: 0, totalActualQty: 0, totalEfficiency: 0, data: [] });
   const [connection, setConnection] = useState(
     new HubConnectionBuilder()

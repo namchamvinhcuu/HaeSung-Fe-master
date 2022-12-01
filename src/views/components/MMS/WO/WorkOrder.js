@@ -466,7 +466,7 @@ const WorkOrder = (props) => {
         pageSize={workOrderState.pageSize}
         rowCount={workOrderState.totalRow}
         onPageChange={(newPage) => {
-          setDeliveryOrderState({ ...workOrderState, page: newPage + 1 });
+          setWorkOrderState({ ...workOrderState, page: newPage + 1 });
         }}
         getRowId={(rows) => rows.WoId}
         onSelectionModelChange={(newSelectedRowId) => handleRowSelection(newSelectedRowId)}
