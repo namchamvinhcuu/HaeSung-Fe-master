@@ -245,7 +245,7 @@ const QCMaster = (props) => {
       renderCell: (params) => {
         return (
           <Tooltip title={params.row.Description} className="col-text-elip">
-            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.Description}</Typography>
+            <Typography sx={{ fontSize: 14, maxWidth: 5000 }}>{params.row.Description}</Typography>
           </Tooltip>
         );
       },
