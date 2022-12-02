@@ -9,6 +9,8 @@ import { api_get, api_post, api_push_notify, SuccessAlert, ErrorAlert, RemoveLoc
 import * as ConfigConstants from '@constants/ConfigConstants';
 
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
+// import { Document, Page, pdfjs } from 'react-pdf';
+// pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 import { HubConnectionBuilder, LogLevel, HttpTransportType, HubConnectionState } from '@microsoft/signalr';
 
 import Dialog from '@mui/material/Dialog';
@@ -181,8 +183,10 @@ class NavBar extends Component {
     const { HistoryElementTabs, index_tab_active_array } = this.props;
     let tab = HistoryElementTabs[index_tab_active_array];
     let res = await documentService.downloadDocument(tab.component, this.props.language);
+
     if (res.Data) {
       let url_file = `${ConfigConstants.BASE_URL}/document/${res.Data.language}/${res.Data.urlFile}`;
+
       this.setState({
         isShowing: true,
         pdfURL: url_file,
@@ -463,6 +467,11 @@ const PDFModal = ({ isShowing, hide, pdfURL, title }) => {
     setNumPages(numPages);
   }
 
+  function onLoadError(error) {
+    console.log('load-error', error);
+    // console.error;
+  }
+
   // const renderPages=()=>{
   //   const pages = [];
   //   for (let i = 1; i <= numPages; i++) {
@@ -479,7 +488,7 @@ const PDFModal = ({ isShowing, hide, pdfURL, title }) => {
               <DialogTitle>{title}</DialogTitle>
               <DialogContent dividers={true}>
                 <div>
-                  <Document file={pdfURL} onLoadSuccess={onDocumentLoadSuccess}>
+                  <Document file={pdfURL} onLoadSuccess={onDocumentLoadSuccess} onLoadError={onLoadError}>
                     {Array.from(new Array(numPages), (el, index) => (
                       <Page key={`page_${index + 1}`} pageNumber={index + 1} width={1000} />
                     ))}
