@@ -58,4 +58,20 @@ const getMachineType = async () => {
   }
 };
 
-export { getMoldList, createMold, modifyMold, deleteMold, getProductModel, getProductType, getMachineType };
+const createMoldByExcel = async (params) => {
+  try {
+    return await axios.post(`${apiName}/create-by-excel`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+export {
+  getMoldList,
+  createMold,
+  modifyMold,
+  deleteMold,
+  getProductModel,
+  getProductType,
+  getMachineType,
+  createMoldByExcel,
+};

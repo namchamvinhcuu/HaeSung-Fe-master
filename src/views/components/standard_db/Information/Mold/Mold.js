@@ -374,6 +374,7 @@ export default function Mold() {
       />
 
       <MoldDialog
+        fetchData={fetchData}
         setNewData={setNewData}
         setUpdateData={setUpdateData}
         initModal={rowData}

@@ -487,6 +487,7 @@
   "Files":{
     "Product" : "Vui lòng chọn File Product.xlsx",
     "Material" :"Vui lòng chọn File Material.xlsx",
-    "ForecastPODetail" :"Vui lòng chọn File ForecastPODetail.xlsx"
+    "ForecastPODetail" :"Vui lòng chọn File ForecastPODetail.xlsx",
+    "Mold" : "Vui lòng chọn File Mold.xlsx"
   }
 }

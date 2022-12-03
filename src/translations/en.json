@@ -487,6 +487,7 @@
   "Files":{
     "Product" : "Please choose File Product.xlsx",
     "Material" :"Please choose File Material.xlsx",
-    "ForecastPODetail" :"Please choose File ForecastPODetail.xlsx"
+    "ForecastPODetail" :"Please choose File ForecastPODetail.xlsx",
+    "Mold" : "Please choose File Mold.xlsx"
   }
 }
