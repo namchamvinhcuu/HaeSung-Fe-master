@@ -388,13 +388,13 @@ const MaterialPutAway = (props) => {
         onPageChange={(newPage) => {
           setPutAwayState({ ...putAwayState, page: newPage + 1 });
         }}
-        onPageSizeChange={(newPageSize) => {
-          setPutAwayState({
-            ...putAwayState,
-            page: 1,
-            pageSize: newPageSize,
-          });
-        }}
+        // onPageSizeChange={(newPageSize) => {
+        //   setPutAwayState({
+        //     ...putAwayState,
+        //     page: 1,
+        //     pageSize: newPageSize,
+        //   });
+        // }}
         getRowId={(rows) => rows.Id}
         // onSelectionModelChange={(newSelectedRowId) =>
         //     handleRowSelection(newSelectedRowId)

@@ -214,6 +214,12 @@ const MaterialSODetailDialog = (props) => {
       newRow.RequestQty = 0;
       return newRow;
     }
+
+    if (newRow.RequestQty > newRow.Qty) {
+      ErrorAlert(intl.formatMessage({ id: 'forecast.OrderQty_required_bigger_StockQty' }));
+      newRow.RequestQty = newRow.Qty;
+    }
+
     newRow = { ...newRow, RequestQty: newRow.RequestQty };
 
     let newArr = [...lotArr];

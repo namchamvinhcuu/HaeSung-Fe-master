@@ -14,8 +14,6 @@ import { MuiDateField, MuiDialog, MuiResetButton, MuiSubmitButton, MuiTextField 
 import { materialSOService } from '@services';
 
 const MaterialSODialog = (props) => {
-  console.log('re-render');
-
   const intl = useIntl();
   let isRendered = useRef(true);
   const { initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption } = props;
