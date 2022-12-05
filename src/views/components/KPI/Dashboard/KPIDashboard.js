@@ -82,7 +82,7 @@ const KPIDashboard = (props) => {
 
   const closeConnection = async () => {
     try {
-      await connection.stop();
+      if (connection && connection.state === HubConnectionState.Connected) await connection.stop();
     } catch (error) {
       console.log(error);
     }
