@@ -5,7 +5,7 @@ import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
 import { User_Operations } from '@appstate/user';
 import { Store } from '@appstate';
 
-import { HubConnectionBuilder, LogLevel, HttpTransportType } from '@microsoft/signalr';
+import { HubConnectionBuilder, LogLevel, HttpTransportType, HubConnectionState } from '@microsoft/signalr';
 import moment from 'moment';
 
 import { useIntl } from 'react-intl';
@@ -29,45 +29,54 @@ const KPIDashboard = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
   exporting(Highcharts);
+
+  const initConnection = new HubConnectionBuilder()
+    .withUrl(`${BASE_URL}/signalr`, {
+      accessTokenFactory: () => GetLocalStorage(TOKEN_ACCESS),
+      skipNegotiation: true,
+      transport: HttpTransportType.WebSockets,
+    })
+    .configureLogging(LogLevel.None)
+    .withAutomaticReconnect({
+      nextRetryDelayInMilliseconds: (retryContext) => {
+        //reconnect after 5-20s
+        return 5000 + Math.random() * 15000;
+      },
+    })
+    .build();
+
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [selectedRow, setSelectedRow] = useState({});
   const [workOrders, setWorkOrders] = useState([]);
   const [chartOption, setChartOption] = useState({});
-  const [connection, setConnection] = useState(
-    new HubConnectionBuilder()
-      .withUrl(`${BASE_URL}/signalr`, {
-        accessTokenFactory: () => GetLocalStorage(TOKEN_ACCESS),
-        skipNegotiation: true,
-        transport: HttpTransportType.WebSockets,
-      })
-      .configureLogging(LogLevel.None)
-      .withAutomaticReconnect({
-        nextRetryDelayInMilliseconds: (retryContext) => {
-          //reconnect after 5-20s
-          return 5000 + Math.random() * 15000;
-        },
-      })
-      .build()
-  );
+  const [connection, setConnection] = useState(initConnection);
 
   const startConnection = async () => {
     try {
-      connection.on('ReceivedWorkOrders', (data) => {
-        if (data && data.length > 0) {
-          setWorkOrders([...data]);
-          setSelectedRow({ ...data[0] });
-          handleHighcharts([...data]);
-        }
-      });
-      connection.onclose((e) => {
-        setConnection(null);
-      });
-      await connection.start();
-      await connection.invoke('SendWorkOrders');
+      if (connection) {
+        connection.on('ReceivedWorkOrders', (data) => {
+          if (data && data.length > 0 && isRendered) {
+            setWorkOrders([...data]);
+            // setSelectedRow({ ...data[0] });
+            handleHighcharts([...data]);
+          }
+        });
+        connection.onclose(async (e) => {
+          if (isRendered) setConnection(null);
+        });
+      }
+
+      if (connection.state === HubConnectionState.Disconnected) {
+        await connection.start();
+        console.log('websocket connect success');
+        await connection.invoke('SendWorkOrders');
+      } else if (connection.state === HubConnectionState.Connected) {
+        await connection.invoke('SendWorkOrders');
+      }
     } catch (error) {
-      console.log('websocket connect error');
+      console.log('websocket connect error: ', error);
     }
   };
 
@@ -82,11 +91,12 @@ const KPIDashboard = (props) => {
   const handleRowSelection = (arrIds) => {
     const rowSelected = workOrders.filter((item) => item.woId === arrIds[0]);
 
-    if (rowSelected && rowSelected.length > 0) {
-      setSelectedRow({ ...rowSelected[0] });
-    } else {
-      setSelectedRow({});
-    }
+    if (isRendered)
+      if (rowSelected && rowSelected.length > 0) {
+        setSelectedRow({ ...rowSelected[0] });
+      } else {
+        setSelectedRow({});
+      }
   };
 
   const columns = [
@@ -181,108 +191,110 @@ const KPIDashboard = (props) => {
       }
     }
 
-    setChartOption({
-      chart: {
-        navigation: {
-          buttonOptions: {
-            enabled: true,
-          },
-        },
-        type: 'column',
-        zoomType: 'xy',
-        // styledMode: true,
-        // options3d: {
-        // 	enabled: true,
-        // 	alpha: 15,
-        // 	beta: 15,
-        // 	depth: 50
-        // }
-      },
-      // accessibility: {
-      // 	enabled: false
-      // },
-      exporting: {
-        enabled: true,
-      },
-      title: {
-        text: `${moment(new Date()).add(7, 'hours').format('YYYY/MM/DD')} Work Order Dashboard`,
-      },
-      // subtitle: {
-      // 	text: 'Source: ' +
-      // 		'<a href="https://www.ssb.no/en/statbank/table/08940/" ' +
-      // 		'target="_blank">SSB</a>'
-      // },
-      xAxis: {
-        categories: categoryList,
-        crosshair: true,
-      },
-      yAxis: [
-        {
-          title: {
-            useHTML: true,
-            text: 'Quantity',
-          },
-        },
-        {
-          labels: {
-            format: '{value}%',
-            style: {
-              color: Highcharts.getOptions().colors[1],
+    if (isRendered) {
+      setChartOption({
+        chart: {
+          navigation: {
+            buttonOptions: {
+              enabled: true,
             },
           },
-          title: {
-            text: intl.formatMessage({ id: 'work_order.Efficiency' }),
-            style: {
-              color: Highcharts.getOptions().colors[1],
+          type: 'column',
+          zoomType: 'xy',
+          // styledMode: true,
+          // options3d: {
+          // 	enabled: true,
+          // 	alpha: 15,
+          // 	beta: 15,
+          // 	depth: 50
+          // }
+        },
+        // accessibility: {
+        // 	enabled: false
+        // },
+        exporting: {
+          enabled: true,
+        },
+        title: {
+          text: `${moment(new Date()).add(7, 'hours').format('YYYY/MM/DD')} Work Order Dashboard`,
+        },
+        // subtitle: {
+        // 	text: 'Source: ' +
+        // 		'<a href="https://www.ssb.no/en/statbank/table/08940/" ' +
+        // 		'target="_blank">SSB</a>'
+        // },
+        xAxis: {
+          categories: categoryList,
+          crosshair: true,
+        },
+        yAxis: [
+          {
+            title: {
+              useHTML: true,
+              text: 'Quantity',
             },
           },
-          opposite: true,
+          {
+            labels: {
+              format: '{value}%',
+              style: {
+                color: Highcharts.getOptions().colors[1],
+              },
+            },
+            title: {
+              text: intl.formatMessage({ id: 'work_order.Efficiency' }),
+              style: {
+                color: Highcharts.getOptions().colors[1],
+              },
+            },
+            opposite: true,
+          },
+        ],
+        credits: {
+          enabled: false,
         },
-      ],
-      credits: {
-        enabled: false,
-      },
-      tooltip: {
-        headerFormat: '<span style="font-size:10px">Wo code: {point.key}</span><table>',
-        pointFormat:
-          '<tr><td style="color:{series.color};padding:0">{series.name}: </td><td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-        footerFormat: '</table>',
-        shared: true,
-        useHTML: true,
-      },
-      plotOptions: {
-        column: {
-          pointPadding: 0.2,
-          borderWidth: 0,
-          dataLabels: {
-            enabled: true,
+        tooltip: {
+          headerFormat: '<span style="font-size:10px">Wo code: {point.key}</span><table>',
+          pointFormat:
+            '<tr><td style="color:{series.color};padding:0">{series.name}: </td><td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+          footerFormat: '</table>',
+          shared: true,
+          useHTML: true,
+        },
+        plotOptions: {
+          column: {
+            pointPadding: 0.2,
+            borderWidth: 0,
+            dataLabels: {
+              enabled: true,
+            },
           },
         },
-      },
-      series: [
-        {
-          name: intl.formatMessage({ id: 'work_order.OrderQty' }),
-          data: OrderQtyList,
-          color: '#ffd700',
-          yAxis: 0,
-        },
-        {
-          name: intl.formatMessage({ id: 'work_order.ActualQty' }),
-          data: ActualQtyList,
-          color: '#c0c0c0',
-          yAxis: 0,
-        },
-        {
-          name: intl.formatMessage({ id: 'work_order.Efficiency' }),
-          type: 'spline',
-          data: EfficiencyList,
-          tooltip: {
-            valueSuffix: '%',
+        series: [
+          {
+            name: intl.formatMessage({ id: 'work_order.OrderQty' }),
+            data: OrderQtyList,
+            color: '#ffd700',
+            yAxis: 0,
           },
-          yAxis: 1,
-        },
-      ],
-    });
+          {
+            name: intl.formatMessage({ id: 'work_order.ActualQty' }),
+            data: ActualQtyList,
+            color: '#c0c0c0',
+            yAxis: 0,
+          },
+          {
+            name: intl.formatMessage({ id: 'work_order.Efficiency' }),
+            type: 'spline',
+            data: EfficiencyList,
+            tooltip: {
+              valueSuffix: '%',
+            },
+            yAxis: 1,
+          },
+        ],
+      });
+    }
   };
 
   return (
