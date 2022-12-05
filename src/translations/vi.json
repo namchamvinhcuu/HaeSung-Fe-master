@@ -490,6 +490,8 @@
     "Product" : "Vui lòng chọn File Product.xlsx",
     "Material" :"Vui lòng chọn File Material.xlsx",
     "ForecastPODetail" :"Vui lòng chọn File ForecastPODetail.xlsx",
-    "Mold" : "Vui lòng chọn File Mold.xlsx"
+    "Mold" : "Vui lòng chọn File Mold.xlsx",
+    "Aisle" : "Vui lòng chọn File Aisle.xlsx",
+    "Data_Invalid" : "Vui lòng kiểm tra lại dữ liệu"
   }
 }

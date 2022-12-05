@@ -206,15 +206,20 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
       fetchData();
       handleCloseDialog();
     } else {
-      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      if (res.HttpResponseCode === 400 && res.ResponseMessage === 'general.duplicated_code') {
+        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      }
+      if (res.HttpResponseCode === 400 && res.ResponseMessage === '') {
+        ErrorAlert(intl.formatMessage({ id: 'Files.Data_Invalid' }));
+      }
     }
   };
 
   const changeHandler = (event) => {
     setSelectedFile(event.target.files[0]);
-    if (event.target.files[0]?.name !== 'Material.xlsx') {
-      ErrorAlert(intl.formatMessage({ id: 'Files.Material' }));
-    }
+    // if (event.target.files[0]?.name !== 'Material.xlsx') {
+    //   ErrorAlert(intl.formatMessage({ id: 'Files.Material' }));
+    // }
 
     readXlsxFile(event.target.files[0]).then(function (data) {
       setDataReadFile(data);

@@ -42,4 +42,11 @@ const deleteLocation = async (params) => {
   }
 };
 
-export { getLocationList, GetArea, createLocation, modifyLocation, deleteLocation };
+const createLocationByExcel = async (params) => {
+  try {
+    return await axios.post(`${apiName}/create-by-excel`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+export { getLocationList, GetArea, createLocation, modifyLocation, deleteLocation, createLocationByExcel };

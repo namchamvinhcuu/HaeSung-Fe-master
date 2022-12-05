@@ -345,6 +345,7 @@ const Location = (props) => {
         setNewData={setNewData}
         isOpen={isOpenCreateDialog}
         onClose={toggleCreateDialog}
+        fetchData={fetchData}
       />
 
       <ModifyLocationDialog

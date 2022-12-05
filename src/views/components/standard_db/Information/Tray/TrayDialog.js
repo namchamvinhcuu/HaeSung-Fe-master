@@ -4,7 +4,7 @@ import { Box, Checkbox, FormControlLabel, Grid, TextField } from '@mui/material'
 import { trayService } from '@services';
 import { ErrorAlert, SuccessAlert } from '@utils';
 import { useFormik } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useIntl } from 'react-intl';
 import * as yup from 'yup';
 import Tab from '@mui/material/Tab';
@@ -18,6 +18,8 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
   const [dialogState, setDialogState] = useState({ isSubmit: false });
   const defaultValue = { TrayCode: '', IsReuse: false, TrayType: null, TrayTypeName: '' };
   const [selectedFile, setSelectedFile] = useState(null);
+  const [dataReadFile, setDataReadFile] = useState([]);
+  const refFile = useRef();
 
   const schemaY = yup.object().shape({
     TrayCode: yup
@@ -112,6 +114,9 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
 
   const changeHandler = (event) => {
     setSelectedFile(event.target.files[0]);
+    readXlsxFile(event.target.files[0]).then(function (data) {
+      setDataReadFile(data);
+    });
   };
 
   const handleSubmitFile = async (rows) => {
@@ -121,7 +126,12 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
       fetchData();
       handleCloseDialog();
     } else {
-      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      if (res.HttpResponseCode === 400 && res.ResponseMessage === 'general.duplicated_code') {
+        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      }
+      if (res.HttpResponseCode === 400 && res.ResponseMessage === '') {
+        ErrorAlert(intl.formatMessage({ id: 'Files.Data_Invalid' }));
+      }
     }
   };
 
@@ -144,7 +154,7 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
   };
   return (
     <MuiDialog
-      maxWidth="sm"
+      maxWidth="md"
       title={intl.formatMessage({ id: mode == CREATE_ACTION ? 'general.create' : 'general.modify' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
@@ -213,6 +223,73 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
         <TabPanel value="tab2">
           <Grid>
             <Grid item xs={12} sx={{ p: 3 }}>
+              <input type="file" name="file" onChange={changeHandler} id="upload-excel" ref={refFile} />
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container direction="row-reverse">
+                <MuiButton
+                  text="upload"
+                  color="success"
+                  onClick={handleUpload}
+                  disabled={selectedFile ? false : true}
+                />
+                <MuiButton
+                  text="excel"
+                  variant="outlined"
+                  color="primary"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href = `${BASE_URL}/TemplateImport/Tray.xlsx`;
+                  }}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+          <Box sx={{ mt: 2 }}>
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  {dataReadFile[0] && <th scope="col">STT</th>}
+                  {dataReadFile[0]?.map((item, index) => {
+                    return (
+                      <th key={`TITLE ${index}`} scope="col">
+                        {item}
+                      </th>
+                    );
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {dataReadFile?.slice(1).length > 0 ? (
+                  dataReadFile?.slice(1)?.map((item, index) => {
+                    return (
+                      <tr key={`ITEM${index}`}>
+                        <td scope="col">{index + 1}</td>
+                        {item?.map((data, index) => {
+                          return (
+                            <td key={`DATA${index}`} scope="col">
+                              {String(data)}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="100" className="text-center">
+                      <i className="fa fa-database" aria-hidden="true" style={{ fontSize: '35px', opacity: 0.6 }} />
+                      <h3 style={{ opacity: 0.6, marginTop: '5px' }}>No Data</h3>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </Box>
+        </TabPanel>
+        {/* <TabPanel value="tab2">
+          <Grid>
+            <Grid item xs={12} sx={{ p: 3 }}>
               <input type="file" name="file" onChange={changeHandler} id="upload-excel" />
             </Grid>
             <Grid item xs={12}>
@@ -230,7 +307,7 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
               </Grid>
             </Grid>
           </Grid>
-        </TabPanel>
+        </TabPanel> */}
       </TabContext>
     </MuiDialog>
   );
