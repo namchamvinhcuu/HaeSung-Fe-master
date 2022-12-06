@@ -211,7 +211,10 @@
     "TrayType": "Tray Type",
     "IsReuse": "Is Reuse",
     "TrayCode_required": "Tray Code không được để trống",
-    "TrayType_required": "Tray Type không được để trống"
+    "TrayType_required": "Tray Type không được để trống",
+    "lotmapped":"lot đã được liên kết",
+    "NotFoundTrayCode":"Không tìm thấy tray code",
+    "confirm_unMapping":"Xác nhận gở liên kết"
   },
   "line": {
     "LineName": "Tên line",

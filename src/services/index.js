@@ -31,6 +31,7 @@ import * as forecastMasterService from './PO/Forecast/ForecastMasterService';
 import * as workOrderService from './MMS/work-order/WorkOrderService';
 import * as actualService from './MMS/ActualService';
 import * as mmsReportService from './MMS/MMSReportService';
+import * as mappingTrayService from './MMS/MappingTrayService';
 
 import * as fixedPOService from './PO/purchase-order/FixedPOService';
 import * as iqcService from './WMS/Material/IQCService';
@@ -86,6 +87,7 @@ export {
   materialPutAwayService,
   materialSOService,
   mmsReportService,
+  mappingTrayService,
   materialReportService,
   eslService,
   materialStockService,
