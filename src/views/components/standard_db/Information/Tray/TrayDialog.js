@@ -150,6 +150,9 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
     // document.getElementById('upload-excel').value = '';
     document.getElementById('upload-excel').text = '';
     setSelectedFile(null);
+    refFile.current.value = '';
+    refFile.current.text = '';
+    setDataReadFile([]);
     setDialogState({ ...dialogState, isSubmit: false });
   };
   return (

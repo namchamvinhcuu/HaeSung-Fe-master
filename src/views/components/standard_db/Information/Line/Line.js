@@ -310,6 +310,7 @@ const Line = (props) => {
         setNewData={setNewData}
         isOpen={isOpenCreateDialog}
         onClose={toggleCreateDialog}
+        fetchData={fetchData}
       />
 
       <ModifyLineDialog

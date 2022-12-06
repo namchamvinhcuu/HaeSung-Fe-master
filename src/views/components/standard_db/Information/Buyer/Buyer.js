@@ -357,6 +357,7 @@ const Buyer = (props) => {
         setNewData={setNewData}
         isOpen={isOpenCreateDialog}
         onClose={toggleCreateDialog}
+        fetchData={fetchData}
       />
       <ModifyBuyerDialog
         initModal={selectedRow}

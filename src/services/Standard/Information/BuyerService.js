@@ -41,4 +41,12 @@ const deleteBuyer = async (params) => {
   }
 };
 
-export { getBuyerList, createBuyer, modifyBuyer, deleteBuyer };
+const createBuyerByExcel = async (params) => {
+  try {
+    return await axios.post(`${apiBuyer}/create-by-excel`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+export { getBuyerList, createBuyer, modifyBuyer, deleteBuyer, createBuyerByExcel };

@@ -336,6 +336,7 @@ const Supplier = (props) => {
         setNewData={setNewData}
         isOpen={isOpenCreateDialog}
         onClose={toggleCreateDialog}
+        fetchData={fetchData}
       />
 
       <ModifySupplierDialog

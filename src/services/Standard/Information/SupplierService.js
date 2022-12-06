@@ -44,4 +44,11 @@ const handleDelete = async (params) => {
   }
 };
 
-export { getSuppliers, create, modify, handleDelete };
+const createSupplierByExcel = async (params) => {
+  try {
+    return await axios.post(`${URL}/create-by-excel`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+export { getSuppliers, create, modify, handleDelete, createSupplierByExcel };

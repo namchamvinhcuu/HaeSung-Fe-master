@@ -52,4 +52,11 @@ const handleDelete = async (params) => {
   }
 };
 
-export { get, getActive, create, modify, handleDelete };
+const createLineByExcel = async (params) => {
+  try {
+    return await axios.post(`${URL}/create-by-excel`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+export { get, getActive, create, modify, handleDelete, createLineByExcel };
