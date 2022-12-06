@@ -211,7 +211,10 @@
     "TrayType": "Tray Type",
     "IsReuse": "Is Reuse",
     "TrayCode_required": "Tray Code is required",
-    "TrayType_required": "Tray Type is required"
+    "TrayType_required": "Tray Type is required",
+    "lotmapped":"lot is mapped",
+    "NotFoundTrayCode":"Not found Tray Code",
+    "confirm_unMapping":"Confirm to un mapping"
   },
   "line": {
     "LineName": "Line Name",

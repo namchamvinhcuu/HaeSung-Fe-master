@@ -5,27 +5,27 @@ import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
 import { User_Operations } from '@appstate/user';
 import { Store } from '@appstate';
 
-import DeleteIcon from '@mui/icons-material/Delete';
+import LinkOffIcon from '@mui/icons-material/LinkOff';
 import IconButton from '@mui/material/IconButton';
 import { useIntl } from 'react-intl';
 import { ErrorAlert, SuccessAlert } from '@utils';
 
 import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateField, MuiSearchField, MuiTextField } from '@controls';
 import { Grid, Typography, Tooltip, Button } from '@mui/material';
-import { eslService, wmsLayoutService, materialPutAwayService } from '@services';
+import { eslService, wmsLayoutService, materialPutAwayService, mappingTrayService } from '@services';
 import _ from 'lodash';
 import moment from 'moment';
 import { useModal } from '@basesShared';
 import AllInboxIcon from '@mui/icons-material/AllInbox';
 import LinkIcon from '@mui/icons-material/Link';
 
-const MappingBin = (props) => {
+const MappingTray = (props) => {
   let isRendered = useRef(true);
-  const binInputRef = useRef(null);
-  const eslInputRef = useRef(null);
+  const trayInputRef = useRef(null);
+  const lotInputRef = useRef(null);
   const intl = useIntl();
-  const [BinCode, setBinCode] = useState('');
-  const [BinId, setBinId] = useState(0);
+  const [TrayCode, setTrayCode] = useState('');
+  const [newData, setNewData] = useState({});
   const [state, setState] = useState({
     isLoading: false,
     data: [],
@@ -41,13 +41,12 @@ const MappingBin = (props) => {
       headerName: '',
       width: 80,
       filterable: false,
-      renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (putAwayState.page - 1) * putAwayState.pageSize,
+      renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (state.page - 1) * state.pageSize,
     },
     {
       field: 'action',
       headerName: '',
       width: 80,
-      // headerAlign: 'center',
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
@@ -60,9 +59,9 @@ const MappingBin = (props) => {
                 color="error"
                 size="small"
                 sx={[{ '&:hover': { border: '1px solid red' } }]}
-                onClick={() => handleDelete(params.row)}
+                onClick={() => unMapping(params.row)}
               >
-                <DeleteIcon fontSize="inherit" />
+                <LinkOffIcon fontSize="inherit" />
               </IconButton>
             </Grid>
           </Grid>
@@ -72,55 +71,83 @@ const MappingBin = (props) => {
     {
       field: 'MaterialColorCode',
       headerName: 'Material Code',
-      width: 250,
+      flex: 0.5,
     },
     {
       field: 'LotSerial',
       headerName: 'Lot Serial',
-      width: 250,
+      flex: 0.5,
     },
     {
       field: 'Qty',
       headerName: 'Qty',
-      width: 100,
+      flex: 0.5,
     },
     {
-      field: 'LocationCode',
-      headerName: 'Bin',
-      width: 250,
+      field: 'createdName',
+      headerName: intl.formatMessage({ id: 'general.createdName' }),
+      flex: 0.5,
     },
     {
-      field: 'IncomingDate',
-      headerName: 'Incoming Date',
-      width: 150,
-      valueFormatter: (params) => {
-        if (params.value !== null) {
-          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
-        }
-      },
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.createdDate' }),
+      flex: 0.5,
+      valueFormatter: (params) =>
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
   ];
 
   useEffect(() => {
-    fetchData();
+    if (TrayCode != '') fetchData();
     return () => (isRendered = false);
   }, [state.page, state.pageSize]);
+
+  useEffect(() => {
+    if (!_.isEmpty(newData)) {
+      const data = [newData, ...state.data];
+      if (data.length > state.pageSize) {
+        data.pop();
+      }
+      setState({
+        ...state,
+        data: [...data],
+        totalRow: state.totalRow + 1,
+      });
+    }
+  }, [newData]);
 
   const fetchData = async () => {
     setState({ ...state, isLoading: true });
 
-    const res = await wmsLayoutService.getBinsMapping({
+    const res = await mappingTrayService.get({
       page: state.page,
       pageSize: state.pageSize,
+      trayCode: TrayCode,
     });
 
-    if (res && res.Data) {
+    if (res) {
       setState({
         ...state,
         data: res.Data ?? [],
         totalRow: res.TotalRow,
         isLoading: false,
       });
+    }
+  };
+
+  const unMapping = async (item) => {
+    if (window.confirm(intl.formatMessage({ id: 'tray.confirm_unMapping' }))) {
+      try {
+        let res = await mappingTrayService.unMapping(item);
+        if (res && res.HttpResponseCode === 200) {
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
+          await fetchData();
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -133,65 +160,61 @@ const MappingBin = (props) => {
   const scanBtnClick = async () => {
     let inputVal = '';
 
-    if (BinCode === '') {
-      if (binInputRef.current.value) {
-        inputVal = binInputRef.current.value.trim().toUpperCase();
-      }
+    if (TrayCode === '') {
+      if (trayInputRef.current.value) {
+        setState({ ...state, isLoading: true });
+        inputVal = trayInputRef.current.value.trim().toUpperCase();
 
-      const Bin = await wmsLayoutService.getBinByCode({ BinCode: inputVal });
-      if (Bin.HttpResponseCode && Bin.Data) {
-        setBinCode(inputVal);
-        setBinId(Bin.Data.BinId);
-        eslInputRef.current?.focus();
-      } else {
-        ErrorAlert(intl.formatMessage({ id: Bin.ResponseMessage }));
-        binInputRef.current.value = '';
+        const res = await mappingTrayService.get({
+          page: 1,
+          pageSize: state.pageSize,
+          trayCode: inputVal,
+        });
+
+        if (res && res.HttpResponseCode == 200) {
+          setTrayCode(inputVal);
+          setState({
+            ...state,
+            data: res.Data ?? [],
+            totalRow: res.TotalRow,
+            isLoading: false,
+          });
+          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+          lotInputRef.current?.focus();
+          trayInputRef.current.disable = true;
+        } else {
+          setState({
+            ...state,
+            data: [],
+            totalRow: 0,
+            isLoading: false,
+          });
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+
+          trayInputRef.current.value = '';
+        }
       }
     } else {
-      if (eslInputRef.current.value) {
-        inputVal = eslInputRef.current.value.trim().toUpperCase();
+      if (lotInputRef.current.value) {
+        inputVal = lotInputRef.current.value.trim().toUpperCase();
       }
-      await handleScanESLCode(inputVal);
+      await handleScanMapping(inputVal);
     }
   };
 
-  const handleScanESLCode = async (inputValue) => {
-    if (!inputValue || inputValue.length !== 12) {
-      ErrorAlert(intl.formatMessage({ id: 'esl.tag_unregistrated' }));
-      eslInputRef.current.value = '';
+  const handleScanMapping = async (inputValue) => {
+    const res = await mappingTrayService.scanMapping({
+      LotId: inputValue,
+      TrayCode: TrayCode,
+    });
+
+    if (res.HttpResponseCode === 200) {
+      setNewData(res.Data);
+      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
     } else {
-      const getRegisteredESLTag = await eslService.getRegisteredESLTagByCode(inputValue);
-
-      if (getRegisteredESLTag.status !== 200) {
-        ErrorAlert(intl.formatMessage({ id: 'esl.tag_unregistrated' }));
-        eslInputRef.current.value = '';
-      }
-      setState({ ...state, isLoading: true });
-      // Create/Update ESL
-      const createResponse = await eslService.createBinOnESLServer(BinCode, 'Bin-1');
-
-      if (createResponse.status === 200) {
-        // Link ESL-Bin
-        const linkResponse = await eslService.linkESLTagWithBin(BinCode, inputValue);
-
-        if (linkResponse.status === 200) {
-          // Update ESL Data
-          await eslService.updateESLDataByBinId(BinId);
-
-          await wmsLayoutService.unLinkESL({ ESLCode: inputValue });
-
-          const res = await wmsLayoutService.scanESLCode({ ESLCode: inputValue, BinId: BinId });
-
-          if (res === 'general.success') {
-            fetchData();
-            SuccessAlert(intl.formatMessage({ id: res }));
-          } else {
-            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-          }
-        }
-      }
-      setState({ ...state, isLoading: false });
+      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
     }
+    lotInputRef.current.value = '';
   };
 
   return (
@@ -202,31 +225,33 @@ const MappingBin = (props) => {
             <MuiTextField
               autoFocus
               sx={{ width: 300 }}
-              ref={binInputRef}
-              label={intl.formatMessage({ id: 'MappingBin.BinCode' })}
-              onChange={(e) => (binInputRef.current.value = e.target.value)}
+              ref={trayInputRef}
+              label={intl.formatMessage({ id: 'tray.TrayCode' })}
+              onChange={(e) => {
+                if (TrayCode != '') setTrayCode('');
+                trayInputRef.current.value = e.target.value;
+              }}
               onKeyDown={keyPress}
-              //inputProps={{ maxLength: 12 }}
             />
             <LinkIcon sx={{ mr: 1, ml: 1 }} />
             <MuiTextField
               sx={{ width: 300, mr: 1 }}
-              ref={eslInputRef}
-              label={intl.formatMessage({ id: 'MappingBin.ESLCode' })}
-              onChange={(e) => (eslInputRef.current.value = e.target.value)}
+              ref={lotInputRef}
+              label={'Lot'}
+              onChange={(e) => (lotInputRef.current.value = e.target.value)}
               onKeyDown={keyPress}
-              //inputProps={{ maxLength: 12 }}
             />
             <MuiButton text="scan" color="success" onClick={scanBtnClick} sx={{ whiteSpace: 'nowrap', mr: 1 }} />
             <Button
               variant="outlined"
               color="error"
+              disabled={TrayCode != '' ? false : true}
               onClick={() => {
-                setBinCode('');
-                setBinId(0);
-                binInputRef.current?.focus();
-                binInputRef.current.value = '';
-                eslInputRef.current.value = '';
+                setTrayCode('');
+                trayInputRef.current?.focus();
+                trayInputRef.current.value = '';
+                lotInputRef.current.value = '';
+                setState({ ...state, data: [], totalRow: 0 });
               }}
             >
               CLEAR
@@ -249,6 +274,10 @@ const MappingBin = (props) => {
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
         getRowId={(rows) => rows.Id}
         //onSelectionModelChange={(newSelectedRowId) => setWoId(newSelectedRowId[0])}
+        getRowClassName={(params) => {
+          if (_.isEqual(params.row, newData)) return `Mui-created`;
+        }}
+        initialState={{ pinnedColumns: { right: ['action'] } }}
       />
     </React.Fragment>
   );
@@ -274,4 +303,4 @@ const mapDispatchToProps = (dispatch) => {
   return { changeLanguage };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MappingBin);
+export default connect(mapStateToProps, mapDispatchToProps)(MappingTray);
