@@ -58,4 +58,20 @@ const deleteQCMaster = async (params) => {
   }
 };
 
-export { getQcMasterList, getMaterialForSelect, getQCTypeForSelect, create, modify, deleteQCMaster };
+const createQCMasterByExcel = async (params) => {
+  try {
+    return await axios.post(`${apiQCMaster}/create-by-excel`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+export {
+  getQcMasterList,
+  getMaterialForSelect,
+  getQCTypeForSelect,
+  create,
+  modify,
+  deleteQCMaster,
+  createQCMasterByExcel,
+};
