@@ -1,41 +1,38 @@
 import { Store } from '@appstate';
 import { User_Operations } from '@appstate/user';
-import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import CloseIcon from '@mui/icons-material/Close';
 import { MuiButton, MuiDialog } from '@controls';
 import {
   Box,
-  Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  IconButton,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-  Typography,
   Zoom,
 } from '@mui/material';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
 import moment from 'moment';
+import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import QRCode from 'react-qr-code';
+import { connect } from 'react-redux';
 import ReactToPrint from 'react-to-print';
+import { bindActionCreators } from 'redux';
 
-const ActualPrintDialog = ({ listData, isShowing, hide }) => {
+const ActualPrintDialog = ({ listData, isOpen, onClose }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
   const componentPringtRef = React.useRef();
   const DialogTransition = React.forwardRef(function DialogTransition(props, ref) {
     return <Zoom direction="up" ref={ref} {...props} />;
   });
-  // const handleCloseDialog = () => {
-  //   onClose();
-  // };
+
+  const handleCloseDialog = () => {
+    onClose();
+  };
+
   const style = {
     styleBorderAndCenter: {
       borderRight: '1px solid black',
@@ -49,25 +46,14 @@ const ActualPrintDialog = ({ listData, isShowing, hide }) => {
 
   return (
     <React.Fragment>
-      <Dialog open={isShowing} maxWidth="md" fullWidth TransitionComponent={DialogTransition} transitionDuration={300}>
-        <DialogTitle
-          sx={{
-            p: 1,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography sx={{ fontWeight: 600, fontSize: '22px' }}>QR CODE</Typography>
-          <IconButton
-            aria-label="delete"
-            size="small"
-            onClick={() => hide()}
-            sx={{ backgroundColor: 'rgba(0,0,0,0.1)' }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
+      <MuiDialog
+        maxWidth="md"
+        title={intl.formatMessage({ id: 'general.print' })}
+        isOpen={isOpen}
+        disabledCloseBtn={dialogState.isSubmit}
+        disable_animate={300}
+        onClose={handleCloseDialog}
+      >
         <DialogContent ref={componentPringtRef} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Box>
             {listData?.map((item, index) => {
@@ -107,7 +93,7 @@ const ActualPrintDialog = ({ listData, isShowing, hide }) => {
                           </TableCell>
                           <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</TableCell>
                           <TableCell sx={{ textAlign: 'center', padding: '5px !important' }} style={style.borderBot}>
-                            {/* {item?.SupplierCode ?? 'HANLIM'} */} HANLIM
+                            HANLIM
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -115,26 +101,26 @@ const ActualPrintDialog = ({ listData, isShowing, hide }) => {
                           <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
                             {item?.Id}
                           </TableCell>
-                          {/* <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
-                              20212221
-                            </TableCell> */}
                           <TableCell sx={{ textAlign: 'center' }} style={style.borderBot}>
                             {item?.QCResult ? 'OK' : 'NG'}
                           </TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell
-                            style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
+                            style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: 5 }}
                             sx={{ whiteSpace: 'nowrap' }}
                           >
-                            {moment(item?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
+                            <p style={{ margin: 0 }}>
+                              {moment(item?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
+                            </p>
+                            {moment(item?.createdDate).add(7, 'hours').format('hh:mm:ss')}
                           </TableCell>
                           <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
                             <b style={{ fontSize: '22px' }}>{item?.LotSerial}</b>
                           </TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell style={style.styleBorderAndCenter} sx={{ padding: '5px' }}>
+                          <TableCell style={style.styleBorderAndCenter} sx={{ padding: '10px' }}>
                             {`W${moment(item.QCDate).week()} / T${moment(item.QCDate).format('MM')}`}
                           </TableCell>
                         </TableRow>
@@ -208,7 +194,7 @@ const ActualPrintDialog = ({ listData, isShowing, hide }) => {
             content={() => componentPringtRef.current}
           />
         </DialogActions>
-      </Dialog>
+      </MuiDialog>
     </React.Fragment>
   );
 };
