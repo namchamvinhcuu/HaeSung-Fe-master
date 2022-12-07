@@ -1,0 +1,375 @@
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import React, { useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
+import QRCode from 'react-qr-code';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import { MuiButton, MuiTextField } from '@controls';
+import { Box, Grid, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import { splitMergeLotService } from '@services';
+import moment from 'moment';
+import ReactToPrint from 'react-to-print';
+
+const SplitLot = (props) => {
+  let isRendered = useRef(true);
+  const lotInputRef = useRef(null);
+  const qtyInputRef = useRef(null);
+
+  const PrintRef1 = React.useRef();
+  const PrintRef2 = React.useRef();
+
+  const intl = useIntl();
+  const [LotModel, setLotModel] = useState(null);
+  const [LotModelSplit, setLotModelSplit] = useState(null);
+  const [state, setState] = useState({ isLoading: false });
+
+  const keyPress = async (e) => {
+    if (e.key === 'Enter') {
+      await scanBtnClick();
+    }
+  };
+
+  const scanBtnClick = async () => {
+    let inputVal = '';
+
+    if (lotInputRef.current.value) {
+      setState({ ...state, isLoading: true });
+      inputVal = lotInputRef.current.value.trim().toUpperCase();
+
+      var res = await splitMergeLotService.getLotById(inputVal);
+
+      if (res.HttpResponseCode === 200 && res.Data) {
+        setLotModel(res.Data);
+        setLotModelSplit(null);
+        lotInputRef.current.value = '';
+        setState({ ...state, isLoading: false });
+      } else {
+        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        lotInputRef.current.value = '';
+        setState({ ...state, isLoading: false });
+      }
+    }
+  };
+
+  const splitBtnClick = async () => {
+    let inputVal = '';
+
+    if (qtyInputRef.current.value) {
+      inputVal = qtyInputRef.current.value.trim();
+      if (inputVal > 0 && inputVal < LotModel.Qty) {
+        setLotModelSplit({ ...LotModel, Qty: inputVal, Id: null, LotSerial: '' });
+        setLotModel({ ...LotModel, Qty: LotModel.Qty - inputVal });
+      } else {
+        ErrorAlert(intl.formatMessage({ id: 'lot.QtyNotEnough' }));
+      }
+    }
+  };
+
+  const saveBtnClick = async () => {
+    if (window.confirm(intl.formatMessage({ id: 'lot.confirm_split' }))) {
+      try {
+        let inputVal = 0;
+        if (qtyInputRef.current.value) {
+          inputVal = qtyInputRef.current.value;
+          console.log(LotModel.Qty);
+
+          setState({ ...state, isLoading: true });
+          var res = await splitMergeLotService.splitLot({ LotId: String(LotModel.Id), Qty: Number(inputVal) });
+
+          if (res.HttpResponseCode === 200 && res.Data) {
+            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+            setLotModelSplit(res.Data);
+            setState({ ...state, isLoading: false });
+          } else {
+            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+            setState({ ...state, isLoading: false });
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const style = {
+    styleBorderAndCenter: {
+      borderRight: '1px solid black',
+      textAlign: 'center',
+    },
+    borderBot: {
+      borderBottom: '1px solid black',
+      padding: '10px',
+    },
+  };
+
+  return (
+    <React.Fragment>
+      <Grid container spacing={2.5} justifyContent="space-between" alignItems="width-end">
+        <Grid item xs={7}>
+          <Grid item sx={{ mb: 1, textAlign: 'right', display: 'flex', alignItems: 'center' }}>
+            <MuiTextField
+              autoFocus
+              sx={{ width: 300, mr: 1 }}
+              ref={lotInputRef}
+              label="lot"
+              onChange={(e) => (lotInputRef.current.value = e.target.value)}
+              onKeyDown={keyPress}
+            />
+            <MuiButton text="scan" color="primary" onClick={scanBtnClick} sx={{ whiteSpace: 'nowrap' }} />
+            <MuiTextField
+              type="number"
+              disabled={
+                LotModel == null ? true : LotModelSplit == null ? false : LotModelSplit?.Id == null ? true : false
+              }
+              sx={{ width: 300, mr: 1, ml: 5 }}
+              ref={qtyInputRef}
+              label={intl.formatMessage({ id: 'lot.SplitQty' })}
+              onChange={(e) => (qtyInputRef.current.value = e.target.value)}
+            />
+            <MuiButton
+              disabled={
+                LotModel == null ? true : LotModelSplit == null ? false : LotModelSplit?.Id == null ? true : false
+              }
+              text="split"
+              color="primary"
+              onClick={splitBtnClick}
+              sx={{ whiteSpace: 'nowrap', mr: 1 }}
+            />
+            <MuiButton
+              color="warning"
+              disabled={LotModelSplit == null ? true : LotModelSplit?.Id != null ? true : false}
+              onClick={() => {
+                scanBtnClick();
+                setLotModelSplit(null);
+              }}
+              text="cancel"
+              sx={{ whiteSpace: 'nowrap', mr: 1 }}
+            />
+          </Grid>
+        </Grid>
+        <Grid item>
+          <MuiButton
+            text="save"
+            color="success"
+            onClick={saveBtnClick}
+            sx={{ whiteSpace: 'nowrap', mr: 2 }}
+            disabled={LotModelSplit == null ? true : false}
+          />
+        </Grid>
+      </Grid>
+      <Grid container spacing={2.5} justifyContent="space-between" sx={{ pt: 5 }}>
+        <Grid item xs={6}>
+          {LotModel != null && (
+            <>
+              <ReactToPrint
+                trigger={() => {
+                  return (
+                    <MuiButton
+                      text="print"
+                      disabled={LotModelSplit == null ? false : LotModelSplit?.Id == null ? true : false}
+                      color="info"
+                    />
+                  );
+                }}
+                content={() => PrintRef1.current}
+              />
+              <Box
+                ref={PrintRef1}
+                sx={{
+                  border: '1px solid black',
+                  mb: 2,
+                  maxWidth: '500px',
+                  pageBreakAfter: 'always',
+                  margin: 'auto',
+                  mt: 5,
+                }}
+              >
+                <TableContainer sx={{ overflowX: 'hidden' }}>
+                  <Table>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>CODE</TableCell>
+                        <TableCell
+                          colSpan={2}
+                          style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
+                          sx={{ padding: '0px 3px !important' }}
+                        >
+                          <b style={{ fontSize: '22px' }}>{LotModel?.MaterialCode}</b>
+                        </TableCell>
+                        <TableCell rowSpan={2} sx={{ textAlign: 'center' }} style={style.borderBot}>
+                          <QRCode value={`${LotModel?.Id}`} size={80} />
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          {LotModel.MaterialDescription}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</TableCell>
+                        <TableCell
+                          style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
+                          sx={{ padding: '0px 3px !important' }}
+                        >
+                          <b style={{ fontSize: '22px' }}>{LotModel.Qty + ' ' + LotModel.UnitName} </b>
+                        </TableCell>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</TableCell>
+                        <TableCell sx={{ textAlign: 'center', padding: '5px !important' }} style={style.borderBot}>
+                          HANLIM
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>LOT No.</TableCell>
+                        <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          {LotModel?.Id}
+                        </TableCell>
+                        <TableCell sx={{ textAlign: 'center' }} style={style.borderBot}>
+                          {LotModel?.QCResult ? 'OK' : 'NG'}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell
+                          style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: 5 }}
+                          sx={{ whiteSpace: 'nowrap' }}
+                        >
+                          <p style={{ margin: 0 }}>
+                            {moment(LotModel?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
+                          </p>
+                          {moment(LotModel?.createdDate).add(7, 'hours').format('hh:mm:ss')}
+                        </TableCell>
+                        <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
+                          <b style={{ fontSize: '22px' }}>{LotModel?.LotSerial}</b>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell style={style.styleBorderAndCenter} sx={{ padding: '10px' }}>
+                          {`W${moment(LotModel.QCDate).week()} / T${moment(LotModel.QCDate).format('MM')}`}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Box>
+            </>
+          )}
+        </Grid>
+        <Grid item xs={6}>
+          {LotModelSplit != null && (
+            <>
+              <ReactToPrint
+                trigger={() => {
+                  return <MuiButton text="print" disabled={LotModelSplit.Id == null ? true : false} color="info" />;
+                }}
+                content={() => PrintRef2.current}
+              />
+              <Box
+                ref={PrintRef2}
+                sx={{
+                  border: '1px solid black',
+                  mb: 2,
+                  maxWidth: '500px',
+                  pageBreakAfter: 'always',
+                  margin: 'auto',
+                  mt: 5,
+                }}
+              >
+                <TableContainer sx={{ overflowX: 'hidden' }}>
+                  <Table>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>CODE</TableCell>
+                        <TableCell
+                          colSpan={2}
+                          style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
+                          sx={{ padding: '0px 3px !important' }}
+                        >
+                          <b style={{ fontSize: '22px' }}>{LotModelSplit?.MaterialCode}</b>
+                        </TableCell>
+                        <TableCell rowSpan={2} sx={{ textAlign: 'center' }} style={{ ...style.borderBot }}>
+                          {LotModelSplit.Id != null && <QRCode value={`${LotModelSplit?.Id}`} size={80} />}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          {LotModelSplit.MaterialDescription}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</TableCell>
+                        <TableCell
+                          style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
+                          sx={{ padding: '0px 3px !important' }}
+                        >
+                          <b style={{ fontSize: '22px' }}>{LotModelSplit.Qty + ' ' + LotModelSplit.UnitName} </b>
+                        </TableCell>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</TableCell>
+                        <TableCell sx={{ textAlign: 'center', padding: '5px !important' }} style={style.borderBot}>
+                          HANLIM
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>LOT No.</TableCell>
+                        <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          {LotModelSplit?.Id}
+                        </TableCell>
+                        <TableCell sx={{ textAlign: 'center' }} style={style.borderBot}>
+                          {LotModelSplit?.QCResult ? 'OK' : 'NG'}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell
+                          style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: 5 }}
+                          sx={{ whiteSpace: 'nowrap' }}
+                        >
+                          <p style={{ margin: 0 }}>
+                            {moment(LotModelSplit?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
+                          </p>
+                          {moment(LotModelSplit?.createdDate).add(7, 'hours').format('hh:mm:ss')}
+                        </TableCell>
+                        <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
+                          <b style={{ fontSize: '22px' }}>{LotModelSplit?.LotSerial}</b>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell style={style.styleBorderAndCenter} sx={{ padding: '10px' }}>
+                          {`W${moment(LotModelSplit.QCDate).week()} / T${moment(LotModelSplit.QCDate).format('MM')}`}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Box>
+            </>
+          )}
+        </Grid>
+      </Grid>
+      <Grid item xs={7}></Grid>
+    </React.Fragment>
+  );
+};
+
+User_Operations.toString = function () {
+  return 'User_Operations';
+};
+
+const mapStateToProps = (state) => {
+  const {
+    User_Reducer: { language },
+  } = CombineStateToProps(state.AppReducer, [[Store.User_Reducer]]);
+
+  return { language };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  const {
+    User_Operations: { changeLanguage },
+  } = CombineDispatchToProps(dispatch, bindActionCreators, [[User_Operations]]);
+
+  return { changeLanguage };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SplitLot);
