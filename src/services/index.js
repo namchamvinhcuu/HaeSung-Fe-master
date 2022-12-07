@@ -40,6 +40,7 @@ import * as wipReceivingService from './WMS/WIP/WIPReceivingService';
 import * as wipStockService from './WMS/WIP/WIPStockService';
 import * as wmsLayoutService from './WMS/WMSLayout/WMSLayoutService';
 import * as materialPutAwayService from './WMS/Material/MaterialPutAwayService';
+import * as splitMergeLotService from './WMS/SplitMergeLot/SplitMergeLotService';
 
 import * as materialSOService from './WMS/Material/MaterialSOService';
 import * as materialReportService from './WMS/Material/MaterialReportService';
@@ -95,4 +96,5 @@ export {
   fgReceivingService,
   fgStockService,
   fgPutAwayService,
+  splitMergeLotService,
 };

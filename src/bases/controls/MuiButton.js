@@ -12,6 +12,8 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import CropFreeIcon from '@mui/icons-material/CropFree';
 import { styled } from '@mui/material/styles';
 import { FormattedMessage } from 'react-intl';
+import SplitscreenIcon from '@mui/icons-material/Splitscreen';
+import BlockIcon from '@mui/icons-material/Block';
 
 const StyledButton = styled(Button)(({ theme, color }) => ({
   minWidth: 0,
@@ -38,6 +40,7 @@ const MuiButton = React.forwardRef((props, ref) => {
       case 'search':
         return <SearchIcon />;
       case 'cancel':
+        return <BlockIcon />;
       case 'download':
         return <FileDownloadIcon />;
       case 'excel':
@@ -48,6 +51,8 @@ const MuiButton = React.forwardRef((props, ref) => {
         return <CropFreeIcon />;
       case 'upload':
         return <FileUploadIcon />;
+      case 'split':
+        return <SplitscreenIcon />;
       default:
         return <DeleteIcon />;
     }

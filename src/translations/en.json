@@ -17,6 +17,7 @@
     "scan": "Scan",
     "cancel": "cancel",
     "download": "download",
+    "split": "Split",
     "upload": "upload",
     "excel": "Excel",
     "changepassword": "Change password",
@@ -430,12 +431,18 @@
     "BinCode": "Bin",
     "LotSerial": "Lot Serial",
     "Qty": "Qty",
+    "SplitQty": "Split Qty",
     "RequestQty": "Request Qty",
     "IncomingDate": "Incoming Date",
     "QC_required": "QC is required",
     "binAndLot_required": "Bin and Lot is required",
     "scan_wrong_lot": "Scan wrong Lot Code",
-    "lot_code_scan_required": "Lot Code input is required"
+    "lot_code_scan_required": "Lot Code input is required",
+    "confirm_split":"Confirm split lot",
+    "confirm_merge":"Confirm merge lot",
+    "Scan2LotToMerge":"Scan 2 lot to merge",
+    "Scan2LotDifferenceToMerge":"Scan 2 lot difference to merge ",
+    "NotMatchToMerge":"Lot not match to merge (check status, material)"
   },
   "wms-layout": {
     "warehouse": "Warehouse",

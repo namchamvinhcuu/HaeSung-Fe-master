@@ -17,6 +17,7 @@
     "scan": "Quét Mã",
     "cancel": "Hủy",
     "download": "Tải xuống",
+    "split": "Tách",
     "upload": "Tải lên",
     "excel": "Excel",
     "changepassword": "Đổi mật khẩu",
@@ -430,12 +431,18 @@
     "BinCode": "Ô",
     "LotSerial": "Số Serial",
     "Qty": "Số lượng",
+    "SplitQty": "Số lượng tách",
     "RequestQty": "S/L yêu cầu",
     "IncomingDate": "Ngày nhập kho",
     "QC_required": "QC bắt buộc chọn",
     "binAndLot_required": "Bin hoặc Lot chưa có dữ liệu",
     "scan_wrong_lot": "Quét sai mã Lot",
-    "lot_code_scan_required": "Vui lòng nhập mã Lot"
+    "lot_code_scan_required": "Vui lòng nhập mã Lot",
+    "confirm_split":"Xác nhận tách lot",
+    "confirm_merge":"Xác nhận nhập lot",
+    "Scan2LotToMerge":"Quét 2 mã để nhập",
+    "Scan2LotDifferenceToMerge":"Quét 2 mã khác nhau để nhập",
+    "NotMatchToMerge":"Lot nhập không phù hợp (kiểm tra trạng thái, vật liệu)"
   },
   "wms-layout": {
     "warehouse": "Kho",

@@ -72,7 +72,9 @@ import FGPutAway from './WMS/FG/PutAway/FGPutAway';
 import WMSLayout from './WMS/Layout/WMSLayout';
 //WMS - Mapping
 import MappingBin from './WMS/MappingBin/MappingBin';
-
+//WMS - SplitMergeLot
+import SplitLot from './WMS/SplitMergeLot/SplitLot';
+import MergeLot from './WMS/SplitMergeLot/MergeLot';
 //PO
 import DeliveryOrder from './PO/DeliveryOrder/DeliveryOrder';
 import ForecastPO from './PO/ForecastPO/ForecastPO';
@@ -155,7 +157,8 @@ export {
   // WMS - Layout
   WMSLayout,
   MappingBin,
-
+  SplitLot,
+  MergeLot,
   //PO
   DeliveryOrder,
   ForecastPO,
