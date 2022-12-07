@@ -29,7 +29,6 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
   const intl = useIntl();
   let isRendered = useRef(true);
   const { isShowing, toggle } = useModal();
-  const { isShowing2, toggle2 } = useModal2();
   const [WOInfo, setWOInfo] = useState({ ActualQty: 0, OrderQty: 0, TotalLotQty: 0, Remain: 0, QCMasterId: 0 });
   const [rowSelected, setRowSelected] = useState([]);
   const [listData, setListData] = useState([]);
@@ -64,7 +63,8 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
     LotNumber: yup
       .number()
       .nullable()
-      .moreThan(0, intl.formatMessage({ id: 'general.field_min' }, { min: 1 })),
+      .moreThan(0, intl.formatMessage({ id: 'general.field_min' }, { min: 1 }))
+      .max(5, intl.formatMessage({ id: 'general.field_max' }, { max: 5 })),
     QCResult: yup
       .string()
       .nullable()
@@ -194,7 +194,7 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
       data.push(item[0]);
     }
     setListData(data);
-    toggle2();
+    toggle();
   };
 
   const handleDataDemo = () => {
@@ -387,7 +387,7 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
           </Grid>
         </form>
       </MuiDialog>
-      {isShowing2 && <ActualPrintDialog isShowing={true} hide={toggle2} listData={listData} />}
+      <ActualPrintDialog isOpen={isShowing} onClose={toggle} listData={listData} />
     </React.Fragment>
   );
 };
