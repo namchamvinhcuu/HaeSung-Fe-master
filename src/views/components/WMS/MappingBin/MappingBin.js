@@ -35,69 +35,32 @@ const MappingBin = (props) => {
   });
 
   const columns = [
-    { field: 'Id', headerName: '', hide: true },
     {
       field: 'id',
       headerName: '',
       width: 80,
       filterable: false,
-      renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (putAwayState.page - 1) * putAwayState.pageSize,
+      renderCell: (index) => index.api.getRowIndex(index.row.BinId) + 1 + (state.page - 1) * state.pageSize,
     },
     {
-      field: 'action',
-      headerName: '',
-      width: 80,
-      // headerAlign: 'center',
-      disableClickEventBubbling: true,
-      sortable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => {
-        return (
-          <Grid container direction="row" alignItems="center" justifyContent="center">
-            <Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
-              <IconButton
-                aria-label="delete"
-                color="error"
-                size="small"
-                sx={[{ '&:hover': { border: '1px solid red' } }]}
-                onClick={() => handleDelete(params.row)}
-              >
-                <DeleteIcon fontSize="inherit" />
-              </IconButton>
-            </Grid>
-          </Grid>
-        );
-      },
+      field: 'BinCode',
+      headerName: intl.formatMessage({ id: 'MappingBin.BinCode' }),
+      flex: 0.7,
     },
     {
-      field: 'MaterialColorCode',
-      headerName: 'Material Code',
-      width: 250,
+      field: 'ESLCode',
+      headerName: intl.formatMessage({ id: 'MappingBin.ESLCode' }),
+      flex: 0.7,
     },
     {
-      field: 'LotSerial',
-      headerName: 'Lot Serial',
-      width: 250,
+      field: 'BinLevel',
+      headerName: intl.formatMessage({ id: 'MappingBin.BinLevel' }),
+      flex: 0.7,
     },
     {
-      field: 'Qty',
-      headerName: 'Qty',
-      width: 100,
-    },
-    {
-      field: 'LocationCode',
-      headerName: 'Bin',
-      width: 250,
-    },
-    {
-      field: 'IncomingDate',
-      headerName: 'Incoming Date',
-      width: 150,
-      valueFormatter: (params) => {
-        if (params.value !== null) {
-          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
-        }
-      },
+      field: 'BinIndex',
+      headerName: intl.formatMessage({ id: 'MappingBin.BinIndex' }),
+      flex: 0.7,
     },
   ];
 
@@ -247,7 +210,7 @@ const MappingBin = (props) => {
         pageSize={state.pageSize}
         rowCount={state.totalRow}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
-        getRowId={(rows) => rows.Id}
+        getRowId={(rows) => rows.BinId}
         //onSelectionModelChange={(newSelectedRowId) => setWoId(newSelectedRowId[0])}
       />
     </React.Fragment>
