@@ -299,6 +299,7 @@ const StandardQC = (props) => {
         setNewData={setNewData}
         isOpen={isOpenCreateDialog}
         onClose={toggleCreateDialog}
+        fetchData={fetchData}
       />
       <ModifyDialog
         initModal={selectedRow}

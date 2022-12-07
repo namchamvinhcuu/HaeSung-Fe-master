@@ -42,4 +42,11 @@ const deleteStandardQC = async (params) => {
   }
 };
 
-export { getStandardQCList, create, modify, deleteStandardQC };
+const createStandardQCByExcel = async (params) => {
+  try {
+    return await axios.post(`${apiStandardQC}/create-by-excel`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+export { getStandardQCList, create, modify, deleteStandardQC, createStandardQCByExcel };
