@@ -548,6 +548,9 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
                               sx={{ whiteSpace: 'nowrap' }}
                             >
                               {moment(item?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
+                              <span style={{ display: 'block' }}>
+                                {moment(item?.createdDate).add(7, 'hours').format('HH:mm:ss')}
+                              </span>
                             </TableCell>
                             <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
                               <b style={{ fontSize: '22px' }}>{item?.LotSerial}</b>

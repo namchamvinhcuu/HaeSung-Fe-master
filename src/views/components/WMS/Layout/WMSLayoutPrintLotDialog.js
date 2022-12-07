@@ -134,7 +134,10 @@ const WMSLayoutPrintLotDialog = ({ BinId, isOpen, onClose }) => {
                             style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
                             sx={{ whiteSpace: 'nowrap' }}
                           >
-                            {moment(item.QCDate).format('YYYY.MM.DD')}
+                            {moment(item.QCDate).add(7, 'hours').format('YYYY.MM.DD')}
+                            <span style={{ display: 'block' }}>
+                              {moment(item?.QCDate).add(7, 'hours').format('HH:mm:ss')}
+                            </span>
                           </TableCell>
                           <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
                             <b style={{ fontSize: '22px' }}>{item?.LotSerial}</b>
