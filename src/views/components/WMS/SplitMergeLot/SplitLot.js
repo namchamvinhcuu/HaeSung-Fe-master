@@ -48,7 +48,6 @@ const SplitLot = (props) => {
       if (res.HttpResponseCode === 200 && res.Data) {
         setLotModel(res.Data);
         setLotModelSplit(null);
-        lotInputRef.current.value = '';
         setState({ ...state, isLoading: false });
       } else {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
