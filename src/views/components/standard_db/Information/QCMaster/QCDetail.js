@@ -298,6 +298,7 @@ export default function QCDetail({ QCMasterId }) {
         setNewData={setNewData}
         isOpen={isOpenCreateDialog}
         onClose={toggleCreateDialog}
+        fetchData={fetchData}
       />
       <ModifyQCDetailDialog
         initModal={selectedRow}

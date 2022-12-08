@@ -58,4 +58,19 @@ const deleteQCDetail = async (params) => {
   }
 };
 
-export { getQcDetailList, getQCMasterActive, getStandardQCActive, create, modify, deleteQCDetail };
+const createQCDetailByExcel = async (params) => {
+  try {
+    return await axios.post(`${apiQCDetail}/create-by-excel`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+export {
+  getQcDetailList,
+  getQCMasterActive,
+  getStandardQCActive,
+  create,
+  modify,
+  deleteQCDetail,
+  createQCDetailByExcel,
+};
