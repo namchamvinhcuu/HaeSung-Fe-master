@@ -440,6 +440,7 @@
     "lot_code_scan_required": "Lot Code input is required",
     "confirm_split":"Confirm split lot",
     "confirm_merge":"Confirm merge lot",
+    "QtyNotEnough":"Qty not enough to split",
     "Scan2LotToMerge":"Scan 2 lot to merge",
     "Scan2LotDifferenceToMerge":"Scan 2 lot difference to merge ",
     "NotMatchToMerge":"Lot not match to merge (check status, material)"

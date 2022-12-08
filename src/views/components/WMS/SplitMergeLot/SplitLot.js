@@ -13,6 +13,8 @@ import { Box, Grid, Table, TableBody, TableCell, TableContainer, TableRow } from
 import { splitMergeLotService } from '@services';
 import moment from 'moment';
 import ReactToPrint from 'react-to-print';
+import { useModal } from '@basesShared';
+import ActualPrintDialog from '../../MMS/Actual/ActualPrintDialog';
 
 const SplitLot = (props) => {
   let isRendered = useRef(true);
@@ -26,6 +28,7 @@ const SplitLot = (props) => {
   const [LotModel, setLotModel] = useState(null);
   const [LotModelSplit, setLotModelSplit] = useState(null);
   const [state, setState] = useState({ isLoading: false });
+  const { isShowing, toggle } = useModal();
 
   const keyPress = async (e) => {
     if (e.key === 'Enter') {
@@ -45,7 +48,6 @@ const SplitLot = (props) => {
       if (res.HttpResponseCode === 200 && res.Data) {
         setLotModel(res.Data);
         setLotModelSplit(null);
-        lotInputRef.current.value = '';
         setState({ ...state, isLoading: false });
       } else {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
@@ -75,7 +77,6 @@ const SplitLot = (props) => {
         let inputVal = 0;
         if (qtyInputRef.current.value) {
           inputVal = qtyInputRef.current.value;
-          console.log(LotModel.Qty);
 
           setState({ ...state, isLoading: true });
           var res = await splitMergeLotService.splitLot({ LotId: String(LotModel.Id), Qty: Number(inputVal) });
@@ -153,10 +154,16 @@ const SplitLot = (props) => {
         </Grid>
         <Grid item>
           <MuiButton
+            text="print"
+            disabled={LotModelSplit == null ? true : LotModelSplit?.Id == null ? true : false}
+            onClick={() => toggle()}
+            color="info"
+          />
+          <MuiButton
             text="save"
             color="success"
             onClick={saveBtnClick}
-            sx={{ whiteSpace: 'nowrap', mr: 2 }}
+            sx={{ whiteSpace: 'nowrap', mr: 1 }}
             disabled={LotModelSplit == null ? true : false}
           />
         </Grid>
@@ -165,18 +172,6 @@ const SplitLot = (props) => {
         <Grid item xs={6}>
           {LotModel != null && (
             <>
-              <ReactToPrint
-                trigger={() => {
-                  return (
-                    <MuiButton
-                      text="print"
-                      disabled={LotModelSplit == null ? false : LotModelSplit?.Id == null ? true : false}
-                      color="info"
-                    />
-                  );
-                }}
-                content={() => PrintRef1.current}
-              />
               <Box
                 ref={PrintRef1}
                 sx={{
@@ -206,7 +201,7 @@ const SplitLot = (props) => {
                       </TableRow>
                       <TableRow>
                         <TableCell colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
-                          {LotModel.MaterialDescription}
+                          {LotModel?.MaterialDescription}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -260,12 +255,6 @@ const SplitLot = (props) => {
         <Grid item xs={6}>
           {LotModelSplit != null && (
             <>
-              <ReactToPrint
-                trigger={() => {
-                  return <MuiButton text="print" disabled={LotModelSplit.Id == null ? true : false} color="info" />;
-                }}
-                content={() => PrintRef2.current}
-              />
               <Box
                 ref={PrintRef2}
                 sx={{
@@ -347,7 +336,7 @@ const SplitLot = (props) => {
           )}
         </Grid>
       </Grid>
-      <Grid item xs={7}></Grid>
+      <ActualPrintDialog isOpen={isShowing} onClose={toggle} listData={[LotModel, LotModelSplit]} />
     </React.Fragment>
   );
 };

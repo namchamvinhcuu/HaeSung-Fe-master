@@ -12,11 +12,13 @@ import { MuiButton, MuiTextField } from '@controls';
 import { Box, Grid, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import { splitMergeLotService } from '@services';
 import moment from 'moment';
+import { useModal } from '@basesShared';
+import ActualPrintDialog from '../../MMS/Actual/ActualPrintDialog';
 
 const MergeLot = (props) => {
   let isRendered = useRef(true);
   const lotInputRef = useRef(null);
-
+  const { isShowing, toggle } = useModal();
   const intl = useIntl();
   const [LotModel, setLotModel] = useState(null);
   const [LotModel2, setLotModel2] = useState(null);
@@ -34,6 +36,7 @@ const MergeLot = (props) => {
     if (lotInputRef.current.value) {
       inputVal = lotInputRef.current.value.trim().toUpperCase();
       if (LotModel != null && LotModel.Id == inputVal) {
+        lotInputRef.current.value = '';
         return ErrorAlert(intl.formatMessage({ id: 'lot.Scan2LotDifferenceToMerge' }));
       }
       setState({ ...state, isLoading: true });
@@ -106,6 +109,7 @@ const MergeLot = (props) => {
           </Grid>
         </Grid>
         <Grid item>
+          <MuiButton text="print" disabled={LotModel == null ? true : false} onClick={() => toggle()} color="info" />
           <MuiButton
             text="save"
             color="success"
@@ -119,14 +123,6 @@ const MergeLot = (props) => {
         <Grid item xs={6}>
           {LotModel != null && (
             <>
-              <MuiButton
-                text="delete"
-                onClick={() => {
-                  setLotModel(LotModel2);
-                  setLotModel2(null);
-                }}
-                color="error"
-              />
               <Box
                 sx={{
                   border: '1px solid black',
@@ -190,13 +186,32 @@ const MergeLot = (props) => {
                           </p>
                           {moment(LotModel?.createdDate).add(7, 'hours').format('hh:mm:ss')}
                         </TableCell>
-                        <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
+                        <TableCell
+                          rowSpan={2}
+                          colSpan={3}
+                          sx={{ textAlign: 'center', borderBottom: '1px solid black' }}
+                        >
                           <b style={{ fontSize: '22px' }}>{LotModel?.LotSerial}</b>
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell style={style.styleBorderAndCenter} sx={{ padding: '10px' }}>
+                        <TableCell
+                          style={style.styleBorderAndCenter}
+                          sx={{ padding: '10px', borderBottom: '1px solid black' }}
+                        >
                           {`W${moment(LotModel.QCDate).week()} / T${moment(LotModel.QCDate).format('MM')}`}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell colSpan={4} style={{ textAlign: 'center', borderTop: '1px solid black' }}>
+                          <MuiButton
+                            text="delete"
+                            onClick={() => {
+                              setLotModel(LotModel2);
+                              setLotModel2(null);
+                            }}
+                            color="error"
+                          />
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -209,7 +224,6 @@ const MergeLot = (props) => {
         <Grid item xs={6}>
           {LotModel2 != null && (
             <>
-              <MuiButton text="delete" onClick={() => setLotModel2(null)} color="error" />
               <Box
                 sx={{
                   border: '1px solid black',
@@ -273,13 +287,25 @@ const MergeLot = (props) => {
                           </p>
                           {moment(LotModel2?.createdDate).add(7, 'hours').format('hh:mm:ss')}
                         </TableCell>
-                        <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
+                        <TableCell
+                          rowSpan={2}
+                          colSpan={3}
+                          sx={{ textAlign: 'center', borderBottom: '1px solid black' }}
+                        >
                           <b style={{ fontSize: '22px' }}>{LotModel2?.LotSerial}</b>
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell style={style.styleBorderAndCenter} sx={{ padding: '10px' }}>
+                        <TableCell
+                          style={{ ...style.styleBorderAndCenter, borderBottom: '1px solid black' }}
+                          sx={{ padding: '10px' }}
+                        >
                           {`W${moment(LotModel2.QCDate).week()} / T${moment(LotModel2.QCDate).format('MM')}`}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell colSpan={4} style={{ textAlign: 'center', borderTop: '1px solid black' }}>
+                          <MuiButton text="delete" onClick={() => setLotModel2(null)} color="error" />
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -289,8 +315,8 @@ const MergeLot = (props) => {
             </>
           )}
         </Grid>
+        <ActualPrintDialog isOpen={isShowing} onClose={toggle} listData={[LotModel, LotModel2]} />
       </Grid>
-      <Grid item xs={7}></Grid>
     </React.Fragment>
   );
 };

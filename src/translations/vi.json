@@ -440,6 +440,7 @@
     "lot_code_scan_required": "Vui lòng nhập mã Lot",
     "confirm_split":"Xác nhận tách lot",
     "confirm_merge":"Xác nhận nhập lot",
+    "QtyNotEnough":"Số lượng không đủ để tách",
     "Scan2LotToMerge":"Quét 2 mã để nhập",
     "Scan2LotDifferenceToMerge":"Quét 2 mã khác nhau để nhập",
     "NotMatchToMerge":"Lot nhập không phù hợp (kiểm tra trạng thái, vật liệu)"
