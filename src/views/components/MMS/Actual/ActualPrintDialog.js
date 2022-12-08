@@ -58,76 +58,78 @@ const ActualPrintDialog = ({ listData, isOpen, onClose }) => {
           <Box>
             {listData?.map((item, index) => {
               return (
-                <Box
-                  sx={{ border: '1px solid black', mb: 2, maxWidth: '450px', pageBreakAfter: 'always' }}
-                  key={`IQCQRCODE_${index}`}
-                >
-                  <TableContainer sx={{ overflowX: 'hidden' }}>
-                    <Table>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>CODE</TableCell>
-                          <TableCell
-                            colSpan={2}
-                            style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
-                            sx={{ padding: '0px 3px !important' }}
-                          >
-                            <b style={{ fontSize: '22px' }}>{item?.MaterialCode}</b>
-                          </TableCell>
-                          <TableCell rowSpan={2} sx={{ textAlign: 'center' }} style={style.borderBot}>
-                            <QRCode value={`${item?.Id}`} size={80} />
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
-                            {item.MaterialDescription}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</TableCell>
-                          <TableCell
-                            style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
-                            sx={{ padding: '0px 3px !important' }}
-                          >
-                            <b style={{ fontSize: '22px' }}>{item.Qty + ' ' + item.UnitName} </b>
-                          </TableCell>
-                          <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</TableCell>
-                          <TableCell sx={{ textAlign: 'center', padding: '5px !important' }} style={style.borderBot}>
-                            HANLIM
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>LOT No.</TableCell>
-                          <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
-                            {item?.Id}
-                          </TableCell>
-                          <TableCell sx={{ textAlign: 'center' }} style={style.borderBot}>
-                            {item?.QCResult ? 'OK' : 'NG'}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell
-                            style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: 5 }}
-                            sx={{ whiteSpace: 'nowrap' }}
-                          >
-                            <p style={{ margin: 0 }}>
-                              {moment(item?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
-                            </p>
-                            {moment(item?.createdDate).add(7, 'hours').format('hh:mm:ss')}
-                          </TableCell>
-                          <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
-                            <b style={{ fontSize: '22px' }}>{item?.LotSerial}</b>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell style={style.styleBorderAndCenter} sx={{ padding: '10px' }}>
-                            {`W${moment(item.QCDate).week()} / T${moment(item.QCDate).format('MM')}`}
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Box>
+                item != null && (
+                  <Box
+                    sx={{ border: '1px solid black', mb: 2, maxWidth: '450px', pageBreakAfter: 'always' }}
+                    key={`IQCQRCODE_${index}`}
+                  >
+                    <TableContainer sx={{ overflowX: 'hidden' }}>
+                      <Table>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>CODE</TableCell>
+                            <TableCell
+                              colSpan={2}
+                              style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
+                              sx={{ padding: '0px 3px !important' }}
+                            >
+                              <b style={{ fontSize: '22px' }}>{item?.MaterialCode}</b>
+                            </TableCell>
+                            <TableCell rowSpan={2} sx={{ textAlign: 'center' }} style={style.borderBot}>
+                              <QRCode value={`${item?.Id}`} size={80} />
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                              {item?.MaterialDescription}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</TableCell>
+                            <TableCell
+                              style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
+                              sx={{ padding: '0px 3px !important' }}
+                            >
+                              <b style={{ fontSize: '22px' }}>{item?.Qty + ' ' + item?.UnitName} </b>
+                            </TableCell>
+                            <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</TableCell>
+                            <TableCell sx={{ textAlign: 'center', padding: '5px !important' }} style={style.borderBot}>
+                              HANLIM
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>LOT No.</TableCell>
+                            <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                              {item?.Id}
+                            </TableCell>
+                            <TableCell sx={{ textAlign: 'center' }} style={style.borderBot}>
+                              {item?.QCResult ? 'OK' : 'NG'}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell
+                              style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: 5 }}
+                              sx={{ whiteSpace: 'nowrap' }}
+                            >
+                              <p style={{ margin: 0 }}>
+                                {moment(item?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
+                              </p>
+                              {moment(item?.createdDate).add(7, 'hours').format('hh:mm:ss')}
+                            </TableCell>
+                            <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
+                              <b style={{ fontSize: '22px' }}>{item?.LotSerial}</b>
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell style={style.styleBorderAndCenter} sx={{ padding: '10px' }}>
+                              {`W${moment(item?.QCDate).week()} / T${moment(item?.QCDate).format('MM')}`}
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Box>
+                )
               );
             })}
           </Box>
