@@ -1,23 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
-import { User_Operations } from '@appstate/user';
-import { Store } from '@appstate';
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from '@mui/material/IconButton';
-import { useIntl } from 'react-intl';
 import { ErrorAlert, SuccessAlert } from '@utils';
+import { useIntl } from 'react-intl';
 
-import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateField, MuiSearchField, MuiTextField } from '@controls';
-import { Grid, Typography, Tooltip, Button } from '@mui/material';
-import { eslService, wmsLayoutService, materialPutAwayService } from '@services';
-import _ from 'lodash';
-import moment from 'moment';
-import { useModal } from '@basesShared';
-import AllInboxIcon from '@mui/icons-material/AllInbox';
+import { MuiButton, MuiDataGrid, MuiTextField } from '@controls';
 import LinkIcon from '@mui/icons-material/Link';
+import { Button, Grid } from '@mui/material';
+import { eslService, wmsLayoutService } from '@services';
 
 const MappingBin = (props) => {
   let isRendered = useRef(true);
