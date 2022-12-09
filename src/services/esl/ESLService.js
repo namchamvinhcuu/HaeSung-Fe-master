@@ -1,4 +1,5 @@
 import axios from 'axios';
+import moment from 'moment';
 import { axios as axiosInstance } from '@utils';
 import _ from 'lodash';
 
@@ -244,5 +245,112 @@ export const getRegisteredESLTagByCode = async (eslCode) => {
     return await axios.get(eslURL);
   } catch (error) {
     return error.response;
+  }
+};
+
+export const createLotOnESLServer = async (lotData, articleId) => {
+  // console.log(lotData)
+
+  if (!articleId) {
+    articleId = 'Bin-1';
+  }
+
+  let eslURL = `${eslApi}/dashboardWeb/common/articles?store=DEFAULT_STATION_CODE&company=Auto&SI`;
+  let postData = [
+    {
+      articleId: lotData.Id,
+      articleName: '',
+      nfcUrl: '',
+      data: {
+        STORE_CODE: null,
+        ARTICLE_ID: articleId,
+        BARCODE: null,
+        ITEM_NAME: null,
+        ALIAS: null,
+        SALE_PRICE: null,
+        LIST_PRICE: null,
+        UNIT_PRICE: null,
+        ORIGIN: null,
+        MANUFACTURER: null,
+        TYPE: null,
+        WEIGHT: null,
+        WEIGHT_UNIT: null,
+        UNIT_PRICE_UNIT: null,
+        UNIT_DIMENSION: null,
+        A_MARKER: null,
+        R_MARKER: null,
+        CATEGORY1: null,
+        CATEGORY2: null,
+        CATEGORY3: null,
+        CATEGORY4: null,
+        CATEGORY5: null,
+        DISPLAY_TYPE: null,
+        DISPLAY_TYPE2: null,
+        DISPLAY_TYPE3: null,
+        NFC_URL: null,
+        ETC_0: null,
+        ETC_1: null,
+        ETC_2: null,
+        ETC_3: null,
+        ETC_4: null,
+        ETC_5: null,
+        ETC_6: null,
+        ETC_7: null,
+        ETC_8: null,
+        ETC_9: null,
+        TEST1: null,
+        CODE: lotData?.MaterialCode,
+        DESCRIPTION: lotData?.MaterialDescription,
+        QTY_NUMBER: `${lotData?.Qty} ${lotData?.UnitName}`,
+        VENDOR: 'HANLIM',
+        LOT_NO: lotData?.Id,
+        STATUS: lotData?.QCResult ? 'OK' : 'NG',
+        DATETIME_SHOW: moment(lotData?.createdDate).add(7, 'hours').format('YYYY-MM-DD'),
+        LOT_SERIAL: lotData?.LotSerial,
+        WEEK_SHOW: `W${moment(lotData?.QCDate).week()} / T${moment(lotData?.QCDate).format('MM')}`,
+      },
+    },
+  ];
+  try {
+    return await axios.post(eslURL, postData);
+    // return res;
+  } catch (error) {
+    console.log('error', error);
+  }
+};
+
+export const updateESLDataByLot = async (lotData) => {
+  let dataList = [
+    {
+      articleId: lotData?.Id,
+      articleName: '',
+      nfcUrl: '',
+      data: {
+        CODE: lotData?.MaterialCode,
+        DESCRIPTION: lotData?.MaterialDescription,
+        QTY_NUMBER: `${lotData?.Qty} ${lotData?.UnitName}`,
+        VENDOR: 'HANLIM',
+        LOT_NO: lotData?.Id,
+        STATUS: lotData?.QCResult ? 'OK' : 'NG',
+        DATETIME_SHOW: `${moment(lotData?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}    ${moment(
+          lotData?.createdDate
+        )
+          .add(7, 'hours')
+          .format('hh:mm:ss')}`,
+        LOT_SERIAL: lotData?.LotSerial,
+        WEEK_SHOW: `W${moment(lotData?.QCDate).week()} / T${moment(lotData?.QCDate).format('MM')}`,
+      },
+      id: lotData?.Id,
+      stationCode: 'DEFAULT_STATION_CODE',
+    },
+  ];
+
+  try {
+    return await axios.post(`${eslApi}/articles`, {
+      dataList: dataList,
+    });
+    // console.log(response)
+  } catch (error) {
+    console.log('error', error);
   }
 };

@@ -17,7 +17,7 @@ import {
   MuiTextField,
 } from '@controls';
 import { Badge, Grid } from '@mui/material';
-import { actualService } from '@services';
+import { actualService, eslService } from '@services';
 import { ErrorAlert, SuccessAlert } from '@utils';
 import { useFormik } from 'formik';
 import moment from 'moment';
@@ -33,6 +33,7 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
   const [rowSelected, setRowSelected] = useState([]);
   const [listData, setListData] = useState([]);
   const [dialogState, setDialogState] = useState({ isSubmit: false });
+  const eslInputRef = useRef(null);
   const [state, setState] = useState({
     isLoading: false,
     status: false,
@@ -241,6 +242,59 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
     setDialogState({ ...dialogState, isSubmit: false });
   };
 
+  const keyPress = async (e) => {
+    if (e.key === 'Enter') {
+      let inputVal = '';
+
+      if (eslInputRef.current.value) {
+        inputVal = eslInputRef.current.value.trim().toUpperCase();
+      }
+      await handleScanESLCode(inputVal);
+    }
+  };
+
+  const handleScanESLCode = async (inputValue) => {
+    if (!inputValue || inputValue.length !== 12) {
+      ErrorAlert(intl.formatMessage({ id: 'esl.tag_unregistrated' }));
+      eslInputRef.current.value = '';
+    } else {
+      const getRegisteredESLTag = await eslService.getRegisteredESLTagByCode(inputValue);
+
+      if (getRegisteredESLTag.status !== 200) {
+        ErrorAlert(intl.formatMessage({ id: 'esl.tag_unregistrated' }));
+        eslInputRef.current.value = '';
+        return;
+      }
+
+      let lotDataArr = [];
+      for (let i = 0; i < rowSelected.length; i++) {
+        var item = state.data.filter((x) => x.Id == rowSelected[i]);
+        lotDataArr.push(item[0]);
+      }
+
+      console.log('lotData', lotDataArr[0]);
+
+      // Create/Update ESL
+      const createResponse = await eslService.createLotOnESLServer(lotDataArr[0], 'Bin-1');
+
+      if (createResponse.status === 200) {
+        const linkResponse = await eslService.linkESLTagWithBin(lotDataArr[0].Id, inputValue);
+        if (linkResponse.status === 200) {
+          // Update ESL Data
+          const updateESLDataRes = await eslService.updateESLDataByLot(lotDataArr[0]);
+          console.log(updateESLDataRes);
+
+          if (updateESLDataRes.status === 200) {
+            SuccessAlert(intl.formatMessage({ id: 'Mapping success' }));
+            eslInputRef.current.value = '';
+          } else {
+            ErrorAlert(intl.formatMessage({ id: 'Mapping error' }));
+          }
+        }
+      }
+    }
+  };
+
   return (
     <React.Fragment>
       <MuiDialog
@@ -346,13 +400,12 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
                 </Grid>
                 <Grid item>
                   <MuiTextField
-                    disabled={state.status ? state.status : dialogState.isSubmit}
-                    label="ESL Tag"
-                    name="Qty"
-                    value={values.Qty ?? ''}
-                    onChange={handleChange}
-                    error={touched.Qty && Boolean(errors.Qty)}
-                    helperText={touched.Qty && errors.Qty}
+                    disabled={rowSelected.length !== 1 ?? false}
+                    sx={{ width: 300, mr: 1 }}
+                    ref={eslInputRef}
+                    label={intl.formatMessage({ id: 'MappingBin.ESLCode' })}
+                    onChange={(e) => (eslInputRef.current.value = e.target.value)}
+                    onKeyDown={keyPress}
                   />
                 </Grid>
               </Grid>

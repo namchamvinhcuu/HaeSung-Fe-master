@@ -122,6 +122,7 @@ const MappingBin = (props) => {
       if (getRegisteredESLTag.status !== 200) {
         ErrorAlert(intl.formatMessage({ id: 'esl.tag_unregistrated' }));
         eslInputRef.current.value = '';
+        return;
       }
       setState({ ...state, isLoading: true });
       // Create/Update ESL
