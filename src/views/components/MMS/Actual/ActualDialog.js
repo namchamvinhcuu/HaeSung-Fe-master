@@ -1,29 +1,29 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
-import { User_Operations } from '@appstate/user';
-import { Store } from '@appstate';
 
+import { useModal } from '@basesShared';
 import {
-  MuiDialog,
-  MuiResetButton,
-  MuiSubmitButton,
-  MuiTextField,
+  MuiAutocomplete,
   MuiButton,
   MuiDataGrid,
-  MuiAutocomplete,
+  MuiDialog,
+  MuiResetButton,
   MuiSelectField,
+  MuiSubmitButton,
+  MuiTextField,
 } from '@controls';
-import { Autocomplete, Badge, Checkbox, FormControlLabel, Grid, TextField } from '@mui/material';
-import { useIntl } from 'react-intl';
-import * as yup from 'yup';
+import { Badge, Grid } from '@mui/material';
 import { actualService } from '@services';
-import { ErrorAlert, SuccessAlert, getCurrentWeek } from '@utils';
+import { ErrorAlert, SuccessAlert } from '@utils';
 import { useFormik } from 'formik';
 import moment from 'moment';
+import { useIntl } from 'react-intl';
+import * as yup from 'yup';
 import ActualPrintDialog from './ActualPrintDialog';
-import { useModal, useModal2 } from '@basesShared';
 
 const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
   const intl = useIntl();
@@ -252,7 +252,7 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
         onClose={handleCloseDialog}
       >
         <form onSubmit={handleSubmit}>
-          <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }} alignItems="width-end">
+          <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }} alignItems="flex-end">
             <Grid item container spacing={2} xs={12}>
               <Grid item xs={3}>
                 <MuiTextField
@@ -333,14 +333,29 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
               />
             </Grid>
             <Grid item xs={12}>
-              <MuiSubmitButton text="save" loading={dialogState.isSubmit} disabled={!state.status} />
-              <Badge badgeContent={rowSelected.length} color="warning">
-                <MuiButton
-                  text="print"
-                  disabled={rowSelected.length == 0 ? true : false}
-                  onClick={() => handlePrint()}
-                />
-              </Badge>
+              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} alignItems="flex-end">
+                <Grid item>
+                  <MuiSubmitButton text="save" loading={dialogState.isSubmit} disabled={!state.status} />
+                  <Badge badgeContent={rowSelected.length} color="warning">
+                    <MuiButton
+                      text="print"
+                      disabled={rowSelected.length == 0 ? true : false}
+                      onClick={() => handlePrint()}
+                    />
+                  </Badge>
+                </Grid>
+                <Grid item>
+                  <MuiTextField
+                    disabled={state.status ? state.status : dialogState.isSubmit}
+                    label="ESL Tag"
+                    name="Qty"
+                    value={values.Qty ?? ''}
+                    onChange={handleChange}
+                    error={touched.Qty && Boolean(errors.Qty)}
+                    helperText={touched.Qty && errors.Qty}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </form>
