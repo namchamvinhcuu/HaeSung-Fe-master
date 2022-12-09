@@ -87,4 +87,8 @@ const isNumber = (input) => {
   return isFinite(input);
 };
 
-export { calDateAgo, toCamel, dateToTicks, addDays, minusDays, getCurrentWeek, isNumber };
+const delayDuration = (delay) => {
+  return new Promise((res) => setTimeout(res, delay));
+};
+
+export { calDateAgo, toCamel, dateToTicks, addDays, minusDays, getCurrentWeek, isNumber, delayDuration };

@@ -18,7 +18,7 @@ import {
 } from '@controls';
 import { Badge, Grid } from '@mui/material';
 import { actualService, eslService } from '@services';
-import { ErrorAlert, SuccessAlert } from '@utils';
+import { ErrorAlert, SuccessAlert, delayDuration } from '@utils';
 import { useFormik } from 'formik';
 import moment from 'moment';
 import { useIntl } from 'react-intl';
@@ -272,15 +272,15 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
         lotDataArr.push(item[0]);
       }
 
-      console.log('lotData', lotDataArr[0]);
-
       // Create/Update ESL
       const createResponse = await eslService.createLotOnESLServer(lotDataArr[0], 'Bin-1');
 
       if (createResponse.status === 200) {
+        await delayDuration(2000);
         const linkResponse = await eslService.linkESLTagWithBin(lotDataArr[0].Id, inputValue);
         if (linkResponse.status === 200) {
           // Update ESL Data
+          await delayDuration(1000);
           const updateESLDataRes = await eslService.updateESLDataByLot(lotDataArr[0]);
           console.log(updateESLDataRes);
 
