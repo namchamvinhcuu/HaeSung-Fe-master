@@ -342,50 +342,52 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
                 />
               </Badge>
             </Grid>
-            <Grid item xs={12}>
-              <MuiDataGrid
-                showLoading={state.isLoading}
-                isPagingServer={true}
-                headerHeight={45}
-                columns={columns}
-                rows={state.data}
-                checkboxSelection
-                onSelectionModelChange={(ids) => setRowSelected(ids)}
-                gridHeight={200}
-                page={state.page - 1}
-                pageSize={state.pageSize}
-                rowCount={state.totalRow}
-                getRowId={(rows) => rows.Id}
-                hideFooter
-              />
-            </Grid>
-            <Grid item container spacing={2} alignItems="width-end">
-              <Grid item container spacing={2} xs={12}>
-                <Grid item xs={4}>
-                  <MuiTextField
-                    disabled={dialogState.isSubmit}
-                    label={intl.formatMessage({ id: 'actual.WoOrderQty' })}
-                    value={WOInfo.OrderQty}
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <MuiTextField
-                    disabled={dialogState.isSubmit}
-                    label={intl.formatMessage({ id: 'actual.TotalLotQty' })}
-                    value={WOInfo.TotalLotQty}
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <MuiTextField
-                    disabled={dialogState.isSubmit}
-                    label={intl.formatMessage({ id: 'actual.Remain' })}
-                    value={WOInfo.Remain}
-                  />
-                </Grid>
+          </Grid>
+        </form>
+        <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }} alignItems="width-end">
+          <Grid item xs={12} sx={{ mt: 2 }}>
+            <MuiDataGrid
+              showLoading={state.isLoading}
+              isPagingServer={true}
+              headerHeight={45}
+              columns={columns}
+              rows={state.data}
+              checkboxSelection
+              onSelectionModelChange={(ids) => setRowSelected(ids)}
+              gridHeight={200}
+              page={state.page - 1}
+              pageSize={state.pageSize}
+              rowCount={state.totalRow}
+              getRowId={(rows) => rows.Id}
+              hideFooter
+            />
+          </Grid>
+          <Grid item container spacing={2} alignItems="width-end">
+            <Grid item container spacing={2} xs={12}>
+              <Grid item xs={4}>
+                <MuiTextField
+                  disabled={dialogState.isSubmit}
+                  label={intl.formatMessage({ id: 'actual.WoOrderQty' })}
+                  value={WOInfo.OrderQty}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <MuiTextField
+                  disabled={dialogState.isSubmit}
+                  label={intl.formatMessage({ id: 'actual.TotalLotQty' })}
+                  value={WOInfo.TotalLotQty}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <MuiTextField
+                  disabled={dialogState.isSubmit}
+                  label={intl.formatMessage({ id: 'actual.Remain' })}
+                  value={WOInfo.Remain}
+                />
               </Grid>
             </Grid>
           </Grid>
-        </form>
+        </Grid>
       </MuiDialog>
       <ActualPrintDialog isOpen={isShowing} onClose={toggle} listData={listData} />
     </React.Fragment>
