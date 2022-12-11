@@ -145,7 +145,9 @@
     "roleName": "Role"
   },
   "esl": {
-    "tag_unregistrated": "Thẻ ESL chưa được đăng ký"
+    "tag_unregistrated": "Thẻ ESL chưa được đăng ký",
+    "mapping_success": "Mapping ESL tag thành công",
+    "mapping_error": "Mapping ESL tag lỗi"
   },
   "product": {
     "product_code": "Product Code",
@@ -213,9 +215,9 @@
     "IsReuse": "Is Reuse",
     "TrayCode_required": "Tray Code không được để trống",
     "TrayType_required": "Tray Type không được để trống",
-    "lotmapped":"lot đã được liên kết",
-    "NotFoundTrayCode":"Không tìm thấy tray code",
-    "confirm_unMapping":"Xác nhận gở liên kết"
+    "lotmapped": "lot đã được liên kết",
+    "NotFoundTrayCode": "Không tìm thấy tray code",
+    "confirm_unMapping": "Xác nhận gở liên kết"
   },
   "line": {
     "LineName": "Tên line",
@@ -438,12 +440,12 @@
     "binAndLot_required": "Bin hoặc Lot chưa có dữ liệu",
     "scan_wrong_lot": "Quét sai mã Lot",
     "lot_code_scan_required": "Vui lòng nhập mã Lot",
-    "confirm_split":"Xác nhận tách lot",
-    "confirm_merge":"Xác nhận nhập lot",
-    "QtyNotEnough":"Số lượng không đủ để tách",
-    "Scan2LotToMerge":"Quét 2 mã để nhập",
-    "Scan2LotDifferenceToMerge":"Quét 2 mã khác nhau để nhập",
-    "NotMatchToMerge":"Lot nhập không phù hợp (kiểm tra trạng thái, vật liệu)"
+    "confirm_split": "Xác nhận tách lot",
+    "confirm_merge": "Xác nhận nhập lot",
+    "QtyNotEnough": "Số lượng không đủ để tách",
+    "Scan2LotToMerge": "Quét 2 mã để nhập",
+    "Scan2LotDifferenceToMerge": "Quét 2 mã khác nhau để nhập",
+    "NotMatchToMerge": "Lot nhập không phù hợp (kiểm tra trạng thái, vật liệu)"
   },
   "wms-layout": {
     "warehouse": "Kho",
@@ -490,19 +492,19 @@
     "SOrderQty_GreaterThan_0": "SL yêu cầu phải lớn hơn 0 ",
     "SQty_Format": "SL yêu cầu sai định dạng (7.3) "
   },
-  "MappingBin":{
+  "MappingBin": {
     "BinId": "Bin Id",
     "BinCode": "Bin Code",
     "BinLevel": "Bin Level",
     "BinIndex": "Bin Index",
     "ESLCode": "ESL Code"
   },
-  "Files":{
-    "Product" : "Vui lòng chọn File Product.xlsx",
-    "Material" :"Vui lòng chọn File Material.xlsx",
-    "ForecastPODetail" :"Vui lòng chọn File ForecastPODetail.xlsx",
-    "Mold" : "Vui lòng chọn File Mold.xlsx",
-    "Aisle" : "Vui lòng chọn File Aisle.xlsx",
-    "Data_Invalid" : "Vui lòng kiểm tra lại dữ liệu"
+  "Files": {
+    "Product": "Vui lòng chọn File Product.xlsx",
+    "Material": "Vui lòng chọn File Material.xlsx",
+    "ForecastPODetail": "Vui lòng chọn File ForecastPODetail.xlsx",
+    "Mold": "Vui lòng chọn File Mold.xlsx",
+    "Aisle": "Vui lòng chọn File Aisle.xlsx",
+    "Data_Invalid": "Vui lòng kiểm tra lại dữ liệu"
   }
 }

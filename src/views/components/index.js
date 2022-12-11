@@ -44,6 +44,7 @@ import Display from './MMS/Display/Display';
 import MMSReport from './MMS/Report/MMSReport';
 import WorkOrder from './MMS/WO/WorkOrder';
 import MappingTray from './MMS/MappingTray/MappingTray';
+import MappingLot from './MMS/MappingLot/MappingLot';
 
 //WMS
 //WMS - Material
@@ -131,6 +132,7 @@ export {
   MMSReport,
   WorkOrder,
   MappingTray,
+  MappingLot,
 
   //WMS
   //WMS - Material

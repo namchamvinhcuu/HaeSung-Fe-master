@@ -272,6 +272,8 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
         lotDataArr.push(item[0]);
       }
 
+      console.log('lotDataArr[0]', lotDataArr[0]);
+
       // Create/Update ESL
       const createResponse = await eslService.createLotOnESLServer(lotDataArr[0], 'Bin-1');
 
@@ -285,10 +287,10 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
           console.log(updateESLDataRes);
 
           if (updateESLDataRes.status === 200) {
-            SuccessAlert(intl.formatMessage({ id: 'Mapping success' }));
+            SuccessAlert(intl.formatMessage({ id: 'esl.mapping_success' }));
             eslInputRef.current.value = '';
           } else {
-            ErrorAlert(intl.formatMessage({ id: 'Mapping error' }));
+            ErrorAlert(intl.formatMessage({ id: 'esl.mapping_error' }));
           }
         }
       }

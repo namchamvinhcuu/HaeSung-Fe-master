@@ -145,7 +145,9 @@
     "roleName": "Role"
   },
   "esl": {
-    "tag_unregistrated": "ESL Tag is un-registrated"
+    "tag_unregistrated": "ESL Tag is un-registrated",
+    "mapping_success": "Mapping Successfully",
+    "mapping_error": "Mapping Error"
   },
   "product": {
     "product_code": "Product Code",
@@ -213,9 +215,9 @@
     "IsReuse": "Is Reuse",
     "TrayCode_required": "Tray Code is required",
     "TrayType_required": "Tray Type is required",
-    "lotmapped":"lot is mapped",
-    "NotFoundTrayCode":"Not found Tray Code",
-    "confirm_unMapping":"Confirm to un mapping"
+    "lotmapped": "lot is mapped",
+    "NotFoundTrayCode": "Not found Tray Code",
+    "confirm_unMapping": "Confirm to un mapping"
   },
   "line": {
     "LineName": "Line Name",
@@ -438,12 +440,12 @@
     "binAndLot_required": "Bin and Lot is required",
     "scan_wrong_lot": "Scan wrong Lot Code",
     "lot_code_scan_required": "Lot Code input is required",
-    "confirm_split":"Confirm split lot",
-    "confirm_merge":"Confirm merge lot",
-    "QtyNotEnough":"Qty not enough to split",
-    "Scan2LotToMerge":"Scan 2 lot to merge",
-    "Scan2LotDifferenceToMerge":"Scan 2 lot difference to merge ",
-    "NotMatchToMerge":"Lot not match to merge (check status, material)"
+    "confirm_split": "Confirm split lot",
+    "confirm_merge": "Confirm merge lot",
+    "QtyNotEnough": "Qty not enough to split",
+    "Scan2LotToMerge": "Scan 2 lot to merge",
+    "Scan2LotDifferenceToMerge": "Scan 2 lot difference to merge ",
+    "NotMatchToMerge": "Lot not match to merge (check status, material)"
   },
   "wms-layout": {
     "warehouse": "Warehouse",
@@ -490,19 +492,19 @@
     "SOrderQty_GreaterThan_0": "OrderQty must be greater than 0 ",
     "SQty_Format": "OrderQty format is invalid (7.3) "
   },
-  "MappingBin":{
+  "MappingBin": {
     "BinId": "Bin Id",
     "BinCode": "Bin Code",
     "BinLevel": "Bin Level",
     "BinIndex": "Bin Index",
     "ESLCode": "ESL Code"
   },
-  "Files":{
-    "Product" : "Please choose File Product.xlsx",
-    "Material" :"Please choose File Material.xlsx",
-    "ForecastPODetail" :"Please choose File ForecastPODetail.xlsx",
-    "Mold" : "Please choose File Mold.xlsx",
-    "Aisle" : "Please choose File Aisle.xlsx",
-    "Data_Invalid" : "Please check the data again"
+  "Files": {
+    "Product": "Please choose File Product.xlsx",
+    "Material": "Please choose File Material.xlsx",
+    "ForecastPODetail": "Please choose File ForecastPODetail.xlsx",
+    "Mold": "Please choose File Mold.xlsx",
+    "Aisle": "Please choose File Aisle.xlsx",
+    "Data_Invalid": "Please check the data again"
   }
 }
