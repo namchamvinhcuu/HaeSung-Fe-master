@@ -267,7 +267,7 @@ const HMIHistory = (props) => {
         </Grid>
         <Grid item xs>
           <MuiAutocomplete
-            label={intl.formatMessage({ id: 'work_order.MaterialCode' })}
+            label="Bare Code"
             fetchDataFunc={getSearchMaterialArr}
             displayLabel="MaterialCode"
             displayValue="MaterialId"
