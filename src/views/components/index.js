@@ -45,7 +45,7 @@ import MMSReport from './MMS/Report/MMSReport';
 import WorkOrder from './MMS/WO/WorkOrder';
 import MappingTray from './MMS/MappingTray/MappingTray';
 import MappingLot from './MMS/MappingLot/MappingLot';
-
+import HMIHistory from './MMS/HMIHistory/HMIHistory';
 //WMS
 //WMS - Material
 import IQC from './WMS/Material/IQC/IQC';
@@ -133,7 +133,7 @@ export {
   WorkOrder,
   MappingTray,
   MappingLot,
-
+  HMIHistory,
   //WMS
   //WMS - Material
   IQC,

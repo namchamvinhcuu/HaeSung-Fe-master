@@ -2,7 +2,7 @@ import { Store } from '@appstate';
 import { User_Operations } from '@appstate/user';
 import { useModal, useModal2 } from '@basesShared';
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
-import { MuiButton, MuiDataGrid, MuiDateField, MuiSearchField } from '@controls';
+import { MuiButton, MuiDataGrid, MuiDateField, MuiSearchField, MuiDialog } from '@controls';
 import { LotDto } from '@models';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -427,7 +427,7 @@ const IQC = (props) => {
         onClose={toggle}
         mode={mode}
       />
-      {isShowing2 && <Modal_Qr_Code isShowing={true} hide={toggle2} rowSelected={rowSelected} />}
+      <Modal_Qr_Code isShowing={isShowing2} hide={toggle2} rowSelected={rowSelected} />
     </React.Fragment>
   );
 };
@@ -435,14 +435,9 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
   const DialogTransition = React.forwardRef(function DialogTransition(props, ref) {
     return <Zoom direction="up" ref={ref} {...props} />;
   });
-  const componentPringtRef = React.useRef();
-  const [listPrint, setListPrint] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(async () => {
-    setIsLoading(true);
-    setListPrint(rowSelected);
-    setIsLoading(false);
-  }, []);
+  const intl = useIntl();
+  const [dialogState, setDialogState] = useState({ isSubmit: false });
+  const componentRef = React.useRef();
   const style = {
     styleBorderAndCenter: {
       borderRight: '1px solid black',
@@ -460,130 +455,116 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
     let curWeek = Math.ceil((todaydate.getDay() + 1 + numberOfDays) / 7);
     return curWeek;
   };
+  const handleCloseDialog = () => {
+    hide();
+  };
+
   return (
     <React.Fragment>
-      {!isLoading && (
-        <Dialog
-          open={isShowing}
-          maxWidth="md"
-          fullWidth
-          TransitionComponent={DialogTransition}
-          transitionDuration={300}
-        >
-          <DialogTitle
-            sx={{
-              p: 1,
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <Typography sx={{ fontWeight: 600, fontSize: '22px' }}>QR CODE</Typography>
-            <IconButton
-              aria-label="delete"
-              size="small"
-              onClick={() => hide()}
-              sx={{ backgroundColor: 'rgba(0,0,0,0.1)' }}
-            >
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent ref={componentPringtRef} sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Box>
-              {listPrint?.map((item, index) => {
-                return (
-                  <Box
-                    sx={{ border: '1px solid black', mb: 2, maxWidth: '450px', pageBreakAfter: 'always' }}
-                    key={`IQCQRCODE_${index}`}
-                  >
-                    <TableContainer sx={{ overflowX: 'hidden' }}>
-                      <Table>
-                        <TableBody>
-                          <TableRow>
-                            <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>CODE</TableCell>
-                            <TableCell
-                              colSpan={2}
-                              style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
-                              sx={{ padding: '0px 3px !important' }}
-                            >
-                              <b style={{ fontSize: '22px' }}>{item?.MaterialColorCode}</b>
-                            </TableCell>
-                            <TableCell rowSpan={2} sx={{ textAlign: 'center' }} style={style.borderBot}>
-                              <QRCode value={`${item?.Id}`} size={80} />
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
-                              {item?.Description}
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</TableCell>
-                            <TableCell
-                              style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
-                              sx={{ padding: '0px 3px !important' }}
-                            >
-                              <b style={{ fontSize: '22px' }}>{`${item?.Qty} ${item?.Unit}`} </b>
-                            </TableCell>
-                            <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</TableCell>
-                            <TableCell sx={{ textAlign: 'center', padding: '5px !important' }} style={style.borderBot}>
-                              {item?.SupplierCode}
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>LOT No.</TableCell>
-                            <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
-                              {item?.Id}
-                            </TableCell>
-                            {/* <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+      <MuiDialog
+        maxWidth="md"
+        title={intl.formatMessage({ id: 'general.print' })}
+        isOpen={isShowing}
+        disabledCloseBtn={dialogState.isSubmit}
+        disable_animate={300}
+        onClose={handleCloseDialog}
+        isShowButtonPrint
+      >
+        <DialogContent ref={componentRef} sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box>
+            {rowSelected?.map((item, index) => {
+              return (
+                <Box
+                  sx={{ border: '1px solid black', mb: 2, maxWidth: '450px', pageBreakAfter: 'always' }}
+                  key={`IQCQRCODE_${index}`}
+                >
+                  <TableContainer sx={{ overflowX: 'hidden' }}>
+                    <Table>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>CODE</TableCell>
+                          <TableCell
+                            colSpan={2}
+                            style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
+                            sx={{ padding: '0px 3px !important' }}
+                          >
+                            <b style={{ fontSize: '22px' }}>{item?.MaterialColorCode}</b>
+                          </TableCell>
+                          <TableCell rowSpan={2} sx={{ textAlign: 'center' }} style={style.borderBot}>
+                            <QRCode value={`${item?.Id}`} size={80} />
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                            {item?.Description}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</TableCell>
+                          <TableCell
+                            style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
+                            sx={{ padding: '0px 3px !important' }}
+                          >
+                            <b style={{ fontSize: '22px' }}>{`${item?.Qty} ${item?.Unit}`} </b>
+                          </TableCell>
+                          <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</TableCell>
+                          <TableCell sx={{ textAlign: 'center', padding: '5px !important' }} style={style.borderBot}>
+                            {item?.SupplierCode}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>LOT No.</TableCell>
+                          <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                            {item?.Id}
+                          </TableCell>
+                          {/* <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
                               20212221
                             </TableCell> */}
-                            <TableCell sx={{ textAlign: 'center' }} style={style.borderBot}>
-                              {item?.QCResult ? 'OK' : 'NG'}
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell
-                              style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
-                              sx={{ whiteSpace: 'nowrap' }}
-                            >
-                              {moment(item?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
-                              <span style={{ display: 'block' }}>
-                                {moment(item?.createdDate).add(7, 'hours').format('HH:mm:ss')}
-                              </span>
-                            </TableCell>
-                            <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
-                              <b style={{ fontSize: '22px' }}>{item?.LotSerial}</b>
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell style={style.styleBorderAndCenter} sx={{ padding: '5px' }}>
-                              W{getWeekByCreatedDate(item?.createdDate)} / T
-                              {moment(item?.createdDate).add(7, 'hours').format('MM')}
-                            </TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Box>
-                );
-              })}
-            </Box>
-          </DialogContent>
-          <DialogActions sx={{ pt: 1 }}>
-            <ReactToPrint
-              trigger={() => {
-                return (
-                  <Button variant="contained" color="primary">
-                    Print
-                  </Button>
-                );
-              }}
-              content={() => componentPringtRef.current}
-            />
-          </DialogActions>
-        </Dialog>
-      )}
+                          <TableCell sx={{ textAlign: 'center' }} style={style.borderBot}>
+                            {item?.QCResult ? 'OK' : 'NG'}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell
+                            style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
+                            sx={{ whiteSpace: 'nowrap' }}
+                          >
+                            {moment(item?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
+                            <span style={{ display: 'block' }}>
+                              {moment(item?.createdDate).add(7, 'hours').format('HH:mm:ss')}
+                            </span>
+                          </TableCell>
+                          <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
+                            <b style={{ fontSize: '22px' }}>{item?.LotSerial}</b>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell style={style.styleBorderAndCenter} sx={{ padding: '5px' }}>
+                            W{getWeekByCreatedDate(item?.createdDate)} / T
+                            {moment(item?.createdDate).add(7, 'hours').format('MM')}
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Box>
+              );
+            })}
+          </Box>
+        </DialogContent>
+        {/* <DialogActions sx={{ pt: 1 }}>
+          <ReactToPrint
+            trigger={() => {
+              return (
+                <Button variant="contained" color="primary">
+                  Print
+                </Button>
+              );
+            }}
+            content={() => componentPringtRef.current}
+          />
+        </DialogActions> */}
+      </MuiDialog>
     </React.Fragment>
   );
 };

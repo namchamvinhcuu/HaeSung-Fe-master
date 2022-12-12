@@ -56,25 +56,15 @@ const WMSLayoutPrintLotDialog = ({ BinId, isOpen, onClose }) => {
   };
   return (
     <React.Fragment>
-      <Dialog open={isOpen} maxWidth="md" fullWidth>
-        <DialogTitle
-          sx={{
-            p: 1,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography sx={{ fontWeight: 600, fontSize: '22px' }}>QR CODE</Typography>
-          <IconButton
-            aria-label="delete"
-            size="small"
-            onClick={() => onClose()}
-            sx={{ backgroundColor: 'rgba(0,0,0,0.1)' }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
+      <MuiDialog
+        maxWidth="md"
+        title={intl.formatMessage({ id: 'general.print' })}
+        isOpen={isOpen}
+        disabledCloseBtn={dialogState.isSubmit}
+        disable_animate={300}
+        onClose={handleCloseDialog}
+        isShowButtonPrint
+      >
         <DialogContent ref={componentPringtRef} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Box>
             {listData?.map((item, index) => {
@@ -156,7 +146,9 @@ const WMSLayoutPrintLotDialog = ({ BinId, isOpen, onClose }) => {
             })}
           </Box>
         </DialogContent>
-        {/* <DialogContent>
+      </MuiDialog>
+
+      {/* <DialogContent>
           <div style={{ overflow: 'visible', height: '500px' }} ref={componentPringtRef}>
             {listData.map((item, index) => {
               return (
@@ -213,15 +205,14 @@ const WMSLayoutPrintLotDialog = ({ BinId, isOpen, onClose }) => {
             })}
           </div>
         </DialogContent> */}
-        <DialogActions sx={{ pt: 3 }}>
+      {/* <DialogActions sx={{ pt: 3 }}>
           <ReactToPrint
             trigger={() => {
               return <MuiButton text="print" />;
             }}
             content={() => componentPringtRef.current}
           />
-        </DialogActions>
-      </Dialog>
+        </DialogActions> */}
     </React.Fragment>
   );
 };

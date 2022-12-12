@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import CloseIcon from '@mui/icons-material/Close';
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
-import { MuiButton, MuiDataGrid, MuiDateField, MuiSearchField } from '@controls';
+import { MuiButton, MuiDataGrid, MuiDateField, MuiSearchField, MuiDialog } from '@controls';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UndoIcon from '@mui/icons-material/Undo';
@@ -504,7 +504,7 @@ const MaterialSO = (props) => {
 };
 const Material_Info = ({ isShowing, hide, MsoId }) => {
   const [dataPrint, setDataPrint] = useState('');
-
+  const [dialogState, setDialogState] = useState({ isSubmit: false });
   useEffect(async () => {
     const data = await materialSOService.getDataPrint({ MsoId: MsoId });
     setDataPrint(data);
@@ -539,21 +539,19 @@ const Material_Info = ({ isShowing, hide, MsoId }) => {
       height: '60px',
     },
   };
+  const handleCloseDialog = () => {
+    hide();
+  };
   return (
-    <Dialog open={isShowing} maxWidth="lg" fullWidth TransitionComponent={DialogTransition} transitionDuration={300}>
-      <DialogTitle
-        sx={{
-          p: 1,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <Typography sx={{ fontWeight: 600, fontSize: '22px' }}>Shipping Order</Typography>
-        <IconButton aria-label="delete" size="small" onClick={() => hide()} sx={{ backgroundColor: 'rgba(0,0,0,0.1)' }}>
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
+    <MuiDialog
+      maxWidth="md"
+      title={intl.formatMessage({ id: 'general.print' })}
+      isOpen={isShowing}
+      disabledCloseBtn={dialogState.isSubmit}
+      disable_animate={300}
+      onClose={handleCloseDialog}
+      isShowButtonPrint
+    >
       <DialogContent ref={componentPringtRef} sx={{ mt: 2 }}>
         <Grid container flexDirection="row" alignItems="center" justifyContent="center" textAlign="center">
           <Grid
@@ -634,19 +632,7 @@ const Material_Info = ({ isShowing, hide, MsoId }) => {
           <b>Date Time:</b> {moment(utcDateTime).format('YYYY-MM-DD HH:mm:ss')}
         </Typography>
       </DialogContent>
-      <DialogActions sx={{ pt: 1 }}>
-        <ReactToPrint
-          trigger={() => {
-            return (
-              <Button variant="contained" color="primary">
-                Print
-              </Button>
-            );
-          }}
-          content={() => componentPringtRef.current}
-        />
-      </DialogActions>
-    </Dialog>
+    </MuiDialog>
   );
 };
 User_Operations.toString = function () {

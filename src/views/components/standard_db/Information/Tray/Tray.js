@@ -1,6 +1,6 @@
 import { useModal, useModal2 } from '@basesShared';
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
-import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField, MuiDialog } from '@controls';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -359,107 +359,79 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
   const DialogTransition = React.forwardRef(function DialogTransition(props, ref) {
     return <Zoom direction="up" ref={ref} {...props} />;
   });
+  const intl = useIntl();
   const componentPringtRef = React.useRef();
   const [listPrint, setListPrint] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [dialogState, setDialogState] = useState({ isSubmit: false });
   useEffect(async () => {
-    setIsLoading(true);
     const res = await trayService.GetListPrintQR(rowSelected);
     setListPrint(res.Data);
-    setIsLoading(false);
   }, []);
+  const handleCloseDialog = () => {
+    hide();
+  };
 
   return (
     <React.Fragment>
-      {!isLoading && (
-        <Dialog
-          open={isShowing}
-          maxWidth="sm"
-          fullWidth
-          TransitionComponent={DialogTransition}
-          transitionDuration={300}
-        >
-          <DialogTitle
-            sx={{
-              p: 1,
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <Typography sx={{ fontWeight: 600, fontSize: '22px' }}>QR CODE</Typography>
-            <IconButton
-              aria-label="delete"
-              size="small"
-              onClick={() => hide()}
-              sx={{ backgroundColor: 'rgba(0,0,0,0.1)' }}
-            >
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent ref={componentPringtRef} sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Box>
-              {listPrint?.reverse()?.map((item, index) => {
-                return (
-                  <Box
-                    key={`TRAY_${index}`}
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      mb: 1,
-                      pb: 1,
-                      pageBreakAfter: 'always',
-                    }}
-                  >
-                    <Box sx={{ mr: 2 }}>
-                      <QRCode value={`${item.TrayCode}`} size={80} />
-                    </Box>
-                    <TableContainer>
-                      <Table>
-                        <TableBody>
-                          <TableRow>
-                            <TableCell sx={{ fontSize: '12px', border: 'none', padding: '2px 0px 2px 0px' }}>
-                              Tray Code: {item?.TrayCode}
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell sx={{ fontSize: '12px', border: 'none', padding: '2px 0px 2px 0px' }}>
-                              Tray Type Name: {item?.TrayTypeName}
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell sx={{ fontSize: '12px', border: 'none', padding: '2px 0px 2px 0px' }}>
-                              Created By: {item?.createdName}
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell sx={{ fontSize: '12px', border: 'none', padding: '2px 0px 2px 0px' }}>
-                              Created Date: {moment(item?.createdDate).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss')}
-                            </TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
+      <MuiDialog
+        maxWidth="sm"
+        title={intl.formatMessage({ id: 'general.print' })}
+        isOpen={isShowing}
+        disabledCloseBtn={dialogState.isSubmit}
+        disable_animate={400}
+        onClose={handleCloseDialog}
+        isShowButtonPrint
+      >
+        <DialogContent ref={componentPringtRef} sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box>
+            {listPrint?.reverse()?.map((item, index) => {
+              return (
+                <Box
+                  key={`TRAY_${index}`}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    mb: 1,
+                    pb: 1,
+                    pageBreakAfter: 'always',
+                  }}
+                >
+                  <Box sx={{ mr: 2 }}>
+                    <QRCode value={`${item.TrayCode}`} size={80} />
                   </Box>
-                );
-              })}
-            </Box>
-          </DialogContent>
-          <DialogActions sx={{ pt: 0 }}>
-            <ReactToPrint
-              trigger={() => {
-                return (
-                  <Button variant="contained" color="primary">
-                    Print
-                  </Button>
-                );
-              }}
-              content={() => componentPringtRef.current}
-            />
-          </DialogActions>
-        </Dialog>
-      )}
+                  <TableContainer>
+                    <Table>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell sx={{ fontSize: '12px', border: 'none', padding: '2px 0px 2px 0px' }}>
+                            Tray Code: {item?.TrayCode}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell sx={{ fontSize: '12px', border: 'none', padding: '2px 0px 2px 0px' }}>
+                            Tray Type Name: {item?.TrayTypeName}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell sx={{ fontSize: '12px', border: 'none', padding: '2px 0px 2px 0px' }}>
+                            Created By: {item?.createdName}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell sx={{ fontSize: '12px', border: 'none', padding: '2px 0px 2px 0px' }}>
+                            Created Date: {moment(item?.createdDate).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss')}
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Box>
+              );
+            })}
+          </Box>
+        </DialogContent>
+      </MuiDialog>
     </React.Fragment>
   );
 };

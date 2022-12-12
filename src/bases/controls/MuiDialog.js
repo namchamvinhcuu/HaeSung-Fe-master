@@ -1,8 +1,20 @@
-import { Dialog, DialogContent, DialogTitle, Fade, Grow, IconButton, Paper, Slide, Zoom } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Fade,
+  Grow,
+  IconButton,
+  Paper,
+  Slide,
+  Zoom,
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
-
+import { useIntl } from 'react-intl';
 import CloseIcon from '@mui/icons-material/Close';
-
+import ReactToPrint from 'react-to-print';
 import Draggable from 'react-draggable';
 import ShortUniqueId from 'short-unique-id';
 
@@ -23,12 +35,22 @@ const Transition_Slide_Down = React.forwardRef(function Transition(props, ref) {
 
 const uid = new ShortUniqueId();
 
-export const MuiDialog = ({ isOpen, onClose, title, disable_animate, maxWidth, disabledCloseBtn, ...others }) => {
+export const MuiDialog = ({
+  isOpen,
+  onClose,
+  title,
+  disable_animate,
+  maxWidth,
+  disabledCloseBtn,
+  isShowButtonPrint,
+  ...others
+}) => {
   const { animate } = others;
 
   const [dialogId, setDialogId] = React.useState(uid());
   const [data, setData] = useState({});
-
+  const componentPringtRef = React.useRef();
+  const intl = useIntl();
   const PaperComponent = React.useCallback((props) => {
     return (
       <Draggable handle={`#draggable-dialog-${dialogId}`} cancel={'[class*="MuiDialogContent-root"]'}>
@@ -109,7 +131,21 @@ export const MuiDialog = ({ isOpen, onClose, title, disable_animate, maxWidth, d
         </IconButton>
       </DialogTitle>
 
-      <DialogContent>{others.children}</DialogContent>
+      <DialogContent ref={componentPringtRef}>{others.children}</DialogContent>
+      {isShowButtonPrint && (
+        <DialogActions>
+          <ReactToPrint
+            trigger={() => {
+              return (
+                <Button variant="contained" color="primary">
+                  {intl.formatMessage({ id: 'general.print' })}
+                </Button>
+              );
+            }}
+            content={() => componentPringtRef.current}
+          />
+        </DialogActions>
+      )}
     </Dialog>
   );
 };

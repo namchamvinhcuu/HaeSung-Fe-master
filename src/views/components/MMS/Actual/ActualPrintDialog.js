@@ -53,6 +53,7 @@ const ActualPrintDialog = ({ listData, isOpen, onClose }) => {
         disabledCloseBtn={dialogState.isSubmit}
         disable_animate={300}
         onClose={handleCloseDialog}
+        isShowButtonPrint
       >
         <DialogContent ref={componentPringtRef} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Box>
@@ -188,14 +189,14 @@ const ActualPrintDialog = ({ listData, isOpen, onClose }) => {
             })}
           </div>
         </DialogContent> */}
-        <DialogActions sx={{ p: 1 }}>
+        {/* <DialogActions sx={{ p: 1 }}>
           <ReactToPrint
             trigger={() => {
               return <MuiButton text="print" />;
             }}
             content={() => componentPringtRef.current}
           />
-        </DialogActions>
+        </DialogActions> */}
       </MuiDialog>
     </React.Fragment>
   );
