@@ -143,14 +143,14 @@ const Display = (props) => {
                 <div style={{ ...style.grid, height: '20%', border: 'solid 1px #434242', backgroundColor: '#9370db' }}>
                   <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Target</h2>
                 </div>
+                <div style={{ ...style.grid, height: '20%', border: 'solid 1px #434242', backgroundColor: '#009EFF' }}>
+                  <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>HMI Qty</h2>
+                </div>
                 <div style={{ ...style.grid, height: '20%', border: 'solid 1px #434242', backgroundColor: '#00c6bb' }}>
                   <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Actual</h2>
                 </div>
                 <div style={{ ...style.grid, height: '20%', border: 'solid 1px #434242', backgroundColor: '#e9a424' }}>
                   <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Efficiency</h2>
-                </div>
-                <div style={{ ...style.grid, height: '20%', border: 'solid 1px #434242', backgroundColor: '#009EFF' }}>
-                  <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>HMI Qty</h2>
                 </div>
               </div>
 
@@ -167,15 +167,15 @@ const Display = (props) => {
                         <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{item.orderQty}</h2>
                       </div>
                       <div style={{ ...style.grid, height: '20%', display: 'grid', border: 'solid 1px #222222' }}>
+                        <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{item.hmiQty}</h2>
+                      </div>
+                      <div style={{ ...style.grid, height: '20%', display: 'grid', border: 'solid 1px #222222' }}>
                         <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{item.actualQty}</h2>
                       </div>
                       <div style={{ ...style.grid, height: '20%', display: 'grid', border: 'solid 1px #222222' }}>
                         <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>
                           {efficiency > 100 ? 100 : efficiency}%
                         </h2>
-                      </div>
-                      <div style={{ ...style.grid, height: '20%', display: 'grid', border: 'solid 1px #222222' }}>
-                        <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{item.hmiQty}</h2>
                       </div>
                     </div>
                   );
