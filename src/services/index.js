@@ -50,6 +50,7 @@ import * as eslService from './esl/ESLService';
 import * as fgReceivingService from './WMS/FG/FGReceivingService';
 import * as fgStockService from './WMS/FG/FGStockService';
 import * as fgPutAwayService from './WMS/FG/FGPutAwayService';
+import * as hmiService from './mms/HMIHistoryService';
 
 export {
   loginService,
@@ -97,4 +98,5 @@ export {
   fgStockService,
   fgPutAwayService,
   splitMergeLotService,
+  hmiService,
 };
