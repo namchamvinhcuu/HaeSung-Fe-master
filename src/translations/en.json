@@ -397,6 +397,7 @@
     "BomVersion": "Bom Version",
     "Buyer": "Buyer",
     "LineName": "Line",
+    "MoldCode":"Mold Code",
     "OrderQty": "Order Qty",
     "ActualQty": "Actual Qty",
     "StartDate": "Working Date",

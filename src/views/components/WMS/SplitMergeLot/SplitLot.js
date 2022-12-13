@@ -63,8 +63,8 @@ const SplitLot = (props) => {
     if (qtyInputRef.current.value) {
       inputVal = qtyInputRef.current.value.trim();
       if (inputVal > 0 && inputVal < LotModel.Qty) {
-        setLotModelSplit({ ...LotModel, Qty: inputVal, Id: null, LotSerial: '' });
-        setLotModel({ ...LotModel, Qty: LotModel.Qty - inputVal });
+        setLotModelSplit({ ...LotModel, Qty: Number(inputVal), Id: null, LotSerial: '' });
+        setLotModel({ ...LotModel, Qty: Number(LotModel.Qty - inputVal) });
       } else {
         ErrorAlert(intl.formatMessage({ id: 'lot.QtyNotEnough' }));
       }
@@ -164,7 +164,7 @@ const SplitLot = (props) => {
             color="success"
             onClick={saveBtnClick}
             sx={{ whiteSpace: 'nowrap', mr: 1 }}
-            disabled={LotModelSplit == null ? true : false}
+            disabled={LotModelSplit == null ? true : LotModelSplit?.Id != null ? true : false}
           />
         </Grid>
       </Grid>

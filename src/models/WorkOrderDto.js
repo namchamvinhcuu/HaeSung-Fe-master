@@ -7,15 +7,18 @@ const WorkOrderDto = {
   MaterialId: 0,
   BomId: 0,
   LineId: 0,
+  MoldId: null,
   OrderQty: 0,
   StartDate: new Date(),
   ActualQty: 0,
 
   MaterialCode: '',
+  MaterialType: '',
   BomVersion: '',
   FPoMasterId: 0,
   FPoMasterCode: '',
   LineName: '',
+  MoldName: '',
 
   StartSearchingDate: new Date(),
   EndSearchingDate: new Date(),
