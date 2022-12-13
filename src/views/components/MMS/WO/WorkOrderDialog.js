@@ -345,13 +345,13 @@ const WorkOrderDialog = (props) => {
                           : null
                       }
                       onChange={(e, item) => {
-                        setFieldValue('MaterialId', item?.MaterialId || 0);
                         setFieldValue('MaterialCode', item?.MaterialCode || '');
                         setFieldValue('BomId', item?.BomId || 0);
                         setFieldValue('BomVersion', item?.BomVersion || '');
                         setFieldValue('MoldId', null);
                         setFieldValue('MoldCode', '');
                         setMaterialType(item?.GroupMaterial);
+                        setFieldValue('MaterialId', item?.MaterialId || 0);
                       }}
                       error={touched.MaterialId && Boolean(errors.MaterialId)}
                       helperText={touched.MaterialId && errors.MaterialId}
