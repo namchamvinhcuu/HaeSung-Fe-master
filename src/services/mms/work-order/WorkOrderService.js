@@ -22,12 +22,7 @@ export const getPoMasterArr = async () => {
 
 export const getSearchMaterialArr = async (BomLv, BomId) => {
   try {
-    return await axios.get(`${API}/get-search-material`, {
-      params: {
-        BomLv: BomLv,
-        BomId: BomId,
-      },
-    });
+    return await axios.get(`${API}/get-search-material`);
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }
@@ -63,6 +58,14 @@ export const getBom = async (params) => {
 export const getLineArr = async () => {
   try {
     return await axios.get(`${API}/get-lines`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+export const getMoldArr = async () => {
+  try {
+    return await axios.get(`${API}/get-mold`);
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }

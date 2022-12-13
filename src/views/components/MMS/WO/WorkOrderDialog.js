@@ -30,6 +30,7 @@ const WorkOrderDialog = (props) => {
 
   const curWeek = getCurrentWeek();
   const curYear = new Date().getFullYear();
+  const [MaterialType, setMaterialType] = useState('');
 
   const schema = yup.object().shape({
     FPoMasterId: yup.number().nullable(),
@@ -87,6 +88,19 @@ const WorkOrderDialog = (props) => {
             .number()
             .required(intl.formatMessage({ id: 'general.field_required' }))
             .min(1, intl.formatMessage({ id: 'general.field_required' }));
+        } else {
+          return yup.number().notRequired();
+        }
+      }),
+    MoldId: yup
+      .number()
+      .nullable()
+      .when('MaterialId', (val) => {
+        if (MaterialType === 'BARE MATERIAL') {
+          return yup
+            .number()
+            .nullable()
+            .required(intl.formatMessage({ id: 'general.field_required' }));
         } else {
           return yup.number().notRequired();
         }
@@ -194,6 +208,10 @@ const WorkOrderDialog = (props) => {
     return await workOrderService.getLineArr();
   };
 
+  const getMoldArr = async () => {
+    return await workOrderService.getMoldArr();
+  };
+
   return (
     <React.Fragment>
       <MuiDialog
@@ -280,7 +298,7 @@ const WorkOrderDialog = (props) => {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 {/* Material */}
-                <Grid item xs={6}>
+                <Grid item xs={MaterialType == 'BARE MATERIAL' || values.MoldId != null ? 4 : 6}>
                   {values.FPoMasterId && values.FPoMasterId !== 0 ? (
                     <MuiAutocomplete
                       label={intl.formatMessage({
@@ -304,6 +322,9 @@ const WorkOrderDialog = (props) => {
                         setFieldValue('MaterialBuyerCode', item?.MaterialBuyerCode || '');
                         setFieldValue('BomId', item?.BomId || 0);
                         setFieldValue('BomVersion', item?.BomVersion || '');
+                        setFieldValue('MoldId', null);
+                        setFieldValue('MoldCode', '');
+                        setMaterialType(item?.GroupMaterial);
                       }}
                       error={touched.FPOId && Boolean(errors.FPOId)}
                       helperText={touched.FPOId && errors.FPOId}
@@ -328,6 +349,9 @@ const WorkOrderDialog = (props) => {
                         setFieldValue('MaterialCode', item?.MaterialCode || '');
                         setFieldValue('BomId', item?.BomId || 0);
                         setFieldValue('BomVersion', item?.BomVersion || '');
+                        setFieldValue('MoldId', null);
+                        setFieldValue('MoldCode', '');
+                        setMaterialType(item?.GroupMaterial);
                       }}
                       error={touched.MaterialId && Boolean(errors.MaterialId)}
                       helperText={touched.MaterialId && errors.MaterialId}
@@ -335,8 +359,34 @@ const WorkOrderDialog = (props) => {
                   )}
                 </Grid>
 
+                {(MaterialType == 'BARE MATERIAL' || values.MoldId != null) && (
+                  <Grid item xs={4}>
+                    <MuiAutocomplete
+                      label={intl.formatMessage({ id: 'work_order.MoldCode' })}
+                      disabled={dialogState.isSubmit}
+                      fetchDataFunc={getMoldArr}
+                      displayValue="MoldId"
+                      displayLabel="MoldCode"
+                      value={
+                        values.MoldId && values.MoldId !== 0
+                          ? {
+                              MoldId: values.MoldId,
+                              MoldCode: values.MoldCode,
+                            }
+                          : null
+                      }
+                      onChange={(e, item) => {
+                        setFieldValue('MoldCode', item?.MoldCode || '');
+                        setFieldValue('MoldId', item?.MoldId || null);
+                      }}
+                      error={touched.MoldId && Boolean(errors.MoldId)}
+                      helperText={touched.MoldId && errors.MoldId}
+                    />
+                  </Grid>
+                )}
+
                 {/* Bom - Version */}
-                <Grid item xs={6}>
+                <Grid item xs={MaterialType == 'BARE MATERIAL' || values.MoldId != null ? 4 : 6}>
                   <MuiAutocomplete
                     label={intl.formatMessage({
                       id: 'work_order.BomVersion',
@@ -375,6 +425,7 @@ const WorkOrderDialog = (props) => {
                     name="WoCode"
                     value={values.WoCode}
                     onChange={handleChange}
+                    inputProps={{ maxLength: 12 }}
                     error={touched.WoCode && Boolean(errors.WoCode)}
                     helperText={touched.WoCode && errors.WoCode}
                   />
