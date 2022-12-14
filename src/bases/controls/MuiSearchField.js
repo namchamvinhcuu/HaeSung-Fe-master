@@ -13,7 +13,7 @@ import { debounce } from 'lodash';
 
 const MuiSearchField = React.forwardRef((props, ref) => {
   const intl = useIntl();
-  const { label, name, type, value, disabled, onClick, onChange } = props;
+  const { label, name, type, value, disabled, onClick, onChange, defaultValue } = props;
 
   let timer;
 
@@ -81,6 +81,7 @@ const MuiSearchField = React.forwardRef((props, ref) => {
       // value={value}
       onChange={debounce(onChange, 200)}
       onKeyDown={keyPress}
+      defaultValue={defaultValue || ''}
     />
   );
 });

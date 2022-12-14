@@ -286,6 +286,7 @@ const FixedPO = (props) => {
             type="number"
             name="Year"
             value={fixedPOState.searchData.Year}
+            defaultValue={new Date().getFullYear()}
             onClick={fetchData}
             onChange={(e) => changeSearchData(e, 'Year')}
           />
@@ -298,6 +299,7 @@ const FixedPO = (props) => {
             value={fixedPOState.searchData.Week}
             onClick={fetchData}
             onChange={(e) => changeSearchData(e, 'Week')}
+            defaultValue={fixedPOState.searchData.Week}
           />
         </Grid>
         <Grid item xs={4} sm={3} md={2}>

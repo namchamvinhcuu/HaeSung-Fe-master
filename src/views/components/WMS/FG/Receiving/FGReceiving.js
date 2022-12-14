@@ -137,7 +137,7 @@ const FGReceiving = (props) => {
                 size="small"
                 sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
-                disabled={params.row.LotStatus}
+                disabled={params.row.BinId ? true : false}
               >
                 <DeleteIcon fontSize="inherit" />
               </IconButton>

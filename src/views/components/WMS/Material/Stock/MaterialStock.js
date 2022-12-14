@@ -107,7 +107,7 @@ const DetailPanelContent = ({ row: rowProp }) => {
             <Grid item md={6}>
               <Typography variant="body2" align="right" color="textSecondary"></Typography>
               <Typography variant="body1">Type: {rowProp.MaterialTypeName}</Typography>
-              <Typography variant="body1">supplier: {rowProp.SupplierName}</Typography>
+              <Typography variant="body1">Supplier: {rowProp.SupplierName}</Typography>
             </Grid>
             <Grid item md={6}>
               <Typography variant="body2" align="right" color="textSecondary"></Typography>
