@@ -111,47 +111,37 @@ const KPIDashboard = (props) => {
     {
       field: 'woCode',
       headerName: intl.formatMessage({ id: 'work_order.WoCode' }),
-      width: 120,
+      flex: 0.5,
     },
-
     {
       field: 'orderQty',
       headerName: intl.formatMessage({ id: 'work_order.OrderQty' }),
-      width: 120,
+      flex: 0.5,
     },
-
+    {
+      field: 'hmiQty',
+      headerName: intl.formatMessage({ id: 'work_order.HMIQty' }),
+      flex: 0.5,
+    },
     {
       field: 'actualQty',
       headerName: intl.formatMessage({ id: 'work_order.ActualQty' }),
-      width: 120,
+      flex: 0.5,
     },
-
     {
       field: 'startDate',
       headerName: intl.formatMessage({ id: 'work_order.StartDate' }),
-      width: 150,
+      flex: 0.5,
       valueFormatter: (params) => {
         if (params.value !== null) {
           return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
       },
     },
-
     {
       field: 'createdDate',
       headerName: intl.formatMessage({ id: 'general.created_date' }),
-      width: 150,
-      valueFormatter: (params) => {
-        if (params.value !== null) {
-          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
-        }
-      },
-    },
-
-    {
-      field: 'modifiedDate',
-      headerName: intl.formatMessage({ id: 'general.modified_date' }),
-      width: 150,
+      flex: 0.5,
       valueFormatter: (params) => {
         if (params.value !== null) {
           return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
@@ -176,6 +166,7 @@ const KPIDashboard = (props) => {
     const categoryList = [];
     const ActualQtyList = [];
     const OrderQtyList = [];
+    const HMIQtyList = [];
     const EfficiencyList = [];
 
     if (workOrders.length > 0) {
@@ -183,6 +174,7 @@ const KPIDashboard = (props) => {
         let item = workOrders[i];
         categoryList.push(item.woCode);
         ActualQtyList.push(item.actualQty);
+        HMIQtyList.push(item.hmiQty);
         OrderQtyList.push(item.orderQty);
         if (item.orderQty != 0) {
           let efficiency = Math.round((item.actualQty / item.orderQty) * 100);
@@ -275,6 +267,12 @@ const KPIDashboard = (props) => {
             name: intl.formatMessage({ id: 'work_order.OrderQty' }),
             data: OrderQtyList,
             color: '#ffd700',
+            yAxis: 0,
+          },
+          {
+            name: intl.formatMessage({ id: 'work_order.HMIQty' }),
+            data: HMIQtyList,
+            color: '#009EFF',
             yAxis: 0,
           },
           {

@@ -400,6 +400,7 @@
     "MoldCode":"Mold Code",
     "OrderQty": "Order Qty",
     "ActualQty": "Actual Qty",
+    "HMIQty":"HMI Qty",
     "StartDate": "Working Date",
     "Week": "Week",
     "Year": "Year",

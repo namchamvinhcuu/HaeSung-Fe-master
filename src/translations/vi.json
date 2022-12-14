@@ -400,6 +400,7 @@
     "MoldCode":"Mold Code",
     "OrderQty": "SL yêu cầu",
     "ActualQty": "SL thực tế",
+    "HMIQty":"SL HMI",
     "StartDate": "Ngày bắt đầu",
     "Week": "Tuần",
     "Year": "Năm",
