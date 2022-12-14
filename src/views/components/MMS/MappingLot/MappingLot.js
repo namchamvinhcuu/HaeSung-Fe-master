@@ -5,16 +5,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import LinkOffIcon from '@mui/icons-material/LinkOff';
-import IconButton from '@mui/material/IconButton';
-import { ErrorAlert, SuccessAlert, delayDuration } from '@utils';
+import { delayDuration, ErrorAlert, SuccessAlert } from '@utils';
 import { useIntl } from 'react-intl';
 
-import { MuiButton, MuiDataGrid, MuiTextField } from '@controls';
+import { MuiButton, MuiTextField } from '@controls';
 import LinkIcon from '@mui/icons-material/Link';
-import { Button, Grid, Box, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
-import { splitMergeLotService, eslService } from '@services';
-import _ from 'lodash';
+import { Box, Button, Grid, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import { eslService, splitMergeLotService } from '@services';
 import moment from 'moment';
 import QRCode from 'react-qr-code';
 
@@ -144,6 +141,7 @@ const MappingLot = (props) => {
             <LinkIcon sx={{ mr: 1, ml: 1 }} />
 
             <MuiTextField
+              disabled={lotModel ? false : true}
               sx={{ width: 300 }}
               ref={eslInputRef}
               label={intl.formatMessage({ id: 'MappingBin.ESLCode' })}

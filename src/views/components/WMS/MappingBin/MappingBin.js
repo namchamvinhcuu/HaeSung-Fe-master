@@ -170,6 +170,7 @@ const MappingBin = (props) => {
             <MuiTextField
               sx={{ width: 300, mr: 1 }}
               ref={eslInputRef}
+              disabled={BinCode != '' ? false : true}
               label={intl.formatMessage({ id: 'MappingBin.ESLCode' })}
               onChange={(e) => (eslInputRef.current.value = e.target.value)}
               onKeyDown={keyPress}
