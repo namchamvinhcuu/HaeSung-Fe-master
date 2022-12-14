@@ -222,6 +222,7 @@ const MappingTray = (props) => {
           <Grid item sx={{ mb: 1, textAlign: 'right', display: 'flex', alignItems: 'center' }}>
             <MuiTextField
               autoFocus
+              //disable={TrayCode != '' ? true : false}
               sx={{ width: 300 }}
               ref={trayInputRef}
               label={intl.formatMessage({ id: 'tray.TrayCode' })}
@@ -233,6 +234,7 @@ const MappingTray = (props) => {
             />
             <LinkIcon sx={{ mr: 1, ml: 1 }} />
             <MuiTextField
+              disabled={TrayCode != '' ? false : true}
               sx={{ width: 300, mr: 1 }}
               ref={lotInputRef}
               label={'Lot'}
