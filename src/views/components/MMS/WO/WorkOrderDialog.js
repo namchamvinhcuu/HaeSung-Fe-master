@@ -293,11 +293,14 @@ const WorkOrderDialog = (props) => {
   const handleSubmitFile = async (rows) => {
     const res = await workOrderService.createByExcel(rows);
     if (res) {
+      setExcelHistory([]);
       if (res.ResponseMessage !== '') {
         fetchData();
         setExcelHistory(res.ResponseMessage.split(','));
+        SuccessAlert(intl.formatMessage({ id: 'general.success' }));
+      } else {
+        ErrorAlert(intl.formatMessage({ id: 'Files.Data_Invalid' }));
       }
-      SuccessAlert(intl.formatMessage({ id: 'general.success' }));
     }
   };
 
