@@ -76,7 +76,8 @@
     "year_invalid": "Year must be integer and between 2022 - 2050",
     "datetime_format_invalid": "Date format is invalid",
     "over_range_999": "Sequence is over 999",
-    "qty_notEnough": "Quantity is not enough"
+    "qty_notEnough": "Quantity is not enough",
+    "excel_error": "Excel file error: [{error}]"
   },
   "login": {
     "account_password_invalid": "Account/Password is invalid",

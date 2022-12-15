@@ -81,6 +81,14 @@ export const create = async (params) => {
   }
 };
 
+export const createByExcel = async (params) => {
+  try {
+    return await axios.post(`${API}/create-by-excel`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
 export const modify = async (params) => {
   try {
     return await axios.put(`${API}/modify-wo`, {
