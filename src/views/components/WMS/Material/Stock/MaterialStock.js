@@ -77,7 +77,22 @@ const DetailPanelContent = ({ row: rowProp }) => {
       headerName: 'Bin',
       width: 250,
     },
-
+    {
+      field: 'QCResult',
+      headerName: 'QC Result',
+      width: 100,
+      renderCell: (params) => {
+        return params.row.QCResult == true ? (
+          <Typography sx={{ fontSize: '14px' }}>
+            <b>OK</b>
+          </Typography>
+        ) : (
+          <Typography sx={{ fontSize: '14px', color: 'red' }}>
+            <b>NG</b>
+          </Typography>
+        );
+      },
+    },
     {
       field: 'IncomingDate',
       headerName: 'Incoming Date',

@@ -1,6 +1,6 @@
 import { CREATE_ACTION } from '@constants/ConfigConstants';
 import { MuiAutocomplete, MuiDataGrid, MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { iqcService, materialSOService } from '@services';
 import { ErrorAlert, isNumber, SuccessAlert } from '@utils';
 import { useFormik } from 'formik';
@@ -195,7 +195,22 @@ const MaterialSODetailDialog = (props) => {
       /*flex: 0.7,*/ width: 150,
       editable: true,
     },
-
+    {
+      field: 'QCResult',
+      headerName: 'QC Result',
+      width: 100,
+      renderCell: (params) => {
+        return params.row.QCResult == true ? (
+          <Typography sx={{ fontSize: '14px' }}>
+            <b>OK</b>
+          </Typography>
+        ) : (
+          <Typography sx={{ fontSize: '14px', color: 'red' }}>
+            <b>NG</b>
+          </Typography>
+        );
+      },
+    },
     {
       field: 'IncomingDate',
       headerName: intl.formatMessage({ id: 'lot.IncomingDate' }),
@@ -346,6 +361,7 @@ const MaterialSODetailDialog = (props) => {
                 setPage(1);
               }}
               processRowUpdate={handleRowUpdate}
+              isCellEditable={(params) => params.row.QCResult === true}
               onProcessRowUpdateError={handleProcessRowUpdateError}
               experimentalFeatures={{ newEditingApi: true }}
               // initialState={{
