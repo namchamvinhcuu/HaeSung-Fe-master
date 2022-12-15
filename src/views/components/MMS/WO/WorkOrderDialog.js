@@ -49,6 +49,7 @@ const WorkOrderDialog = (props) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [dataReadFile, setDataReadFile] = useState([]);
   const refFile = useRef();
+  const [ExcelHistory, setExcelHistory] = useState([]);
 
   const schemaY = yup.object().shape({
     FPoMasterId: yup.number().nullable(),
@@ -182,6 +183,7 @@ const WorkOrderDialog = (props) => {
   const handleCloseDialog = () => {
     resetForm();
     setTab('tab1');
+    setExcelHistory([]);
     onClose();
   };
 
@@ -290,17 +292,12 @@ const WorkOrderDialog = (props) => {
 
   const handleSubmitFile = async (rows) => {
     const res = await workOrderService.createByExcel(rows);
-    if (res.HttpResponseCode === 200) {
-      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-      fetchData();
-      handleCloseDialog();
-    } else {
+    if (res) {
       if (res.ResponseMessage !== '') {
         fetchData();
-        ErrorAlert(intl.formatMessage({ id: 'general.excel_error' }, { error: res.ResponseMessage }));
-      } else {
-        ErrorAlert(intl.formatMessage({ id: 'Files.Data_Invalid' }));
+        setExcelHistory(res.ResponseMessage.split(','));
       }
+      SuccessAlert(intl.formatMessage({ id: 'general.success' }));
     }
   };
 
@@ -649,7 +646,7 @@ const WorkOrderDialog = (props) => {
               </Grid>
             </Grid>
             <Box sx={{ mt: 2 }}>
-              <table className="table table-striped">
+              <table className="table table-striped" style={{ border: 'solid 1px #dee2e6' }}>
                 <thead>
                   <tr>
                     {dataReadFile[0] && <th scope="col">STT</th>}
@@ -678,6 +675,22 @@ const WorkOrderDialog = (props) => {
                         </tr>
                       );
                     })
+                  ) : ExcelHistory.length > 0 ? (
+                    <>
+                      <tr>
+                        <th colSpan={3}>History</th>
+                      </tr>
+                      {ExcelHistory.map((item, index) => {
+                        if (item != '')
+                          return (
+                            <tr key={`ITEM${index}`}>
+                              <td style={{ width: '15%' }}>{index + 1}</td>
+                              <td style={{ width: '20%' }}>{item.split('-')[0]}</td>
+                              <td style={{ width: '65%' }}>{item.split('-')[1]}</td>
+                            </tr>
+                          );
+                      })}
+                    </>
                   ) : (
                     <tr>
                       <td colSpan="100" className="text-center">
