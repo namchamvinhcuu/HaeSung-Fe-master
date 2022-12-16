@@ -22,7 +22,6 @@ const Display = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
   const handle = useFullScreenHandle();
-  const [colWidth, setColWidth] = useState(50);
   const [data, setData] = useState({ totalOrderQty: 0, totalActualQty: 0, totalEfficiency: 0, data: [] });
   const [connection, setConnection] = useState(
     new HubConnectionBuilder()
@@ -46,13 +45,6 @@ const Display = (props) => {
       connection.on('WorkOrderGetDisplay', (res) => {
         if (res) {
           setData(res);
-          console.log(res);
-          if (res.data.length > 0) {
-            console.log(data.data);
-            let width = 100 / (data.data.length + 1);
-            setColWidth(width);
-          }
-          //console.log(data);
         }
       });
       connection.onclose((e) => {
@@ -137,7 +129,7 @@ const Display = (props) => {
               </div>
             </div>
             <div style={{ height: '84%', display: 'flex' }}>
-              <div style={{ width: `${data.data.length > 6 ? 20 : colWidth}%`, height: '100%' }}>
+              <div style={{ width: '20%', height: '100%' }}>
                 <div
                   style={{ ...style.grid, height: '16.66%', border: 'solid 1px #434242', backgroundColor: '#ff0000' }}
                 >
@@ -171,7 +163,7 @@ const Display = (props) => {
               </div>
               <div
                 style={{
-                  width: `${colWidth}%`,
+                  width: '80%',
                   height: '100%',
                   display: 'flex',
                   overflow: 'auto',
@@ -182,9 +174,11 @@ const Display = (props) => {
                   data.data.map((item, index) => {
                     let efficiency = Math.round((item.actualQty / item.orderQty) * 100);
                     return (
-                      <div style={{ width: `${colWidth}%`, height: '100%' }} key={index}>
+                      <div style={{ width: '100%', height: '100%' }} key={index}>
                         <div style={{ ...style.grid, height: '16.66%', display: 'grid', border: 'solid 1px #222222' }}>
-                          <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{item.woCode}</h2>
+                          <h2 style={{ fontWeight: '600', fontFamily: 'cursive', marginLeft: 10, marginRight: 10 }}>
+                            {item.woCode}
+                          </h2>
                         </div>
                         <div style={{ ...style.grid, height: '16.66%', display: 'grid', border: 'solid 1px #222222' }}>
                           <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{item.materialCode}</h2>
