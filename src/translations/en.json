@@ -448,7 +448,8 @@
     "QtyNotEnough": "Qty not enough to split",
     "Scan2LotToMerge": "Scan 2 lot to merge",
     "Scan2LotDifferenceToMerge": "Scan 2 lot difference to merge ",
-    "NotMatchToMerge": "Lot not match to merge (check status, material)"
+    "NotMatchToMerge": "Lot not match to merge (check status, material)",
+    "Qty_bigger_0":" Qty must greater than 0"
   },
   "wms-layout": {
     "warehouse": "Warehouse",

@@ -448,7 +448,8 @@
     "QtyNotEnough": "Số lượng không đủ để tách",
     "Scan2LotToMerge": "Quét 2 mã để nhập",
     "Scan2LotDifferenceToMerge": "Quét 2 mã khác nhau để nhập",
-    "NotMatchToMerge": "Lot nhập không phù hợp (kiểm tra trạng thái, vật liệu)"
+    "NotMatchToMerge": "Lot nhập không phù hợp (kiểm tra trạng thái, vật liệu)",
+    "Qty_bigger_0":"Số lượng bắt buộc phải lớn hơn 0"
   },
   "wms-layout": {
     "warehouse": "Kho",
