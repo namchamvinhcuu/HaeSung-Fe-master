@@ -16,7 +16,6 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import HomeIcon from '@mui/icons-material/Home';
 import { Button, Grid } from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import { match } from 'ramda';
 
 const Display = (props) => {
   let isRendered = useRef(true);
@@ -161,15 +160,7 @@ const Display = (props) => {
                   <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Efficiency</h2>
                 </div>
               </div>
-              <div
-                style={{
-                  width: '80%',
-                  height: '100%',
-                  display: 'flex',
-                  overflow: 'auto',
-                  whiteSpace: 'nowrap',
-                }}
-              >
+              <div style={{ width: '80%', height: '100%', display: 'flex', overflow: 'auto', whiteSpace: 'nowrap' }}>
                 {data &&
                   data.data.map((item, index) => {
                     let efficiency = Math.round((item.actualQty / item.orderQty) * 100);

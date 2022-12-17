@@ -688,8 +688,8 @@ const WorkOrderDialog = (props) => {
                           return (
                             <tr key={`ITEM${index}`}>
                               <td style={{ width: '15%' }}>{index + 1}</td>
-                              <td style={{ width: '20%' }}>{item.split('-')[0]}</td>
-                              <td style={{ width: '65%' }}>{item.split('-')[1]}</td>
+                              <td style={{ width: '20%' }}>{item.split('|')[0]}</td>
+                              <td style={{ width: '65%' }}>{item.split('|')[1]}</td>
                             </tr>
                           );
                       })}

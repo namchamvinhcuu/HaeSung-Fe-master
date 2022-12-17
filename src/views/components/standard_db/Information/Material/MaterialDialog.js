@@ -22,6 +22,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   const [selectedFile, setSelectedFile] = useState(null);
   const [dataReadFile, setDataReadFile] = useState([]);
   const refFile = useRef();
+  const [ExcelHistory, setExcelHistory] = useState([]);
 
   const schemaY = yup.object().shape({
     MaterialCode: yup
@@ -73,12 +74,19 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     getUnit();
   }, []);
 
+  const [value, setValue] = React.useState('tab1');
+  const handleChangeTab = (event, newValue) => {
+    setValue(newValue);
+  };
+
   const handleReset = () => {
     resetForm();
   };
 
   const handleCloseDialog = () => {
     resetForm();
+    setValue('tab1');
+    setExcelHistory([]);
     setSelectedFile(null);
     onClose();
   };
@@ -173,7 +181,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
       prop: 'FlameClass',
       type: String,
     },
-    REMARK: {
+    DESCRIPTION: {
       prop: 'Description',
       type: String,
     },
@@ -201,17 +209,14 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
   const handleSubmitFile = async (rows) => {
     const res = await materialService.createMaterialByExcel(rows);
-    if (res.HttpResponseCode === 200) {
-      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+
+    setExcelHistory([]);
+    if (res.ResponseMessage !== '') {
       fetchData();
-      handleCloseDialog();
+      setExcelHistory(res.ResponseMessage.split(','));
+      SuccessAlert(intl.formatMessage({ id: 'general.success' }));
     } else {
-      if (res.HttpResponseCode === 400 && res.ResponseMessage === 'general.duplicated_code') {
-        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-      }
-      if (res.HttpResponseCode === 400 && res.ResponseMessage === '') {
-        ErrorAlert(intl.formatMessage({ id: 'Files.Data_Invalid' }));
-      }
+      ErrorAlert(intl.formatMessage({ id: 'Files.Data_Invalid' }));
     }
   };
 
@@ -224,11 +229,6 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
     readXlsxFile(event.target.files[0]).then(function (data) {
       setDataReadFile(data);
     });
-  };
-
-  const [value, setValue] = React.useState('tab1');
-  const handleChangeTab = (event, newValue) => {
-    setValue(newValue);
   };
 
   return (
@@ -476,6 +476,22 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                       </tr>
                     );
                   })
+                ) : ExcelHistory.length > 0 ? (
+                  <>
+                    <tr>
+                      <th colSpan={3}>History</th>
+                    </tr>
+                    {ExcelHistory.map((item, index) => {
+                      if (item != '')
+                        return (
+                          <tr key={`ITEM${index}`}>
+                            <td style={{ width: '15%' }}>{index + 1}</td>
+                            <td style={{ width: '20%' }}>{item.split('|')[0]}</td>
+                            <td style={{ width: '65%' }}>{item.split('|')[1]}</td>
+                          </tr>
+                        );
+                    })}
+                  </>
                 ) : (
                   <tr>
                     <td colSpan="100" className="text-center">
