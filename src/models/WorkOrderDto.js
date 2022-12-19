@@ -7,7 +7,7 @@ const WorkOrderDto = {
   MaterialId: 0,
   BomId: 0,
   LineId: 0,
-  MoldId: null,
+  MoldId: 0,
   OrderQty: 0,
   StartDate: new Date(),
   ActualQty: 0,

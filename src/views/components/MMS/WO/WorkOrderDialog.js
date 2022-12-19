@@ -119,7 +119,8 @@ const WorkOrderDialog = (props) => {
           return yup
             .number()
             .nullable()
-            .required(intl.formatMessage({ id: 'general.field_required' }));
+            .required(intl.formatMessage({ id: 'general.field_required' }))
+            .min(1, intl.formatMessage({ id: 'general.field_required' }));
         } else {
           return yup.number().notRequired();
         }
@@ -418,7 +419,7 @@ const WorkOrderDialog = (props) => {
                 <Grid item xs={12}>
                   <Grid container spacing={2}>
                     {/* Material */}
-                    <Grid item xs={MaterialType == 'BARE MATERIAL' || values.MoldId != null ? 4 : 6}>
+                    <Grid item xs={MaterialType == 'BARE MATERIAL' || values.MoldId != 0 ? 4 : 6}>
                       {values.FPoMasterId && values.FPoMasterId !== 0 ? (
                         <MuiAutocomplete
                           label={intl.formatMessage({
@@ -442,7 +443,7 @@ const WorkOrderDialog = (props) => {
                             setFieldValue('MaterialBuyerCode', item?.MaterialBuyerCode || '');
                             setFieldValue('BomId', item?.BomId || 0);
                             setFieldValue('BomVersion', item?.BomVersion || '');
-                            setFieldValue('MoldId', null);
+                            setFieldValue('MoldId', 0);
                             setFieldValue('MoldCode', '');
                             setMaterialType(item?.GroupMaterial);
                           }}
@@ -468,7 +469,7 @@ const WorkOrderDialog = (props) => {
                             setFieldValue('MaterialCode', item?.MaterialCode || '');
                             setFieldValue('BomId', item?.BomId || 0);
                             setFieldValue('BomVersion', item?.BomVersion || '');
-                            setFieldValue('MoldId', null);
+                            setFieldValue('MoldId', 0);
                             setFieldValue('MoldCode', '');
                             setMaterialType(item?.GroupMaterial);
                             setFieldValue('MaterialId', item?.MaterialId || 0);
@@ -478,8 +479,7 @@ const WorkOrderDialog = (props) => {
                         />
                       )}
                     </Grid>
-
-                    {(MaterialType == 'BARE MATERIAL' || values.MoldId != null) && (
+                    {(MaterialType == 'BARE MATERIAL' || values.MoldId != 0) && (
                       <Grid item xs={4}>
                         <MuiAutocomplete
                           label={intl.formatMessage({ id: 'work_order.MoldCode' })}
@@ -497,16 +497,15 @@ const WorkOrderDialog = (props) => {
                           }
                           onChange={(e, item) => {
                             setFieldValue('MoldCode', item?.MoldCode || '');
-                            setFieldValue('MoldId', item?.MoldId || null);
+                            setFieldValue('MoldId', item?.MoldId || 0);
                           }}
                           error={touched.MoldId && Boolean(errors.MoldId)}
                           helperText={touched.MoldId && errors.MoldId}
                         />
                       </Grid>
                     )}
-
                     {/* Bom - Version */}
-                    <Grid item xs={MaterialType == 'BARE MATERIAL' || values.MoldId != null ? 4 : 6}>
+                    <Grid item xs={MaterialType == 'BARE MATERIAL' || values.MoldId != 0 ? 4 : 6}>
                       <MuiAutocomplete
                         label={intl.formatMessage({
                           id: 'work_order.BomVersion',
