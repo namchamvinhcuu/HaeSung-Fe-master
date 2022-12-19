@@ -41,6 +41,7 @@ import { MaterialSOMasterDto } from '@models';
 import { materialSOService } from '@services';
 import { useModal, useModal2 } from '@basesShared';
 import { MaterialSODetail, MaterialSODialog } from '@components';
+import QRCode from 'react-qr-code';
 
 const MaterialSO = (props) => {
   let isRendered = useRef(true);
@@ -538,6 +539,14 @@ const Material_Info = ({ isShowing, hide, MsoId }) => {
       justifyContent: 'center',
       height: '60px',
     },
+    styleBorderAndCenter: {
+      borderRight: '1px solid black',
+      textAlign: 'center',
+    },
+    borderBot: {
+      borderBottom: '1px solid black',
+      padding: '10px',
+    },
   };
   const handleCloseDialog = () => {
     hide();
@@ -610,19 +619,103 @@ const Material_Info = ({ isShowing, hide, MsoId }) => {
               </TableRow>
               {dataPrint?.detail?.map((item, index) => {
                 return (
-                  <TableRow key={`MATERIALDetail_${index}`}>
-                    <TableCell style={style.dataCell}>{item?.MaterialColorCode}</TableCell>
-                    <TableCell style={style.dataCell}>{item?.Description}</TableCell>
-                    <TableCell style={style.dataCell} sx={{ whiteSpace: 'nowrap !important' }}>
-                      {item?.SOrderQty}
-                    </TableCell>
-                    <TableCell style={style.dataCell} sx={{ whiteSpace: 'nowrap !important' }}>
-                      {item?.LotSerial}
-                    </TableCell>
-                    <TableCell style={style.dataCell} sx={{ whiteSpace: 'nowrap !important' }}>
-                      {item?.BinCode}
-                    </TableCell>
-                  </TableRow>
+                  <>
+                    <TableRow key={`MATERIALDetail_${index}`}>
+                      <TableCell style={style.dataCell}>{item?.MaterialColorCode}</TableCell>
+                      <TableCell style={style.dataCell}>{item?.Description}</TableCell>
+                      <TableCell style={style.dataCell} sx={{ whiteSpace: 'nowrap !important' }}>
+                        {item?.SOrderQty}
+                      </TableCell>
+                      <TableCell style={style.dataCell} sx={{ whiteSpace: 'nowrap !important' }}>
+                        {item?.LotSerial}
+                      </TableCell>
+                      <TableCell style={style.dataCell} sx={{ whiteSpace: 'nowrap !important' }}>
+                        {item?.BinCode}
+                      </TableCell>
+                    </TableRow>
+                    {item?.PId && (
+                      <TableRow key={`MATERIALDetail_${index}_TEM`}>
+                        <TableCell style={{ ...style.dataCell, textAlign: 'center', padding: '30px' }} colSpan={5}>
+                          <Box style={{ border: '1px solid black' }}>
+                            <Table>
+                              <TableBody>
+                                <TableRow>
+                                  <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                                    CODE
+                                  </TableCell>
+                                  <TableCell
+                                    colSpan={2}
+                                    style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
+                                    sx={{ padding: '0px 3px !important' }}
+                                  >
+                                    <b style={{ fontSize: '22px' }}>{item?.MaterialColorCode}</b>
+                                  </TableCell>
+                                  <TableCell rowSpan={2} sx={{ textAlign: 'center' }} style={style.borderBot}>
+                                    <QRCode value={`${item?.PId}`} size={80} />
+                                  </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                  <TableCell colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                                    {item?.MaterialDescription}
+                                  </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                  <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                                    QTY
+                                  </TableCell>
+                                  <TableCell
+                                    style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
+                                    sx={{ padding: '0px 3px !important' }}
+                                  >
+                                    <b style={{ fontSize: '22px' }}>{item.PQty + ' ' + item.UnitName} </b>
+                                  </TableCell>
+                                  <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                                    VENDOR
+                                  </TableCell>
+                                  <TableCell
+                                    sx={{ textAlign: 'center', padding: '5px !important' }}
+                                    style={style.borderBot}
+                                  >
+                                    HANLIM
+                                  </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                  <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                                    LOT No.
+                                  </TableCell>
+                                  <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                                    {item?.PId}
+                                  </TableCell>
+                                  <TableCell sx={{ textAlign: 'center' }} style={style.borderBot}>
+                                    {item?.QCResult ? 'OK' : 'NG'}
+                                  </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                  <TableCell
+                                    style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: 5 }}
+                                    sx={{ whiteSpace: 'nowrap' }}
+                                  >
+                                    <p style={{ margin: 0 }}>
+                                      {moment(item?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
+                                    </p>
+                                    {moment(item?.createdDate).add(7, 'hours').format('hh:mm:ss')}
+                                  </TableCell>
+                                  <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
+                                    <b style={{ fontSize: '22px' }}>{item?.PLotSerial}</b>
+                                  </TableCell>
+                                </TableRow>
+                                <TableRow style={{ borderBottom: '1px solid black' }}>
+                                  <TableCell style={style.styleBorderAndCenter} sx={{ padding: '10px' }}>
+                                    {`W${moment(item.QCDate).week()} / T${moment(item.QCDate).format('MM')}`}
+                                  </TableCell>
+                                </TableRow>
+                              </TableBody>
+                            </Table>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </>
                 );
               })}
             </TableBody>
