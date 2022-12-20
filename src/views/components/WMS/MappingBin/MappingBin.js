@@ -142,6 +142,7 @@ const MappingBin = (props) => {
 
           if (res === 'general.success') {
             fetchData();
+            handleReset();
             SuccessAlert(intl.formatMessage({ id: res }));
           } else {
             ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
@@ -150,6 +151,14 @@ const MappingBin = (props) => {
       }
       setState({ ...state, isLoading: false });
     }
+  };
+
+  const handleReset = () => {
+    setBinCode('');
+    setBinId(0);
+    binInputRef.current?.focus();
+    binInputRef.current.value = '';
+    eslInputRef.current.value = '';
   };
 
   return (
@@ -182,11 +191,7 @@ const MappingBin = (props) => {
               variant="outlined"
               color="error"
               onClick={() => {
-                setBinCode('');
-                setBinId(0);
-                binInputRef.current?.focus();
-                binInputRef.current.value = '';
-                eslInputRef.current.value = '';
+                handleReset();
               }}
             >
               CLEAR
