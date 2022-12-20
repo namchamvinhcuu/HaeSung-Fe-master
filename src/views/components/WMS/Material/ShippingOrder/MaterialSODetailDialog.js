@@ -85,6 +85,7 @@ const MaterialSODetailDialog = (props) => {
       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
       setNewData([...res.Data]);
       //setDialogState({ ...dialogState, isSubmit: false });
+      setLotArr([]);
       handleReset();
     } else {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
