@@ -74,11 +74,12 @@ const MappingLot = (props) => {
         }
       }
     } else {
-      if (!eslInputRef.current.value || eslInputRef.current.value.length !== 12) {
-        ErrorAlert(intl.formatMessage({ id: 'esl.tag_unregistered' }));
+      inputVal = eslInputRef.current.value.trim().toUpperCase();
+      if (!inputVal || inputVal.length !== 12) {
+        ErrorAlert(intl.formatMessage({ id: 'esl.tag_unregistrated' }));
         return;
       } else {
-        const getRegisteredESLTag = await eslService.getRegisteredESLTagByCode(eslInputRef.current.value);
+        const getRegisteredESLTag = await eslService.getRegisteredESLTagByCode(inputVal);
 
         if (getRegisteredESLTag.status !== 200) {
           ErrorAlert(intl.formatMessage({ id: 'esl.tag_unregistrated' }));
@@ -91,7 +92,7 @@ const MappingLot = (props) => {
 
         if (createResponse.status === 200) {
           await delayDuration(1000);
-          const linkResponse = await eslService.linkESLTagWithBin(lotModel.Id, eslInputRef.current.value);
+          const linkResponse = await eslService.linkESLTagWithBin(lotModel.Id, inputVal);
           if (linkResponse.status === 200) {
             // Update ESL Data
             await delayDuration(1000);
