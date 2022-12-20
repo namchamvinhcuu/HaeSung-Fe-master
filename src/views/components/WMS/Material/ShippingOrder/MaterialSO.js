@@ -636,7 +636,7 @@ const Material_Info = ({ isShowing, hide, MsoId }) => {
                     {item?.PId && (
                       <TableRow key={`MATERIALDetail_${index}_TEM`}>
                         <TableCell style={{ ...style.dataCell, textAlign: 'center', padding: '30px' }} colSpan={5}>
-                          <Box style={{ border: '1px solid black' }}>
+                          <Box style={{ border: '1px solid black', maxWidth: '450px', margin: 'auto' }}>
                             <Table>
                               <TableBody>
                                 <TableRow>

@@ -292,7 +292,7 @@ const WorkOrder = (props) => {
     {
       field: 'WoCode',
       headerName: intl.formatMessage({ id: 'work_order.WoCode' }),
-      /*flex: 0.7,*/ width: 120,
+      /*flex: 0.7,*/ width: 200,
     },
 
     {
