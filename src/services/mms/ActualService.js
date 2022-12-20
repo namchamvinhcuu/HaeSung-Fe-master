@@ -51,3 +51,30 @@ export const createByWo = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+export const scanLots = async (params) => {
+  try {
+    return await axios.put(`${API}/actual-scan-lots`, {
+      ...params,
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+export const getListLot = async (params) => {
+  try {
+    return await axios.get(`${API}/get-list-lot`, { params: { ...params } });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+export const handleDeleteLot = async (params) => {
+  console.log(params, 'params');
+  try {
+    return await axios.put(`${API}/delete-lot`, { ...params });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};

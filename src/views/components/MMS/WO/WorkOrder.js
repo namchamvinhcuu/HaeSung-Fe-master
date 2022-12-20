@@ -306,7 +306,14 @@ const WorkOrder = (props) => {
       headerName: intl.formatMessage({ id: 'work_order.FPoMasterCode' }),
       /*flex: 0.7,*/ width: 120,
     },
-
+    {
+      field: 'WOProcess',
+      headerName: 'Process',
+      /*flex: 0.7,*/ width: 120,
+      renderCell: (params) => {
+        return <span>{params.row.WOProcess === false ? 'Inject' : 'Assy'}</span>;
+      },
+    },
     {
       field: 'OrderQty',
       headerName: intl.formatMessage({ id: 'work_order.OrderQty' }),

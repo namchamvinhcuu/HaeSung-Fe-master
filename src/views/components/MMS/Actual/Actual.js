@@ -12,8 +12,10 @@ import { addDays, ErrorAlert } from '@utils';
 import _ from 'lodash';
 import moment from 'moment';
 import { useIntl } from 'react-intl';
-import { useModal } from '@basesShared';
+import { useModal, useModal2 } from '@basesShared';
 import ActualDialog from './ActualDialog';
+import { Button } from '@mui/material';
+import PopupActualScanLots from './PopupActualScanLots';
 
 const Actual = (props) => {
   let isRendered = useRef(true);
@@ -21,7 +23,11 @@ const Actual = (props) => {
   const initStartDate = new Date();
   const { isShowing, toggle } = useModal();
   const [woId, setWoId] = useState(0);
+  const { isShowing2, toggle2 } = useModal2();
+  const [woIdProps, setWOIdProps] = useState('');
   const [updateData, setUpdateData] = useState({});
+  const [disabledBtnParent, setDisabledBtnParent] = useState(false);
+
   const [state, setState] = useState({
     isLoading: false,
     data: [],
@@ -62,14 +68,22 @@ const Actual = (props) => {
       /*flex: 0.7,*/ width: 120,
     },
     {
+      field: 'WOProcess',
+      headerName: 'Process',
+      /*flex: 0.7,*/ width: 100,
+      renderCell: (params) => {
+        return <span>{params.row.WOProcess === false ? 'Inject' : 'Assy'}</span>;
+      },
+    },
+    {
       field: 'OrderQty',
       headerName: intl.formatMessage({ id: 'work_order.OrderQty' }),
-      /*flex: 0.7,*/ width: 120,
+      /*flex: 0.7,*/ width: 100,
     },
     {
       field: 'ActualQty',
       headerName: intl.formatMessage({ id: 'work_order.ActualQty' }),
-      /*flex: 0.7,*/ width: 120,
+      /*flex: 0.7,*/ width: 100,
     },
     {
       field: 'StartDate',
@@ -109,6 +123,20 @@ const Actual = (props) => {
         if (params.value !== null) {
           return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
+      },
+    },
+    {
+      field: 'WOProcessAction',
+      headerName: 'Action',
+      /*flex: 0.7,*/ width: 80,
+      renderCell: (params) => {
+        return params.row.WOProcess === true ? (
+          <Button variant="contained" color="success" size="small" onClick={() => togglePopup(params)}>
+            Scan
+          </Button>
+        ) : (
+          ''
+        );
       },
     },
   ];
@@ -200,12 +228,20 @@ const Actual = (props) => {
     const res = await workOrderService.getSearchMaterialArr(0, 0);
     return res;
   };
-
+  const togglePopup = (params) => {
+    toggle2();
+    setWOIdProps(params.row.WoId);
+  };
   return (
     <React.Fragment>
       <Grid container spacing={2.5} justifyContent="space-between" alignItems="width-end">
         <Grid item xs={4}>
-          <MuiButton text="create" color="success" disabled={woId == 0 ? true : false} onClick={() => toggle()} />
+          <MuiButton
+            text="create"
+            color="success"
+            disabled={woId == 0 ? true : disabledBtnParent}
+            onClick={() => toggle()}
+          />
         </Grid>
         <Grid item x={{ width: 220 }}>
           <MuiSearchField
@@ -251,6 +287,7 @@ const Actual = (props) => {
       </Grid>
 
       <MuiDataGrid
+        disableSelectionOnClick
         showLoading={state.isLoading}
         isPagingServer={true}
         headerHeight={45}
@@ -262,10 +299,21 @@ const Actual = (props) => {
         rowCount={state.totalRow}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
         getRowId={(rows) => rows.WoId}
-        onSelectionModelChange={(newSelectedRowId) => setWoId(newSelectedRowId[0])}
+        onRowClick={(newSelectedRowId) => {
+          setDisabledBtnParent(false);
+          if (!newSelectedRowId.row.isChecked) setWoId(0);
+          else setWoId(newSelectedRowId.row.WoId);
+        }}
       />
 
       <ActualDialog isOpen={isShowing} onClose={toggle} woId={woId} setUpdateData={setUpdateData} />
+      <PopupActualScanLots
+        isShowing={isShowing2}
+        hide={toggle2}
+        woIdProps={woIdProps}
+        fetchDataParent={fetchData}
+        setDisabledBtnParent={setDisabledBtnParent}
+      />
     </React.Fragment>
   );
 };
