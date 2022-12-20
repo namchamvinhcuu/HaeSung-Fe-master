@@ -232,6 +232,7 @@ const Actual = (props) => {
     toggle2();
     setWOIdProps(params.row.WoId);
   };
+  console.log(woId, disabledBtnParent);
   return (
     <React.Fragment>
       <Grid container spacing={2.5} justifyContent="space-between" alignItems="width-end">
@@ -240,6 +241,7 @@ const Actual = (props) => {
             text="create"
             color="success"
             disabled={woId == 0 ? true : disabledBtnParent}
+            //disabled={disabledBtnParent}
             onClick={() => toggle()}
           />
         </Grid>
@@ -287,7 +289,7 @@ const Actual = (props) => {
       </Grid>
 
       <MuiDataGrid
-        disableSelectionOnClick
+        //disableSelectionOnClick
         showLoading={state.isLoading}
         isPagingServer={true}
         headerHeight={45}
@@ -300,9 +302,10 @@ const Actual = (props) => {
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
         getRowId={(rows) => rows.WoId}
         onRowClick={(newSelectedRowId) => {
-          setDisabledBtnParent(false);
-          if (!newSelectedRowId.row.isChecked) setWoId(0);
-          else setWoId(newSelectedRowId.row.WoId);
+          setWoId(newSelectedRowId.row.WoId);
+          setDisabledBtnParent(
+            newSelectedRowId.row.WOProcess === true ? (newSelectedRowId.row.isChecked ? false : true) : false
+          );
         }}
       />
 
