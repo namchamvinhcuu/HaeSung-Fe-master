@@ -592,7 +592,12 @@ const Material_Info = ({ isShowing, hide, MsoId }) => {
             </Box>
           </Grid>
         </Grid>
-        <Typography sx={{ fontSize: '20px', fontWeight: 600, margin: '5px 0px' }}>Material Detail List</Typography>
+        <Typography sx={{ fontSize: '20px', fontWeight: 600, margin: '5px 0px' }}>
+          Material Detail List
+          <span style={{ float: 'right' }}>
+            <b>Date Time:</b> {moment(utcDateTime).format('YYYY-MM-DD HH:mm:ss')}
+          </span>
+        </Typography>
         <TableContainer>
           <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
             <TableBody>
@@ -633,10 +638,23 @@ const Material_Info = ({ isShowing, hide, MsoId }) => {
                         {item?.BinCode}
                       </TableCell>
                     </TableRow>
+                  </>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Typography sx={{ fontSize: '20px', fontWeight: 600, margin: '5px 0px', mt: 10 }}>Label List</Typography>
+        <TableContainer>
+          <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
+            <TableBody>
+              {dataPrint?.detail?.map((item, index) => {
+                return (
+                  <>
                     {item?.PId && (
                       <TableRow key={`MATERIALDetail_${index}_TEM`}>
-                        <TableCell style={{ ...style.dataCell, textAlign: 'center', padding: '30px' }} colSpan={5}>
-                          <Box style={{ border: '1px solid black' }}>
+                        <TableCell style={{ ...style.dataCell, textAlign: 'center', padding: '20px' }} colSpan={5}>
+                          <Box style={{ border: '1px solid black', maxWidth: '450px', margin: 'auto' }}>
                             <Table>
                               <TableBody>
                                 <TableRow>
@@ -721,9 +739,6 @@ const Material_Info = ({ isShowing, hide, MsoId }) => {
             </TableBody>
           </Table>
         </TableContainer>
-        <Typography textAlign="right" sx={{ mt: 1 }}>
-          <b>Date Time:</b> {moment(utcDateTime).format('YYYY-MM-DD HH:mm:ss')}
-        </Typography>
       </DialogContent>
     </MuiDialog>
   );

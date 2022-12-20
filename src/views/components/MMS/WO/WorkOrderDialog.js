@@ -144,10 +144,10 @@ const WorkOrderDialog = (props) => {
       .nullable()
       .required(intl.formatMessage({ id: 'general.field_required' }))
       .min(1, intl.formatMessage({ id: 'general.field_required' })),
-    WoCode: yup
-      .string()
-      .required(intl.formatMessage({ id: 'general.field_required' }))
-      .length(12, intl.formatMessage({ id: 'general.field_length' }, { length: 12 })),
+    // WoCode: yup
+    //   .string()
+    //   .required(intl.formatMessage({ id: 'general.field_required' }))
+    //   .length(12, intl.formatMessage({ id: 'general.field_length' }, { length: 12 })),
     OrderQty: yup
       .number()
       .integer()
@@ -419,7 +419,7 @@ const WorkOrderDialog = (props) => {
                 <Grid item xs={12}>
                   <Grid container spacing={2}>
                     {/* Material */}
-                    <Grid item xs={MaterialType == 'BARE MATERIAL' || values.MoldId != 0 ? 4 : 6}>
+                    <Grid item xs={6}>
                       {values.FPoMasterId && values.FPoMasterId !== 0 ? (
                         <MuiAutocomplete
                           label={intl.formatMessage({
@@ -479,33 +479,8 @@ const WorkOrderDialog = (props) => {
                         />
                       )}
                     </Grid>
-                    {(MaterialType == 'BARE MATERIAL' || values.MoldId != 0) && (
-                      <Grid item xs={4}>
-                        <MuiAutocomplete
-                          label={intl.formatMessage({ id: 'work_order.MoldCode' })}
-                          disabled={dialogState.isSubmit}
-                          fetchDataFunc={getMoldArr}
-                          displayValue="MoldId"
-                          displayLabel="MoldCode"
-                          value={
-                            values.MoldId && values.MoldId !== 0
-                              ? {
-                                  MoldId: values.MoldId,
-                                  MoldCode: values.MoldCode,
-                                }
-                              : null
-                          }
-                          onChange={(e, item) => {
-                            setFieldValue('MoldCode', item?.MoldCode || '');
-                            setFieldValue('MoldId', item?.MoldId || 0);
-                          }}
-                          error={touched.MoldId && Boolean(errors.MoldId)}
-                          helperText={touched.MoldId && errors.MoldId}
-                        />
-                      </Grid>
-                    )}
                     {/* Bom - Version */}
-                    <Grid item xs={MaterialType == 'BARE MATERIAL' || values.MoldId != 0 ? 4 : 6}>
+                    <Grid item xs={6}>
                       <MuiAutocomplete
                         label={intl.formatMessage({
                           id: 'work_order.BomVersion',
@@ -536,7 +511,7 @@ const WorkOrderDialog = (props) => {
                 <Grid item xs={12}>
                   <Grid container spacing={2}>
                     {/* WoCode */}
-                    <Grid item xs>
+                    {/* <Grid item xs>
                       <MuiTextField
                         required
                         disabled={dialogState.isSubmit}
@@ -548,7 +523,34 @@ const WorkOrderDialog = (props) => {
                         error={touched.WoCode && Boolean(errors.WoCode)}
                         helperText={touched.WoCode && errors.WoCode}
                       />
-                    </Grid>
+                    </Grid> */}
+
+                    {/* MoldCode */}
+                    {(MaterialType == 'BARE MATERIAL' || values.MoldId != 0) && (
+                      <Grid item xs={6}>
+                        <MuiAutocomplete
+                          label={intl.formatMessage({ id: 'work_order.MoldCode' })}
+                          disabled={dialogState.isSubmit}
+                          fetchDataFunc={getMoldArr}
+                          displayValue="MoldId"
+                          displayLabel="MoldCode"
+                          value={
+                            values.MoldId && values.MoldId !== 0
+                              ? {
+                                  MoldId: values.MoldId,
+                                  MoldCode: values.MoldCode,
+                                }
+                              : null
+                          }
+                          onChange={(e, item) => {
+                            setFieldValue('MoldCode', item?.MoldCode || '');
+                            setFieldValue('MoldId', item?.MoldId || 0);
+                          }}
+                          error={touched.MoldId && Boolean(errors.MoldId)}
+                          helperText={touched.MoldId && errors.MoldId}
+                        />
+                      </Grid>
+                    )}
 
                     {/* Line */}
                     <Grid item xs>
