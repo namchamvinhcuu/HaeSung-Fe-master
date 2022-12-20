@@ -131,8 +131,13 @@ const Actual = (props) => {
       /*flex: 0.7,*/ width: 80,
       renderCell: (params) => {
         return params.row.WOProcess === true ? (
-          <Button variant="contained" color="success" size="small" onClick={() => togglePopup(params)}>
-            Scan
+          <Button
+            variant="contained"
+            color={params.row.isChecked ? 'secondary' : 'success'}
+            size="small"
+            onClick={() => togglePopup(params)}
+          >
+            {params.row.isChecked ? 'UPDATE' : 'Scan'}
           </Button>
         ) : (
           ''
@@ -232,7 +237,7 @@ const Actual = (props) => {
     toggle2();
     setWOIdProps(params.row.WoId);
   };
-  console.log(woId, disabledBtnParent);
+
   return (
     <React.Fragment>
       <Grid container spacing={2.5} justifyContent="space-between" alignItems="width-end">
