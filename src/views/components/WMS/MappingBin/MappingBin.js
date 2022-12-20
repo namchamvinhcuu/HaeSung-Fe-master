@@ -161,6 +161,7 @@ const MappingBin = (props) => {
               autoFocus
               sx={{ width: 300 }}
               ref={binInputRef}
+              disabled={BinCode == '' ? false : true}
               label={intl.formatMessage({ id: 'MappingBin.BinCode' })}
               onChange={(e) => (binInputRef.current.value = e.target.value)}
               onKeyDown={keyPress}
