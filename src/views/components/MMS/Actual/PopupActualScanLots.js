@@ -79,8 +79,7 @@ const PopupActualScanLots = memo(({ isShowing, hide, woIdProps, fetchDataParent,
       try {
         let res = await actualService.handleDeleteLot({
           woId: woIdProps,
-          materialId: item?.MaterialId,
-          lotId: item?.Id,
+          Id: item?.Id,
         });
         if (res) {
           if (res && res.HttpResponseCode === 200) {

@@ -445,10 +445,13 @@
     "lot_code_scan_required": "Vui lòng nhập mã Lot",
     "confirm_split": "Xác nhận tách lot",
     "confirm_merge": "Xác nhận nhập lot",
+    "QtyStockNotEnough": "Số lượng nguyên vật liệu không đủ để tạo",
     "QtyNotEnough": "Số lượng không đủ để tách",
+    "SOQtyNotEnough": "Số lượng không đủ để tách (vì lớn hơn số lượng còn lại sau khi ship)",
     "Scan2LotToMerge": "Quét 2 mã để nhập",
     "Scan2LotDifferenceToMerge": "Quét 2 mã khác nhau để nhập",
-    "NotMatchToMerge": "Lot nhập không phù hợp (kiểm tra trạng thái, vật liệu)",
+    "NotMatchToMerge": "Lot nhập không phù hợp (kiểm tra trạng thái, vật liệu, kết quả QC)",
+    "NotMatchToMergeTotalSOQty": "Lot nhập không phù hợp (2 lot TotalSOQty > 0)",
     "Qty_bigger_0":"Số lượng bắt buộc phải lớn hơn 0"
   },
   "wms-layout": {
@@ -483,6 +486,7 @@
     "MaterialCode": "Liệu",
     "MaterialColorCode": "Liệu",
     "MsoDetailStatus": "Trạng thái",
+    "TotalSOQty" : "S/L SO",
     "Qty": "Số lượng",
     "SOrderQty": "S/L yêu cầu",
     "SOrderQty_tip": "Double click để chỉnh sửa",

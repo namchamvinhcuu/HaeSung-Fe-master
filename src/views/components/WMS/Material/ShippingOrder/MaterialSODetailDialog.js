@@ -188,7 +188,11 @@ const MaterialSODetailDialog = (props) => {
       headerName: intl.formatMessage({ id: 'lot.Qty' }),
       /*flex: 0.7,*/ width: 150,
     },
-
+    {
+      field: 'TotalSOQty',
+      headerName: intl.formatMessage({ id: 'material-so-detail.TotalSOQty' }),
+      /*flex: 0.7,*/ width: 150,
+    },
     {
       field: 'RequestQty',
       headerName: intl.formatMessage({ id: 'lot.RequestQty' }),
@@ -231,9 +235,9 @@ const MaterialSODetailDialog = (props) => {
       return newRow;
     }
 
-    if (newRow.RequestQty > newRow.Qty) {
+    if (newRow.RequestQty > newRow.Qty - newRow.TotalSOQty) {
       ErrorAlert(intl.formatMessage({ id: 'forecast.OrderQty_required_bigger_StockQty' }));
-      newRow.RequestQty = newRow.Qty;
+      newRow.RequestQty = newRow.Qty - newRow.TotalSOQty;
     }
 
     newRow = { ...newRow, RequestQty: newRow.RequestQty };

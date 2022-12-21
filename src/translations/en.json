@@ -445,10 +445,13 @@
     "lot_code_scan_required": "Lot Code input is required",
     "confirm_split": "Confirm split lot",
     "confirm_merge": "Confirm merge lot",
+    "QtyStockNotEnough": "Qty material not enough to create",
     "QtyNotEnough": "Qty not enough to split",
+    "SOQtyNotEnough": "Qty not enough to split (because it's bigger than the quantity after shipping)",
     "Scan2LotToMerge": "Scan 2 lot to merge",
     "Scan2LotDifferenceToMerge": "Scan 2 lot difference to merge ",
-    "NotMatchToMerge": "Lot not match to merge (check status, material)",
+    "NotMatchToMerge": "Lot not match to merge (check status, material, QCResult)",
+    "NotMatchToMergeTotalSOQty": "Lot not match to merge (2 lot TotalSOQty > 0)",
     "Qty_bigger_0":" Qty must greater than 0"
   },
   "wms-layout": {
@@ -484,6 +487,7 @@
     "MaterialColorCode": "Material",
     "MsoDetailStatus": "Status",
     "Qty": "Qty",
+    "TotalSOQty" : "Total SO Qty",
     "SOrderQty": "Order Qty",
     "SOrderQty_tip": "Double click to edit",
     "LotSerial": "Lot Serial",
