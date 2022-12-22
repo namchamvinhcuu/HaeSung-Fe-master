@@ -447,7 +447,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
             </Grid>
           </Grid>
           <Box sx={{ mt: 2 }}>
-            <table className="table table-striped">
+            <table className="table table-striped" style={{ border: 'solid 1px #dee2e6' }}>
               <thead>
                 <tr>
                   {dataReadFile[0] && <th scope="col">STT</th>}

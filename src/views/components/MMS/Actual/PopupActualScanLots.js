@@ -113,7 +113,7 @@ const PopupActualScanLots = memo(({ isShowing, hide, woIdProps, fetchDataParent,
       </Box>
       <Grid item xs={12}>
         {listLot?.length > 0 && (
-          <table className="table table-striped">
+          <table className="table table-striped" style={{ border: 'solid 1px #dee2e6' }}>
             <thead>
               <tr>
                 <th scope="col">STT</th>
@@ -121,7 +121,6 @@ const PopupActualScanLots = memo(({ isShowing, hide, woIdProps, fetchDataParent,
                 <th scope="col">Lot Serial</th>
                 <th scope="col">Qty</th>
                 <th scope="col">QC Date</th>
-                <th scope="col">QC Result</th>
                 <th scope="col"></th>
               </tr>
             </thead>
@@ -134,17 +133,6 @@ const PopupActualScanLots = memo(({ isShowing, hide, woIdProps, fetchDataParent,
                     <td>{item?.LotSerial}</td>
                     <td>{item?.Qty}</td>
                     <td>{moment(item?.QCDate).add(7, 'hours').format('YYYY-MM-DD hh:mm:ss')}</td>
-                    <td>
-                      {item?.QCResult ? (
-                        <span className="font-weight-bold" style={{ color: 'green' }}>
-                          OK
-                        </span>
-                      ) : (
-                        <span className="font-weight-bold" style={{ color: 'red' }}>
-                          NG
-                        </span>
-                      )}
-                    </td>
                     <td>
                       <IconButton aria-label="delete" color="error" size="small" onClick={() => handleDelete(item)}>
                         <DeleteIcon fontSize="inherit" />

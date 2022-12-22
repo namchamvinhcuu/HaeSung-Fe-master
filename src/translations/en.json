@@ -452,7 +452,9 @@
     "Scan2LotDifferenceToMerge": "Scan 2 lot difference to merge ",
     "NotMatchToMerge": "Lot not match to merge (check status, material, QCResult)",
     "NotMatchToMergeTotalSOQty": "Lot not match to merge (2 lot TotalSOQty > 0)",
-    "Qty_bigger_0":" Qty must greater than 0"
+    "Qty_bigger_0":" Qty must greater than 0",
+    "Error_MergelotScannedWo": "lot scanned for Wo can't merge",
+    "Error_SplitlotScannedWo": "lot scanned for Wo can't split"
   },
   "wms-layout": {
     "warehouse": "Warehouse",
