@@ -445,6 +445,8 @@ const WorkOrderDialog = (props) => {
                             setFieldValue('BomVersion', item?.BomVersion || '');
                             setFieldValue('MoldId', 0);
                             setFieldValue('MoldCode', '');
+                            setFieldValue('LineId', 0);
+                            setFieldValue('LineCode', '');
                             setMaterialType(item?.GroupMaterial);
                           }}
                           error={touched.FPOId && Boolean(errors.FPOId)}
@@ -471,6 +473,8 @@ const WorkOrderDialog = (props) => {
                             setFieldValue('BomVersion', item?.BomVersion || '');
                             setFieldValue('MoldId', 0);
                             setFieldValue('MoldCode', '');
+                            setFieldValue('LineId', 0);
+                            setFieldValue('LineCode', '');
                             setMaterialType(item?.GroupMaterial);
                             setFieldValue('MaterialId', item?.MaterialId || 0);
                           }}
