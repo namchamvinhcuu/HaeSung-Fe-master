@@ -63,6 +63,11 @@ const Actual = (props) => {
       /*flex: 0.7,*/ width: 120,
     },
     {
+      field: 'BomVersion',
+      headerName: intl.formatMessage({ id: 'work_order.BomVersion' }),
+      /*flex: 0.7,*/ width: 120,
+    },
+    {
       field: 'FPoMasterCode',
       headerName: intl.formatMessage({ id: 'work_order.FPoMasterCode' }),
       /*flex: 0.7,*/ width: 120,
