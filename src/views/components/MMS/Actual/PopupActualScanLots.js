@@ -65,8 +65,8 @@ const PopupActualScanLots = memo(({ isShowing, hide, woIdProps, fetchDataParent,
   };
 
   useEffect(async () => {
-    fetchData();
-  }, [woIdProps]);
+    if (isShowing) fetchData();
+  }, [isShowing]);
 
   const handleDelete = async (item) => {
     if (
