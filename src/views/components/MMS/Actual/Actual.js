@@ -317,6 +317,9 @@ const Actual = (props) => {
             newSelectedRowId.row.WOProcess === true ? (newSelectedRowId.row.isChecked ? false : true) : false
           );
         }}
+        initialState={{
+          pinnedColumns: { left: ['id'], right: ['WOProcessAction'] },
+        }}
       />
 
       <ActualDialog isOpen={isShowing} onClose={toggle} woId={woId} setUpdateData={setUpdateData} />
