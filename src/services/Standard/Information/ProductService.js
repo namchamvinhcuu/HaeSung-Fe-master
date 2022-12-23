@@ -66,6 +66,15 @@ const createProductByExcel = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+const GetQCMasterModel = async () => {
+  try {
+    return await axios.get(`${apiProduct}/get-select-qc-master`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
 export {
   getProductList,
   getProductModel,
@@ -74,4 +83,5 @@ export {
   modifyProduct,
   deleteProduct,
   createProductByExcel,
+  GetQCMasterModel,
 };

@@ -8,6 +8,8 @@ const ProductDto = {
   Inch: '',
   ModelName: '',
   ProductTypeName: '',
+  QCMasterId: 0,
+  QCMasterCode: '',
   isActived: true,
   createdBy: null,
   modifiedBy: null,

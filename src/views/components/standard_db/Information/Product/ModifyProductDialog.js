@@ -35,6 +35,10 @@ const ModifyProductDialog = (props) => {
       .required(intl.formatMessage({ id: 'general.field_required' })),
     Description: yup.string().trim(),
     Inch: yup.number().test('is-decimal', 'Invalid decimal', (value) => (value + '').match(/^\d*\.{1}\d*$/)),
+    QCMasterId: yup
+      .number()
+      .min(1, intl.formatMessage({ id: 'general.field_required' }))
+      .required(intl.formatMessage({ id: 'general.field_required' })),
   });
   const formik = useFormik({
     validationSchema: schema,
@@ -84,10 +88,13 @@ const ModifyProductDialog = (props) => {
       ...dialogState,
     });
   };
-
+  const getQCMasterList = async () => {
+    const res = await productService.GetQCMasterModel();
+    return res;
+  };
   return (
     <MuiDialog
-      maxWidth="sm"
+      maxWidth="md"
       title={intl.formatMessage({ id: 'general.modify' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
@@ -178,6 +185,31 @@ const ModifyProductDialog = (props) => {
                   />
                 </Grid>
               </Grid>
+            </Grid>
+            <Grid item xs={12} className="mb-4">
+              <MuiAutocomplete
+                label={'QC Master Code' + ' *'}
+                fetchDataFunc={getQCMasterList}
+                displayLabel="QCMasterCode"
+                displayValue="QCMasterId"
+                // value={
+                //   values.QCMasterId
+                //     ? {
+                //         QCMasterId: values.QCMasterId,
+                //         QCMasterCode: values.QCMasterCode,
+                //       }
+                //     : null
+                // }
+                value={values.QCMasterId ? { QCMasterId: values.QCMasterId, QCMasterCode: values.QCMasterCode } : null}
+                disabled={dialogState.isSubmit}
+                onChange={(e, value) => {
+                  setFieldValue('QCMasterCode', value?.QCMasterCode || '');
+                  setFieldValue('QCMasterId', value?.QCMasterId || '');
+                }}
+                error={touched.QCMasterId && Boolean(errors.QCMasterId)}
+                helperText={touched.QCMasterId && errors.QCMasterId}
+                variant="outlined"
+              />
             </Grid>
             <Grid item xs={12}>
               <Grid container item spacing={2}>
