@@ -226,7 +226,12 @@ const Product = () => {
     {
       field: 'ProductTypeName',
       headerName: intl.formatMessage({ id: 'product.product_type' }),
-      width: 100,
+      width: 130,
+    },
+    {
+      field: 'QCMasterCode',
+      headerName: 'QC Master Code',
+      width: 180,
     },
     {
       field: 'Description',
