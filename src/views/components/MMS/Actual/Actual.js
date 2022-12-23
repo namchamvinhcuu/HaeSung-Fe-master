@@ -318,7 +318,7 @@ const Actual = (props) => {
           );
         }}
         initialState={{
-          pinnedColumns: { left: ['id'], right: ['WOProcessAction'] },
+          pinnedColumns: { right: ['WOProcessAction'] },
         }}
       />
 
