@@ -4,7 +4,7 @@ import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
 import React, { useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
+import _ from 'lodash';
 import { BASE_URL, CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import {
   MuiAutocomplete,
@@ -676,7 +676,7 @@ const WorkOrderDialog = (props) => {
                           {item?.map((data, index) => {
                             return (
                               <td key={`DATA${index}`} scope="col">
-                                {data}
+                                {_.isObject(data) ? moment(data).format('YYYY-MM-DD') : String(data)}
                               </td>
                             );
                           })}
