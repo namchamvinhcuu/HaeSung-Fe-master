@@ -311,6 +311,11 @@ const WorkOrder = (props) => {
       /*flex: 0.7,*/ width: 120,
     },
     {
+      field: 'LineName',
+      headerName: intl.formatMessage({ id: 'forecast.LineName' }),
+      /*flex: 0.7,*/ width: 200,
+    },
+    {
       field: 'WOProcess',
       headerName: 'Process',
       /*flex: 0.7,*/ width: 120,
