@@ -22,6 +22,7 @@ const MuiTextField = React.forwardRef((props, ref) => {
       onBlur={onBlur}
       error={error ?? false}
       helperText={helperText ?? ''}
+      inputProps={{ step: 'any' }}
       {...props}
     />
   );
