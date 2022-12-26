@@ -230,16 +230,133 @@ const KPIProductivity = (props) => {
       {/* <Paper sx={{ mb: 2, p: 3 }}>
         <HighchartsReact highcharts={Highcharts} options={chartOption} />
       </Paper> */}
-      <div style={{ display: 'flex', height: '100%' }}>
-        <Grid container>
-          <Grid item xs={20}>
-            ...
-          </Grid>
-          <Grid item xs={80}>
-            ...
-          </Grid>
-        </Grid>
-      </div>
+      <Grid sx={{ backgroundColor: '#00798a !important', width: '100%', minHeight: '80vh' }}>
+        <div className="d-flex justify-content-between">
+          <div className="py-3 px-5" style={{ backgroundColor: '#54a7b5' }}>
+            <h4 style={{ color: 'white' }} className="mb-0">
+              Injection
+            </h4>
+          </div>
+          <div className="py-3 px-5" style={{ backgroundColor: '#54a7b5' }}>
+            <h4 style={{ color: 'white' }} className="mb-0">
+              2023-xx-xx 13:xx :xx
+            </h4>
+          </div>
+        </div>
+        <div className="row px-5 py-4 d-flex">
+          <div className="col-sm-7 col-md-7 mr-auto mt-3">
+            <div className="row">
+              <div className="col">
+                <b>Actual</b>
+              </div>
+              <div className="col">
+                <b className="text-white">XXXXX</b>
+              </div>
+              <div className="col">
+                <b>NG</b>
+              </div>
+              <div className="col">
+                <b className="text-white">XXXXX</b>
+              </div>
+              <div className="col">
+                <b>Efficiency</b>
+              </div>
+              <div className="col">
+                <b className="text-white">XXXXX</b>
+              </div>
+            </div>
+          </div>
+          <div className="mr-5">
+            <div
+              style={{
+                backgroundColor: 'black',
+                width: '200px',
+                height: '120px',
+                borderRadius: '10%',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{ width: '100%', height: '35%', backgroundColor: '#92d14f' }}
+                className="d-flex justify-content-center align-items-center"
+              >
+                <b style={{ fontSize: '1.5rem' }}>Working</b>
+              </div>
+              <div
+                style={{ width: '100%', height: '65%' }}
+                className="d-flex justify-content-center align-items-center"
+              >
+                <b style={{ fontSize: '3.5rem', color: 'white' }}>8</b>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div
+              style={{
+                backgroundColor: 'black',
+                width: '200px',
+                height: '120px',
+                borderRadius: '10%',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{ width: '100%', height: '35%', backgroundColor: '#f43ac9' }}
+                className="d-flex justify-content-center align-items-center"
+              >
+                <b style={{ fontSize: '1.5rem' }}>Stop</b>
+              </div>
+              <div
+                style={{ width: '100%', height: '65%' }}
+                className="d-flex justify-content-center align-items-center"
+              >
+                <b style={{ fontSize: '3.5rem', color: 'white' }}>8</b>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="row  px-5">
+          <div className="col-sm-7 col-md-7 pr-3" id="tableKPIProductivity">
+            <table class="table table-borderless table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Line</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">WO</th>
+                  <th scope="col">Item</th>
+                  <th scope="col">Target</th>
+                  <th scope="col">Actual</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Inj-01</th>
+                  <td className="text-white">Working</td>
+                  <td className="text-white">541524154354153</td>
+                  <td className="text-white">BN83-17993A</td>
+                  <td className="text-white">1,500</td>
+                  <td className="text-white">1,200</td>
+                </tr>
+                <tr>
+                  <th scope="row">Inj-02</th>
+                  <td className="text-white">Stop</td>
+                </tr>
+                <tr>
+                  <th scope="row">Inj-01</th>
+                  <td className="text-white">Working</td>
+                  <td className="text-white">541524154354153</td>
+                  <td className="text-white">BN83-17993A</td>
+                  <td className="text-white">1,500</td>
+                  <td className="text-white">1,200</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="col-sm-5 col-md-5" style={{ backgroundColor: 'white' }}>
+            <h3>CHART</h3>
+          </div>
+        </div>
+      </Grid>
     </React.Fragment>
   );
 };
