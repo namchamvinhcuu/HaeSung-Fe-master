@@ -13,6 +13,7 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import readXlsxFile from 'read-excel-file';
+import _ from 'lodash';
 
 const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode, valueOption, fetchData }) => {
   const intl = useIntl();
@@ -469,7 +470,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                         {item?.map((data, index) => {
                           return (
                             <td key={`DATA${index}`} scope="col">
-                              {data}
+                              {_.isObject(data) ? moment(data).format('YYYY-MM-DD') : String(data)}
                             </td>
                           );
                         })}
