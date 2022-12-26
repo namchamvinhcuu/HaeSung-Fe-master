@@ -5,13 +5,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { HttpTransportType, HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/signalr';
 import moment from 'moment';
 
-import { BASE_URL, TOKEN_ACCESS } from '@constants/ConfigConstants';
-import { GetLocalStorage } from '@utils';
 import { useIntl } from 'react-intl';
-import Grid from '@mui/material/Grid';
 
 //Highcharts
 import Highcharts from 'highcharts';
@@ -25,68 +21,15 @@ const TableData = (props) => {
   const intl = useIntl();
   exporting(Highcharts);
 
-  const initConnection = new HubConnectionBuilder()
-    .withUrl(`${BASE_URL}/signalr`, {
-      accessTokenFactory: () => GetLocalStorage(TOKEN_ACCESS),
-      skipNegotiation: true,
-      transport: HttpTransportType.WebSockets,
-    })
-    .configureLogging(LogLevel.None)
-    .withAutomaticReconnect({
-      nextRetryDelayInMilliseconds: (retryContext) => {
-        //reconnect after 5-20s
-        return 5000 + Math.random() * 15000;
-      },
-    })
-    .build();
-
   const [isLoading, setIsLoading] = useState(false);
   const [workOrders, setWorkOrders] = useState([]);
   const [chartOption, setChartOption] = useState({});
-  const [connection, setConnection] = useState(initConnection);
-
-  const startConnection = async () => {
-    try {
-      if (connection) {
-        connection.on('ReceivedWorkOrders', (data) => {
-          if (data && data.length > 0 && isRendered) {
-            setWorkOrders([...data]);
-            // setSelectedRow({ ...data[0] });
-            handleHighcharts([...data]);
-          }
-        });
-        connection.onclose(async (e) => {
-          if (isRendered) setConnection(null);
-        });
-      }
-
-      if (connection.state === HubConnectionState.Disconnected) {
-        await connection.start();
-        console.log('websocket connect success');
-        await connection.invoke('SendWorkOrders');
-      } else if (connection.state === HubConnectionState.Connected) {
-        await connection.invoke('SendWorkOrders');
-      }
-    } catch (error) {
-      console.log('websocket connect error: ', error);
-    }
-  };
-
-  const closeConnection = async () => {
-    try {
-      if (connection && connection.state === HubConnectionState.Connected) await connection.stop();
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
     if (isRendered) {
-      startConnection();
     }
 
     return () => {
-      closeConnection();
       isRendered = false;
     };
   }, []);
@@ -227,19 +170,7 @@ const TableData = (props) => {
 
   return (
     <React.Fragment>
-      {/* <Paper sx={{ mb: 2, p: 3 }}>
-        <HighchartsReact highcharts={Highcharts} options={chartOption} />
-      </Paper> */}
-      <div style={{ display: 'flex', height: '100%' }}>
-        <Grid container>
-          <Grid item xs={20}>
-            ...
-          </Grid>
-          <Grid item xs={80}>
-            ...
-          </Grid>
-        </Grid>
-      </div>
+      <div style={{ display: 'flex', height: '100%' }}></div>
     </React.Fragment>
   );
 };
