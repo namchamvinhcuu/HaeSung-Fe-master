@@ -140,7 +140,7 @@ const Actual = (props) => {
       headerName: 'Action',
       /*flex: 0.7,*/ width: 80,
       renderCell: (params) => {
-        return params.row.WOProcess === true ? (
+        return params.row.IsInputScan ? (
           <Button
             variant="contained"
             color={params.row.isChecked ? 'secondary' : 'success'}
@@ -318,9 +318,7 @@ const Actual = (props) => {
         getRowId={(rows) => rows.WoId}
         onRowClick={(newSelectedRowId) => {
           setWoId(newSelectedRowId.row.WoId);
-          setDisabledBtnParent(
-            newSelectedRowId.row.WOProcess === true ? (newSelectedRowId.row.isChecked ? false : true) : false
-          );
+          setDisabledBtnParent(newSelectedRowId.row.isChecked ? false : true);
         }}
         initialState={{
           pinnedColumns: { right: ['WOProcessAction'] },

@@ -267,7 +267,8 @@
     "Remark": "Remark",
     "min_value": "Value greater than 0",
     "delete_error": "Bom have child, can't delete",
-    "Unit": "Unit"
+    "Unit": "Unit",
+    "Error_exist_WO":"Bom exist in Work Order can't update"
   },
   "bomDetail": {
     "MaterialId": "Material Code",
@@ -411,7 +412,8 @@
     "OrderQty_required": "Order Qty is required",
     "OrderQty_GreaterThan_0": "Order Qty must be greater than zero",
     "StartDate_required": "Working Date is required",
-    "StartDate_invalid": "Working Date format is invalid"
+    "StartDate_invalid": "Working Date format is invalid",
+    "Error_Update_WO":"WO can't modify"
   },
   "actual": {
     "Qty": "Qty",
