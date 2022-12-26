@@ -267,7 +267,8 @@
     "Remark": "Remark",
     "min_value": "Giá trị phải lớn hơn 0",
     "delete_error": "Bom có bom con, không thể xóa",
-    "Unit": "Unit"
+    "Unit": "Unit",
+    "Error_exist_WO":"Bom đã được tạo trong Work Order không thể sửa"
   },
   "bomDetail": {
     "MaterialId": "Material Code",
@@ -411,7 +412,8 @@
     "OrderQty_required": "SL yêu cầu không được để trống",
     "OrderQty_GreaterThan_0": "SL yêu cầu phải lớn hơn 0",
     "StartDate_required": "Ngày bắt đầu không được để trống",
-    "StartDate_invalid": "Ngày bắt đầu không đúng định dạng"
+    "StartDate_invalid": "Ngày bắt đầu không đúng định dạng",
+    "Error_Update_WO":"WO không thể sửa"
   },
   "actual": {
     "Qty": "Qty",
