@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiSelectField } from '@controls';
+import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiSelectField, MuiTextField } from '@controls';
 import { Grid, TextField } from '@mui/material';
 import { useIntl } from 'react-intl';
 import * as yup from 'yup';
@@ -187,15 +187,13 @@ const BOMDetailDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              type="number"
-              size="small"
-              name="Amount"
+            <MuiTextField
               disabled={dialogState.isSubmit}
+              label={intl.formatMessage({ id: 'bomDetail.Amount' }) + ' *'}
+              type="number"
+              name="Amount"
               value={values.Amount}
               onChange={handleChange}
-              label={intl.formatMessage({ id: 'bomDetail.Amount' }) + ' *'}
               error={touched.Amount && Boolean(errors.Amount)}
               helperText={touched.Amount && errors.Amount}
             />

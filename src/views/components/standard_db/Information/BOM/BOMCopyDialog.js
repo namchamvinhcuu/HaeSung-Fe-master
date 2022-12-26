@@ -6,7 +6,7 @@ import {
   MuiDateField,
   MuiSelectField,
   MuiDataGrid,
-  MuiSubmitButton,
+  MuiTextField,
 } from '@controls';
 import { Checkbox, FormControlLabel, Grid, IconButton, TextField } from '@mui/material';
 import { useIntl } from 'react-intl';
@@ -339,15 +339,13 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
               />
             </Grid>
             <Grid item xs={12} sx={{ mb: 3 }}>
-              <TextField
-                fullWidth
-                type="number"
-                size="small"
-                name="Amount"
+              <MuiTextField
+                label={intl.formatMessage({ id: 'bomDetail.Amount' }) + ' *'}
                 disabled={dialogState.isSubmit}
+                type="number"
+                name="Amount"
                 value={values.Amount}
                 onChange={handleChange}
-                label={intl.formatMessage({ id: 'bomDetail.Amount' }) + ' *'}
                 error={touched.Amount && Boolean(errors.Amount)}
                 helperText={touched.Amount && errors.Amount}
               />

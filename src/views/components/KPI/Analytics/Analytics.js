@@ -150,7 +150,7 @@ const Analytics = (props) => {
             type="number"
             sx={{ width: '200px' }}
             value={state.searchData.weekStart}
-            inputProps={{ min: 1, max: 52 }}
+            inputProps={{ min: 1, max: 52, step: 'any' }}
             onChange={(e) => {
               // var value = parseInt(e.target.value, 10);
               // if (value > max) value = max;
@@ -167,7 +167,7 @@ const Analytics = (props) => {
             type="number"
             sx={{ width: '200px' }}
             value={state.searchData.weekEnd}
-            inputProps={{ min: 1, max: 52 }}
+            inputProps={{ min: 1, max: 52, step: 'any' }}
             onChange={(e) => {
               var value = parseInt(e.target.value, 10);
               //value = value > 52 ? 52 : value < state.searchData.weekStart ? state.searchData.weekStart : value
