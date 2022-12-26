@@ -12,6 +12,8 @@ import { BASE_URL, TOKEN_ACCESS } from '@constants/ConfigConstants';
 import { GetLocalStorage } from '@utils';
 import { useIntl } from 'react-intl';
 import Grid from '@mui/material/Grid';
+import Clock from 'react-live-clock';
+import ScheduleIcon from '@mui/icons-material/Schedule';
 
 //Highcharts
 import Highcharts from 'highcharts';
@@ -19,6 +21,18 @@ import Highcharts from 'highcharts';
 import exporting from 'highcharts/modules/exporting.js';
 // accessibility module
 require('highcharts/modules/accessibility')(Highcharts);
+
+const style = {
+  grid: {
+    textAlign: 'center',
+    alignItems: 'center',
+    display: 'grid',
+    fontSize: 26,
+    color: '#000000',
+    fontWeight: '600',
+    minHeight: '105px',
+  },
+};
 
 const KPIProductivity = (props) => {
   let isRendered = useRef(true);
@@ -230,13 +244,42 @@ const KPIProductivity = (props) => {
       {/* <Paper sx={{ mb: 2, p: 3 }}>
         <HighchartsReact highcharts={Highcharts} options={chartOption} />
       </Paper> */}
-      <div style={{ display: 'flex', height: '100%' }}>
+      <div style={{ ...style.grid, width: '100%', minHeight: 'unset' }}>
+        <h2 style={{ margin: 0, fontWeight: '600', fontFamily: 'cursive' }}>
+          <ScheduleIcon sx={{ fontSize: 33, mr: 2, mb: 1 }} />
+          <Clock format={'DD/MM/YYYY (HH:mm:ss)'} ticking={true} />
+        </h2>
+      </div>
+      <div style={{ display: 'flex', height: '100%', marginTop: '5px', border: '1px solid' }}>
         <Grid container>
-          <Grid item xs={20}>
-            ...
+          <Grid item xs={3} style={{ border: '1px solid black' }}>
+            <Grid container direction="column" spacing={2}>
+              <Grid item xs={33.33} sm={50}>
+                ...PercentageChartTotal
+              </Grid>
+              <Grid item xs={33.33} sm={50}>
+                ...PercentageChartInjection
+              </Grid>
+              <Grid item xs={33.33} sm={50}>
+                ...PercentageChartAssy
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid item xs={80}>
-            ...
+          <Grid item xs={9} style={{ border: '1px solid black' }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                ...TableData
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                ...TableEfficiency
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                ...ChartInjectionProcess
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                ...ChartAssyProcess
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </div>
