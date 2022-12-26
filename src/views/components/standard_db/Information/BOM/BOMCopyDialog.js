@@ -202,7 +202,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
       const index = _.findIndex(newArr, function (o) {
         return o.BomId == data.BomId;
       });
-      console.log(data, index, newArr);
+
       if (index !== -1) {
         newArr[index] = data;
       }
@@ -404,6 +404,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
               rowCount={state.totalRow}
               getRowId={(rows) => rows.BomId}
               initialState={{ pinnedColumns: { right: ['action'] } }}
+              hideFooter
             />
           </Grid>
         </Grid>
