@@ -2,7 +2,7 @@ import { Store } from '@appstate';
 import { Display_Operations } from '@appstate/display';
 import { User_Operations } from '@appstate/user';
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { useIntl } from 'react-intl';
@@ -20,63 +20,78 @@ const PercentageChartAssy = (props) => {
   exporting(Highcharts);
 
   const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
+  const [chartOption, setChartOption] = useState({});
 
-  const options = {
-    chart: {
-      type: 'pie',
-      width: 500,
-      height: 250,
-    },
-    credits: {
-      enabled: false,
-    },
-    title: {
-      text: 'Assembly',
-    },
-    plotOptions: {
-      pie: {
-        innerSize: 100,
-        depth: 45,
-        dataLabels: {
-          enabled: true,
-          // format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-          formatter: function () {
-            return Math.round(this.percentage * 100) / 100 + ' %';
-          },
-          distance: -25,
-          style: {
-            fontSize: '20px',
-          },
-          color: 'white',
+  const handleHighcharts = (workOrders) => {
+    let totalOrder = 0;
+    let totalActual = 0;
+
+    if (workOrders.length > 0) {
+      for (let i = 0; i < workOrders.length; i++) {
+        let item = workOrders[i];
+
+        if (item.woProcess) {
+          totalOrder += item.orderQty;
+          totalActual += item.actualQty;
+        }
+      }
+    }
+
+    if (isRendered) {
+      setChartOption({
+        chart: {
+          type: 'pie',
+          width: 360,
+          height: 230,
         },
-      },
-    },
-    series: [
-      {
-        name: 'Progress',
-        data: [
-          ['Completed', 70],
-          ['In Progress', 30],
+        credits: {
+          enabled: false,
+        },
+        title: {
+          text: 'Assembly',
+        },
+        plotOptions: {
+          pie: {
+            innerSize: 100,
+            depth: 45,
+            dataLabels: {
+              enabled: true,
+              // format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              formatter: function () {
+                return Math.round(this.percentage * 100) / 100 + ' %';
+              },
+              distance: -25,
+              style: {
+                fontSize: '20px',
+              },
+              color: 'white',
+            },
+          },
+        },
+        series: [
+          {
+            name: 'Progress',
+            data: [
+              ['Completed', totalActual],
+              ['In Progress', totalOrder - totalActual],
+            ],
+            colors: ['#4CD2FF', '#163F4C'],
+          },
         ],
-        colors: ['#4CD2FF', '#163F4C'],
-      },
-    ],
+      });
+    }
   };
 
   useEffect(() => {
-    if (isRendered) {
-    }
-
+    handleHighcharts(data);
     return () => {
       isRendered = false;
     };
-  }, []);
-
-  //Highcharts
+  }, [data]);
 
   return (
     <React.Fragment>
-      <HighchartsReact highcharts={Highcharts} options={options} />
+      <HighchartsReact highcharts={Highcharts} options={chartOption} />
     </React.Fragment>
   );
 };

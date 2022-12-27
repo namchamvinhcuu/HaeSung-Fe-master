@@ -10,7 +10,10 @@ import { HttpTransportType, HubConnectionBuilder, HubConnectionState, LogLevel }
 
 import { BASE_URL, TOKEN_ACCESS } from '@constants/ConfigConstants';
 import ScheduleIcon from '@mui/icons-material/Schedule';
+import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
 import { GetLocalStorage } from '@utils';
 import { useIntl } from 'react-intl';
 import Clock from 'react-live-clock';
@@ -19,6 +22,17 @@ import PercentageChartTotal from './PercentageChartTotal';
 import PercentageChartInjection from './PercentageChartInjection';
 import PercentageChartAssy from './PercentageChartAssy';
 import TableData from './TableData';
+
+import ChartInjectionProcess from './ChartInjectionProcess';
+import ChartAssyProcess from './ChartAssyProcess';
+
+const Item = styled(Paper)(({ theme }) => ({
+  // backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  // ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
 
 const style = {
   grid: {
@@ -117,10 +131,10 @@ const KPIProductivity = (props) => {
           <Clock format={'DD/MM/YYYY (HH:mm:ss)'} ticking={true} />
         </h2>
       </div>
-      <div style={{ display: 'flex', marginTop: '5px' }}>
+      <div style={{ display: 'flex', marginTop: '20px' }}>
         <Grid container spacing={5}>
-          <Grid item xs={4}>
-            <Grid container direction="column" spacing={2}>
+          <Grid item xs={3}>
+            {/* <Grid container direction="column" spacing={2}>
               <Grid item xs={33.33} sm={50}>
                 <PercentageChartTotal />
               </Grid>
@@ -130,10 +144,29 @@ const KPIProductivity = (props) => {
               <Grid item xs={33.33} sm={50}>
                 <PercentageChartAssy />
               </Grid>
-            </Grid>
+            </Grid> */}
+            <Box sx={{ width: '100%' }}>
+              <Grid container direction="column" spacing={2}>
+                <Grid item xs={30} sm={50}>
+                  <Item>
+                    <PercentageChartTotal />
+                  </Item>
+                </Grid>
+                <Grid item xs={30} sm={50}>
+                  <Item>
+                    <PercentageChartInjection />
+                  </Item>
+                </Grid>
+                <Grid item xs={30} sm={50}>
+                  <Item>
+                    <PercentageChartAssy />
+                  </Item>
+                </Grid>
+              </Grid>
+            </Box>
           </Grid>
-          <Grid item xs={8}>
-            <Grid container spacing={2}>
+          <Grid item xs={9}>
+            {/* <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TableData />
               </Grid>
@@ -146,7 +179,29 @@ const KPIProductivity = (props) => {
               <Grid item xs={12} sm={6}>
                 ...ChartAssyProcess
               </Grid>
-            </Grid>
+            </Grid> */}
+            <Box sx={{ width: '100%' }}>
+              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                <Grid item xs={6}>
+                  <Item>
+                    <TableData />
+                  </Item>
+                </Grid>
+                <Grid item xs={6}>
+                  <Item>2</Item>
+                </Grid>
+                <Grid item xs={6}>
+                  <Item>
+                    <ChartInjectionProcess />
+                  </Item>
+                </Grid>
+                <Grid item xs={6}>
+                  <Item>
+                    <ChartAssyProcess />
+                  </Item>
+                </Grid>
+              </Grid>
+            </Box>
           </Grid>
         </Grid>
       </div>

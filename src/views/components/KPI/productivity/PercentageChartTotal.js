@@ -24,8 +24,8 @@ const PercentageChartTotal = (props) => {
   const options = {
     chart: {
       type: 'pie',
-      width: 500,
-      height: 250,
+      width: 360,
+      height: 230,
     },
     credits: {
       enabled: false,

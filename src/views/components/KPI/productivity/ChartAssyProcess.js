@@ -1,17 +1,17 @@
 import { Store } from '@appstate';
+import { Display_Operations } from '@appstate/display';
 import { User_Operations } from '@appstate/user';
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { useIntl } from 'react-intl';
 
 import moment from 'moment';
 
-import { useIntl } from 'react-intl';
-
 //Highcharts
 import Highcharts from 'highcharts';
-// import highchartsAccessibility from "highcharts/modules/accessibility";
+import HighchartsReact from 'highcharts-react-official';
 import exporting from 'highcharts/modules/exporting.js';
 // accessibility module
 require('highcharts/modules/accessibility')(Highcharts);
@@ -21,38 +21,33 @@ const ChartAssyProcess = (props) => {
   const intl = useIntl();
   exporting(Highcharts);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [workOrders, setWorkOrders] = useState([]);
+  const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
   const [chartOption, setChartOption] = useState({});
 
-  useEffect(() => {
-    if (isRendered) {
-    }
-
-    return () => {
-      isRendered = false;
-    };
-  }, []);
-
-  //Highcharts
   const handleHighcharts = (workOrders) => {
     const categoryList = [];
-    const ActualQtyList = [];
-    const OrderQtyList = [];
-    const HMIQtyList = [];
-    const EfficiencyList = [];
+    const actualQtyList = [];
+    const orderQtyList = [];
+    const efficiencyList = [];
 
     if (workOrders.length > 0) {
       for (let i = 0; i < workOrders.length; i++) {
         let item = workOrders[i];
-        categoryList.push(item.woCode);
-        ActualQtyList.push(item.actualQty);
-        HMIQtyList.push(item.hmiQty);
-        OrderQtyList.push(item.orderQty);
-        if (item.orderQty != 0) {
-          let efficiency = Math.round((item.actualQty / item.orderQty) * 100);
-          EfficiencyList.push(efficiency > 100 ? 100 : efficiency);
-        } else EfficiencyList.push(0);
+
+        if (item.woProcess) {
+          categoryList.push(`<p>${item.woCode}<br>${item.lineName}<br>${item.materialCode}</p>`);
+
+          actualQtyList.push(item.actualQty);
+
+          orderQtyList.push(item.orderQty);
+
+          if (item.orderQty != 0) {
+            let efficiency = Math.round((item.actualQty / item.orderQty) * 100);
+            efficiencyList.push(efficiency > 100 ? 100 : efficiency);
+          } else {
+            efficiencyList.push(0);
+          }
+        }
       }
     }
 
@@ -66,6 +61,10 @@ const ChartAssyProcess = (props) => {
           },
           type: 'column',
           zoomType: 'xy',
+          scrollablePlotArea: {
+            minWidth: 580,
+            scrollPositionX: 0,
+          },
           // styledMode: true,
           // options3d: {
           // 	enabled: true,
@@ -81,16 +80,13 @@ const ChartAssyProcess = (props) => {
           enabled: true,
         },
         title: {
-          text: `${moment(new Date()).add(7, 'hours').format('YYYY/MM/DD')} Work Order Dashboard`,
+          text: `ASSEMBLE WORK ORDER`,
         },
-        // subtitle: {
-        // 	text: 'Source: ' +
-        // 		'<a href="https://www.ssb.no/en/statbank/table/08940/" ' +
-        // 		'target="_blank">SSB</a>'
-        // },
+
         xAxis: {
           categories: categoryList,
           crosshair: true,
+          useHTML: true,
         },
         yAxis: [
           {
@@ -138,26 +134,22 @@ const ChartAssyProcess = (props) => {
         series: [
           {
             name: intl.formatMessage({ id: 'work_order.OrderQty' }),
-            data: OrderQtyList,
-            color: '#ffd700',
+            data: orderQtyList,
+            color: '#B75454',
             yAxis: 0,
           },
-          {
-            name: intl.formatMessage({ id: 'work_order.HMIQty' }),
-            data: HMIQtyList,
-            color: '#009EFF',
-            yAxis: 0,
-          },
+
           {
             name: intl.formatMessage({ id: 'work_order.ActualQty' }),
-            data: ActualQtyList,
-            color: '#c0c0c0',
+            data: actualQtyList,
+            color: '#4CD2FF',
             yAxis: 0,
           },
           {
             name: intl.formatMessage({ id: 'work_order.Efficiency' }),
             type: 'spline',
-            data: EfficiencyList,
+            data: efficiencyList,
+            color: '#f44336',
             tooltip: {
               valueSuffix: '%',
             },
@@ -168,9 +160,16 @@ const ChartAssyProcess = (props) => {
     }
   };
 
+  useEffect(() => {
+    handleHighcharts(data);
+    return () => {
+      isRendered = false;
+    };
+  }, [data]);
+
   return (
     <React.Fragment>
-      <div style={{ display: 'flex', height: '100%' }}></div>
+      <HighchartsReact highcharts={Highcharts} options={chartOption} />
     </React.Fragment>
   );
 };
@@ -179,12 +178,20 @@ User_Operations.toString = function () {
   return 'User_Operations';
 };
 
+Display_Operations.toString = function () {
+  return 'Display_Operations';
+};
+
 const mapStateToProps = (state) => {
   const {
     User_Reducer: { language },
   } = CombineStateToProps(state.AppReducer, [[Store.User_Reducer]]);
 
-  return { language };
+  const {
+    Display_Reducer: { totalOrderQty, totalActualQty, totalEfficiency, data },
+  } = CombineStateToProps(state.AppReducer, [[Store.Display_Reducer]]);
+
+  return { language, totalOrderQty, totalActualQty, totalEfficiency, data };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -192,7 +199,11 @@ const mapDispatchToProps = (dispatch) => {
     User_Operations: { changeLanguage },
   } = CombineDispatchToProps(dispatch, bindActionCreators, [[User_Operations]]);
 
-  return { changeLanguage };
+  const {
+    Display_Operations: { saveDisplayData },
+  } = CombineDispatchToProps(dispatch, bindActionCreators, [[Display_Operations]]);
+
+  return { changeLanguage, saveDisplayData };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChartAssyProcess);
