@@ -409,3 +409,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ebf1f6', end
   form{
     padding-top: 10px;
   }
+
+ #tableKPIProductivity .table-striped tbody tr:nth-of-type(odd) {
+      background-color: rgba(0,0,0,0.35);
+  }
+.d-flex-centerXY {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

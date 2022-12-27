@@ -38,6 +38,7 @@ import QCMaster from './standard_db/Information/QCMaster/QCMaster';
 import Analytics from './KPI/Analytics/Analytics';
 import KPIDashboard from './KPI/Dashboard/KPIDashboard';
 import KPIProductivity from './KPI/productivity/KPIProductivity';
+import KPIInjection from './KPI/productivity/KPIInjection';
 
 //MMS
 import Actual from './MMS/Actual/Actual';
@@ -127,6 +128,7 @@ export {
   Analytics,
   KPIDashboard,
   KPIProductivity,
+  KPIInjection,
 
   //MMS
   Actual,
