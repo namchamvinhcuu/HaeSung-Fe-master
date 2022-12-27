@@ -1,0 +1,3 @@
+const SAVE_DISPLAY_DATA = 'Display/SAVE_DISPLAY_DATA';
+
+export { SAVE_DISPLAY_DATA };
