@@ -62,8 +62,8 @@ const ChartInjectionProcess = (props) => {
           type: 'column',
           zoomType: 'xy',
           scrollablePlotArea: {
-            minWidth: 580,
-            scrollPositionX: 0,
+            minWidth: 780,
+            scrollPositionX: 1,
           },
           // styledMode: true,
           // options3d: {
