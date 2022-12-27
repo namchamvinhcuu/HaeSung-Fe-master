@@ -1,17 +1,15 @@
 import { Store } from '@appstate';
+import { Display_Operations } from '@appstate/display';
 import { User_Operations } from '@appstate/user';
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
-import moment from 'moment';
-
 import { useIntl } from 'react-intl';
 
 //Highcharts
 import Highcharts from 'highcharts';
-// import highchartsAccessibility from "highcharts/modules/accessibility";
+import HighchartsReact from 'highcharts-react-official';
 import exporting from 'highcharts/modules/exporting.js';
 // accessibility module
 require('highcharts/modules/accessibility')(Highcharts);
@@ -21,156 +19,79 @@ const PercentageChartAssy = (props) => {
   const intl = useIntl();
   exporting(Highcharts);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [workOrders, setWorkOrders] = useState([]);
+  const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
   const [chartOption, setChartOption] = useState({});
 
-  useEffect(() => {
-    if (isRendered) {
-    }
-
-    return () => {
-      isRendered = false;
-    };
-  }, []);
-
-  //Highcharts
   const handleHighcharts = (workOrders) => {
-    const categoryList = [];
-    const ActualQtyList = [];
-    const OrderQtyList = [];
-    const HMIQtyList = [];
-    const EfficiencyList = [];
+    let totalOrder = 0;
+    let totalActual = 0;
 
     if (workOrders.length > 0) {
       for (let i = 0; i < workOrders.length; i++) {
         let item = workOrders[i];
-        categoryList.push(item.woCode);
-        ActualQtyList.push(item.actualQty);
-        HMIQtyList.push(item.hmiQty);
-        OrderQtyList.push(item.orderQty);
-        if (item.orderQty != 0) {
-          let efficiency = Math.round((item.actualQty / item.orderQty) * 100);
-          EfficiencyList.push(efficiency > 100 ? 100 : efficiency);
-        } else EfficiencyList.push(0);
+
+        if (item.woProcess) {
+          totalOrder += item.orderQty;
+          totalActual += item.actualQty;
+        }
       }
     }
 
     if (isRendered) {
       setChartOption({
         chart: {
-          navigation: {
-            buttonOptions: {
-              enabled: true,
-            },
-          },
-          type: 'column',
-          zoomType: 'xy',
-          // styledMode: true,
-          // options3d: {
-          // 	enabled: true,
-          // 	alpha: 15,
-          // 	beta: 15,
-          // 	depth: 50
-          // }
+          type: 'pie',
+          width: 360,
+          height: 230,
         },
-        // accessibility: {
-        // 	enabled: false
-        // },
-        exporting: {
-          enabled: true,
-        },
-        title: {
-          text: `${moment(new Date()).add(7, 'hours').format('YYYY/MM/DD')} Work Order Dashboard`,
-        },
-        // subtitle: {
-        // 	text: 'Source: ' +
-        // 		'<a href="https://www.ssb.no/en/statbank/table/08940/" ' +
-        // 		'target="_blank">SSB</a>'
-        // },
-        xAxis: {
-          categories: categoryList,
-          crosshair: true,
-        },
-        yAxis: [
-          {
-            title: {
-              useHTML: true,
-              text: 'Quantity',
-            },
-          },
-          {
-            labels: {
-              format: '{value}%',
-              style: {
-                color: Highcharts.getOptions().colors[1],
-              },
-            },
-            title: {
-              text: intl.formatMessage({ id: 'work_order.Efficiency' }),
-              style: {
-                color: Highcharts.getOptions().colors[1],
-              },
-            },
-            opposite: true,
-          },
-        ],
         credits: {
           enabled: false,
         },
-        tooltip: {
-          headerFormat: '<span style="font-size:10px">Wo code: {point.key}</span><table>',
-          pointFormat:
-            '<tr><td style="color:{series.color};padding:0">{series.name}: </td><td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-          footerFormat: '</table>',
-          shared: true,
-          useHTML: true,
+        title: {
+          text: 'Assembly',
         },
         plotOptions: {
-          column: {
-            pointPadding: 0.2,
-            borderWidth: 0,
+          pie: {
+            innerSize: 100,
+            depth: 45,
             dataLabels: {
               enabled: true,
+              // format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              formatter: function () {
+                return Math.round(this.percentage * 100) / 100 + ' %';
+              },
+              distance: -25,
+              style: {
+                fontSize: '20px',
+              },
+              color: 'white',
             },
           },
         },
         series: [
           {
-            name: intl.formatMessage({ id: 'work_order.OrderQty' }),
-            data: OrderQtyList,
-            color: '#ffd700',
-            yAxis: 0,
-          },
-          {
-            name: intl.formatMessage({ id: 'work_order.HMIQty' }),
-            data: HMIQtyList,
-            color: '#009EFF',
-            yAxis: 0,
-          },
-          {
-            name: intl.formatMessage({ id: 'work_order.ActualQty' }),
-            data: ActualQtyList,
-            color: '#c0c0c0',
-            yAxis: 0,
-          },
-          {
-            name: intl.formatMessage({ id: 'work_order.Efficiency' }),
-            type: 'spline',
-            data: EfficiencyList,
-            tooltip: {
-              valueSuffix: '%',
-            },
-            yAxis: 1,
+            name: 'Progress',
+            data: [
+              ['Completed', totalActual],
+              ['In Progress', totalOrder - totalActual],
+            ],
+            colors: ['#4CD2FF', '#163F4C'],
           },
         ],
       });
     }
   };
 
+  useEffect(() => {
+    handleHighcharts(data);
+    return () => {
+      isRendered = false;
+    };
+  }, [data]);
+
   return (
     <React.Fragment>
-      <div style={{ display: 'flex', height: '100%' }}></div>
+      <HighchartsReact highcharts={Highcharts} options={chartOption} />
     </React.Fragment>
   );
 };
@@ -179,12 +100,20 @@ User_Operations.toString = function () {
   return 'User_Operations';
 };
 
+Display_Operations.toString = function () {
+  return 'Display_Operations';
+};
+
 const mapStateToProps = (state) => {
   const {
     User_Reducer: { language },
   } = CombineStateToProps(state.AppReducer, [[Store.User_Reducer]]);
 
-  return { language };
+  const {
+    Display_Reducer: { totalOrderQty, totalActualQty, totalEfficiency, data },
+  } = CombineStateToProps(state.AppReducer, [[Store.Display_Reducer]]);
+
+  return { language, totalOrderQty, totalActualQty, totalEfficiency, data };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -192,7 +121,11 @@ const mapDispatchToProps = (dispatch) => {
     User_Operations: { changeLanguage },
   } = CombineDispatchToProps(dispatch, bindActionCreators, [[User_Operations]]);
 
-  return { changeLanguage };
+  const {
+    Display_Operations: { saveDisplayData },
+  } = CombineDispatchToProps(dispatch, bindActionCreators, [[Display_Operations]]);
+
+  return { changeLanguage, saveDisplayData };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PercentageChartAssy);
