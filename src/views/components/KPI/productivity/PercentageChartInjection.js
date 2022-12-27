@@ -48,7 +48,7 @@ const PercentageChartInjection = (props) => {
           enabled: false,
         },
         title: {
-          text: 'Assembly',
+          text: 'Injection',
         },
         plotOptions: {
           pie: {
