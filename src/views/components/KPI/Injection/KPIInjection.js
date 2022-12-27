@@ -4,11 +4,11 @@ import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
+import { WorkOrderDto } from '@models';
 import moment from 'moment';
 
 import { useIntl } from 'react-intl';
-
+import { MuiDataGrid } from '@controls';
 //Highcharts
 import Highcharts from 'highcharts';
 // import highchartsAccessibility from "highcharts/modules/accessibility";
@@ -21,11 +21,55 @@ const KPIInjection = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
   exporting(Highcharts);
-
+  const data = [
+    {
+      WoId: 13131,
+      Line: 'Inj-01',
+      Status: 'Working',
+      WO: '1314141414414',
+      Item: 'BN12-1313131',
+      Target: 1293,
+      Actual: 1213,
+    },
+    {
+      WoId: 134414,
+      Line: 'Inj-02',
+      Status: 'Stop',
+      WO: '1314141414414',
+      Item: 'BN12-1313131',
+      Target: 1293,
+      Actual: 1213,
+    },
+    {
+      WoId: 14155,
+      Line: 'Inj-03',
+      Status: 'Working',
+      WO: '1314141414414',
+      Item: 'BN12-1313131',
+      Target: 1293,
+      Actual: 1213,
+    },
+    {
+      WoId: 14514,
+      Line: 'Inj-04',
+      Status: 'Pause',
+      WO: '1314141414414',
+      Item: 'BN12-1313131',
+      Target: 1293,
+      Actual: 1213,
+    },
+  ];
   const [isLoading, setIsLoading] = useState(false);
   const [workOrders, setWorkOrders] = useState([]);
   const [chartOption, setChartOption] = useState({});
-
+  const [workOrderState, setWorkOrderState] = useState({
+    isLoading: false,
+    data: data,
+    totalRow: 0,
+    page: 1,
+    pageSize: 10,
+    searchData: {},
+  });
   useEffect(() => {
     if (isRendered) {
     }
@@ -168,10 +212,50 @@ const KPIInjection = (props) => {
       });
     }
   };
+  const columns = [
+    {
+      field: 'id',
+      headerName: '',
+      width: 80,
+      filterable: false,
+      renderCell: (index) =>
+        index.api.getRowIndex(index.row.WoId) + 1 + (workOrderState.page - 1) * workOrderState.pageSize,
+    },
+    {
+      field: 'Line',
+      headerName: 'Line',
+      /*flex: 0.7,*/ width: 150,
+    },
+    {
+      field: 'Status',
+      headerName: 'Status',
+      /*flex: 0.7,*/ width: 100,
+    },
+    {
+      field: 'WO',
+      headerName: 'WO',
+      /*flex: 0.7,*/ width: 150,
+    },
+    {
+      field: 'Item',
+      headerName: 'Item',
+      /*flex: 0.7,*/ width: 150,
+    },
+    {
+      field: 'Target',
+      headerName: 'Target',
+      /*flex: 0.7,*/ width: 100,
+    },
+    {
+      field: 'Actual',
+      headerName: 'Actual',
+      /*flex: 0.7,*/ width: 100,
+    },
+  ];
 
   return (
     <React.Fragment>
-      <Grid sx={{ backgroundColor: '#00798a !important', width: '100%', minHeight: '80vh' }}>
+      <Grid sx={{ backgroundColor: 'white !important', width: '100%', minHeight: '80vh' }}>
         <div className="d-flex justify-content-between">
           <div className="py-3 px-5" style={{ backgroundColor: '#54a7b5' }}>
             <h4 style={{ color: 'white' }} className="mb-0">
@@ -191,19 +275,19 @@ const KPIInjection = (props) => {
                 <b>Actual</b>
               </div>
               <div className="col">
-                <b className="text-white">XXXXX</b>
+                <b className="text-info">XXXXX</b>
               </div>
               <div className="col">
                 <b>NG</b>
               </div>
               <div className="col">
-                <b className="text-white">XXXXX</b>
+                <b className="text-info">XXXXX</b>
               </div>
               <div className="col">
                 <b>Efficiency</b>
               </div>
               <div className="col">
-                <b className="text-white">XXXXX</b>
+                <b className="text-info">XXXXX</b>
               </div>
             </div>
           </div>
@@ -246,7 +330,25 @@ const KPIInjection = (props) => {
         </div>
         <div className="row  px-5">
           <div className="col-sm-7 col-md-7 pr-3" id="tableKPIProductivity">
-            <table className="table table-borderless table-striped">
+            <MuiDataGrid
+              disableSelectionOnClick
+              showLoading={workOrderState.isLoading}
+              isPagingServer={true}
+              headerHeight={45}
+              rowHeight={50}
+              gridHeight={736}
+              columns={columns}
+              rows={workOrderState.data}
+              page={workOrderState.page - 1}
+              pageSize={workOrderState.pageSize}
+              rowCount={workOrderState.totalRow}
+              onPageChange={(newPage) => {
+                setWorkOrderState({ ...workOrderState, page: newPage + 1 });
+              }}
+              getRowId={(rows) => rows.WoId}
+              getRowClassName={(params) => params.indexRelativeToCurrentPage % 2 === 0 && 'bg-rgba-03'}
+            />
+            {/* <table className="table table-borderless table-striped">
               <thead>
                 <tr>
                   <th scope="col">Line</th>
@@ -279,7 +381,7 @@ const KPIInjection = (props) => {
                   <td className="text-white">1,200</td>
                 </tr>
               </tbody>
-            </table>
+            </table> */}
           </div>
           <div className="col-sm-5 col-md-5" style={{ backgroundColor: 'white' }}>
             <h3>CHART</h3>

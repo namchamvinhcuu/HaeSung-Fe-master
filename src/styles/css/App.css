@@ -410,11 +410,32 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ebf1f6', end
     padding-top: 10px;
   }
 
- #tableKPIProductivity .table-striped tbody tr:nth-of-type(odd) {
+ /* #tableKPIProductivity .table-striped tbody tr:nth-of-type(odd) {
       background-color: rgba(0,0,0,0.35);
-  }
+  } */
 .d-flex-centerXY {
     display: flex;
     justify-content: center;
     align-items: center;
 }
+ #tableKPIProductivity .MuiDataGrid-columnHeaders{
+    background-color: transparent ;
+    color: black;
+    border: none;
+ }
+  #tableKPIProductivity .MuiDataGrid-root{
+    border: none ;
+    box-shadow: none;
+  } 
+ #tableKPIProductivity .MuiDataGrid-cell {
+    border: none;
+ }
+#tableKPIProductivity .MuiDataGrid-cell:nth-child(n+3){
+    color: #17a2b8 !important;
+}
+  #tableKPIProductivity .MuiDataGrid-row:hover{
+    background-color: #accbd1 !important;
+  }
+  .bg-rgba-03{
+    background-color: rgba(0, 0, 0, 0.15);
+  }
