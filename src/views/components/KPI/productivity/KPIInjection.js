@@ -5,102 +5,32 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { HttpTransportType, HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/signalr';
 import moment from 'moment';
 
-import { BASE_URL, TOKEN_ACCESS } from '@constants/ConfigConstants';
-import { GetLocalStorage } from '@utils';
 import { useIntl } from 'react-intl';
-import Grid from '@mui/material/Grid';
-import Clock from 'react-live-clock';
-import ScheduleIcon from '@mui/icons-material/Schedule';
 
 //Highcharts
 import Highcharts from 'highcharts';
 // import highchartsAccessibility from "highcharts/modules/accessibility";
 import exporting from 'highcharts/modules/exporting.js';
+import { Grid } from '@mui/material';
 // accessibility module
 require('highcharts/modules/accessibility')(Highcharts);
 
-const style = {
-  grid: {
-    textAlign: 'center',
-    alignItems: 'center',
-    display: 'grid',
-    fontSize: 26,
-    color: '#000000',
-    fontWeight: '600',
-    minHeight: '105px',
-  },
-};
-
-const KPIProductivity = (props) => {
+const KPIInjection = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
   exporting(Highcharts);
 
-  const initConnection = new HubConnectionBuilder()
-    .withUrl(`${BASE_URL}/signalr`, {
-      accessTokenFactory: () => GetLocalStorage(TOKEN_ACCESS),
-      skipNegotiation: true,
-      transport: HttpTransportType.WebSockets,
-    })
-    .configureLogging(LogLevel.None)
-    .withAutomaticReconnect({
-      nextRetryDelayInMilliseconds: (retryContext) => {
-        //reconnect after 5-20s
-        return 5000 + Math.random() * 15000;
-      },
-    })
-    .build();
-
   const [isLoading, setIsLoading] = useState(false);
   const [workOrders, setWorkOrders] = useState([]);
   const [chartOption, setChartOption] = useState({});
-  const [connection, setConnection] = useState(initConnection);
-
-  const startConnection = async () => {
-    try {
-      if (connection) {
-        connection.on('ReceivedWorkOrders', (data) => {
-          if (data && data.length > 0 && isRendered) {
-            setWorkOrders([...data]);
-            // setSelectedRow({ ...data[0] });
-            handleHighcharts([...data]);
-          }
-        });
-        connection.onclose(async (e) => {
-          if (isRendered) setConnection(null);
-        });
-      }
-
-      if (connection.state === HubConnectionState.Disconnected) {
-        await connection.start();
-        console.log('websocket connect success');
-        await connection.invoke('SendWorkOrders');
-      } else if (connection.state === HubConnectionState.Connected) {
-        await connection.invoke('SendWorkOrders');
-      }
-    } catch (error) {
-      console.log('websocket connect error: ', error);
-    }
-  };
-
-  const closeConnection = async () => {
-    try {
-      if (connection && connection.state === HubConnectionState.Connected) await connection.stop();
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
     if (isRendered) {
-      startConnection();
     }
 
     return () => {
-      closeConnection();
       isRendered = false;
     };
   }, []);
@@ -241,48 +171,121 @@ const KPIProductivity = (props) => {
 
   return (
     <React.Fragment>
-      {/* <Paper sx={{ mb: 2, p: 3 }}>
-        <HighchartsReact highcharts={Highcharts} options={chartOption} />
-      </Paper> */}
-      <div style={{ ...style.grid, width: '100%', minHeight: 'unset' }}>
-        <h2 style={{ margin: 0, fontWeight: '600', fontFamily: 'cursive' }}>
-          <ScheduleIcon sx={{ fontSize: 33, mr: 2, mb: 1 }} />
-          <Clock format={'DD/MM/YYYY (HH:mm:ss)'} ticking={true} />
-        </h2>
-      </div>
-      <div style={{ display: 'flex', height: '100%', marginTop: '5px', border: '1px solid' }}>
-        <Grid container>
-          <Grid item xs={3} style={{ border: '1px solid black' }}>
-            <Grid container direction="column" spacing={2}>
-              <Grid item xs={33.33} sm={50}>
-                ...PercentageChartTotal
-              </Grid>
-              <Grid item xs={33.33} sm={50}>
-                ...PercentageChartInjection
-              </Grid>
-              <Grid item xs={33.33} sm={50}>
-                ...PercentageChartAssy
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={9} style={{ border: '1px solid black' }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                ...TableData
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                ...TableEfficiency
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                ...ChartInjectionProcess
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                ...ChartAssyProcess
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-      </div>
+      <Grid sx={{ backgroundColor: '#00798a !important', width: '100%', minHeight: '80vh' }}>
+        <div className="d-flex justify-content-between">
+          <div className="py-3 px-5" style={{ backgroundColor: '#54a7b5' }}>
+            <h4 style={{ color: 'white' }} className="mb-0">
+              Injection
+            </h4>
+          </div>
+          <div className="py-3 px-5" style={{ backgroundColor: '#54a7b5' }}>
+            <h4 style={{ color: 'white' }} className="mb-0">
+              2023-xx-xx 13:xx :xx
+            </h4>
+          </div>
+        </div>
+        <div className="row px-5 py-4 d-flex">
+          <div className="col-sm-7 col-md-7 mr-auto mt-3">
+            <div className="row">
+              <div className="col">
+                <b>Actual</b>
+              </div>
+              <div className="col">
+                <b className="text-white">XXXXX</b>
+              </div>
+              <div className="col">
+                <b>NG</b>
+              </div>
+              <div className="col">
+                <b className="text-white">XXXXX</b>
+              </div>
+              <div className="col">
+                <b>Efficiency</b>
+              </div>
+              <div className="col">
+                <b className="text-white">XXXXX</b>
+              </div>
+            </div>
+          </div>
+          <div className="mr-5">
+            <div
+              style={{
+                backgroundColor: 'black',
+                width: '200px',
+                height: '120px',
+                borderRadius: '10%',
+                overflow: 'hidden',
+              }}
+            >
+              <div style={{ width: '100%', height: '35%', backgroundColor: '#92d14f' }} className="d-flex-centerXY">
+                <b style={{ fontSize: '1.5rem' }}>Working</b>
+              </div>
+              <div style={{ width: '100%', height: '65%' }} className="d-flex-centerXY">
+                <b style={{ fontSize: '3.5rem', color: 'white' }}>8</b>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div
+              style={{
+                backgroundColor: 'black',
+                width: '200px',
+                height: '120px',
+                borderRadius: '10%',
+                overflow: 'hidden',
+              }}
+            >
+              <div style={{ width: '100%', height: '35%', backgroundColor: '#f43ac9' }} className="d-flex-centerXY">
+                <b style={{ fontSize: '1.5rem' }}>Stop</b>
+              </div>
+              <div style={{ width: '100%', height: '65%' }} className="d-flex-centerXY">
+                <b style={{ fontSize: '3.5rem', color: 'white' }}>8</b>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="row  px-5">
+          <div className="col-sm-7 col-md-7 pr-3" id="tableKPIProductivity">
+            <table class="table table-borderless table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Line</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">WO</th>
+                  <th scope="col">Item</th>
+                  <th scope="col">Target</th>
+                  <th scope="col">Actual</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Inj-01</th>
+                  <td className="text-white">Working</td>
+                  <td className="text-white">541524154354153</td>
+                  <td className="text-white">BN83-17993A</td>
+                  <td className="text-white">1,500</td>
+                  <td className="text-white">1,200</td>
+                </tr>
+                <tr>
+                  <th scope="row">Inj-02</th>
+                  <td className="text-white">Stop</td>
+                </tr>
+                <tr>
+                  <th scope="row">Inj-01</th>
+                  <td className="text-white">Working</td>
+                  <td className="text-white">541524154354153</td>
+                  <td className="text-white">BN83-17993A</td>
+                  <td className="text-white">1,500</td>
+                  <td className="text-white">1,200</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="col-sm-5 col-md-5" style={{ backgroundColor: 'white' }}>
+            <h3>CHART</h3>
+          </div>
+        </div>
+      </Grid>
     </React.Fragment>
   );
 };
@@ -307,4 +310,4 @@ const mapDispatchToProps = (dispatch) => {
   return { changeLanguage };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(KPIProductivity);
+export default connect(mapStateToProps, mapDispatchToProps)(KPIInjection);
