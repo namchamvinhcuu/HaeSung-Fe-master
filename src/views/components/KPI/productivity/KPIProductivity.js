@@ -180,9 +180,9 @@ const KPIProductivity = (props) => {
                 ...ChartAssyProcess
               </Grid>
             </Grid> */}
-            <Box sx={{ width: '100%' }}>
-              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                <Grid item xs={6}>
+            <Box sx={{ width: '100%', height: '90%' }}>
+              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ height: '100%' }}>
+                <Grid item xs={6} sx={{ height: '50%' }}>
                   <Item>
                     <TableData />
                   </Item>
