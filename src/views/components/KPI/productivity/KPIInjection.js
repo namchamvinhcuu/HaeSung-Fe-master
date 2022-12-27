@@ -246,7 +246,7 @@ const KPIInjection = (props) => {
         </div>
         <div className="row  px-5">
           <div className="col-sm-7 col-md-7 pr-3" id="tableKPIProductivity">
-            <table class="table table-borderless table-striped">
+            <table className="table table-borderless table-striped">
               <thead>
                 <tr>
                   <th scope="col">Line</th>
