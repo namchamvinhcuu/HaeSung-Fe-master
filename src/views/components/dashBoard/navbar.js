@@ -111,6 +111,15 @@ class NavBar extends Component {
         }
       });
 
+      await this.connection.invoke('GetDisplayWO');
+      this.connection.on('WorkOrderGetDisplay', (res) => {
+        if (res) {
+          // this.saveDisplayData(res);
+          const { saveDisplayData } = this.props;
+          saveDisplayData(res);
+        }
+      });
+
       this.connection.onclose((e) => {
         // this.connection = null;
       });

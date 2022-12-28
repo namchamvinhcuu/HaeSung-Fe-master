@@ -1,30 +1,26 @@
 import { Store } from '@appstate';
-import { Display_Operations } from '@appstate/display';
+// import { Display_Operations } from '@appstate/display';
 import { User_Operations } from '@appstate/user';
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { HttpTransportType, HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/signalr';
-
-import { BASE_URL, TOKEN_ACCESS } from '@constants/ConfigConstants';
 import ScheduleIcon from '@mui/icons-material/Schedule';
-import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import { GetLocalStorage } from '@utils';
+import { styled } from '@mui/material/styles';
 import { useIntl } from 'react-intl';
 import Clock from 'react-live-clock';
 
-import PercentageChartTotal from './PercentageChartTotal';
-import PercentageChartInjection from './PercentageChartInjection';
+import ChartAssyProcess from './ChartAssyProcess';
+import ChartInjectionProcess from './ChartInjectionProcess';
 import PercentageChartAssy from './PercentageChartAssy';
+import PercentageChartInjection from './PercentageChartInjection';
+import PercentageChartTotal from './PercentageChartTotal';
 import TableData from './TableData';
 import TableEfficiency from './TableEfficiency';
-import ChartInjectionProcess from './ChartInjectionProcess';
-import ChartAssyProcess from './ChartAssyProcess';
 
 const Item = styled(Paper)(({ theme }) => ({
   // backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -50,72 +46,65 @@ const KPIProductivity = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
 
-  const { language, totalOrderQty, totalActualQty, totalNGQty, totalEfficiency, data, saveDisplayData } = props;
+  // const { language, totalOrderQty, totalActualQty, totalNGQty, totalEfficiency, data, saveDisplayData } = props;
 
-  const initConnection = new HubConnectionBuilder()
-    .withUrl(`${BASE_URL}/signalr`, {
-      accessTokenFactory: () => GetLocalStorage(TOKEN_ACCESS),
-      skipNegotiation: true,
-      transport: HttpTransportType.WebSockets,
-    })
-    .configureLogging(LogLevel.None)
-    .withAutomaticReconnect({
-      nextRetryDelayInMilliseconds: (retryContext) => {
-        //reconnect after 5-20s
-        return 5000 + Math.random() * 15000;
-      },
-    })
-    .build();
+  // const initConnection = new HubConnectionBuilder()
+  //   .withUrl(`${BASE_URL}/signalr`, {
+  //     accessTokenFactory: () => GetLocalStorage(TOKEN_ACCESS),
+  //     skipNegotiation: true,
+  //     transport: HttpTransportType.WebSockets,
+  //   })
+  //   .configureLogging(LogLevel.None)
+  //   .withAutomaticReconnect({
+  //     nextRetryDelayInMilliseconds: (retryContext) => {
+  //       //reconnect after 5-20s
+  //       return 5000 + Math.random() * 15000;
+  //     },
+  //   })
+  //   .build();
 
-  const [connection, setConnection] = useState(initConnection);
+  // const [connection, setConnection] = useState(initConnection);
 
-  const startConnection = async () => {
-    try {
-      if (connection) {
-        connection.on('WorkOrderGetDisplay', (res) => {
-          if (res && isRendered) {
-            saveDisplayData(res);
-          }
-        });
-        // connection.on('WorkOrderGetDisplay', (data) => {
-        //   if (data && data.length > 0 && isRendered) {
-        //     setWorkOrders([...data]);
-        //     // setSelectedRow({ ...data[0] });
-        //     handleHighcharts([...data]);
-        //   }
-        // });
-        connection.onclose(async (e) => {
-          if (isRendered) setConnection(null);
-        });
-      }
+  // const startConnection = async () => {
+  //   try {
+  //     if (connection) {
+  //       connection.on('WorkOrderGetDisplay', (res) => {
+  //         if (res && isRendered) {
+  //           saveDisplayData(res);
+  //         }
+  //       });
+  //       connection.onclose(async (e) => {
+  //         if (isRendered) setConnection(null);
+  //       });
+  //     }
 
-      if (connection.state === HubConnectionState.Disconnected) {
-        await connection.start();
-        console.log('websocket connect success');
-        await connection.invoke('GetDisplayWO');
-      } else if (connection.state === HubConnectionState.Connected) {
-        await connection.invoke('GetDisplayWO');
-      }
-    } catch (error) {
-      console.log('websocket connect error: ', error);
-    }
-  };
+  //     if (connection.state === HubConnectionState.Disconnected) {
+  //       await connection.start();
+  //       console.log('websocket connect success');
+  //       await connection.invoke('GetDisplayWO');
+  //     } else if (connection.state === HubConnectionState.Connected) {
+  //       await connection.invoke('GetDisplayWO');
+  //     }
+  //   } catch (error) {
+  //     console.log('websocket connect error: ', error);
+  //   }
+  // };
 
-  const closeConnection = async () => {
-    try {
-      if (connection && connection.state === HubConnectionState.Connected) await connection.stop();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const closeConnection = async () => {
+  //   try {
+  //     if (connection && connection.state === HubConnectionState.Connected) await connection.stop();
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   useEffect(() => {
     if (isRendered) {
-      startConnection();
+      // startConnection();
     }
 
     return () => {
-      closeConnection();
+      // closeConnection();
       isRendered = false;
     };
   }, []);
@@ -189,9 +178,9 @@ User_Operations.toString = function () {
   return 'User_Operations';
 };
 
-Display_Operations.toString = function () {
-  return 'Display_Operations';
-};
+// Display_Operations.toString = function () {
+//   return 'Display_Operations';
+// };
 
 const mapStateToProps = (state) => {
   const {
@@ -210,11 +199,14 @@ const mapDispatchToProps = (dispatch) => {
     User_Operations: { changeLanguage },
   } = CombineDispatchToProps(dispatch, bindActionCreators, [[User_Operations]]);
 
-  const {
-    Display_Operations: { saveDisplayData },
-  } = CombineDispatchToProps(dispatch, bindActionCreators, [[Display_Operations]]);
+  // const {
+  //   Display_Operations: { saveDisplayData },
+  // } = CombineDispatchToProps(dispatch, bindActionCreators, [[Display_Operations]]);
 
-  return { changeLanguage, saveDisplayData };
+  return {
+    changeLanguage,
+    // , saveDisplayData
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(KPIProductivity);
