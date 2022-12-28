@@ -126,7 +126,7 @@ const ChartAssyProcess = (props) => {
         },
         plotOptions: {
           series: {
-            pointWidth: 10,
+            // pointWidth: 10,
             // pointPadding: 0.2,
             // groupPadding: 0.25,
             borderWidth: 0,
