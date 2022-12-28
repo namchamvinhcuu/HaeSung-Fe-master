@@ -39,6 +39,7 @@ import Analytics from './KPI/Analytics/Analytics';
 import KPIDashboard from './KPI/Dashboard/KPIDashboard';
 import KPIProductivity from './KPI/productivity/KPIProductivity';
 import KPIInjection from './KPI/Injection/KPIInjection';
+import KPIAssy from './KPI/Assy/KPIAssy';
 
 //MMS
 import Actual from './MMS/Actual/Actual';
@@ -129,6 +130,7 @@ export {
   KPIDashboard,
   KPIProductivity,
   KPIInjection,
+  KPIAssy,
 
   //MMS
   Actual,

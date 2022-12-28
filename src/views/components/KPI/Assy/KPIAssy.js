@@ -7,12 +7,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { MuiDataGrid } from '@controls';
 import { Grid } from '@mui/material';
-import ChartInjectionProcess from '../productivity/ChartInjectionProcess';
 import Clock from 'react-live-clock';
+import ChartAssyProcess from '../productivity/ChartAssyProcess';
 
-const KPIInjection = (props) => {
+const KPIAssy = (props) => {
   const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
-
   const [dataCount, setDataCount] = useState({
     actual: 0,
     ng: 0,
@@ -28,7 +27,7 @@ const KPIInjection = (props) => {
     searchData: {},
   });
   useEffect(async () => {
-    const dataFilter = await data.filter((dt) => dt.woProcess === false);
+    const dataFilter = await data.filter((dt) => dt.woProcess === true);
     const sumActualQty = await dataFilter.reduce((accumulator, object) => {
       return accumulator + object.actualQty;
     }, 0);
@@ -101,7 +100,7 @@ const KPIInjection = (props) => {
         <div className="d-flex justify-content-between">
           <div className="py-3 px-5" style={{ backgroundColor: '#54a7b5' }}>
             <h3 style={{ color: 'white' }} className="mb-0">
-              Injection
+              Assy
             </h3>
           </div>
           <div className="py-3 px-5" style={{ backgroundColor: '#54a7b5' }}>
@@ -205,7 +204,7 @@ const KPIInjection = (props) => {
           </div>
           <div className="col-sm-5 col-md-5" style={{ backgroundColor: 'white' }}>
             <div style={{ transform: ' translate(1%, 25%)' }}>
-              <ChartInjectionProcess />
+              <ChartAssyProcess />
             </div>
           </div>
         </div>
@@ -239,4 +238,4 @@ const mapDispatchToProps = (dispatch) => {
   return { changeLanguage };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(KPIInjection);
+export default connect(mapStateToProps, mapDispatchToProps)(KPIAssy);
