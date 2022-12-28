@@ -100,8 +100,6 @@ class NavBar extends Component {
         await this.connection.start();
       }
 
-      await this.connection.invoke('SendOnlineUsers');
-
       this.connection.on('ReceivedOnlineUsers', (data) => {
         if (data && data.length > 0) {
           this._isMounted &&
@@ -111,14 +109,15 @@ class NavBar extends Component {
         }
       });
 
-      await this.connection.invoke('GetDisplayWO');
       this.connection.on('WorkOrderGetDisplay', (res) => {
         if (res) {
-          // this.saveDisplayData(res);
           const { saveDisplayData } = this.props;
           saveDisplayData(res);
         }
       });
+
+      await this.connection.invoke('SendOnlineUsers');
+      await this.connection.invoke('GetDisplayWO');
 
       this.connection.onclose((e) => {
         // this.connection = null;

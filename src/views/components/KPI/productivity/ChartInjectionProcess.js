@@ -49,8 +49,6 @@ const ChartInjectionProcess = (props) => {
           }
         }
       }
-
-      console.log('categoryList', categoryList);
     }
 
     if (isRendered) {
