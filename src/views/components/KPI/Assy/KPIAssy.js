@@ -79,11 +79,11 @@ const KPIAssy = (props) => {
       headerName: 'Line',
       /*flex: 0.7,*/ width: 150,
     },
-    {
-      field: 'hmiStatusName',
-      headerName: 'Status',
-      /*flex: 0.7,*/ width: 100,
-    },
+    // {
+    //   field: 'hmiStatusName',
+    //   headerName: 'Status',
+    //   /*flex: 0.7,*/ width: 100,
+    // },
     {
       field: 'woCode',
       headerName: 'WO',
@@ -162,7 +162,7 @@ const KPIAssy = (props) => {
               </div>
             </div>
           </div>
-          <div className="mr-5">
+          {/* <div className="mr-5">
             <div
               style={{
                 backgroundColor: 'black',
@@ -197,7 +197,7 @@ const KPIAssy = (props) => {
                 <b style={{ fontSize: '3.5rem', color: 'white' }}>{countStop}</b>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="row  px-5">
           <div className="col-sm-7 col-md-7 pr-3" id="tableKPIProductivity">
