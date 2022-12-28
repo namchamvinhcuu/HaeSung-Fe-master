@@ -91,6 +91,11 @@ const Actual = (props) => {
       /*flex: 0.7,*/ width: 100,
     },
     {
+      field: 'HMIQty',
+      headerName: 'HMI Qty',
+      /*flex: 0.7,*/ width: 100,
+    },
+    {
       field: 'ActualQty',
       headerName: intl.formatMessage({ id: 'work_order.ActualQty' }),
       /*flex: 0.7,*/ width: 100,

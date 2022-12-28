@@ -201,7 +201,11 @@ const HMIHistory = (props) => {
       headerName: intl.formatMessage({ id: 'work_order.OrderQty' }),
       /*flex: 0.7,*/ width: 120,
     },
-
+    {
+      field: 'HMIQty',
+      headerName: 'HMI Qty',
+      /*flex: 0.7,*/ width: 100,
+    },
     {
       field: 'ActualQty',
       headerName: intl.formatMessage({ id: 'work_order.ActualQty' }),
