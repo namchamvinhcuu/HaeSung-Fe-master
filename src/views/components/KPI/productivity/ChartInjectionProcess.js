@@ -139,7 +139,7 @@ const ChartInjectionProcess = (props) => {
         },
         plotOptions: {
           series: {
-            pointWidth: 10,
+            // pointWidth: 10,
             // pointPadding: 0,
             // groupPadding: -1,
             borderWidth: 0,
