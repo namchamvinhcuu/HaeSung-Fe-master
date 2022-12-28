@@ -425,7 +425,7 @@ const WorkOrderDialog = (props) => {
                           label={intl.formatMessage({
                             id: 'work_order.MaterialCode',
                           })}
-                          disabled={dialogState.isSubmit}
+                          disabled={mode == UPDATE_ACTION ? true : dialogState.isSubmit}
                           fetchDataFunc={getMaterials}
                           displayValue="FPOId"
                           displayLabel="MaterialBuyerCode"
@@ -454,6 +454,7 @@ const WorkOrderDialog = (props) => {
                         />
                       ) : (
                         <MuiAutocomplete
+                          disabled={mode == UPDATE_ACTION ? true : dialogState.isSubmit}
                           label={intl.formatMessage({ id: 'work_order.MaterialCode' })}
                           fetchDataFunc={getMaterials}
                           displayLabel="MaterialCode"

@@ -21,59 +21,8 @@ const Display = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
   const handle = useFullScreenHandle();
-  const [data, setData] = useState({ totalOrderQty: 0, totalActualQty: 0, totalEfficiency: 0, data: [] });
-  const [connection, setConnection] = useState(
-    new HubConnectionBuilder()
-      .withUrl(`${BASE_URL}/signalr`, {
-        accessTokenFactory: () => GetLocalStorage(TOKEN_ACCESS),
-        skipNegotiation: true,
-        transport: HttpTransportType.WebSockets,
-      })
-      .configureLogging(LogLevel.None)
-      .withAutomaticReconnect({
-        nextRetryDelayInMilliseconds: (retryContext) => {
-          //reconnect after 5-20s
-          return 5000 + Math.random() * 15000;
-        },
-      })
-      .build()
-  );
-
-  const startConnection = async () => {
-    try {
-      connection.on('WorkOrderGetDisplay', (res) => {
-        if (res) {
-          setData(res);
-        }
-      });
-      connection.onclose((e) => {
-        setConnection(null);
-      });
-      await connection.start();
-      await connection.invoke('GetDisplayWO');
-    } catch (error) {
-      console.log('websocket connect error');
-    }
-  };
-
-  const closeConnection = async () => {
-    try {
-      await connection.stop();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (isRendered) {
-      startConnection();
-    }
-
-    return () => {
-      closeConnection();
-      isRendered = false;
-    };
-  }, []);
+  //const [data, setData] = useState({ totalOrderQty: 0, totalActualQty: 0, totalEfficiency: 0, data: [] });
+  const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
 
   const style = {
     grid: {
@@ -114,16 +63,16 @@ const Display = (props) => {
             <div style={{ height: '16%', display: 'flex' }}>
               <div style={{ ...style.grid, width: '33.3333%', backgroundColor: '#9370db' }}>
                 <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Total Target</h2>
-                <h1 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{data.totalOrderQty}</h1>
+                <h1 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{totalOrderQty}</h1>
               </div>
               <div style={{ ...style.grid, width: '33.3333%', backgroundColor: '#00c6bb' }}>
                 <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Total Actual</h2>
-                <h1 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{data.totalActualQty}</h1>
+                <h1 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{totalActualQty}</h1>
               </div>
               <div style={{ ...style.grid, width: '33.3333%', backgroundColor: '#e9a424' }}>
                 <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Avg Efficiency</h2>
                 <h1 style={{ fontWeight: '600', fontFamily: 'cursive' }}>
-                  {data.totalEfficiency > 100 ? 100 : Math.round(data.totalEfficiency)}%
+                  {totalEfficiency > 100 ? 100 : Math.round(totalEfficiency)}%
                 </h1>
               </div>
             </div>
@@ -162,7 +111,7 @@ const Display = (props) => {
               </div>
               <div style={{ width: '80%', height: '100%', display: 'flex', overflow: 'auto', whiteSpace: 'nowrap' }}>
                 {data &&
-                  data.data.map((item, index) => {
+                  data.map((item, index) => {
                     let efficiency = Math.round((item.actualQty / item.orderQty) * 100);
                     return (
                       <div style={{ width: '100%', height: '100%' }} key={index}>
@@ -209,7 +158,11 @@ const mapStateToProps = (state) => {
     User_Reducer: { language },
   } = CombineStateToProps(state.AppReducer, [[Store.User_Reducer]]);
 
-  return { language };
+  const {
+    Display_Reducer: { totalOrderQty, totalActualQty, totalNGQty, totalEfficiency, data },
+  } = CombineStateToProps(state.AppReducer, [[Store.Display_Reducer]]);
+
+  return { language, totalOrderQty, totalActualQty, totalNGQty, totalEfficiency, data };
 };
 
 const mapDispatchToProps = (dispatch) => {
