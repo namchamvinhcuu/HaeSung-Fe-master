@@ -395,7 +395,7 @@
   "work_order": {
     "WoCode": "WO Code",
     "FPoMasterCode": "Plant",
-    "MaterialCode": "Assy Code",
+    "MaterialCode": "Code",
     "BomVersion": "Bom Version",
     "Buyer": "Buyer",
     "LineName": "Line",
@@ -420,7 +420,7 @@
     "LotNumber": "Lot Number",
     "LotSerial": "Lot Serial",
     "totalQtylot_GreaterThan_ActualQty": "Qty lot greater than actual qty",
-    "MaterialId": "Assy Code",
+    "MaterialId": "Code",
     "LotStatus": "Lot Status",
     "WoOrderQty": "Wo Order Qty",
     "TotalLotQty": "Total Lot Qty",
