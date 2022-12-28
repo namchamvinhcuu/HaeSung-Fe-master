@@ -12,6 +12,8 @@ import ChartAssyProcess from '../productivity/ChartAssyProcess';
 
 const KPIAssy = (props) => {
   const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
+  const [countWorking, setCountWorking] = useState(0);
+  const [countStop, setCountStop] = useState(0);
   const [dataCount, setDataCount] = useState({
     actual: 0,
     ng: 0,
@@ -38,6 +40,15 @@ const KPIAssy = (props) => {
       return accumulator + object.orderQty;
     }, 0);
     const opeEfficiency = (sumActualQty / sumOrderQty) * 100;
+
+    await dataFilter.reduce((accumulator, object) => {
+      if (object?.hmiStatusName === 'START') {
+        setCountWorking((prevState) => prevState + 1);
+      }
+      if (object?.hmiStatusName === 'STOP') {
+        setCountStop((prevState) => prevState + 1);
+      }
+    }, 0);
 
     setDataCount((pre) => ({
       ...pre,
@@ -86,6 +97,11 @@ const KPIAssy = (props) => {
     {
       field: 'orderQty',
       headerName: 'Target',
+      /*flex: 0.7,*/ width: 100,
+    },
+    {
+      field: 'hmiQty',
+      headerName: 'HMI Qty',
       /*flex: 0.7,*/ width: 100,
     },
     {
@@ -139,7 +155,9 @@ const KPIAssy = (props) => {
               </div>
               <div className="col">
                 <h4>
-                  <b className="text-info">{dataCount?.efficiency > 100 ? 100 : dataCount?.efficiency}</b>
+                  <b className="text-info">
+                    {dataCount?.efficiency.toFixed(2) > 100 ? 100 : dataCount?.efficiency.toFixed(2)}
+                  </b>
                 </h4>
               </div>
             </div>
@@ -158,7 +176,7 @@ const KPIAssy = (props) => {
                 <b style={{ fontSize: '1.5rem' }}>Working</b>
               </div>
               <div style={{ width: '100%', height: '65%' }} className="d-flex-centerXY">
-                <b style={{ fontSize: '3.5rem', color: 'white' }}>8</b>
+                <b style={{ fontSize: '3.5rem', color: 'white' }}>{countWorking}</b>
               </div>
             </div>
           </div>
@@ -176,7 +194,7 @@ const KPIAssy = (props) => {
                 <b style={{ fontSize: '1.5rem' }}>Stop</b>
               </div>
               <div style={{ width: '100%', height: '65%' }} className="d-flex-centerXY">
-                <b style={{ fontSize: '3.5rem', color: 'white' }}>8</b>
+                <b style={{ fontSize: '3.5rem', color: 'white' }}>{countStop}</b>
               </div>
             </div>
           </div>
