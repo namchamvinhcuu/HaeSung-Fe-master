@@ -12,8 +12,8 @@ import ChartAssyProcess from '../productivity/ChartAssyProcess';
 
 const KPIAssy = (props) => {
   const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
-  const [countWorking, setCountWorking] = useState(0);
-  const [countStop, setCountStop] = useState(0);
+  // const [countWorking, setCountWorking] = useState(0);
+  // const [countStop, setCountStop] = useState(0);
   const [dataCount, setDataCount] = useState({
     actual: 0,
     ng: 0,
@@ -41,14 +41,14 @@ const KPIAssy = (props) => {
     }, 0);
     const opeEfficiency = (sumActualQty / sumOrderQty) * 100;
 
-    await dataFilter.reduce((accumulator, object) => {
-      if (object?.hmiStatusName === 'START') {
-        setCountWorking((prevState) => prevState + 1);
-      }
-      if (object?.hmiStatusName === 'STOP') {
-        setCountStop((prevState) => prevState + 1);
-      }
-    }, 0);
+    // await dataFilter.reduce((accumulator, object) => {
+    //   if (object?.hmiStatusName === 'START') {
+    //     setCountWorking((prevState) => prevState + 1);
+    //   }
+    //   if (object?.hmiStatusName === 'STOP') {
+    //     setCountStop((prevState) => prevState + 1);
+    //   }
+    // }, 0);
 
     setDataCount((pre) => ({
       ...pre,
