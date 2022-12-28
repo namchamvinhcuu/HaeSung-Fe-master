@@ -12,12 +12,14 @@ import Clock from 'react-live-clock';
 
 const KPIInjection = (props) => {
   const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
-  const [countWorking, setCountWorking] = useState(0);
-  const [countStop, setCountStop] = useState(0);
+
   const [dataCount, setDataCount] = useState({
     actual: 0,
     ng: 0,
     efficiency: 0,
+    working: 0,
+    stop: 0,
+    pause: 0,
   });
 
   const [workOrderState, setWorkOrderState] = useState({
@@ -41,20 +43,18 @@ const KPIInjection = (props) => {
     }, 0);
     const opeEfficiency = (sumActualQty / sumOrderQty) * 100;
 
-    await dataFilter.reduce((accumulator, object) => {
-      if (object?.hmiStatusName === 'START') {
-        setCountWorking((prevState) => prevState + 1);
-      }
-      if (object?.hmiStatusName === 'STOP') {
-        setCountStop((prevState) => prevState + 1);
-      }
-    }, 0);
+    const sumWorking = await dataFilter.filter((dt) => dt.hmiStatusName === 'START');
+    const sumStop = await dataFilter.filter((dt) => dt.hmiStatusName === 'STOP');
+    const pause = await dataFilter.filter((dt) => dt.hmiStatusName === 'PAUSE');
 
     setDataCount((pre) => ({
       ...pre,
       actual: sumActualQty,
       ng: sumNGQty,
       efficiency: opeEfficiency || 0,
+      working: sumWorking.length,
+      stop: sumStop.length,
+      pause: pause.length,
     }));
     setWorkOrderState((pre) => ({
       ...pre,
@@ -126,7 +126,7 @@ const KPIInjection = (props) => {
           </div>
         </div>
         <div className="row px-5 py-4 d-flex">
-          <div className="col-sm-7 col-md-7 mr-auto mt-3">
+          <div className="col-sm-6 col-md-6 mr-auto mt-3">
             <div className="row">
               <div className="col">
                 <h4>
@@ -162,7 +162,7 @@ const KPIInjection = (props) => {
               </div>
             </div>
           </div>
-          <div className="mr-5">
+          <div className="mr-2">
             <div
               style={{
                 backgroundColor: 'black',
@@ -176,11 +176,11 @@ const KPIInjection = (props) => {
                 <b style={{ fontSize: '1.5rem' }}>Working</b>
               </div>
               <div style={{ width: '100%', height: '65%' }} className="d-flex-centerXY">
-                <b style={{ fontSize: '3.5rem', color: 'white' }}>{countWorking}</b>
+                <b style={{ fontSize: '3.5rem', color: 'white' }}>{dataCount?.working}</b>
               </div>
             </div>
           </div>
-          <div>
+          <div className="mr-2">
             <div
               style={{
                 backgroundColor: 'black',
@@ -194,7 +194,25 @@ const KPIInjection = (props) => {
                 <b style={{ fontSize: '1.5rem' }}>Stop</b>
               </div>
               <div style={{ width: '100%', height: '65%' }} className="d-flex-centerXY">
-                <b style={{ fontSize: '3.5rem', color: 'white' }}>{countStop}</b>
+                <b style={{ fontSize: '3.5rem', color: 'white' }}>{dataCount?.stop}</b>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div
+              style={{
+                backgroundColor: 'black',
+                width: '200px',
+                height: '120px',
+                borderRadius: '10%',
+                overflow: 'hidden',
+              }}
+            >
+              <div style={{ width: '100%', height: '35%', backgroundColor: '#ff7514' }} className="d-flex-centerXY">
+                <b style={{ fontSize: '1.5rem' }}>Pause</b>
+              </div>
+              <div style={{ width: '100%', height: '65%' }} className="d-flex-centerXY">
+                <b style={{ fontSize: '3.5rem', color: 'white' }}>{dataCount?.pause}</b>
               </div>
             </div>
           </div>

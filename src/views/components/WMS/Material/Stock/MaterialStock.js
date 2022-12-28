@@ -195,7 +195,7 @@ const MaterialStock = (props) => {
     {
       field: 'MaterialCode',
       headerName: intl.formatMessage({ id: 'material.MaterialCode' }),
-      width: 150,
+      width: 190,
     },
     {
       field: 'StockQty',

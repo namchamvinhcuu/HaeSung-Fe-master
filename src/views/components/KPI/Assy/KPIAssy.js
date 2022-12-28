@@ -12,8 +12,8 @@ import ChartAssyProcess from '../productivity/ChartAssyProcess';
 
 const KPIAssy = (props) => {
   const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
-  const [countWorking, setCountWorking] = useState(0);
-  const [countStop, setCountStop] = useState(0);
+  // const [countWorking, setCountWorking] = useState(0);
+  // const [countStop, setCountStop] = useState(0);
   const [dataCount, setDataCount] = useState({
     actual: 0,
     ng: 0,
@@ -41,14 +41,14 @@ const KPIAssy = (props) => {
     }, 0);
     const opeEfficiency = (sumActualQty / sumOrderQty) * 100;
 
-    await dataFilter.reduce((accumulator, object) => {
-      if (object?.hmiStatusName === 'START') {
-        setCountWorking((prevState) => prevState + 1);
-      }
-      if (object?.hmiStatusName === 'STOP') {
-        setCountStop((prevState) => prevState + 1);
-      }
-    }, 0);
+    // await dataFilter.reduce((accumulator, object) => {
+    //   if (object?.hmiStatusName === 'START') {
+    //     setCountWorking((prevState) => prevState + 1);
+    //   }
+    //   if (object?.hmiStatusName === 'STOP') {
+    //     setCountStop((prevState) => prevState + 1);
+    //   }
+    // }, 0);
 
     setDataCount((pre) => ({
       ...pre,
@@ -79,11 +79,11 @@ const KPIAssy = (props) => {
       headerName: 'Line',
       /*flex: 0.7,*/ width: 150,
     },
-    {
-      field: 'hmiStatusName',
-      headerName: 'Status',
-      /*flex: 0.7,*/ width: 100,
-    },
+    // {
+    //   field: 'hmiStatusName',
+    //   headerName: 'Status',
+    //   /*flex: 0.7,*/ width: 100,
+    // },
     {
       field: 'woCode',
       headerName: 'WO',
@@ -162,7 +162,7 @@ const KPIAssy = (props) => {
               </div>
             </div>
           </div>
-          <div className="mr-5">
+          {/* <div className="mr-5">
             <div
               style={{
                 backgroundColor: 'black',
@@ -197,7 +197,7 @@ const KPIAssy = (props) => {
                 <b style={{ fontSize: '3.5rem', color: 'white' }}>{countStop}</b>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="row  px-5">
           <div className="col-sm-7 col-md-7 pr-3" id="tableKPIProductivity">
