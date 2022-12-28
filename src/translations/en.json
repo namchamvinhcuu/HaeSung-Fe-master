@@ -268,7 +268,7 @@
     "min_value": "Value greater than 0",
     "delete_error": "Bom have child, can't delete",
     "Unit": "Unit",
-    "Error_exist_WO":"Bom exist in Work Order can't update"
+    "Error_exist_WO": "Bom exist in Work Order can't update"
   },
   "bomDetail": {
     "MaterialId": "Material Code",
@@ -399,10 +399,11 @@
     "BomVersion": "Bom Version",
     "Buyer": "Buyer",
     "LineName": "Line",
-    "MoldCode":"Mold Code",
+    "MoldCode": "Mold Code",
     "OrderQty": "Order Qty",
     "ActualQty": "Actual Qty",
-    "HMIQty":"HMI Qty",
+    "NGQty": "NG Qty",
+    "HMIQty": "HMI Qty",
     "StartDate": "Working Date",
     "Week": "Week",
     "Year": "Year",
@@ -413,7 +414,7 @@
     "OrderQty_GreaterThan_0": "Order Qty must be greater than zero",
     "StartDate_required": "Working Date is required",
     "StartDate_invalid": "Working Date format is invalid",
-    "Error_Update_WO":"WO can't modify"
+    "Error_Update_WO": "WO can't modify"
   },
   "actual": {
     "Qty": "Qty",
@@ -454,7 +455,7 @@
     "Scan2LotDifferenceToMerge": "Scan 2 lot difference to merge ",
     "NotMatchToMerge": "Lot not match to merge (check status, material, QCResult)",
     "NotMatchToMergeTotalSOQty": "Lot not match to merge (2 lot TotalSOQty > 0)",
-    "Qty_bigger_0":" Qty must greater than 0",
+    "Qty_bigger_0": " Qty must greater than 0",
     "Error_MergelotScannedWo": "lot scanned for Wo can't merge",
     "Error_SplitlotScannedWo": "lot scanned for Wo can't split"
   },
@@ -491,7 +492,7 @@
     "MaterialColorCode": "Material",
     "MsoDetailStatus": "Status",
     "Qty": "Qty",
-    "TotalSOQty" : "Total SO Qty",
+    "TotalSOQty": "Total SO Qty",
     "SOrderQty": "Order Qty",
     "SOrderQty_tip": "Double click to edit",
     "LotSerial": "Lot Serial",

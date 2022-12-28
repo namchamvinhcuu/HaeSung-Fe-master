@@ -10,7 +10,7 @@ import { useIntl } from 'react-intl';
 import moment from 'moment';
 
 //Highcharts
-import Highcharts from 'highcharts';
+import Highcharts from 'highcharts/highstock';
 import HighchartsReact from 'highcharts-react-official';
 import exporting from 'highcharts/modules/exporting.js';
 // accessibility module
@@ -21,14 +21,13 @@ const ChartInjectionProcess = (props) => {
   const intl = useIntl();
   exporting(Highcharts);
 
-  const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
+  const { data } = props;
   const [chartOption, setChartOption] = useState({});
 
   const handleHighcharts = (workOrders) => {
-    console.log(workOrders);
-
     const categoryList = [];
     const actualQtyList = [];
+    const ngQtyList = [];
     const orderQtyList = [];
     const hmiQtyList = [];
     const efficiencyList = [];
@@ -39,6 +38,7 @@ const ChartInjectionProcess = (props) => {
         if (!item.woProcess) {
           categoryList.push(`<p>${item.woCode}<br>${item.lineName}<br>${item.materialCode}</p>`);
           actualQtyList.push(item.actualQty);
+          ngQtyList.push(item.ngQty);
           hmiQtyList.push(item.hmiQty);
           orderQtyList.push(item.orderQty);
           if (item.orderQty != 0) {
@@ -49,6 +49,8 @@ const ChartInjectionProcess = (props) => {
           }
         }
       }
+
+      console.log('categoryList', categoryList);
     }
 
     if (isRendered) {
@@ -61,10 +63,14 @@ const ChartInjectionProcess = (props) => {
           },
           type: 'column',
           zoomType: 'xy',
+
           scrollablePlotArea: {
-            minWidth: 580,
+            minWidth: 1000,
             scrollPositionX: 0,
           },
+
+          // scrollbar: true,
+
           // styledMode: true,
           // options3d: {
           // 	enabled: true,
@@ -76,6 +82,12 @@ const ChartInjectionProcess = (props) => {
         // accessibility: {
         // 	enabled: false
         // },
+        navigator: {
+          enabled: false,
+        },
+        rangeSelector: {
+          enabled: false,
+        },
         exporting: {
           enabled: true,
         },
@@ -88,6 +100,7 @@ const ChartInjectionProcess = (props) => {
         // 		'target="_blank">SSB</a>'
         // },
         xAxis: {
+          // max: 10,
           categories: categoryList,
           crosshair: true,
           useHTML: true,
@@ -127,8 +140,10 @@ const ChartInjectionProcess = (props) => {
           useHTML: true,
         },
         plotOptions: {
-          column: {
-            pointPadding: 0.2,
+          series: {
+            pointWidth: 10,
+            // pointPadding: 0,
+            // groupPadding: -1,
             borderWidth: 0,
             dataLabels: {
               enabled: true,
@@ -145,13 +160,19 @@ const ChartInjectionProcess = (props) => {
           {
             name: intl.formatMessage({ id: 'work_order.HMIQty' }),
             data: hmiQtyList,
-            color: '#c0c0c0',
+            color: '#32a852',
             yAxis: 0,
           },
           {
             name: intl.formatMessage({ id: 'work_order.ActualQty' }),
             data: actualQtyList,
             color: '#ffd700',
+            yAxis: 0,
+          },
+          {
+            name: intl.formatMessage({ id: 'work_order.NGQty' }),
+            data: ngQtyList,
+            color: '#c0c0c0',
             yAxis: 0,
           },
           {
@@ -178,7 +199,11 @@ const ChartInjectionProcess = (props) => {
 
   return (
     <React.Fragment>
-      <HighchartsReact highcharts={Highcharts} options={chartOption} />
+      <HighchartsReact
+        highcharts={Highcharts}
+        // constructorType={'stockChart'}
+        options={chartOption}
+      />
     </React.Fragment>
   );
 };

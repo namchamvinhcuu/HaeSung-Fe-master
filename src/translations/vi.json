@@ -268,7 +268,7 @@
     "min_value": "Giá trị phải lớn hơn 0",
     "delete_error": "Bom có bom con, không thể xóa",
     "Unit": "Unit",
-    "Error_exist_WO":"Bom đã được tạo trong Work Order không thể sửa"
+    "Error_exist_WO": "Bom đã được tạo trong Work Order không thể sửa"
   },
   "bomDetail": {
     "MaterialId": "Material Code",
@@ -399,10 +399,11 @@
     "BomVersion": "Bom Version",
     "Buyer": "Buyer",
     "LineName": "Line",
-    "MoldCode":"Mold Code",
+    "MoldCode": "Mold Code",
     "OrderQty": "SL yêu cầu",
     "ActualQty": "SL thực tế",
-    "HMIQty":"SL HMI",
+    "NGQty": "SL NG",
+    "HMIQty": "SL HMI",
     "StartDate": "Ngày bắt đầu",
     "Week": "Tuần",
     "Year": "Năm",
@@ -413,7 +414,7 @@
     "OrderQty_GreaterThan_0": "SL yêu cầu phải lớn hơn 0",
     "StartDate_required": "Ngày bắt đầu không được để trống",
     "StartDate_invalid": "Ngày bắt đầu không đúng định dạng",
-    "Error_Update_WO":"WO không thể sửa"
+    "Error_Update_WO": "WO không thể sửa"
   },
   "actual": {
     "Qty": "Qty",
@@ -454,7 +455,7 @@
     "Scan2LotDifferenceToMerge": "Quét 2 mã khác nhau để nhập",
     "NotMatchToMerge": "Lot nhập không phù hợp (kiểm tra trạng thái, vật liệu, kết quả QC)",
     "NotMatchToMergeTotalSOQty": "Lot nhập không phù hợp (2 lot TotalSOQty > 0)",
-    "Qty_bigger_0":"Số lượng bắt buộc phải lớn hơn 0",
+    "Qty_bigger_0": "Số lượng bắt buộc phải lớn hơn 0",
     "Error_MergelotScannedWo": "Lot đã được scan vào liệu Wo không thể nhập",
     "Error_SplitlotScannedWo": "Lot đã được scan vào liệu Wo không thể tách"
   },
@@ -490,7 +491,7 @@
     "MaterialCode": "Liệu",
     "MaterialColorCode": "Liệu",
     "MsoDetailStatus": "Trạng thái",
-    "TotalSOQty" : "S/L SO",
+    "TotalSOQty": "S/L SO",
     "Qty": "Số lượng",
     "SOrderQty": "S/L yêu cầu",
     "SOrderQty_tip": "Double click để chỉnh sửa",

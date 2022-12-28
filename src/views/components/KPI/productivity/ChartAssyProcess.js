@@ -62,9 +62,11 @@ const ChartAssyProcess = (props) => {
           type: 'column',
           zoomType: 'xy',
           scrollablePlotArea: {
-            minWidth: 580,
+            minWidth: 1000,
             scrollPositionX: 0,
           },
+          // scrollbar: true,
+
           // styledMode: true,
           // options3d: {
           // 	enabled: true,
@@ -123,8 +125,10 @@ const ChartAssyProcess = (props) => {
           useHTML: true,
         },
         plotOptions: {
-          column: {
-            pointPadding: 0.2,
+          series: {
+            pointWidth: 10,
+            // pointPadding: 0.2,
+            // groupPadding: 0.25,
             borderWidth: 0,
             dataLabels: {
               enabled: true,
@@ -145,6 +149,7 @@ const ChartAssyProcess = (props) => {
             color: '#4CD2FF',
             yAxis: 0,
           },
+
           {
             name: intl.formatMessage({ id: 'work_order.Efficiency' }),
             type: 'spline',

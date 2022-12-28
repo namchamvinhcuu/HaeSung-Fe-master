@@ -21,9 +21,13 @@ const createData = (name, value) => {
 const TableData = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
-  const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
+  const { totalOrderQty, totalActualQty, totalNGQty, data } = props;
 
-  const rows = [createData('TOTAL TARGET', totalOrderQty), createData('TOTAL ACTUAL', totalActualQty)];
+  const rows = [
+    createData('TOTAL TARGET', totalOrderQty),
+    createData('TOTAL ACTUAL', totalActualQty),
+    createData('TOTAL NG', totalNGQty),
+  ];
 
   useEffect(() => {
     if (isRendered) {
@@ -41,10 +45,12 @@ const TableData = (props) => {
           <TableBody>
             {rows.map((row) => (
               <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell component="th" scope="row">
+                <TableCell component="th" scope="row" sx={{ fontSize: '20px', fontWeight: 'bold' }}>
                   {row.name}
                 </TableCell>
-                <TableCell align="right">{row.value}</TableCell>
+                <TableCell align="right" sx={{ fontSize: '20px', fontWeight: 'bold' }}>
+                  {row.value}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -68,10 +74,10 @@ const mapStateToProps = (state) => {
   } = CombineStateToProps(state.AppReducer, [[Store.User_Reducer]]);
 
   const {
-    Display_Reducer: { totalOrderQty, totalActualQty, totalEfficiency, data },
+    Display_Reducer: { totalOrderQty, totalActualQty, totalNGQty, totalEfficiency, data },
   } = CombineStateToProps(state.AppReducer, [[Store.Display_Reducer]]);
 
-  return { language, totalOrderQty, totalActualQty, totalEfficiency, data };
+  return { language, totalOrderQty, totalActualQty, totalNGQty, totalEfficiency, data };
 };
 
 const mapDispatchToProps = (dispatch) => {

@@ -22,7 +22,7 @@ import PercentageChartTotal from './PercentageChartTotal';
 import PercentageChartInjection from './PercentageChartInjection';
 import PercentageChartAssy from './PercentageChartAssy';
 import TableData from './TableData';
-
+import TableEfficiency from './TableEfficiency';
 import ChartInjectionProcess from './ChartInjectionProcess';
 import ChartAssyProcess from './ChartAssyProcess';
 
@@ -50,7 +50,7 @@ const KPIProductivity = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
 
-  const { language, totalOrderQty, totalActualQty, totalEfficiency, data, saveDisplayData } = props;
+  const { language, totalOrderQty, totalActualQty, totalNGQty, totalEfficiency, data, saveDisplayData } = props;
 
   const initConnection = new HubConnectionBuilder()
     .withUrl(`${BASE_URL}/signalr`, {
@@ -122,30 +122,17 @@ const KPIProductivity = (props) => {
 
   return (
     <React.Fragment>
-      {/* <Paper sx={{ mb: 2, p: 3 }}>
-        <HighchartsReact highcharts={Highcharts} options={chartOption} />
-      </Paper> */}
       <div style={{ ...style.grid, width: '100%', minHeight: 'unset' }}>
         <h2 style={{ margin: 0, fontWeight: '600', fontFamily: 'cursive' }}>
           <ScheduleIcon sx={{ fontSize: 33, mr: 2, mb: 1 }} />
           <Clock format={'DD/MM/YYYY (HH:mm:ss)'} ticking={true} />
         </h2>
       </div>
+
       <div style={{ display: 'flex', marginTop: '20px' }}>
         <Grid container spacing={5}>
           <Grid item xs={3}>
-            {/* <Grid container direction="column" spacing={2}>
-              <Grid item xs={33.33} sm={50}>
-                <PercentageChartTotal />
-              </Grid>
-              <Grid item xs={33.33} sm={50}>
-                <PercentageChartInjection />
-              </Grid>
-              <Grid item xs={33.33} sm={50}>
-                <PercentageChartAssy />
-              </Grid>
-            </Grid> */}
-            <Box sx={{ width: '100%' }}>
+            <Box>
               <Grid container direction="column" spacing={2}>
                 <Grid item xs={30} sm={50}>
                   <Item>
@@ -165,21 +152,8 @@ const KPIProductivity = (props) => {
               </Grid>
             </Box>
           </Grid>
+
           <Grid item xs={9}>
-            {/* <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TableData />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                ...TableEfficiency
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                ...ChartInjectionProcess
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                ...ChartAssyProcess
-              </Grid>
-            </Grid> */}
             <Box sx={{ width: '100%', height: '90%' }}>
               <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ height: '100%' }}>
                 <Grid item xs={6} sx={{ height: '50%' }}>
@@ -188,7 +162,9 @@ const KPIProductivity = (props) => {
                   </Item>
                 </Grid>
                 <Grid item xs={6}>
-                  <Item>2</Item>
+                  <Item>
+                    <TableEfficiency />
+                  </Item>
                 </Grid>
                 <Grid item xs={6}>
                   <Item>
@@ -223,10 +199,10 @@ const mapStateToProps = (state) => {
   } = CombineStateToProps(state.AppReducer, [[Store.User_Reducer]]);
 
   const {
-    Display_Reducer: { totalOrderQty, totalActualQty, totalEfficiency, data },
+    Display_Reducer: { totalOrderQty, totalActualQty, totalNGQty, totalEfficiency, data },
   } = CombineStateToProps(state.AppReducer, [[Store.Display_Reducer]]);
 
-  return { language, totalOrderQty, totalActualQty, totalEfficiency, data };
+  return { language, totalOrderQty, totalActualQty, totalNGQty, totalEfficiency, data };
 };
 
 const mapDispatchToProps = (dispatch) => {
