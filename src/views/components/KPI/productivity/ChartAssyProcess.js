@@ -27,6 +27,7 @@ const ChartAssyProcess = (props) => {
   const handleHighcharts = (workOrders) => {
     const categoryList = [];
     const actualQtyList = [];
+    const ngQtyList = [];
     const orderQtyList = [];
     const efficiencyList = [];
 
@@ -38,6 +39,8 @@ const ChartAssyProcess = (props) => {
           categoryList.push(`<p>${item.woCode}<br>${item.lineName}<br>${item.materialCode}</p>`);
 
           actualQtyList.push(item.actualQty);
+
+          ngQtyList.push(item.ngQty);
 
           orderQtyList.push(item.orderQty);
 
@@ -149,7 +152,12 @@ const ChartAssyProcess = (props) => {
             color: '#4CD2FF',
             yAxis: 0,
           },
-
+          {
+            name: intl.formatMessage({ id: 'work_order.NGQty' }),
+            data: ngQtyList,
+            color: '#c0c0c0',
+            yAxis: 0,
+          },
           {
             name: intl.formatMessage({ id: 'work_order.Efficiency' }),
             type: 'spline',
