@@ -4,8 +4,8 @@ import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
-import { MuiButton, MuiDataGrid, MuiTextField } from '@controls';
+import { iqcService } from '@services';
+import { MuiButton, MuiDataGrid, MuiTextField, MuiDateField, MuiAutocomplete } from '@controls';
 import { LotDto } from '@models';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Grid } from '@mui/material';
@@ -19,12 +19,18 @@ const WIPReceiving = (props) => {
   let isRendered = useRef(true);
   const intl = useIntl();
   const lotInputRef = useRef(null);
+  const initETDLoad = new Date();
   const [state, setState] = useState({
     isLoading: false,
     data: [],
     totalRow: 0,
     page: 1,
     pageSize: 20,
+    searchData: {
+      searchStartDay: initETDLoad,
+      searchEndDay: initETDLoad,
+      MaterialId: null,
+    },
   });
 
   const [focus, setFocus] = useState(true);
@@ -113,9 +119,23 @@ const WIPReceiving = (props) => {
   }, [newData]);
 
   const fetchData = async () => {
+    if (
+      moment(state.searchData.searchStartDay).format('YYYY-MM-DD') >
+      moment(state.searchData.searchEndDay).format('YYYY-MM-DD')
+    ) {
+      ErrorAlert('Search date invalid');
+      return;
+    }
     setState({ ...state, isLoading: true });
-
-    const res = await wipReceivingService.get({ page: state.page, pageSize: state.pageSize });
+    const params = {
+      page: state.page,
+      pageSize: state.pageSize,
+      // IncomingDate: new Date(),
+      MaterialId: state.searchData.MaterialId,
+      searchStartDay: state.searchData.searchStartDay,
+      searchEndDay: state.searchData.searchEndDay,
+    };
+    const res = await wipReceivingService.get(params);
 
     if (res && isRendered)
       setState({
@@ -169,15 +189,66 @@ const WIPReceiving = (props) => {
       ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
     }
   };
+  const getMaterial = async () => {
+    const res = await wipReceivingService.getMaterial();
+    return res;
+  };
+
+  const handleSearch = (e, inputName) => {
+    let newSearchData = { ...state.searchData };
+    newSearchData[inputName] = e;
+    setState({ ...state, searchData: { ...newSearchData } });
+  };
 
   return (
     <React.Fragment>
-      <Grid container spacing={2} direction="row" justifyContent="space-between" alignItems="flex-end">
-        <Grid item xs={4}></Grid>
-        <Grid item xs={8}>
+      <Grid container spacing={2} direction="row" justifyContent="space-between" alignItems="center" className="mb-2">
+        <Grid item xs={5.5} className="ml-2">
           <Grid container spacing={2} direction="row" justifyContent="space-between" alignItems="center">
-            <Grid item xs={6}></Grid>
-            <Grid item sx={{ width: '400px', marginBottom: '15px' }}>
+            <Grid item xs={5}>
+              <MuiAutocomplete
+                label={intl.formatMessage({ id: 'forecast.MaterialId' })}
+                fetchDataFunc={getMaterial}
+                displayLabel="MaterialCode"
+                displayValue="MaterialId"
+                displayGroup="GroupMaterial"
+                onChange={(e, item) => {
+                  handleSearch(item ? item?.MaterialId ?? null : null, 'MaterialId');
+                }}
+                variant="standard"
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <MuiDateField
+                disabled={state.isLoading}
+                label="From Incoming Date"
+                value={state.searchData.searchStartDay}
+                onChange={(e) => {
+                  handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchStartDay');
+                }}
+                variant="standard"
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <MuiDateField
+                disabled={state.isLoading}
+                label="To Incoming Date"
+                value={state.searchData.searchEndDay}
+                onChange={(e) => {
+                  handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchEndDay');
+                }}
+                variant="standard"
+              />
+            </Grid>
+            <Grid item xs={1}>
+              <MuiButton text="search" color="info" onClick={fetchData} />
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={5}>
+          <Grid container spacing={2} direction="row" justifyContent="space-between" alignItems="center">
+            {/* <Grid item xs={6}></Grid> */}
+            <Grid item xs={9.5}>
               <MuiTextField
                 ref={lotInputRef}
                 label={'Lot'}
@@ -186,7 +257,7 @@ const WIPReceiving = (props) => {
                 onKeyDown={keyPress}
               />
             </Grid>
-            <Grid>
+            <Grid item xs={2.5}>
               <MuiButton text="scan" color="success" sx={{ m: 0 }} onClick={scanBtnClick} />
             </Grid>
           </Grid>
