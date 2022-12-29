@@ -61,6 +61,7 @@ import MaterialSO from './WMS/Material/ShippingOrder/MaterialSO';
 import MaterialStock from './WMS/Material/Stock/MaterialStock';
 import MaterialSODetail from './WMS/Material/ShippingOrder/MaterialSODetail';
 import MaterialSODialog from './WMS/Material/ShippingOrder/MaterialSODialog';
+import MaterialShipToNG from './WMS/Material/ShipToNG/MaterialShipToNG';
 //WMS - WIP
 import WIPReceiving from './WMS/WIP/Receiving/WIPReceiving';
 import WIPReport from './WMS/WIP/Report/WIPReport';
@@ -152,6 +153,7 @@ export {
   MaterialStock,
   MaterialSODetail,
   MaterialSODialog,
+  MaterialShipToNG,
   //WMS - WIP
   WIPReceiving,
   WIPReport,
