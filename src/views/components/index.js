@@ -64,7 +64,7 @@ import MaterialSODialog from './WMS/Material/ShippingOrder/MaterialSODialog';
 //WMS - WIP
 import WIPReceiving from './WMS/WIP/Receiving/WIPReceiving';
 import WIPReport from './WMS/WIP/Report/WIPReport';
-import WIPShipping from './WMS/WIP/Shipping/WIPShipping';
+import WIPShipToNG from './WMS/WIP/ShipToNG/WIPShipToNG';
 import WIPStock from './WMS/WIP/Stock/WIPStock';
 //WMS - FG
 import FGReceiving from './WMS/FG/Receiving/FGReceiving';
@@ -155,7 +155,7 @@ export {
   //WMS - WIP
   WIPReceiving,
   WIPReport,
-  WIPShipping,
+  WIPShipToNG,
   WIPStock,
   //WMS - FG
   FGReceiving,

@@ -5,8 +5,8 @@ import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
 import { User_Operations } from '@appstate/user';
 import { Store } from '@appstate';
 
-const WIPShipping = (props) => {
-  return <h1>WIPShipping</h1>;
+const WIPShipToNG = (props) => {
+  return <h1>WIPShipToNG</h1>;
 };
 
 User_Operations.toString = function () {
@@ -29,4 +29,4 @@ const mapDispatchToProps = (dispatch) => {
   return { changeLanguage };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WIPShipping);
+export default connect(mapStateToProps, mapDispatchToProps)(WIPShipToNG);
