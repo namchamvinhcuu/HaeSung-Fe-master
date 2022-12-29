@@ -101,6 +101,11 @@ const Actual = (props) => {
       /*flex: 0.7,*/ width: 100,
     },
     {
+      field: 'NGQty',
+      headerName: 'NG Qty',
+      /*flex: 0.7,*/ width: 120,
+    },
+    {
       field: 'StartDate',
       headerName: intl.formatMessage({ id: 'work_order.StartDate' }),
       width: 150,

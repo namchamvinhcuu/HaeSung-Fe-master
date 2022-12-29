@@ -338,7 +338,11 @@ const WorkOrder = (props) => {
       headerName: intl.formatMessage({ id: 'work_order.ActualQty' }),
       /*flex: 0.7,*/ width: 120,
     },
-
+    {
+      field: 'NGQty',
+      headerName: 'NG Qty',
+      /*flex: 0.7,*/ width: 120,
+    },
     {
       field: 'StartDate',
       headerName: intl.formatMessage({ id: 'work_order.StartDate' }),
