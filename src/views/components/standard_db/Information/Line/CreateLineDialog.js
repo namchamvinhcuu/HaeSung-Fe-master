@@ -171,6 +171,21 @@ const CreateLineDialog = (props) => {
                   onChange={handleChange}
                 />
               </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  // multiline={true}
+                  // rows={3}
+                  disabled={dialogState.isSubmit}
+                  label={intl.formatMessage({ id: 'line.HMIMacAddress' })}
+                  name="HMIMacAddress"
+                  value={values.HMIMacAddress}
+                  onChange={handleChange}
+                />
+              </Grid>
+
               <Grid item xs={12}>
                 <Grid container direction="row-reverse">
                   <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
