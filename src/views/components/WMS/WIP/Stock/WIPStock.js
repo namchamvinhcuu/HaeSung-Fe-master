@@ -176,7 +176,7 @@ const WIPStock = (props) => {
         getRowId={(rows) => rows.MaterialId}
         initialState={{ pinnedColumns: { left: ['id', 'MaterialCode', 'StockQty'], right: ['action'] } }}
         rowThreshold={0}
-        getDetailPanelHeight={() => 450}
+        //getDetailPanelHeight={() => 400}
         getDetailPanelContent={getDetailPanelContent}
       />
     </React.Fragment>
