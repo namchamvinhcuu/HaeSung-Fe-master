@@ -46,6 +46,7 @@ import * as splitMergeLotService from './WMS/SplitMergeLot/SplitMergeLotService'
 import * as materialSOService from './WMS/Material/MaterialSOService';
 import * as materialReportService from './WMS/Material/MaterialReportService';
 import * as materialStockService from './WMS/Material/MaterialStockService';
+import * as materialShipToNGService from './WMS/Material/MaterialShipToNGService';
 
 import * as eslService from './esl/ESLService';
 import * as fgReceivingService from './WMS/FG/FGReceivingService';
@@ -101,4 +102,5 @@ export {
   fgPutAwayService,
   splitMergeLotService,
   hmiService,
+  materialShipToNGService,
 };
