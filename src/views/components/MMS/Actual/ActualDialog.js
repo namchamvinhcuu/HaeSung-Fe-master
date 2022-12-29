@@ -170,7 +170,7 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
   async function getWoInfo(woId, isSubmit) {
     const res = await actualService.getWoInfo({ WoId: woId });
     if (res && res.Data && isRendered) {
-      let Remain = res.Data.OrderQty - res.Data.TotalLotQty;
+      let Remain = res.Data.OrderQty - res.Data.ActualQty;
       setWOInfo({ ...res.Data, Remain: Remain < 0 ? 0 : Remain });
       if (isSubmit) setUpdateData(res.Data);
     }
@@ -444,8 +444,8 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
               <Grid item xs={4}>
                 <MuiTextField
                   disabled={dialogState.isSubmit}
-                  label={intl.formatMessage({ id: 'actual.TotalLotQty' })}
-                  value={WOInfo.TotalLotQty}
+                  label={intl.formatMessage({ id: 'work_order.ActualQty' })}
+                  value={WOInfo.ActualQty}
                 />
               </Grid>
               <Grid item xs={4}>
