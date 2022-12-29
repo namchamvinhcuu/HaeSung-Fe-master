@@ -63,3 +63,11 @@ export const handleDelete = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+export const createByExcel = async (params) => {
+  try {
+    return await axios.post(`${API}/create-by-excel`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};

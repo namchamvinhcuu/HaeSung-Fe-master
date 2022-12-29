@@ -590,6 +590,7 @@ const DeliveryOrder = (props) => {
         isOpen={isOpenDialog}
         onClose={toggleDialog}
         mode={mode}
+        fetchData={fetchData}
       />
     </React.Fragment>
   );
