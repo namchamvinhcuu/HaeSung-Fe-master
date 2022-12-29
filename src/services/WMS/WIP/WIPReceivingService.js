@@ -30,3 +30,11 @@ export const handleDelete = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+export const getMaterial = async () => {
+  try {
+    return await axios.get(`${API}/get-select-material`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
