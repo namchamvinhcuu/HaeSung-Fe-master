@@ -1,14 +1,15 @@
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
-import { User_Operations } from '@appstate/user';
-import { Store } from '@appstate';
 
-import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
-import { FormControlLabel, Grid, IconButton, Switch, Tooltip, Typography } from '@mui/material';
+import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
+import { Grid, Paper, Stack, Tooltip, Typography } from '@mui/material';
 import { wipStockService } from '@services';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 
 const WIPStock = (props) => {
@@ -66,18 +67,6 @@ const WIPStock = (props) => {
       headerName: intl.formatMessage({ id: 'material.QCMasterId' }),
       width: 150,
     },
-    // {
-    //   field: 'SupplierName',
-    //   headerName: intl.formatMessage({ id: 'material.SupplierId' }),
-    //   width: 200,
-    //   renderCell: (params) => {
-    //     return (
-    //       <Tooltip title={params.row.SupplierName ?? ''} className="col-text-elip">
-    //         <Typography sx={{ fontSize: 14 }}>{params.row.SupplierName}</Typography>
-    //       </Tooltip>
-    //     );
-    //   },
-    // },
     {
       field: 'Description',
       headerName: intl.formatMessage({ id: 'material.Description' }),
@@ -151,6 +140,8 @@ const WIPStock = (props) => {
       });
   }
 
+  const getDetailPanelContent = React.useCallback(({ row }) => <DetailPanelContent row={row} />, []);
+
   return (
     <React.Fragment>
       <Grid container direction="row" justifyContent="space-between" alignItems="width-end">
@@ -165,27 +156,6 @@ const WIPStock = (props) => {
                 onChange={(e) => handleSearch(e.target.value, 'keyWord')}
               />
             </Grid>
-            {/* <Grid item style={{ width: '21%' }}>
-              <MuiAutocomplete
-                label={intl.formatMessage({ id: 'material.Unit' })}
-                fetchDataFunc={wipStockService.getUnit}
-                displayLabel="commonDetailName"
-                displayValue="commonDetailId"
-                onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Unit')}
-                variant="standard"
-              />
-            </Grid>
-            <Grid item style={{ width: '21%' }}>
-              <MuiAutocomplete
-                label={intl.formatMessage({ id: 'material.SupplierId' })}
-                fetchDataFunc={wipStockService.getSupplier}
-                displayLabel="SupplierName"
-                displayValue="SupplierId"
-                onChange={(e, item) => handleSearch(item ? item.SupplierId ?? null : null, 'SupplierId')}
-                variant="standard"
-                fullWidth
-              />
-            </Grid> */}
             <Grid item>
               <MuiButton text="search" color="info" onClick={fetchData} sx={{ mr: 3, mb: 1 }} />
             </Grid>
@@ -202,17 +172,147 @@ const WIPStock = (props) => {
         page={state.page - 1}
         pageSize={state.pageSize}
         rowCount={state.totalRow}
-        rowsPerPageOptions={[5, 10, 20]}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
-        onPageSizeChange={(newPageSize) => setState({ ...state, pageSize: newPageSize, page: 1 })}
         getRowId={(rows) => rows.MaterialId}
-        // getRowClassName={(params) => {
-        //   if (_.isEqual(params.row, newData)) return `Mui-created`;
-        // }}
         initialState={{ pinnedColumns: { left: ['id', 'MaterialCode', 'StockQty'], right: ['action'] } }}
+        rowThreshold={0}
+        getDetailPanelHeight={() => 450}
+        getDetailPanelContent={getDetailPanelContent}
       />
     </React.Fragment>
   );
+};
+
+const DetailPanelContent = ({ row: rowProp }) => {
+  let isDetailRendered = useRef(true);
+
+  const [detailPanelState, setDetailPanelState] = useState({
+    isLoading: false,
+    data: [],
+    totalRow: 0,
+    page: 1,
+    pageSize: 5,
+    MaterialId: rowProp.MaterialId,
+  });
+
+  const fetchDetailData = async () => {
+    if (isDetailRendered) {
+      setDetailPanelState({ ...detailPanelState, isLoading: true });
+      const params = {
+        page: detailPanelState.page,
+        pageSize: detailPanelState.pageSize,
+        MaterialId: detailPanelState.MaterialId,
+      };
+
+      const res = await wipStockService.getLotStock(params);
+
+      setDetailPanelState({
+        ...detailPanelState,
+        data: !res.Data ? [] : [...res.Data],
+        totalRow: res.TotalRow,
+        isLoading: false,
+      });
+    }
+  };
+
+  const detailPanelColumns = [
+    {
+      field: 'id',
+      headerName: '',
+      width: 80,
+      filterable: false,
+      renderCell: (index) =>
+        index.api.getRowIndex(index.row.Id) + 1 + (detailPanelState.page - 1) * detailPanelState.pageSize,
+    },
+    { field: 'Id', headerName: 'Id', width: 250 },
+    {
+      field: 'LotSerial',
+      headerName: 'Lot Serial',
+      width: 250,
+    },
+
+    {
+      field: 'Qty',
+      headerName: 'Qty',
+      width: 200,
+    },
+    {
+      field: 'QCResult',
+      headerName: 'QC Result',
+      width: 200,
+      renderCell: (params) => {
+        return params.row.QCResult == true ? (
+          <Typography sx={{ fontSize: '14px' }}>
+            <b>OK</b>
+          </Typography>
+        ) : (
+          <Typography sx={{ fontSize: '14px', color: 'red' }}>
+            <b>NG</b>
+          </Typography>
+        );
+      },
+    },
+    {
+      field: 'createdDate',
+      headerName: 'Create Date',
+      width: 250,
+      valueFormatter: (params) => {
+        if (params.value !== null) {
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
+        }
+      },
+    },
+  ];
+
+  useEffect(() => {
+    fetchDetailData();
+
+    return () => {
+      isDetailRendered = false;
+    };
+  }, [detailPanelState.page, detailPanelState.pageSize]);
+
+  return (
+    <Stack sx={{ py: 2, height: '100%', boxSizing: 'border-box' }} direction="column">
+      <Paper sx={{ flex: 1, mx: 'auto', width: '80%', p: 1 }}>
+        <Stack direction="column" spacing={1} sx={{ height: 1 }}>
+          <Typography variant="h6">{`Material Code: ${rowProp.MaterialCode}`}</Typography>
+          <Grid container>
+            <Grid item md={6}>
+              <Typography variant="body2" align="right" color="textSecondary"></Typography>
+              <Typography variant="body1">Type: {rowProp.MaterialTypeName}</Typography>
+              <Typography variant="body1">Supplier: {rowProp.SupplierName}</Typography>
+            </Grid>
+            <Grid item md={6}>
+              <Typography variant="body2" align="right" color="textSecondary"></Typography>
+              <Typography variant="body1" align="right">
+                Desc: {rowProp.Description}
+              </Typography>
+              <Typography variant="body1" align="right">
+                Stock: {rowProp.StockQty ?? 0}
+              </Typography>
+            </Grid>
+          </Grid>
+          <MuiDataGrid
+            showLoading={detailPanelState.isLoading}
+            isPagingServer={true}
+            headerHeight={45}
+            columns={detailPanelColumns}
+            rows={detailPanelState.data}
+            page={detailPanelState.page - 1}
+            pageSize={detailPanelState.pageSize}
+            rowCount={detailPanelState.totalRow}
+            onPageChange={(newPage) => setDetailPanelState({ ...detailPanelState, page: newPage + 1 })}
+            getRowId={(rows) => rows.Id}
+          />
+        </Stack>
+      </Paper>
+    </Stack>
+  );
+};
+
+DetailPanelContent.propTypes = {
+  row: PropTypes.object.isRequired,
 };
 
 User_Operations.toString = function () {
