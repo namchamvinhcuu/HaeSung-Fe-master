@@ -222,6 +222,7 @@
   },
   "line": {
     "LineName": "Tên line",
+    "HMIMacAddress": "Địa chỉ MAC HMI",
     "Description": "Mô tả",
     "IsUsed": "Đang sử dụng",
     "LineName_required": "Line Name không được để trống"

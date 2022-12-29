@@ -224,6 +224,7 @@ const Line = (props) => {
         );
       },
     },
+    { field: 'HMIMacAddress', headerName: intl.formatMessage({ id: 'line.HMIMacAddress' }), width: 300 },
     { field: 'createdName', headerName: intl.formatMessage({ id: 'general.createdName' }), width: 150 },
     {
       field: 'createdDate',
