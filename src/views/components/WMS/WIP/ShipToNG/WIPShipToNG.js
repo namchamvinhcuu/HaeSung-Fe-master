@@ -240,7 +240,7 @@ const WIPShipToNG = (props) => {
               />
             </Grid>
             <Grid item xs={1}>
-              <MuiButton text="search" color="info" onClick={fetchData} />
+              <MuiButton text="search" color="info" onClick={fetchData} sx={{ whiteSpace: 'nowrap' }} />
             </Grid>
           </Grid>
         </Grid>
