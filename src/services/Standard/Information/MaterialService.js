@@ -10,6 +10,14 @@ const getMaterialList = async (params) => {
   }
 };
 
+const getAllMoldCode = async () => {
+  try {
+    return await axios.get(`${apiName}/get-all-mold-code`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
 const createMaterial = async (params) => {
   try {
     return await axios.post(`${apiName}/create`, params);
@@ -93,4 +101,5 @@ export {
   getSupplier,
   getSupplierById,
   getQCMasterByMaterialType,
+  getAllMoldCode,
 };

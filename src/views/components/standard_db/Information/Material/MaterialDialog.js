@@ -24,8 +24,17 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   const [dataReadFile, setDataReadFile] = useState([]);
   const refFile = useRef();
   const [ExcelHistory, setExcelHistory] = useState([]);
-  const regexMoldCode = /^([a-z0-9]{6})-([a-z0-9]{3})+$/gi;
-  const jsonMoldCode = ['test1', 'test2'];
+  const regexMoldCode = /^([a-z0-9]{4})-([a-z0-9]{6})+$/gi;
+  const [listMoldCode, setListMoldCode] = useState([]);
+
+  const getListMoldCode = async () => {
+    const res = await materialService.getAllMoldCode();
+    if (res && res.Data) {
+      const listCode = res.Data.map((dt) => dt.MoldCode);
+      setListMoldCode(listCode);
+    }
+  };
+
   const schemaY = yup.object().shape({
     MaterialCode: yup
       .string()
@@ -69,7 +78,8 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
             .string()
             .nullable()
             .required(intl.formatMessage({ id: 'general.field_required' }))
-            .matches(regexMoldCode, intl.formatMessage({ id: 'product.Not_match_code' }));
+            .matches(regexMoldCode, intl.formatMessage({ id: 'product.Not_match_code' }))
+            .oneOf(listMoldCode, intl.formatMessage({ id: 'material.MoldeCode_not_found' }));
       }),
   });
 
@@ -84,6 +94,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
   useEffect(() => {
     // getSupplier();
+    getListMoldCode();
     getUnit();
   }, []);
 

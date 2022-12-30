@@ -250,7 +250,8 @@
     "MaterialCode_required": "Material Code is required",
     "MaterialType_required": "Material Type is required",
     "Unit_required": "Unit is required",
-    "SupplierId_required": "Supplier is required"
+    "SupplierId_required": "Supplier is required",
+    "MoldeCode_not_found":"Mold Code not found"
   },
   "standardQC": {
     "QCCode": "QC Code"
