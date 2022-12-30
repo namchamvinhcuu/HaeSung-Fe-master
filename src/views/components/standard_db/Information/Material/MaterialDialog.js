@@ -24,7 +24,8 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
   const [dataReadFile, setDataReadFile] = useState([]);
   const refFile = useRef();
   const [ExcelHistory, setExcelHistory] = useState([]);
-
+  const regexMoldCode = /^([a-z0-9]{6})-([a-z0-9]{3})+$/gi;
+  const jsonMoldCode = ['test1', 'test2'];
   const schemaY = yup.object().shape({
     MaterialCode: yup
       .string()
@@ -58,6 +59,17 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
             .number()
             .nullable()
             .required(intl.formatMessage({ id: 'general.field_required' }));
+      }),
+    MoldCode: yup
+      .string()
+      .nullable()
+      .when('MaterialTypeName', (MaterialTypeName) => {
+        if (MaterialTypeName === 'BARE MATERIAL')
+          return yup
+            .string()
+            .nullable()
+            .required(intl.formatMessage({ id: 'general.field_required' }))
+            .matches(regexMoldCode, intl.formatMessage({ id: 'product.Not_match_code' }));
       }),
   });
 
@@ -294,6 +306,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                     setFieldValue('QCMasterId', null);
                     setFieldValue('MaterialTypeName', value?.commonDetailName || '');
                     setFieldValue('MaterialType', value?.commonDetailId || '');
+                    setFieldValue('MoldCode', '');
                   }}
                   error={touched.MaterialType && Boolean(errors.MaterialType)}
                   helperText={touched.MaterialType && errors.MaterialType}
@@ -413,6 +426,21 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                   label={intl.formatMessage({ id: 'material.FlameClass' })}
                 />
               </Grid>
+              {values.MaterialTypeName === 'BARE MATERIAL' && (
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    name="MoldCode"
+                    disabled={dialogState.isSubmit}
+                    value={values.MoldCode}
+                    onChange={handleChange}
+                    label={intl.formatMessage({ id: 'mold.MoldCode' })}
+                    error={touched.MoldCode && Boolean(errors.MoldCode)}
+                    helperText={touched.MoldCode && errors.MoldCode}
+                  />
+                </Grid>
+              )}
               <Grid item xs={12}>
                 <Grid container direction="row-reverse">
                   <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
@@ -527,6 +555,7 @@ const defaultValue = {
   Color: '',
   ResinType: '',
   FlameClass: '',
+  MoldCode: '',
 };
 
 export default MaterialDialog;

@@ -93,6 +93,11 @@ export default function Material() {
       width: 150,
     },
     {
+      field: 'MoldCode',
+      headerName: intl.formatMessage({ id: 'mold.MoldCode' }),
+      width: 150,
+    },
+    {
       field: 'UnitName',
       headerName: intl.formatMessage({ id: 'material.Unit' }),
       width: 120,
