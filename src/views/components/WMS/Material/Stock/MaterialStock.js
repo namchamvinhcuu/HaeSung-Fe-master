@@ -82,22 +82,14 @@ const DetailPanelContent = ({ row: rowProp }) => {
       headerName: 'Warehouse Type Name',
       width: 250,
     },
-    // {
-    //   field: 'QCResult',
-    //   headerName: 'QC Result',
-    //   width: 100,
-    //   renderCell: (params) => {
-    //     return params.row.QCResult == true ? (
-    //       <Typography sx={{ fontSize: '14px' }}>
-    //         <b>OK</b>
-    //       </Typography>
-    //     ) : (
-    //       <Typography sx={{ fontSize: '14px', color: 'red' }}>
-    //         <b>NG</b>
-    //       </Typography>
-    //     );
-    //   },
-    // },
+    {
+      field: 'LotStatus',
+      headerName: 'Lot Status',
+      width: 150,
+      renderCell: (params) => {
+        return <Typography sx={{ fontSize: 14 }}>{params.row.LotStatus ? 'Received' : 'Not received'}</Typography>;
+      },
+    },
     {
       field: 'IncomingDate',
       headerName: 'Incoming Date',
