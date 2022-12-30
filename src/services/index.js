@@ -54,6 +54,7 @@ import * as fgReceivingService from './WMS/FG/FGReceivingService';
 import * as fgStockService from './WMS/FG/FGStockService';
 import * as fgPutAwayService from './WMS/FG/FGPutAwayService';
 import * as hmiService from './mms/HMIHistoryService';
+import * as ngStockService from './WMS/NG/NGStockService';
 
 export {
   loginService,
@@ -105,4 +106,5 @@ export {
   splitMergeLotService,
   hmiService,
   materialShipToNGService,
+  ngStockService,
 };

@@ -62,11 +62,11 @@ const WIPStock = (props) => {
       headerName: intl.formatMessage({ id: 'material.Unit' }),
       width: 120,
     },
-    {
-      field: 'QCMasterCode',
-      headerName: intl.formatMessage({ id: 'material.QCMasterId' }),
-      width: 150,
-    },
+    // {
+    //   field: 'QCMasterCode',
+    //   headerName: intl.formatMessage({ id: 'material.QCMasterId' }),
+    //   width: 150,
+    // },
     {
       field: 'Description',
       headerName: intl.formatMessage({ id: 'material.Description' }),

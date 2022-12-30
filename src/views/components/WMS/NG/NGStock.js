@@ -12,7 +12,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import PropTypes from 'prop-types';
-import { materialStockService } from '@services';
+import { ngStockService } from '@services';
 import { useIntl } from 'react-intl';
 import moment from 'moment';
 
@@ -37,7 +37,7 @@ const DetailPanelContent = ({ row: rowProp }) => {
         MaterialId: detailPanelState.MaterialId,
       };
 
-      const res = await materialStockService.getLotStock(params);
+      const res = await ngStockService.getLotStockNG(params);
 
       setDetailPanelState({
         ...detailPanelState,
@@ -73,23 +73,16 @@ const DetailPanelContent = ({ row: rowProp }) => {
     },
 
     {
-      field: 'LocationCode',
-      headerName: 'Bin',
-      width: 250,
-    },
-    {
       field: 'QCResult',
       headerName: 'QC Result',
       width: 100,
       renderCell: (params) => {
-        return params.row.QCResult == true ? (
-          <Typography sx={{ fontSize: '14px' }}>
-            <b>OK</b>
-          </Typography>
-        ) : (
-          <Typography sx={{ fontSize: '14px', color: 'red' }}>
-            <b>NG</b>
-          </Typography>
+        return (
+          params.row.QCResult == false && (
+            <Typography sx={{ fontSize: '14px' }}>
+              <b>NG</b>
+            </Typography>
+          )
         );
       },
     },
@@ -129,9 +122,9 @@ const DetailPanelContent = ({ row: rowProp }) => {
               <Typography variant="body1" align="right">
                 Desc: {rowProp.Description}
               </Typography>
-              <Typography variant="body1" align="right">
+              {/* <Typography variant="body1" align="right">
                 Stock: {rowProp.StockQty ?? 0}
-              </Typography>
+              </Typography> */}
             </Grid>
           </Grid>
           <MuiDataGrid
@@ -163,7 +156,7 @@ DetailPanelContent.propTypes = {
   row: PropTypes.object.isRequired,
 };
 
-const MaterialStock = (props) => {
+const NGStock = (props) => {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [state, setState] = useState({
@@ -198,12 +191,6 @@ const MaterialStock = (props) => {
       width: 190,
     },
     {
-      field: 'StockQty',
-      align: 'right',
-      headerName: intl.formatMessage({ id: 'material.StockQty' }),
-      width: 120,
-    },
-    {
       field: 'MaterialTypeName',
       headerName: intl.formatMessage({ id: 'material.MaterialType' }),
       width: 150,
@@ -213,11 +200,11 @@ const MaterialStock = (props) => {
       headerName: intl.formatMessage({ id: 'material.Unit' }),
       width: 120,
     },
-    // {
-    //   field: 'QCMasterCode',
-    //   headerName: intl.formatMessage({ id: 'material.QCMasterId' }),
-    //   width: 150,
-    // },
+    {
+      field: 'QCMasterCode',
+      headerName: intl.formatMessage({ id: 'material.QCMasterId' }),
+      width: 150,
+    },
     {
       field: 'SupplierName',
       headerName: intl.formatMessage({ id: 'material.SupplierId' }),
@@ -293,7 +280,7 @@ const MaterialStock = (props) => {
       SupplierId: state.searchData.SupplierId,
       showDelete: state.searchData.showDelete,
     };
-    const res = await materialStockService.getMaterialList(params);
+    const res = await ngStockService.getMaterialListNG(params);
     if (res && res.Data && isRendered)
       setState({
         ...state,
@@ -324,32 +311,11 @@ const MaterialStock = (props) => {
             <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
                 label={intl.formatMessage({ id: 'material.MaterialType' })}
-                fetchDataFunc={materialStockService.getMaterialType}
+                fetchDataFunc={ngStockService.getMaterialType}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'MaterialType')}
                 variant="standard"
-              />
-            </Grid>
-            <Grid item style={{ width: '21%' }}>
-              <MuiAutocomplete
-                label={intl.formatMessage({ id: 'material.Unit' })}
-                fetchDataFunc={materialStockService.getUnit}
-                displayLabel="commonDetailName"
-                displayValue="commonDetailId"
-                onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Unit')}
-                variant="standard"
-              />
-            </Grid>
-            <Grid item style={{ width: '21%' }}>
-              <MuiAutocomplete
-                label={intl.formatMessage({ id: 'material.SupplierId' })}
-                fetchDataFunc={materialStockService.getSupplier}
-                displayLabel="SupplierName"
-                displayValue="SupplierId"
-                onChange={(e, item) => handleSearch(item ? item.SupplierId ?? null : null, 'SupplierId')}
-                variant="standard"
-                fullWidth
               />
             </Grid>
             <Grid item>
@@ -404,4 +370,4 @@ const mapDispatchToProps = (dispatch) => {
   return { changeLanguage };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MaterialStock);
+export default connect(mapStateToProps, mapDispatchToProps)(NGStock);

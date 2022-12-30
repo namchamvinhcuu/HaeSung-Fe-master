@@ -72,6 +72,8 @@ import FGReceiving from './WMS/FG/Receiving/FGReceiving';
 import FGPackingLot from './WMS/FG/PackingLot/FGPackingLot';
 import FGStock from './WMS/FG/FGStock/FGStock';
 import FGPutAway from './WMS/FG/PutAway/FGPutAway';
+//WMS - FG
+import NGStock from './WMS/NG/NGStock';
 
 //WMS - Layout
 import WMSLayout from './WMS/Layout/WMSLayout';
@@ -164,6 +166,8 @@ export {
   FGPackingLot,
   FGStock,
   FGPutAway,
+  //WMS - NG
+  NGStock,
   // WMS - Layout
   WMSLayout,
   MappingBin,
