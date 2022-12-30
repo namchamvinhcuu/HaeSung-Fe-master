@@ -223,6 +223,7 @@
   "line": {
     "LineName": "Line Name",
     "Description": "Description",
+    "HMIMacAddress": "HMI Mac Address",
     "IsUsed": "Using",
     "LineName_required": "Line Name is required"
   },
