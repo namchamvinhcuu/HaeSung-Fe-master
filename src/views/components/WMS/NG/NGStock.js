@@ -18,6 +18,7 @@ import moment from 'moment';
 
 const DetailPanelContent = ({ row: rowProp }) => {
   let isDetailRendered = useRef(true);
+  const intl = useIntl();
 
   const [detailPanelState, setDetailPanelState] = useState({
     isLoading: false,
@@ -49,8 +50,6 @@ const DetailPanelContent = ({ row: rowProp }) => {
   };
 
   const detailPanelColumns = [
-    { field: 'Id', headerName: '', hide: true },
-
     {
       field: 'id',
       headerName: '',
@@ -59,6 +58,8 @@ const DetailPanelContent = ({ row: rowProp }) => {
       renderCell: (index) =>
         index.api.getRowIndex(index.row.Id) + 1 + (detailPanelState.page - 1) * detailPanelState.pageSize,
     },
+
+    { field: 'Id', headerName: 'Id', hide: false, width: 150 },
 
     {
       field: 'LotSerial',
@@ -70,6 +71,12 @@ const DetailPanelContent = ({ row: rowProp }) => {
       field: 'Qty',
       headerName: 'Qty',
       width: 100,
+    },
+
+    {
+      field: 'UnitName',
+      headerName: intl.formatMessage({ id: 'material.Unit' }),
+      width: 120,
     },
 
     {
