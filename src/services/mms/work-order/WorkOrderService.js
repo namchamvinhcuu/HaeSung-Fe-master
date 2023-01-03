@@ -63,9 +63,9 @@ export const getLineArr = async () => {
   }
 };
 
-export const getMoldArr = async () => {
+export const getMoldArr = async (MaterialId) => {
   try {
-    return await axios.get(`${API}/get-mold`);
+    return await axios.get(`${API}/get-mold/${MaterialId}`);
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }
