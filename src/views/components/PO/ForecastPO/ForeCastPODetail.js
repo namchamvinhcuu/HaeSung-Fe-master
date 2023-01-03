@@ -155,7 +155,7 @@ const ForecastPODetail = ({ FPoMasterId }) => {
     {
       field: 'FPoCode',
       headerName: intl.formatMessage({ id: 'forecast.FPoCode' }),
-      width: 120,
+      width: 135,
     },
     {
       field: 'LineName',

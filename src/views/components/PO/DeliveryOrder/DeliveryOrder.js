@@ -310,7 +310,7 @@ const DeliveryOrder = (props) => {
     {
       field: 'DoCode',
       headerName: intl.formatMessage({ id: 'delivery_order.DoCode' }),
-      /*flex: 0.7,*/ width: 120,
+      /*flex: 0.7,*/ width: 135,
     },
     {
       field: 'FPoMasterCode',
@@ -320,7 +320,7 @@ const DeliveryOrder = (props) => {
     {
       field: 'FPoCode',
       headerName: intl.formatMessage({ id: 'delivery_order.PoCode' }),
-      /*flex: 0.7,*/ width: 120,
+      /*flex: 0.7,*/ width: 135,
     },
 
     {
@@ -475,15 +475,6 @@ const DeliveryOrder = (props) => {
             }}
           />
         </Grid>
-
-        <Grid item xs>
-          <MuiSearchField
-            label="delivery_order.DoCode"
-            name="DoCode"
-            onClick={fetchData}
-            onChange={(e) => changeSearchData(e, 'DoCode')}
-          />
-        </Grid>
         <Grid item xs>
           <MuiSearchField
             label="delivery_order.FPoMasterCode"
@@ -498,6 +489,14 @@ const DeliveryOrder = (props) => {
             name="FPoCode"
             onClick={fetchData}
             onChange={(e) => changeSearchData(e, 'FPoCode')}
+          />
+        </Grid>
+        <Grid item xs>
+          <MuiSearchField
+            label="delivery_order.DoCode"
+            name="DoCode"
+            onClick={fetchData}
+            onChange={(e) => changeSearchData(e, 'DoCode')}
           />
         </Grid>
 
@@ -603,7 +602,7 @@ const DeliveryOrder = (props) => {
           }
         }}
         initialState={{
-          pinnedColumns: { left: ['id', 'DoCode', 'FPoMasterCode', 'FPoCode', 'MaterialCode'], right: ['action'] },
+          pinnedColumns: { left: ['id', 'FPoMasterCode', 'FPoCode', 'DoCode', 'MaterialCode'], right: ['action'] },
         }}
       />
 
