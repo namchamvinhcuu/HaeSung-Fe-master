@@ -100,10 +100,12 @@ const Product = () => {
     const res = await productService.getProductModel();
     return res;
   };
+
   const getproductType = async () => {
     const res = await productService.getProductType();
     return res;
   };
+
   async function fetchData() {
     setproductState({ ...productState, isLoading: true });
     const params = {
@@ -135,6 +137,7 @@ const Product = () => {
       setSelectedRow({ ...ProductDto });
     }
   };
+
   const handleDelete = async (row) => {
     let message = productState.searchData.showDelete
       ? intl.formatMessage({ id: 'general.confirm_delete' })
@@ -154,6 +157,7 @@ const Product = () => {
       }
     }
   };
+
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...productState.searchData };
     newSearchData[inputName] = e;
@@ -171,6 +175,7 @@ const Product = () => {
 
   const columns = [
     { field: 'MaterialId', headerName: '', flex: 0.3, hide: true },
+
     {
       field: 'id',
       headerName: '',
@@ -179,6 +184,7 @@ const Product = () => {
       renderCell: (index) =>
         index.api.getRowIndex(index.row.MaterialId) + 1 + (productState.page - 1) * productState.pageSize,
     },
+
     {
       field: 'action',
       headerName: '',
@@ -215,24 +221,27 @@ const Product = () => {
         );
       },
     },
+
     {
       field: 'ModelName',
       headerName: intl.formatMessage({ id: 'product.Model' }),
       width: 90,
     },
-    // { field: "Model", headerName: "Model", hide: true },
+
     { field: 'MaterialCode', headerName: 'Product Code', width: 150 },
-    // { field: "ProductType", headerName: "Product Type", hide: true },
+
     {
       field: 'ProductTypeName',
       headerName: intl.formatMessage({ id: 'product.product_type' }),
       width: 130,
     },
+
     {
       field: 'QCMasterCode',
       headerName: 'QC Master Code',
       width: 180,
     },
+
     {
       field: 'Description',
       headerName: intl.formatMessage({ id: 'product.Description' }),
@@ -245,11 +254,13 @@ const Product = () => {
         );
       },
     },
+
     {
       field: 'Inch',
       headerName: intl.formatMessage({ id: 'product.Inch' }),
       width: 100,
     },
+
     {
       field: 'UnitName',
       headerName: intl.formatMessage({ id: 'product.Unit' }),
@@ -267,7 +278,9 @@ const Product = () => {
         }
       },
     },
+
     { field: 'createdName', headerName: 'Created By', width: 150 },
+
     {
       field: 'modifiedDate',
       headerName: 'Modified Date',
@@ -343,6 +356,16 @@ const Product = () => {
                 }}
               />
             </Grid> */}
+
+            <Grid item style={{ width: '21%' }}>
+              <MuiSearchField
+                variant="MaterialCode"
+                label="product.product_code"
+                onClick={fetchData}
+                onChange={(e) => handleSearch(e.target.value, 'MaterialCode')}
+              />
+            </Grid>
+
             <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
                 label={intl.formatMessage({ id: 'product.Model' })}
@@ -361,14 +384,7 @@ const Product = () => {
                 variant="standard"
               />
             </Grid>
-            <Grid item style={{ width: '21%' }}>
-              <MuiSearchField
-                variant="MaterialCode"
-                label="product.product_code"
-                onClick={fetchData}
-                onChange={(e) => handleSearch(e.target.value, 'MaterialCode')}
-              />
-            </Grid>
+
             <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
                 label={intl.formatMessage({ id: 'product.product_type' })}
