@@ -30,7 +30,6 @@ const WIPReport = (props) => {
     },
   });
   const columns = [
-    { field: 'Id', headerName: '', hide: true },
     {
       field: 'id',
       headerName: '',
@@ -40,10 +39,16 @@ const WIPReport = (props) => {
     },
 
     {
-      field: 'LotCode',
-      headerName: 'Lot Code',
-      width: 200,
-      hide: true,
+      field: 'Id',
+      headerName: 'Id',
+      width: 150,
+      hide: false,
+    },
+
+    {
+      field: 'LotSerial',
+      headerName: 'Lot Serial',
+      width: 170,
     },
 
     {
@@ -51,31 +56,31 @@ const WIPReport = (props) => {
       headerName: 'Material Code',
       width: 170,
     },
-    {
-      field: 'LotSerial',
-      headerName: 'Lot Serial',
-      width: 170,
-    },
+
     {
       field: 'Qty',
       headerName: 'Qty',
       width: 100,
     },
+
     {
       field: 'ActualQty',
       headerName: 'Actual Qty',
       width: 100,
     },
+
     {
       field: 'HMIQty',
       headerName: 'HMI Qty',
       width: 100,
     },
+
     {
       field: 'NGQty',
       headerName: 'NG Qty',
       width: 100,
     },
+
     {
       field: 'QCDate',
       headerName: 'QC Date',
@@ -90,6 +95,7 @@ const WIPReport = (props) => {
         }
       },
     },
+
     {
       field: 'QCResult',
       headerName: 'QC Result',
@@ -106,11 +112,13 @@ const WIPReport = (props) => {
         );
       },
     },
+
     {
       field: 'createdName',
       headerName: intl.formatMessage({ id: 'general.createdName' }),
       width: 150,
     },
+
     {
       field: 'createdDate',
       headerName: intl.formatMessage({ id: 'general.created_date' }),
@@ -121,11 +129,13 @@ const WIPReport = (props) => {
         }
       },
     },
+
     {
       field: 'modifiedName',
       headerName: intl.formatMessage({ id: 'general.modifiedName' }),
       width: 150,
     },
+
     {
       field: 'modifiedDate',
       headerName: intl.formatMessage({ id: 'general.modified_date' }),

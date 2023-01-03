@@ -53,8 +53,6 @@ const DetailPanelContent = ({ row: rowProp }) => {
   };
 
   const detailPanelColumns = [
-    { field: 'Id', headerName: '', hide: true },
-
     {
       field: 'id',
       headerName: '',
@@ -63,6 +61,8 @@ const DetailPanelContent = ({ row: rowProp }) => {
       renderCell: (index) =>
         index.api.getRowIndex(index.row.Id) + 1 + (detailPanelState.page - 1) * detailPanelState.pageSize,
     },
+
+    { field: 'Id', headerName: 'Id', hide: false, width: 150 },
 
     {
       field: 'LotSerial',
@@ -344,7 +344,7 @@ const FGStock = (props) => {
           handleRowSelection(newSelectedRowId);
         }}
         getRowId={(rows) => rows.MaterialId}
-        initialState={{ pinnedColumns: { left: ['id', 'MaterialCode'] } }}
+        initialState={{ pinnedColumns: { left: ['id', 'MaterialCode', 'StockQty'] } }}
         rowThreshold={0}
         getDetailPanelHeight={getDetailPanelHeight}
         getDetailPanelContent={getDetailPanelContent}
