@@ -182,6 +182,8 @@ const DeliveryOrder = (props) => {
         page: deliveryOrderState.page,
         pageSize: deliveryOrderState.pageSize,
         DoCode: deliveryOrderState.searchData.DoCode.trim(),
+        FPoCode: deliveryOrderState.searchData.FPoCode.trim(),
+        FPoMasterCode: deliveryOrderState.searchData.FPoMasterCode.trim(),
         FPoMasterId: deliveryOrderState.searchData.FPoMasterId,
         MaterialId: deliveryOrderState.searchData.MaterialId,
         ETDLoad: deliveryOrderState.searchData.ETDLoad,
@@ -258,7 +260,7 @@ const DeliveryOrder = (props) => {
     {
       field: 'id',
       headerName: '',
-      width: 100,
+      width: 80,
       filterable: false,
       renderCell: (index) =>
         index.api.getRowIndex(index.row.DoId) + 1 + (deliveryOrderState.page - 1) * deliveryOrderState.pageSize,
@@ -310,7 +312,11 @@ const DeliveryOrder = (props) => {
       headerName: intl.formatMessage({ id: 'delivery_order.DoCode' }),
       /*flex: 0.7,*/ width: 120,
     },
-
+    {
+      field: 'FPoMasterCode',
+      headerName: intl.formatMessage({ id: 'delivery_order.FPoMasterCode' }),
+      /*flex: 0.7,*/ width: 120,
+    },
     {
       field: 'FPoCode',
       headerName: intl.formatMessage({ id: 'delivery_order.PoCode' }),
@@ -478,6 +484,22 @@ const DeliveryOrder = (props) => {
             onChange={(e) => changeSearchData(e, 'DoCode')}
           />
         </Grid>
+        <Grid item xs>
+          <MuiSearchField
+            label="delivery_order.FPoMasterCode"
+            name="FPoMasterCode"
+            onClick={fetchData}
+            onChange={(e) => changeSearchData(e, 'FPoMasterCode')}
+          />
+        </Grid>
+        <Grid item xs>
+          <MuiSearchField
+            label="delivery_order.PoCode"
+            name="FPoCode"
+            onClick={fetchData}
+            onChange={(e) => changeSearchData(e, 'FPoCode')}
+          />
+        </Grid>
 
         {/* <Grid item xs>
           <MuiAutocomplete
@@ -580,7 +602,9 @@ const DeliveryOrder = (props) => {
             return `Mui-created`;
           }
         }}
-        initialState={{ pinnedColumns: { left: ['id', 'DoCode', 'FPoCode', 'MaterialCode'], right: ['action'] } }}
+        initialState={{
+          pinnedColumns: { left: ['id', 'DoCode', 'FPoMasterCode', 'FPoCode', 'MaterialCode'], right: ['action'] },
+        }}
       />
 
       <DeliveryOrderDialog

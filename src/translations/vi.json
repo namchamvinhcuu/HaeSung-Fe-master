@@ -365,7 +365,8 @@
     "FPoCode": "Mã FPO",
     "FPoCode_required": "FPO Code không được để trống",
     "FPoCode_required_length_10": "FPO Code phải có độ dài bằng 10 ký tự",
-    "FPo_code_duplicated": "FPO Code đã tồn tại"
+    "FPo_code_duplicated": "FPO Code đã tồn tại",
+    "material_type_not_fg": "Nguyên vật liệu phải là thành phẩm"
   },
   "delivery_order": {
     "DoCode": "DO Code",

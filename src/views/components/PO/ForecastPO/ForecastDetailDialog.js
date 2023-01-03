@@ -55,11 +55,11 @@ const ForecastDetailDialog = (props) => {
     //   .number()
     //   .nullable()
     //   .required(intl.formatMessage({ id: "forecast.LineId_required" })),
-    FPoCode: yup
-      .string()
-      .required(intl.formatMessage({ id: 'forecast.FPoCode_required' }))
-      .nullable()
-      .length(10, intl.formatMessage({ id: 'forecast.FPoCode_required_length_10' })),
+    // FPoCode: yup
+    //   .string()
+    //   .required(intl.formatMessage({ id: 'forecast.FPoCode_required' }))
+    //   .nullable()
+    //   .length(10, intl.formatMessage({ id: 'forecast.FPoCode_required_length_10' })),
     Week: yup
       .number()
       .nullable()
@@ -147,11 +147,11 @@ const ForecastDetailDialog = (props) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [dataReadFile, setDataReadFile] = useState([]);
   const schema = {
-    'FPO CODE': {
-      prop: 'FPoCode',
-      type: String,
-      required: true,
-    },
+    // 'FPO CODE': {
+    //   prop: 'FPoCode',
+    //   type: String,
+    //   required: true,
+    // },
     'MATERIAL CODE': {
       prop: 'MaterialCode',
       type: String,
@@ -208,7 +208,7 @@ const ForecastDetailDialog = (props) => {
       fetchData();
       handleCloseDialog();
     } else {
-      if (res.HttpResponseCode === 400 && res.ResponseMessage === 'general.duplicated_code') {
+      if (res.HttpResponseCode === 400 && res.ResponseMessage === 'forecast.material_type_not_fg') {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
       }
       if (res.HttpResponseCode === 400 && res.ResponseMessage === 'forecast.duplicated_product_buyer') {
@@ -288,7 +288,7 @@ const ForecastDetailDialog = (props) => {
                   helperText={touched.Week && errors.Week}
                 />
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <TextField
                   fullWidth
                   size="small"
@@ -300,7 +300,7 @@ const ForecastDetailDialog = (props) => {
                   error={touched.FPoCode && Boolean(errors.FPoCode)}
                   helperText={touched.FPoCode && errors.FPoCode}
                 />
-              </Grid>
+              </Grid> */}
 
               <Grid item xs={12}>
                 <MuiAutocomplete

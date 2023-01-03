@@ -52,10 +52,10 @@ const DeliveryOrderDialog = (props) => {
       .nullable()
       .required(intl.formatMessage({ id: 'general.field_required' }))
       .min(1, intl.formatMessage({ id: 'general.field_required' })),
-    DoCode: yup
-      .string()
-      .required(intl.formatMessage({ id: 'general.field_required' }))
-      .length(12, intl.formatMessage({ id: 'general.field_length' }, { length: 12 })),
+    // DoCode: yup
+    //   .string()
+    //   .required(intl.formatMessage({ id: 'general.field_required' }))
+    //   .length(12, intl.formatMessage({ id: 'general.field_length' }, { length: 12 })),
     OrderQty: yup
       .number()
       .required(intl.formatMessage({ id: 'general.field_required' }))
@@ -177,11 +177,11 @@ const DeliveryOrderDialog = (props) => {
       type: String,
       required: true,
     },
-    'DO CODE': {
-      prop: 'DOCode',
-      type: String,
-      required: false,
-    },
+    // 'DO CODE': {
+    //   prop: 'DOCode',
+    //   type: String,
+    //   required: false,
+    // },
     'ETD LOAD TIME': {
       prop: 'ETDLoad',
       type: String,
@@ -190,6 +190,7 @@ const DeliveryOrderDialog = (props) => {
     'DELIVERY TIME': {
       prop: 'DeliveryTime',
       type: String,
+      required: true,
     },
     'ORDER QTY': {
       prop: 'OrderQty',
@@ -360,7 +361,7 @@ const DeliveryOrderDialog = (props) => {
                         helperText={touched.FPOId && errors.FPOId}
                       />
                     </Grid>
-                    <Grid item xs>
+                    {/* <Grid item xs>
                       <MuiTextField
                         required
                         disabled={dialogState.isSubmit}
@@ -372,6 +373,21 @@ const DeliveryOrderDialog = (props) => {
                         onChange={handleChange}
                         error={touched.DoCode && Boolean(errors.DoCode)}
                         helperText={touched.DoCode && errors.DoCode}
+                      />
+                    </Grid> */}
+                    <Grid item xs>
+                      <MuiTextField
+                        required
+                        type="number"
+                        disabled={dialogState.isSubmit}
+                        label={intl.formatMessage({
+                          id: 'delivery_order.OrderQty',
+                        })}
+                        name="OrderQty"
+                        value={values.OrderQty}
+                        onChange={handleChange}
+                        error={touched.OrderQty && Boolean(errors.OrderQty)}
+                        helperText={touched.OrderQty && errors.OrderQty}
                       />
                     </Grid>
                   </Grid>
@@ -411,21 +427,6 @@ const DeliveryOrderDialog = (props) => {
                   <Grid container spacing={2}>
                     <Grid item xs>
                       <MuiTextField
-                        required
-                        type="number"
-                        disabled={dialogState.isSubmit}
-                        label={intl.formatMessage({
-                          id: 'delivery_order.OrderQty',
-                        })}
-                        name="OrderQty"
-                        value={values.OrderQty}
-                        onChange={handleChange}
-                        error={touched.OrderQty && Boolean(errors.OrderQty)}
-                        helperText={touched.OrderQty && errors.OrderQty}
-                      />
-                    </Grid>
-                    <Grid item xs>
-                      <MuiTextField
                         name="PackingNote"
                         disabled={dialogState.isSubmit}
                         value={values.PackingNote}
@@ -435,10 +436,6 @@ const DeliveryOrderDialog = (props) => {
                         })}
                       />
                     </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                  <Grid container spacing={2}>
                     <Grid item xs>
                       <MuiTextField
                         name="Dock"
@@ -450,6 +447,10 @@ const DeliveryOrderDialog = (props) => {
                         })}
                       />
                     </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                  <Grid container spacing={2}>
                     <Grid item xs>
                       <MuiTextField
                         name="Truck"
@@ -461,10 +462,6 @@ const DeliveryOrderDialog = (props) => {
                         })}
                       />
                     </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                  <Grid container spacing={2}>
                     <Grid item xs>
                       <MuiTextField
                         name="InvoiceNo"
@@ -476,6 +473,10 @@ const DeliveryOrderDialog = (props) => {
                         })}
                       />
                     </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                  <Grid container spacing={2}>
                     <Grid item xs>
                       <MuiTextField
                         name="Remark"

@@ -339,7 +339,8 @@
     "FPoCode": " FPO Code",
     "FPoCode_required": "FPO Code is required",
     "FPoCode_required_length_10": "FPO Code must lenght is 10 character",
-    "FPo_code_duplicated": "FPO Code is exist"
+    "FPo_code_duplicated": "FPO Code is exist",
+    "material_type_not_fg": "Material required is finish good"
   },
   "document": {
     "menuName": "Menu Name",
