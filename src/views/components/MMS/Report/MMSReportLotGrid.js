@@ -5,12 +5,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateTimeField, MuiSearchField } from '@controls';
+import { MuiAutocomplete, MuiButton, MuiDataGrid } from '@controls';
 import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import { mmsReportService } from '@services';
-import { addDays, ErrorAlert } from '@utils';
-import _ from 'lodash';
-import moment from 'moment';
 import { useIntl } from 'react-intl';
 
 const MMSReportLotGrid = ({ woId }) => {
@@ -35,13 +33,25 @@ const MMSReportLotGrid = ({ woId }) => {
       filterable: false,
       renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (state.page - 1) * state.pageSize,
     },
+    { field: 'Id', headerName: 'Id', flex: 0.5 },
     { field: 'LotSerial', headerName: intl.formatMessage({ id: 'actual.LotSerial' }), flex: 0.5 },
     { field: 'MaterialCode', headerName: intl.formatMessage({ id: 'actual.MaterialId' }), flex: 0.5 },
     {
       field: 'QCResult',
       headerName: intl.formatMessage({ id: 'actual.QCResult' }),
       flex: 0.4,
-      valueFormatter: (params) => (params?.value ? 'OK' : 'NG'),
+      // valueFormatter: (params) => (params?.value ? 'OK' : 'NG'),
+      renderCell: (params) => {
+        return params.row.QCResult == true ? (
+          <Typography sx={{ fontSize: '14px' }}>
+            <b>OK</b>
+          </Typography>
+        ) : (
+          <Typography sx={{ fontSize: '14px', color: 'red' }}>
+            <b>NG</b>
+          </Typography>
+        );
+      },
     },
     { field: 'Qty', headerName: intl.formatMessage({ id: 'actual.Qty' }), flex: 0.4 },
   ];

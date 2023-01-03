@@ -49,8 +49,6 @@ const DetailPanelContent = ({ row: rowProp }) => {
   };
 
   const detailPanelColumns = [
-    { field: 'Id', headerName: '', hide: true },
-
     {
       field: 'id',
       headerName: '',
@@ -58,6 +56,11 @@ const DetailPanelContent = ({ row: rowProp }) => {
       filterable: false,
       renderCell: (index) =>
         index.api.getRowIndex(index.row.Id) + 1 + (detailPanelState.page - 1) * detailPanelState.pageSize,
+    },
+    {
+      field: 'Id',
+      headerName: 'Id',
+      width: 150,
     },
 
     {

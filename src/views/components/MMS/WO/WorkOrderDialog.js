@@ -246,7 +246,7 @@ const WorkOrderDialog = (props) => {
   };
 
   const getMoldArr = async () => {
-    return await workOrderService.getMoldArr();
+    return await workOrderService.getMoldArr(values.MaterialId);
   };
 
   const changeHandler = (event) => {
