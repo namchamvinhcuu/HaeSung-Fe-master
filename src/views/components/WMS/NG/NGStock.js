@@ -191,6 +191,11 @@ const NGStock = (props) => {
       width: 190,
     },
     {
+      field: 'SumStock',
+      headerName: 'Total Stock',
+      width: 100,
+    },
+    {
       field: 'MaterialTypeName',
       headerName: intl.formatMessage({ id: 'material.MaterialType' }),
       width: 150,
@@ -341,7 +346,7 @@ const NGStock = (props) => {
         // getRowClassName={(params) => {
         //   if (_.isEqual(params.row, newData)) return `Mui-created`;
         // }}
-        initialState={{ pinnedColumns: { left: ['id', 'MaterialCode', 'StockQty'], right: ['action'] } }}
+        initialState={{ pinnedColumns: { left: ['id', 'MaterialCode', 'SumStock'], right: ['action'] } }}
         rowThreshold={0}
         getDetailPanelHeight={getDetailPanelHeight}
         getDetailPanelContent={getDetailPanelContent}
