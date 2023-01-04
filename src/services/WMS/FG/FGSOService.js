@@ -75,21 +75,21 @@ export const getLots = async (materialId) => {
   }
 };
 
-// export const pickingMsoDetail = async (params) => {
-//   try {
-//     return await axios.put(`${API}/picking-mso-details`, params);
-//   } catch (error) {
-//     console.log(`ERROR: ${error}`);
-//   }
-// };
+export const pickingFGSODetail = async (params) => {
+  try {
+    return await axios.put(`${API}/picking-fgso-details`, params);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
 
-// export const getESLDataByBinCode = async (binCode) => {
-//   try {
-//     return await axios.get(`${API}/get-els-data-by-binCode?BinCode=${binCode}`);
-//   } catch (error) {
-//     console.log(`ERROR: ${error}`);
-//   }
-// };
+export const getESLDataByBinCode = async (binCode) => {
+  try {
+    return await axios.get(`${API}/get-els-data-by-binCode?BinCode=${binCode}`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
 
 export const getDataPrint = async (params) => {
   try {

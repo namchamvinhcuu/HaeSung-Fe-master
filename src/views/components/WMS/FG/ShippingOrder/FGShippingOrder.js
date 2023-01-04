@@ -270,7 +270,7 @@ const FGSOMaster = (props) => {
 
     {
       field: 'FGsoStatus',
-      headerName: 'Status',
+      headerName: intl.formatMessage({ id: 'material-so-master.MsoStatus' }),
       /*flex: 0.7,*/ width: 120,
       align: 'center',
       renderCell: (params) => {

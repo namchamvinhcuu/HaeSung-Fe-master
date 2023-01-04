@@ -173,9 +173,7 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
 
     {
       field: 'MaterialColorCode',
-      headerName: intl.formatMessage({
-        id: 'material-so-detail.MaterialColorCode',
-      }),
+      headerName: 'Assy Code',
       /*flex: 0.7,*/ width: 200,
     },
     {
@@ -247,9 +245,7 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
 
     {
       field: 'MaterialColorCode',
-      headerName: intl.formatMessage({
-        id: 'material-so-detail.MaterialColorCode',
-      }),
+      headerName: 'Assy Code',
       /*flex: 0.7,*/ width: 200,
     },
 
@@ -410,7 +406,7 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
         <Grid item xs>
           <MuiSearchField
             disabled={FGsoId ? false : true}
-            label="material-so-detail.MaterialColorCode"
+            label="forecast.MaterialCode"
             name="MaterialColorCode"
             onClick={() => fetchData(FGsoId)}
             onChange={(e) => handleSearch(e.target.value, 'MaterialCode')}
@@ -510,7 +506,7 @@ const PopupConfirm = ({ isShowing, hide, rowConfirm, setUpdateData }) => {
     }
     const rowConfirmData = { ...rowConfirm, LotCode: lot };
 
-    const res = await fgSOService.pickingMsoDetail({
+    const res = await fgSOService.pickingFGSODetail({
       ...rowConfirmData,
     });
     if (res.HttpResponseCode === 200) {
