@@ -72,7 +72,8 @@ import FGReceiving from './WMS/FG/Receiving/FGReceiving';
 import FGPackingLot from './WMS/FG/PackingLot/FGPackingLot';
 import FGStock from './WMS/FG/FGStock/FGStock';
 import FGPutAway from './WMS/FG/PutAway/FGPutAway';
-//WMS - FG
+import FGShippingOrder from './WMS/FG/ShippingOrder/FGShippingOrder';
+//WMS - NG
 import NGStock from './WMS/NG/NGStock';
 
 //WMS - Layout
@@ -166,6 +167,7 @@ export {
   FGPackingLot,
   FGStock,
   FGPutAway,
+  FGShippingOrder,
   //WMS - NG
   NGStock,
   // WMS - Layout

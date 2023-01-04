@@ -17,6 +17,9 @@ import ForecastPOMasterDto from './ForecastPOMasterDto';
 import LotDto from './LotDto';
 import MaterialSOMasterDto from './MaterialSOMasterDto';
 import MaterialSODetailDto from './MaterialSODetailDto';
+import FGSOMasterDto from './FGSOMasterDto';
+import FGSODetailDto from './FGSODetailDto';
+
 export {
   SupplierDto,
   ProductDto,
@@ -37,4 +40,6 @@ export {
   LotDto,
   MaterialSOMasterDto,
   MaterialSODetailDto,
+  FGSOMasterDto,
+  FGSODetailDto,
 };
