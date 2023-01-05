@@ -284,6 +284,14 @@ const FGStock = (props) => {
         <Grid item xs>
           <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
             <Grid item style={{ width: '21%' }}>
+              <MuiSearchField
+                variant="MaterialCode"
+                label="product.product_code"
+                onClick={fetchData}
+                onChange={(e) => handleSearch(e.target.value, 'MaterialCode')}
+              />
+            </Grid>
+            <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
                 label={intl.formatMessage({ id: 'product.Model' })}
                 fetchDataFunc={getModel}
@@ -293,7 +301,6 @@ const FGStock = (props) => {
                 variant="standard"
               />
             </Grid>
-
             <Grid item style={{ width: '21%' }}>
               <MuiAutocomplete
                 label={intl.formatMessage({ id: 'product.product_type' })}
@@ -304,16 +311,6 @@ const FGStock = (props) => {
                 variant="standard"
               />
             </Grid>
-
-            <Grid item style={{ width: '21%' }}>
-              <MuiSearchField
-                variant="MaterialCode"
-                label="product.product_code"
-                onClick={fetchData}
-                onChange={(e) => handleSearch(e.target.value, 'MaterialCode')}
-              />
-            </Grid>
-
             <Grid item style={{ width: '21%' }}>
               <MuiSearchField
                 variant="Description"
