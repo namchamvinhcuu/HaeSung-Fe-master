@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiDateField, MuiSelectField } from '@controls';
+import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiAutocomplete, MuiSelectField } from '@controls';
 import { Grid, TextField } from '@mui/material';
 import { useIntl } from 'react-intl';
 import * as yup from 'yup';
@@ -154,6 +154,7 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
     if (res.Data) {
       setMaterialList([...res.Data]);
     }
+    return res;
   };
 
   return (
@@ -174,14 +175,35 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
           {checkLV ? (
             <Grid item xs={12}>
               {mode == CREATE_ACTION ? (
-                <MuiSelectField
+                // <MuiSelectField
+                //   required
+                //   value={
+                //     values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null
+                //   }
+                //   disabled={mode == UPDATE_ACTION ? true : dialogState.isSubmit}
+                //   label={intl.formatMessage({ id: 'bom.MaterialId' })}
+                //   options={MaterialList}
+                //   displayLabel="MaterialCode"
+                //   displayValue="MaterialId"
+                //   displayGroup="GroupMaterial"
+                //   onChange={(e, value) => {
+                //     setMaterialType(value?.GroupMaterial);
+                //     setFieldValue('MaterialCode', value?.MaterialCode || '', true);
+                //     setFieldValue('MaterialId', value?.MaterialId || '', true);
+                //   }}
+                //   defaultValue={
+                //     mode == CREATE_ACTION
+                //       ? null
+                //       : { MaterialId: initModal.MaterialId, MaterialCode: initModal.MaterialCode }
+                //   }
+                //   error={touched.MaterialId && Boolean(errors.MaterialId)}
+                //   helperText={touched.MaterialId && errors.MaterialId}
+                // />
+                <MuiAutocomplete
                   required
-                  value={
-                    values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null
-                  }
                   disabled={mode == UPDATE_ACTION ? true : dialogState.isSubmit}
                   label={intl.formatMessage({ id: 'bom.MaterialId' })}
-                  options={MaterialList}
+                  fetchDataFunc={() => getMaterial(0)}
                   displayLabel="MaterialCode"
                   displayValue="MaterialId"
                   displayGroup="GroupMaterial"
@@ -190,11 +212,6 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
                     setFieldValue('MaterialCode', value?.MaterialCode || '', true);
                     setFieldValue('MaterialId', value?.MaterialId || '', true);
                   }}
-                  defaultValue={
-                    mode == CREATE_ACTION
-                      ? null
-                      : { MaterialId: initModal.MaterialId, MaterialCode: initModal.MaterialCode }
-                  }
                   error={touched.MaterialId && Boolean(errors.MaterialId)}
                   helperText={touched.MaterialId && errors.MaterialId}
                 />

@@ -150,17 +150,17 @@ const Actual = (props) => {
       headerName: 'Action',
       /*flex: 0.7,*/ width: 80,
       renderCell: (params) => {
-        return params.row.IsInputScan ? (
-          <Button
-            variant="contained"
-            color={params.row.isChecked ? 'secondary' : 'success'}
-            size="small"
-            onClick={() => togglePopup(params)}
-          >
-            {params.row.isChecked ? 'UPDATE' : 'Scan'}
-          </Button>
-        ) : (
-          ''
+        return (
+          params.row.IsInputScan && (
+            <Button
+              variant="contained"
+              color={params.row.isChecked ? 'secondary' : 'success'}
+              size="small"
+              onClick={() => togglePopup(params)}
+            >
+              {params.row.isChecked ? 'UPDATE' : 'Scan'}
+            </Button>
+          )
         );
       },
     },
