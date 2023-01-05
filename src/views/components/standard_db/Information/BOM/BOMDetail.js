@@ -92,7 +92,7 @@ export default function BOMDetail({ BomId, newDataChild }) {
     {
       field: 'MaterialCode',
       headerName: intl.formatMessage({ id: 'bom.MaterialId' }),
-      flex: 0.5,
+      width: 200,
     },
     {
       field: 'MaterialUnit',
