@@ -1,13 +1,11 @@
-import { MuiDialog, MuiTextField, MuiButton, MuiSubmitButton } from '@controls';
-import { Box, Button, Grid, Typography } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
-import { memo } from 'react';
+import { MuiButton, MuiDialog, MuiTextField } from '@controls';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Box, Grid } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 import { actualService } from '@services';
 import { ErrorAlert, SuccessAlert } from '@utils';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
-import moment from 'moment';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 const PopupActualScanLots = memo(({ isShowing, hide, woIdProps, fetchDataParent, setDisabledBtnParent }) => {
   const intl = useIntl();
@@ -26,6 +24,7 @@ const PopupActualScanLots = memo(({ isShowing, hide, woIdProps, fetchDataParent,
     lotInputRef.current.value = '';
     lotInputRef.current.focus();
   };
+
   const scanLot = async () => {
     const lot = lotInputRef.current.value.trim();
 
@@ -42,11 +41,13 @@ const PopupActualScanLots = memo(({ isShowing, hide, woIdProps, fetchDataParent,
       ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
     }
   };
+
   const keyPress = async (e) => {
     if (e.key === 'Enter') {
       await scanBtnClick();
     }
   };
+
   useEffect(() => {
     lotInputRef.current = inputRef;
 
@@ -61,6 +62,7 @@ const PopupActualScanLots = memo(({ isShowing, hide, woIdProps, fetchDataParent,
 
   const fetchData = async () => {
     const res = await actualService.getListLot({ woId: woIdProps });
+    console.log('test', res.Data);
     setListLot(res.Data);
   };
 
@@ -98,6 +100,7 @@ const PopupActualScanLots = memo(({ isShowing, hide, woIdProps, fetchDataParent,
       }
     }
   };
+
   return (
     <MuiDialog maxWidth="md" title="Scan Lots" isOpen={isShowing} disable_animate={300} onClose={() => hide()}>
       <Box className="d-flex align-items-center my-3">
@@ -117,10 +120,11 @@ const PopupActualScanLots = memo(({ isShowing, hide, woIdProps, fetchDataParent,
             <thead>
               <tr>
                 <th scope="col">STT</th>
-                <th scope="col">Material Code</th>
+                <th scope="col">Lot #</th>
                 <th scope="col">Lot Serial</th>
+                <th scope="col">Material Code</th>
                 <th scope="col">Qty</th>
-                <th scope="col">QC Date</th>
+                {/* <th scope="col">QC Date</th> */}
                 <th scope="col"></th>
               </tr>
             </thead>
@@ -129,10 +133,11 @@ const PopupActualScanLots = memo(({ isShowing, hide, woIdProps, fetchDataParent,
                 return (
                   <tr key={`LISTLOT${index}`}>
                     <th scope="row">{index + 1}</th>
-                    <td>{item?.MaterialCode}</td>
+                    <td>{item?.WOInputCheckLotId}</td>
                     <td>{item?.LotSerial}</td>
+                    <td>{item?.MaterialCode}</td>
                     <td>{item?.Qty}</td>
-                    <td>{moment(item?.QCDate).add(7, 'hours').format('YYYY-MM-DD hh:mm:ss')}</td>
+                    {/* <td>{moment(item?.QCDate).add(7, 'hours').format('YYYY-MM-DD hh:mm:ss')}</td> */}
                     <td>
                       <IconButton aria-label="delete" color="error" size="small" onClick={() => handleDelete(item)}>
                         <DeleteIcon fontSize="inherit" />

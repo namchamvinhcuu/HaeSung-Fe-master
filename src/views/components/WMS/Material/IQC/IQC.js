@@ -62,7 +62,6 @@ const IQC = (props) => {
     },
   });
   const columns = [
-    { field: 'Id', headerName: '', hide: true },
     {
       field: 'id',
       headerName: '',
@@ -109,23 +108,25 @@ const IQC = (props) => {
         );
       },
     },
+    { field: 'Id', headerName: 'Lot #', hide: false, width: 150 },
     {
-      field: 'LotCode',
-      headerName: 'Lot Code',
-      width: 200,
-      hide: true,
+      field: 'LotSerial',
+      headerName: 'Lot Serial',
+      width: 170,
     },
+    // {
+    //   field: 'LotCode',
+    //   headerName: 'Lot Code',
+    //   width: 200,
+    //   hide: true,
+    // },
 
     {
       field: 'MaterialCode',
       headerName: 'Material Code',
       width: 170,
     },
-    {
-      field: 'LotSerial',
-      headerName: 'Lot Serial',
-      width: 170,
-    },
+
     {
       field: 'Qty',
       headerName: 'Qty',
