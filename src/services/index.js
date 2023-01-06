@@ -54,6 +54,7 @@ import * as fgReceivingService from './WMS/FG/FGReceivingService';
 import * as fgStockService from './WMS/FG/FGStockService';
 import * as fgPutAwayService from './WMS/FG/FGPutAwayService';
 import * as fgDeliveryService from './WMS/FG/FGDeliveryService';
+import * as fgPackingService from './WMS/FG/FGPackingService';
 import * as oqcService from './WMS/FG/OQCService';
 import * as fgSOService from './WMS/FG/FGSOService';
 import * as hmiService from './mms/HMIHistoryService';
@@ -113,4 +114,5 @@ export {
   ngStockService,
   oqcService,
   fgDeliveryService,
+  fgPackingService,
 };
