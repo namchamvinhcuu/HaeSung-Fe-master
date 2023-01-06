@@ -19,6 +19,7 @@ import MaterialSOMasterDto from './MaterialSOMasterDto';
 import MaterialSODetailDto from './MaterialSODetailDto';
 import FGSOMasterDto from './FGSOMasterDto';
 import FGSODetailDto from './FGSODetailDto';
+import PackingLabelDto from './PackingLabelDto';
 
 export {
   SupplierDto,
@@ -42,4 +43,5 @@ export {
   MaterialSODetailDto,
   FGSOMasterDto,
   FGSODetailDto,
+  PackingLabelDto,
 };
