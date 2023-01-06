@@ -529,5 +529,12 @@
     "Remark":"Remark",
     "confirm_QC":"Confirm check OQC",
     "NGQty_wrong":"NG qty larger lot Qty"
+  },
+  "packing":{
+    "PackingSerial":"Packing Serial",
+    "SamsungLabelCode":"Samsung Label",
+    "Qty":"Qty",
+    "PackingDate": "Packing Date",
+    "scanned":"lot scanned"
   }
 }
