@@ -74,6 +74,8 @@ import FGStock from './WMS/FG/FGStock/FGStock';
 import FGPutAway from './WMS/FG/PutAway/FGPutAway';
 import FGShippingOrder from './WMS/FG/ShippingOrder/FGShippingOrder';
 import FGPicking from './WMS/FG/Picking/FGPicking';
+import OQC from './WMS/FG/OQC/OQC';
+
 //WMS - NG
 import NGStock from './WMS/NG/NGStock';
 
@@ -170,6 +172,7 @@ export {
   FGPutAway,
   FGShippingOrder,
   FGPicking,
+  OQC,
   //WMS - NG
   NGStock,
   // WMS - Layout

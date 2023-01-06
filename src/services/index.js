@@ -53,6 +53,7 @@ import * as eslService from './esl/ESLService';
 import * as fgReceivingService from './WMS/FG/FGReceivingService';
 import * as fgStockService from './WMS/FG/FGStockService';
 import * as fgPutAwayService from './WMS/FG/FGPutAwayService';
+import * as oqcService from './WMS/FG/OQCService';
 import * as fgSOService from './WMS/FG/FGSOService';
 import * as hmiService from './mms/HMIHistoryService';
 import * as ngStockService from './WMS/NG/NGStockService';
@@ -109,4 +110,5 @@ export {
   hmiService,
   materialShipToNGService,
   ngStockService,
+  oqcService,
 };
