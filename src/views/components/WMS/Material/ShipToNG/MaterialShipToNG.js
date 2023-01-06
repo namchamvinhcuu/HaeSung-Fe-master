@@ -323,7 +323,7 @@ const MaterialShipToNG = (props) => {
               />
             </Grid>
             <Grid item xs={2.5}>
-              <MuiButton text="scan" color="success" onClick={scanBtnClick} />
+              <MuiButton text="scan" color="success" onClick={scanBtnClick} sx={{ whiteSpace: 'nowrap' }} />
             </Grid>
           </Grid>
         </Grid>
