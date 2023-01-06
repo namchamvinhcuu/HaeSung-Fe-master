@@ -522,5 +522,12 @@
     "Mold": "Vui lòng chọn File Mold.xlsx",
     "Aisle": "Vui lòng chọn File Aisle.xlsx",
     "Data_Invalid": "Vui lòng kiểm tra lại dữ liệu"
+  },
+  "oqc":{
+    "NGQty":"NG Qty",
+    "Qc":"Qc",
+    "Remark":"Remark",
+    "confirm_QC":"Confirm check OQC",
+    "NGQty_wrong":"NG qty larger lot Qty"
   }
 }
