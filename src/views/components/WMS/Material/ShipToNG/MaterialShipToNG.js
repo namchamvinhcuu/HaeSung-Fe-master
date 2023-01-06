@@ -92,6 +92,7 @@ const MaterialShipToNG = (props) => {
       try {
         let res = await materialShipToNGService.handleDelete(lot);
         if (res && res.HttpResponseCode === 200) {
+          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
           await fetchData();
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));

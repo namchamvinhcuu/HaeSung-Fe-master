@@ -69,6 +69,7 @@ const MaterialPutAway = (props) => {
       try {
         let res = await materialPutAwayService.handleDelete(lot);
         if (res && res.HttpResponseCode === 200) {
+          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
           await fetchData();
           await eslService.updateESLDataByBinId(lot.BinId);
         } else {
