@@ -10,6 +10,7 @@ import {
   MuiAutocomplete,
   MuiButton,
   MuiDateTimeField,
+  MuiDateField,
   MuiDialog,
   MuiResetButton,
   MuiSubmitButton,
@@ -181,6 +182,7 @@ const WorkOrderDialog = (props) => {
   const handleReset = () => {
     resetForm();
   };
+
   const handleCloseDialog = () => {
     resetForm();
     setTab('tab1');
@@ -337,9 +339,9 @@ const WorkOrderDialog = (props) => {
         disable_animate={300}
         onClose={handleCloseDialog}
       >
-        <TabContext value={tab ?? 'tab1'}>
+        <TabContext value={tab}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <TabList onChange={handleChangeTab}>
+            <TabList onChange={handleChangeTab} aria-label="lab API tabs example">
               <Tab label="Single" value="tab1" />
               <Tab label="Excel" value="tab2" />
             </TabList>
@@ -605,7 +607,7 @@ const WorkOrderDialog = (props) => {
 
                     {/* StartDate */}
                     <Grid item xs>
-                      <MuiDateTimeField
+                      <MuiDateField
                         required
                         disabled={dialogState.isSubmit}
                         label={intl.formatMessage({

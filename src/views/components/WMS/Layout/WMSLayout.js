@@ -99,7 +99,6 @@ const WMSLayout = (props) => {
   });
 
   const columns = [
-    { field: 'Id', headerName: '', hide: true },
     {
       field: 'id',
       headerName: '',
@@ -107,8 +106,10 @@ const WMSLayout = (props) => {
       filterable: false,
       renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (lotState.page - 1) * lotState.pageSize,
     },
-    { field: 'MaterialCode', headerName: 'Material Code', flex: 0.4 },
+    { field: 'Id', headerName: 'Lot #', hide: false, flex: 0.3 },
     { field: 'LotSerial', headerName: 'LotSerial', flex: 0.3 },
+    { field: 'MaterialCode', headerName: 'Material Code', flex: 0.4 },
+
     {
       field: 'Qty',
       headerName: 'Qty',
