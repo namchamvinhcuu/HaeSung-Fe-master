@@ -10,10 +10,11 @@ import { FormControlLabel, Switch, Tooltip, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import { fgDeliveryService } from '@services';
-import { addDays, ErrorAlert } from '@utils';
+import { addDays, ErrorAlert, SuccessAlert } from '@utils';
 import _ from 'lodash';
 import moment from 'moment';
 import { useIntl } from 'react-intl';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const FGDeliveryDetail = ({ dataRow }) => {
   let isRendered = useRef(true);
@@ -29,73 +30,69 @@ const FGDeliveryDetail = ({ dataRow }) => {
     searchData: {
       ...PackingLabelDto,
     },
-  });
-
-  const [selectedRow, setSelectedRow] = useState({
-    ...PackingLabelDto,
+    DoId: dataRow,
   });
 
   const [newData, setNewData] = useState({ ...PackingLabelDto });
 
+  useEffect(() => {
+    if (!_.isEmpty(newData) && !_.isEqual(newData, PackingLabelDto)) {
+      let newArr = [...deliveryFGDetail.data];
+      const index = _.findIndex(newArr, function (o) {
+        return o.PackingLabelId == newData.PackingLabelId;
+      });
+
+      if (index !== -1) {
+        //update
+        newArr[index] = newData;
+        setdeliveryFGDetail({
+          ...deliveryFGDetail,
+          data: newArr,
+          totalRow: deliveryFGDetail.totalRow + 1,
+        });
+      } else {
+        const data = [newData, ...deliveryFGDetail.data];
+        if (data.length > deliveryFGDetail.pageSize) {
+          data.pop();
+        }
+        if (isRendered)
+          setdeliveryFGDetail({
+            ...deliveryFGDetail,
+            data: [...data],
+            totalRow: deliveryFGDetail.totalRow + 1,
+          });
+      }
+    }
+  }, [newData]);
+
   const handleDelete = async (deliveryOrder) => {
-    console.log('dêtle');
-    // if (
-    //   window.confirm(
-    //     intl.formatMessage({
-    //       id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
-    //     })
-    //   )
-    // ) {
-    //   try {
-    //     let res = await deliveryOrderService.handleDelete(deliveryOrder);
-    //     if (res && res.HttpResponseCode === 200) {
-    //       await fetchData();
-    //     } else {
-    //       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // }
+    if (
+      window.confirm(
+        intl.formatMessage({
+          id: 'general.confirm_delete',
+        })
+      )
+    ) {
+      try {
+        let res = await fgDeliveryService.handleDelete(deliveryOrder);
+        if (res && res.HttpResponseCode === 200) {
+          await fetchData();
+          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
-  //   const changeSearchData = (e, inputName) => {
-  //     let newSearchData = { ...deliveryFGDetail.searchData };
-
-  //     newSearchData[inputName] = e;
-
-  //     switch (inputName) {
-  //       case 'ETDLoad':
-  //       case 'DeliveryTime':
-  //         newSearchData[inputName] = e;
-  //         break;
-  //       case 'FPoMasterId':
-  //         newSearchData[inputName] = e ? e.FPoMasterId : PackingLabelDto.FPoMasterId;
-  //         newSearchData['FPoMasterCode'] = e ? e.FPoMasterCode : PackingLabelDto.FPoMasterCode;
-  //         newSearchData.MaterialId = 0;
-  //         newSearchData.MaterialCode = '';
-  //         break;
-  //       case 'MaterialId':
-  //         newSearchData[inputName] = e ? e.MaterialId : PackingLabelDto.MaterialId;
-  //         newSearchData['MaterialCode'] = e ? e.MaterialCode : PackingLabelDto.MaterialCode;
-  //         break;
-  //       default:
-  //         newSearchData[inputName] = e.target.value;
-  //         break;
-  //     }
-
-  //     setdeliveryFGDetail({
-  //       ...deliveryFGDetail,
-  //       searchData: { ...newSearchData },
-  //     });
-  //   };
-
-  const fetchData = async () => {
+  const fetchData = async (dataRow) => {
     setdeliveryFGDetail({ ...deliveryFGDetail, isLoading: true });
     const params = {
       page: deliveryFGDetail.page,
       pageSize: deliveryFGDetail.pageSize,
-      DoId: String(dataRow),
+      DoId: dataRow,
     };
     const res = await fgDeliveryService.getAll(params);
     if (res && res.Data && isRendered)
@@ -141,7 +138,9 @@ const FGDeliveryDetail = ({ dataRow }) => {
                 size="small"
                 sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
-              ></IconButton>
+              >
+                <DeleteIcon fontSize="inherit" />
+              </IconButton>
             </Grid>
           </Grid>
         );
@@ -166,7 +165,7 @@ const FGDeliveryDetail = ({ dataRow }) => {
     {
       field: 'SamsungLabelCode',
       headerName: 'Samsung Label Code',
-      /*flex: 0.7,*/ width: 135,
+      /*flex: 0.7,*/ width: 200,
     },
 
     {
@@ -290,16 +289,15 @@ const FGDeliveryDetail = ({ dataRow }) => {
         onPageChange={(newPage) => {
           setdeliveryFGDetail({ ...deliveryFGDetail, page: newPage + 1 });
         }}
-        getRowId={(rows) => rows.DoId}
-        onSelectionModelChange={(newSelectedRowId) => handleRowSelection(newSelectedRowId)}
+        getRowId={(rows) => rows.PackingLabelId}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) {
             return `Mui-created`;
           }
         }}
-        // initialState={{
-        //   pinnedColumns: { left: ['id', 'FPoMasterCode', 'FPoCode', 'DoCode', 'MaterialCode'], right: ['action'] },
-        // }}
+        initialState={{
+          pinnedColumns: { left: ['id'], right: ['action'] },
+        }}
       />
     </React.Fragment>
   );

@@ -19,3 +19,13 @@ export const scanFGDelivery = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+export const handleDelete = async (params) => {
+  try {
+    return await axios.put(`${apiName}/delete`, {
+      ...params,
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};

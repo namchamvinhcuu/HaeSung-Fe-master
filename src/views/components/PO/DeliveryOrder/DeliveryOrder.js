@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
-import { MuiButton, MuiDataGrid, MuiDateTimeField, MuiSearchField } from '@controls';
+import { MuiButton, MuiDataGrid, MuiDateTimeField, MuiSearchField, MuiDateField } from '@controls';
 import { DeliveryOrderDto } from '@models';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -35,8 +35,8 @@ const DeliveryOrder = (props) => {
     pageSize: 20,
     searchData: {
       ...DeliveryOrderDto,
-      ETDLoad: initETDLoad,
-      DeliveryTime: addDays(initETDLoad, 1),
+      ETDLoad: moment(initETDLoad).format('YYYY-MM-DD'),
+      // DeliveryTime: addDays(initETDLoad, 1),
     },
   });
 
@@ -187,7 +187,7 @@ const DeliveryOrder = (props) => {
         FPoMasterId: deliveryOrderState.searchData.FPoMasterId,
         MaterialId: deliveryOrderState.searchData.MaterialId,
         ETDLoad: deliveryOrderState.searchData.ETDLoad,
-        DeliveryTime: deliveryOrderState.searchData.DeliveryTime,
+        // DeliveryTime: deliveryOrderState.searchData.DeliveryTime,
         isActived: showActivedData,
       };
 
@@ -499,72 +499,15 @@ const DeliveryOrder = (props) => {
             onChange={(e) => changeSearchData(e, 'DoCode')}
           />
         </Grid>
-
-        {/* <Grid item xs>
-          <MuiAutocomplete
-            label={intl.formatMessage({ id: "delivery_order.PoCode" })}
-            fetchDataFunc={getPoMasterArr}
-            displayLabel="FPoMasterCode"
-            displayValue="FPoMasterId"
-            value={
-              deliveryOrderState.searchData.FPoMasterId !== 0
-                ? {
-                  FPoMasterId: deliveryOrderState.searchData.FPoMasterId,
-                  FPoMasterCode: deliveryOrderState.searchData.FPoMasterCode,
-                }
-                : null
-            }
-            onChange={(e, item) => {
-              changeSearchData(item ?? null, "FPoMasterId");
-            }}
-            variant="standard"
-          />
-        </Grid> */}
-
-        {/* <Grid item xs>
-          <MuiSelectField
-            label={intl.formatMessage({ id: "delivery_order.MaterialCode" })}
-            options={materialArr}
-            displayLabel="MaterialCode"
-            displayValue="MaterialId"
-            value={
-              deliveryOrderState.searchData.MaterialId !== 0
-                ? {
-                  MaterialId: deliveryOrderState.searchData.MaterialId,
-                  MaterialCode: deliveryOrderState.searchData.MaterialCode,
-                }
-                : null
-            }
-            onChange={(e, item) => {
-              changeSearchData(item ?? null, "MaterialId");
-            }}
-            variant="standard"
-          />
-        </Grid> */}
-
         <Grid item xs>
-          <MuiDateTimeField
+          <MuiDateField
             disabled={deliveryOrderState.isLoading}
             label={intl.formatMessage({
               id: 'delivery_order.ETDLoad',
             })}
             value={deliveryOrderState.searchData.ETDLoad}
             onChange={(e) => {
-              changeSearchData(e, 'ETDLoad');
-            }}
-            variant="standard"
-          />
-        </Grid>
-
-        <Grid item xs>
-          <MuiDateTimeField
-            disabled={deliveryOrderState.isLoading}
-            label={intl.formatMessage({
-              id: 'delivery_order.DeliveryTime',
-            })}
-            value={deliveryOrderState.searchData.DeliveryTime}
-            onChange={(e) => {
-              changeSearchData(e, 'DeliveryTime');
+              changeSearchData(e ? moment(e).format('YYYY-MM-DD') : null, 'ETDLoad');
             }}
             variant="standard"
           />
