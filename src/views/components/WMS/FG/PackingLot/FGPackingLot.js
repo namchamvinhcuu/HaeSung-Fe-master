@@ -1,28 +1,396 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { Store } from '@appstate';
+import { User_Operations } from '@appstate/user';
+import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
-import { User_Operations } from '@appstate/user';
-import { Store } from '@appstate';
 
-import moment from 'moment';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
+import { useModal, useModal2 } from '@basesShared';
+import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateField } from '@controls';
 import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import UndoIcon from '@mui/icons-material/Undo';
+import { FormControlLabel, Grid, IconButton, Switch } from '@mui/material';
+import { fgPackingService } from '@services';
+import { addDays, ErrorAlert, SuccessAlert } from '@utils';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
-import { ErrorAlert, SuccessAlert } from '@utils';
-import { MuiButton, MuiDataGrid, MuiTextField } from '@controls';
+import FGPackingDialog from './FGPackingDialog';
+import FGPackingLotDetail from './FGPackingLotDetail';
+import ActualPrintDialog from '../../../MMS/Actual/ActualPrintDialog';
 
 const FGPackingLot = (props) => {
-  let isRendered = useRef(true);
-
-  const lotInputRef = useRef(null);
   const intl = useIntl();
+  let isRendered = useRef(true);
+  const [mode, setMode] = useState(CREATE_ACTION);
+  const { isShowing, toggle } = useModal();
+  const { isShowing2, toggle2 } = useModal2();
+  const [state, setState] = useState({
+    isLoading: false,
+    data: [],
+    totalRow: 0,
+    page: 1,
+    pageSize: 8,
+    searchData: {
+      MaterialId: null,
+      StartDate: new Date(),
+      EndDate: addDays(new Date(), 7),
+      showDelete: true,
+    },
+  });
+
+  const [newData, setNewData] = useState({});
+  const [updateData, setUpdateData] = useState({});
+  const [rowData, setRowData] = useState({});
+  const [PackingLabelId, setPackingLabelId] = useState(null);
+  const [DataPrint, setDataPrint] = useState([]);
+
+  const columns = [
+    {
+      field: 'id',
+      headerName: '',
+      flex: 0.1,
+      align: 'center',
+      filterable: false,
+      renderCell: (index) => index.api.getRowIndex(index.row.PackingLabelId) + 1 + (state.page - 1) * state.pageSize,
+    },
+    { field: 'PackingLabelId', hide: true },
+    { field: 'row_version', hide: true },
+    {
+      field: 'action',
+      headerName: '',
+      witdh: 100,
+      disableClickEventBubbling: true,
+      sortable: false,
+      disableColumnMenu: true,
+      renderCell: (params) => {
+        return (
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
+              <IconButton
+                aria-label="delete"
+                color="error"
+                size="small"
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
+                onClick={() => handleDelete(params.row)}
+              >
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
+              </IconButton>
+            </Grid>
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
+              <IconButton
+                aria-label="edit"
+                color="warning"
+                size="small"
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
+                onClick={() => handleUpdate(params.row)}
+              >
+                <EditIcon fontSize="inherit" />
+              </IconButton>
+            </Grid>
+          </Grid>
+        );
+      },
+    },
+    {
+      field: 'PackingSerial',
+      headerName: intl.formatMessage({ id: 'packing.PackingSerial' }),
+      flex: 0.5,
+    },
+    {
+      field: 'SamsungLabelCode',
+      headerName: intl.formatMessage({ id: 'packing.SamsungLabelCode' }),
+      flex: 0.6,
+    },
+    {
+      field: 'MaterialCode',
+      headerName: intl.formatMessage({ id: 'bom.MaterialId' }),
+      flex: 0.5,
+    },
+    {
+      field: 'Qty',
+      headerName: intl.formatMessage({ id: 'packing.Qty' }),
+      flex: 0.4,
+    },
+    {
+      field: 'PackingDate',
+      headerName: intl.formatMessage({ id: 'packing.PackingDate' }),
+      flex: 0.5,
+      valueFormatter: (params) =>
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
+    },
+    {
+      field: 'createdName',
+      headerName: intl.formatMessage({ id: 'general.createdName' }),
+      flex: 0.5,
+    },
+    {
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.createdDate' }),
+      flex: 0.5,
+      valueFormatter: (params) =>
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
+    },
+    {
+      field: 'modifiedName',
+      headerName: intl.formatMessage({ id: 'general.modifiedName' }),
+      flex: 0.5,
+    },
+    {
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modifiedDate' }),
+      flex: 0.5,
+      valueFormatter: (params) =>
+        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
+    },
+  ];
+
+  useEffect(() => {
+    fetchData();
+    return () => {
+      isRendered = false;
+    };
+  }, [state.page, state.pageSize, state.searchData.showDelete]);
+
+  useEffect(() => {
+    if (!_.isEmpty(newData) && isRendered) {
+      const data = [newData, ...state.data];
+      if (data.length > state.pageSize) {
+        data.pop();
+      }
+      setState({
+        ...state,
+        data: [...data],
+        totalRow: state.totalRow + 1,
+      });
+    }
+  }, [newData]);
+
+  useEffect(() => {
+    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData) && isRendered) {
+      let newArr = [...state.data];
+      const index = _.findIndex(newArr, function (o) {
+        return o.PackingLabelId == updateData.PackingLabelId;
+      });
+      if (index !== -1) {
+        newArr[index] = updateData;
+      }
+
+      setState({ ...state, data: [...newArr] });
+    }
+  }, [updateData]);
+
+  //handle
+  const handleDelete = async (item) => {
+    if (
+      window.confirm(
+        intl.formatMessage({ id: item.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' })
+      )
+    ) {
+      try {
+        let res = await fgPackingService.deletePA(item);
+
+        if (res && res.HttpResponseCode === 200) {
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
+          await fetchData();
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const handleAdd = () => {
+    setMode(CREATE_ACTION);
+    setRowData();
+    toggle();
+  };
+
+  const handleUpdate = (row) => {
+    setMode(UPDATE_ACTION);
+    setRowData({ ...row });
+    toggle();
+  };
+
+  const handleSearch = (e, inputName) => {
+    let newSearchData = { ...state.searchData };
+    newSearchData[inputName] = e;
+    if (inputName == 'showDelete') {
+      setState({ ...state, page: 1, searchData: { ...newSearchData } });
+    } else {
+      setState({ ...state, searchData: { ...newSearchData } });
+    }
+  };
+
+  const handlePrint = async () => {
+    const res = await fgPackingService.getPADetailPrint({ PackingLabelId: PackingLabelId });
+    if (res && isRendered) {
+      setDataPrint(res.Data ?? []);
+      toggle2();
+    } else ErrorAlert(intl.formatMessage({ id: 'general.no_data' }));
+  };
+
+  const handleUpdateQty = (newQty) => {
+    let newArr = [...state.data];
+
+    const index = _.findIndex(newArr, function (o) {
+      return o.PackingLabelId == PackingLabelId;
+    });
+
+    if (index !== -1) {
+      var update = newArr[index];
+      setUpdateData({ ...update, Qty: update.Qty + newQty });
+    }
+  };
+
+  async function fetchData() {
+    let flag = true;
+    let message = '';
+    const checkObj = { ...state.searchData };
+    _.forOwn(checkObj, (value, key) => {
+      switch (key) {
+        case 'StartSearchingDate':
+          if (value == 'Invalid Date') {
+            message = 'general.StartSearchingDate_invalid';
+            flag = false;
+          }
+          break;
+        case 'DeliveryTime':
+          if (value == 'Invalid Date') {
+            message = 'general.EndSearchingDate_invalid';
+            flag = false;
+          }
+          break;
+
+        default:
+          break;
+      }
+    });
+
+    if (flag && isRendered) {
+      setState({ ...state, isLoading: true });
+      setPackingLabelId(null);
+
+      const params = {
+        page: state.page,
+        pageSize: state.pageSize,
+        keyWord: state.searchData.keyWord,
+        MaterialId: state.searchData.MaterialId,
+        StartDate: state.searchData.StartDate,
+        EndDate: state.searchData.EndDate,
+        isActived: state.searchData.showDelete,
+      };
+      const res = await fgPackingService.getPA(params);
+
+      if (res && isRendered)
+        setState({
+          ...state,
+          data: res.Data ?? [],
+          totalRow: res.TotalRow,
+          isLoading: false,
+        });
+    } else {
+      ErrorAlert(intl.formatMessage({ id: message }));
+    }
+  }
 
   return (
     <React.Fragment>
-      <h1>FGPackingLot</h1>
+      <Grid container direction="row" spacing={2} justifyContent="space-between" alignItems="width-end">
+        <Grid item xs={6}>
+          <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mt: 1 }} />
+          <MuiButton
+            text="print"
+            color="secondary"
+            onClick={handlePrint}
+            sx={{ mt: 1 }}
+            disabled={PackingLabelId == null ? true : false}
+          />
+        </Grid>
+        <Grid item>
+          <MuiAutocomplete
+            label={intl.formatMessage({ id: 'bom.MaterialId' })}
+            fetchDataFunc={fgPackingService.getMaterial}
+            displayLabel="MaterialCode"
+            displayValue="MaterialId"
+            displayGroup="GroupMaterial"
+            onChange={(e, item) => handleSearch(item ? item.MaterialId ?? null : null, 'MaterialId')}
+            sx={{ width: 250 }}
+            variant="standard"
+          />
+        </Grid>
+        <Grid item xs>
+          <MuiDateField
+            disabled={state.isLoading}
+            label={intl.formatMessage({ id: 'general.StartSearchingDate' })}
+            value={state.searchData.StartDate}
+            onChange={(e) => handleSearch(e, 'StartDate')}
+            variant="standard"
+          />
+        </Grid>
+        <Grid item xs>
+          <MuiDateField
+            disabled={state.isLoading}
+            label={intl.formatMessage({ id: 'general.EndSearchingDate' })}
+            value={state.searchData.EndDate}
+            onChange={(e) => handleSearch(e, 'EndDate')}
+            variant="standard"
+          />
+        </Grid>
+        <Grid item>
+          <MuiButton text="search" color="info" onClick={fetchData} sx={{ mt: 1 }} />
+        </Grid>
+        {/* <Grid item>
+          <FormControlLabel
+            sx={{ mt: 1 }}
+            control={
+              <Switch
+                defaultChecked={true}
+                color="primary"
+                onChange={(e) => handleSearch(e.target.checked, 'showDelete')}
+              />
+            }
+            label={intl.formatMessage({
+              id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted',
+            })}
+          />
+        </Grid> */}
+      </Grid>
+      <MuiDataGrid
+        showLoading={state.isLoading}
+        isPagingServer={true}
+        headerHeight={45}
+        columns={columns}
+        rows={state.data}
+        gridHeight={736}
+        page={state.page - 1}
+        pageSize={state.pageSize}
+        rowCount={state.totalRow}
+        onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
+        getRowId={(rows) => rows.PackingLabelId}
+        onSelectionModelChange={(newSelectedRowId) => setPackingLabelId(newSelectedRowId[0])}
+        getRowClassName={(params) => {
+          if (_.isEqual(params.row, newData)) return `Mui-created`;
+        }}
+        initialState={{ pinnedColumns: { right: ['action'] } }}
+      />
+
+      <FGPackingDialog
+        initModal={rowData}
+        isOpen={isShowing}
+        onClose={toggle}
+        setNewData={setNewData}
+        //setNewDataChild={setNewDataChild}
+
+        setUpdateData={setUpdateData}
+        mode={mode}
+      />
+      <FGPackingLotDetail PackingLabelId={PackingLabelId} handleUpdateQty={handleUpdateQty} />
+
+      <ActualPrintDialog isOpen={isShowing2} onClose={toggle2} listData={DataPrint} />
     </React.Fragment>
   );
 };

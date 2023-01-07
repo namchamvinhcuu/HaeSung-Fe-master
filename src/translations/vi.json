@@ -251,7 +251,7 @@
     "MaterialType_required": "Material Type không được để trống",
     "Unit_required": "Unit không được để trống",
     "SupplierId_required": "Supplier không được để trống",
-    "MoldeCode_not_found":"Không tìm thấy Mold Code"
+    "MoldeCode_not_found": "Không tìm thấy Mold Code"
   },
   "standardQC": {
     "QCCode": "QC Code"
@@ -460,7 +460,8 @@
     "NotMatchToMergeTotalSOQty": "Lot nhập không phù hợp (2 lot TotalSOQty > 0)",
     "Qty_bigger_0": "Số lượng bắt buộc phải lớn hơn 0",
     "Error_MergelotScannedWo": "Lot đã được scan vào liệu Wo không thể nhập",
-    "Error_SplitlotScannedWo": "Lot đã được scan vào liệu Wo không thể tách"
+    "Error_SplitlotScannedWo": "Lot đã được scan vào liệu Wo không thể tách",
+    "Error_DeletelotScannedWo": "Lot đã được scan vào liệu Wo không thể xóa"
   },
   "wms-layout": {
     "warehouse": "Kho",
@@ -523,11 +524,19 @@
     "Aisle": "Vui lòng chọn File Aisle.xlsx",
     "Data_Invalid": "Vui lòng kiểm tra lại dữ liệu"
   },
-  "oqc":{
-    "NGQty":"NG Qty",
-    "Qc":"Qc",
-    "Remark":"Remark",
-    "confirm_QC":"Confirm check OQC",
-    "NGQty_wrong":"NG qty larger lot Qty"
+  "oqc": {
+    "NGQty": "NG Qty",
+    "Qc": "Qc",
+    "Remark": "Remark",
+    "confirm_QC": "Confirm check OQC",
+    "NGQty_wrong": "NG qty larger lot Qty"
+  },
+  "packing": {
+    "PackingSerial": "Packing Serial",
+    "SamsungLabelCode": "Samsung Label",
+    "Qty": "Qty",
+    "PackingDate": "Packing Date",
+    "scanned": "lot scanned",
+    "Packing_Lot_Shipped":"Packing lot is shipped, can't delete"
   }
 }

@@ -251,7 +251,7 @@
     "MaterialType_required": "Material Type is required",
     "Unit_required": "Unit is required",
     "SupplierId_required": "Supplier is required",
-    "MoldeCode_not_found":"Mold Code not found"
+    "MoldeCode_not_found": "Mold Code not found"
   },
   "standardQC": {
     "QCCode": "QC Code"
@@ -460,7 +460,8 @@
     "NotMatchToMergeTotalSOQty": "Lot not match to merge (2 lot TotalSOQty > 0)",
     "Qty_bigger_0": " Qty must greater than 0",
     "Error_MergelotScannedWo": "lot scanned for Wo can't merge",
-    "Error_SplitlotScannedWo": "lot scanned for Wo can't split"
+    "Error_SplitlotScannedWo": "lot scanned for Wo can't split",
+    "Error_DeletelotScannedWo": "lot scanned for Wo can't delete"
   },
   "wms-layout": {
     "warehouse": "Warehouse",
@@ -523,11 +524,19 @@
     "Aisle": "Please choose File Aisle.xlsx",
     "Data_Invalid": "Please check the data again"
   },
-  "oqc":{
-    "NGQty":"NG Qty",
-    "Qc":"Qc",
-    "Remark":"Remark",
-    "confirm_QC":"Confirm check OQC",
-    "NGQty_wrong":"NG qty larger lot Qty"
+  "oqc": {
+    "NGQty": "NG Qty",
+    "Qc": "Qc",
+    "Remark": "Remark",
+    "confirm_QC": "Confirm check OQC",
+    "NGQty_wrong": "NG qty larger lot Qty"
+  },
+  "packing": {
+    "PackingSerial": "Packing Serial",
+    "SamsungLabelCode": "Samsung Label",
+    "Qty": "Qty",
+    "PackingDate": "Packing Date",
+    "scanned": "lot scanned",
+    "Packing_Lot_Shipped":"Packing lot is shipped, can't delete"
   }
 }

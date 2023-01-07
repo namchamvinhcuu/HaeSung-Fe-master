@@ -37,7 +37,6 @@ const WIPReceiving = (props) => {
   const [newData, setNewData] = useState({ ...LotDto });
 
   const columns = [
-    { field: 'Id', headerName: '', hide: true },
     {
       field: 'id',
       headerName: '',
@@ -70,6 +69,7 @@ const WIPReceiving = (props) => {
         );
       },
     },
+    { field: 'Id', headerName: 'Lot #', hide: false, flex: 0.4 },
     { field: 'MaterialColorCode', headerName: 'Material Code', flex: 0.4 },
     { field: 'Qty', headerName: 'Qty', flex: 0.3 },
     {
@@ -152,6 +152,7 @@ const WIPReceiving = (props) => {
         let res = await wipReceivingService.handleDelete(lot);
         if (res && res.HttpResponseCode === 200) {
           await fetchData();
+          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         }
