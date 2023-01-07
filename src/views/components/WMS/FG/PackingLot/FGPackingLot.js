@@ -18,7 +18,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import FGPackingDialog from './FGPackingDialog';
 import FGPackingLotDetail from './FGPackingLotDetail';
-import ActualPrintDialog from '../../../MMS/Actual/ActualPrintDialog';
+import FGPackingLotPrintDialog from './FGPackingLotPrintDialog';
 
 const FGPackingLot = (props) => {
   const intl = useIntl();
@@ -44,7 +44,7 @@ const FGPackingLot = (props) => {
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
   const [PackingLabelId, setPackingLabelId] = useState(null);
-  const [DataPrint, setDataPrint] = useState([]);
+  const [DataPrint, setDataPrint] = useState(null);
 
   const columns = [
     {
@@ -55,7 +55,6 @@ const FGPackingLot = (props) => {
       filterable: false,
       renderCell: (index) => index.api.getRowIndex(index.row.PackingLabelId) + 1 + (state.page - 1) * state.pageSize,
     },
-    { field: 'PackingLabelId', hide: true },
     { field: 'row_version', hide: true },
     {
       field: 'action',
@@ -92,6 +91,11 @@ const FGPackingLot = (props) => {
           </Grid>
         );
       },
+    },
+    {
+      field: 'PackingLabelId',
+      headerName: intl.formatMessage({ id: 'packing.PackingLabelId' }),
+      flex: 0.5,
     },
     {
       field: 'PackingSerial',
@@ -226,11 +230,15 @@ const FGPackingLot = (props) => {
   };
 
   const handlePrint = async () => {
-    const res = await fgPackingService.getPADetailPrint({ PackingLabelId: PackingLabelId });
-    if (res && isRendered) {
-      setDataPrint(res.Data ?? []);
+    let newArr = [...state.data];
+    const index = _.findIndex(newArr, function (o) {
+      return o.PackingLabelId == PackingLabelId;
+    });
+    if (index !== -1) {
+      let dataPrint = newArr[index];
+      setDataPrint(dataPrint);
       toggle2();
-    } else ErrorAlert(intl.formatMessage({ id: 'general.no_data' }));
+    }
   };
 
   const handleUpdateQty = (newQty) => {
@@ -305,7 +313,7 @@ const FGPackingLot = (props) => {
           <MuiButton
             text="print"
             color="secondary"
-            onClick={handlePrint}
+            onClick={() => handlePrint()}
             sx={{ mt: 1 }}
             disabled={PackingLabelId == null ? true : false}
           />
@@ -390,7 +398,7 @@ const FGPackingLot = (props) => {
       />
       <FGPackingLotDetail PackingLabelId={PackingLabelId} handleUpdateQty={handleUpdateQty} />
 
-      <ActualPrintDialog isOpen={isShowing2} onClose={toggle2} listData={DataPrint} />
+      <FGPackingLotPrintDialog isOpen={isShowing2} onClose={toggle2} dataPrint={DataPrint} />
     </React.Fragment>
   );
 };

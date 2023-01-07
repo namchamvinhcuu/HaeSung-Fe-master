@@ -51,6 +51,7 @@ const FGPackingLotDetailDialog = ({ isOpen, onClose, setNewData, setUpdateData, 
         <Grid item xs={12}>
           <Box className="d-flex align-items-center my-3">
             <MuiTextField
+              autoFocus
               ref={lotInputRef}
               label="lot"
               onChange={(e) => (lotInputRef.current.value = e.target.value)}

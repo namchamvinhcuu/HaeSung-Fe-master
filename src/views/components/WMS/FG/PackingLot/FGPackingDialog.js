@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiAutocomplete, MuiTextField } from '@controls';
-import { Grid, TextField } from '@mui/material';
+import { CREATE_ACTION } from '@constants/ConfigConstants';
+import { MuiAutocomplete, MuiDialog, MuiResetButton, MuiSubmitButton, MuiTextField } from '@controls';
+import { Grid } from '@mui/material';
+import { fgPackingService } from '@services';
+import { ErrorAlert, SuccessAlert } from '@utils';
+import { useFormik } from 'formik';
+import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import * as yup from 'yup';
-import { bomService, fgPackingService } from '@services';
-import { ErrorAlert, SuccessAlert } from '@utils';
-import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
-import { useFormik } from 'formik';
 
 const FGPackingDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode }) => {
   const intl = useIntl();
@@ -42,14 +42,6 @@ const FGPackingDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
     resetForm,
     setValues,
   } = formik;
-
-  useEffect(() => {
-    if (mode == CREATE_ACTION) {
-      formik.initialValues = defaultValue;
-    } else {
-      formik.initialValues = initModal;
-    }
-  }, [initModal, mode]);
 
   const handleReset = () => {
     resetForm();
@@ -127,7 +119,6 @@ const FGPackingDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
               helperText={touched.SamsungLabelCode && errors.SamsungLabelCode}
             />
           </Grid>
-
           <Grid item xs={12}>
             <Grid container direction="row-reverse">
               <MuiSubmitButton text="save" loading={dialogState.isSubmit} />

@@ -7,13 +7,11 @@ import { useIntl } from 'react-intl';
 import QRCode from 'react-qr-code';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
-import { MuiButton, MuiTextField, MuiAutocomplete } from '@controls';
-import { Box, Grid, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
-import { splitMergeLotService, oqcService } from '@services';
-import moment from 'moment';
-import ReactToPrint from 'react-to-print';
 import { useModal } from '@basesShared';
+import { MuiAutocomplete, MuiButton, MuiTextField } from '@controls';
+import { Box, Grid, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import { oqcService } from '@services';
+import moment from 'moment';
 import ActualPrintDialog from '../../../MMS/Actual/ActualPrintDialog';
 
 const OQC = (props) => {
@@ -70,7 +68,8 @@ const OQC = (props) => {
   const saveBtnClick = async () => {
     if (window.confirm(intl.formatMessage({ id: 'oqc.confirm_QC' }))) {
       try {
-        if (QCModel.NGQty > LotModel.Qty) return ErrorAlert(intl.formatMessage({ id: 'oqc.NGQty_wrong' }));
+        if (QCModel.NGQty > LotModel.Qty || QCModel.NGQty < 0)
+          return ErrorAlert(intl.formatMessage({ id: 'oqc.NGQty_wrong' }));
 
         var res = await oqcService.checkOQC({ ...QCModel, LotId: LotModel.Id });
         if (res.HttpResponseCode === 200 && res.Data) {

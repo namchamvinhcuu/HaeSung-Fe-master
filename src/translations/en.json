@@ -532,6 +532,7 @@
     "NGQty_wrong": "NG qty larger lot Qty"
   },
   "packing": {
+    "PackingLabelId" : "Packing #",
     "PackingSerial": "Packing Serial",
     "SamsungLabelCode": "Samsung Label",
     "Qty": "Qty",
