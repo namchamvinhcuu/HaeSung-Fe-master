@@ -268,10 +268,17 @@ const FGDeliveryDetail = ({ dataRow }) => {
             // value={lotInputRef.current.value}
             onChange={handleLotInputChange}
             onKeyDown={keyPress}
+            disabled={dataRow > 0 ? false : true}
           />
         </Grid>
         <Grid item>
-          <MuiButton text="scan" color="success" onClick={scanBtnClick} sx={{ whiteSpace: 'nowrap' }} />
+          <MuiButton
+            text="scan"
+            color="success"
+            onClick={scanBtnClick}
+            sx={{ whiteSpace: 'nowrap' }}
+            disabled={dataRow > 0 ? false : true}
+          />
         </Grid>
       </Grid>
 
