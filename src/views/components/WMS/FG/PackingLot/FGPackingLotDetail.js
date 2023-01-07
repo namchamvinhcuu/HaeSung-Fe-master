@@ -42,7 +42,7 @@ export default function FGPackingLotDetail({ PackingLabelId, newDataChild, handl
     {
       field: 'action',
       headerName: '',
-      flex: 0.3,
+      witdh: 100,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
@@ -182,7 +182,7 @@ export default function FGPackingLotDetail({ PackingLabelId, newDataChild, handl
             text="create"
             color="success"
             onClick={handleAdd}
-            sx={{ mt: 1 }}
+            sx={{ mt: 1, mb: 1 }}
             disabled={PackingLabelId ? false : true}
           />
         </Grid>

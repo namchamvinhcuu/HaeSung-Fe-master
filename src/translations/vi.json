@@ -536,6 +536,7 @@
     "SamsungLabelCode": "Samsung Label",
     "Qty": "Qty",
     "PackingDate": "Packing Date",
-    "scanned": "lot scanned"
+    "scanned": "lot scanned",
+    "Packing_Lot_Shipped":"Packing lot is shipped, can't delete"
   }
 }

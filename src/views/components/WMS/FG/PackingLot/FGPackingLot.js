@@ -18,12 +18,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import FGPackingDialog from './FGPackingDialog';
 import FGPackingLotDetail from './FGPackingLotDetail';
+import ActualPrintDialog from '../../../MMS/Actual/ActualPrintDialog';
 
 const FGPackingLot = (props) => {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
+  const { isShowing2, toggle2 } = useModal2();
   const [state, setState] = useState({
     isLoading: false,
     data: [],
@@ -42,6 +44,7 @@ const FGPackingLot = (props) => {
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
   const [PackingLabelId, setPackingLabelId] = useState(null);
+  const [DataPrint, setDataPrint] = useState([]);
 
   const columns = [
     {
@@ -57,7 +60,7 @@ const FGPackingLot = (props) => {
     {
       field: 'action',
       headerName: '',
-      flex: 0.3,
+      witdh: 100,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
@@ -222,6 +225,14 @@ const FGPackingLot = (props) => {
     }
   };
 
+  const handlePrint = async () => {
+    const res = await fgPackingService.getPADetailPrint({ PackingLabelId: PackingLabelId });
+    if (res && isRendered) {
+      setDataPrint(res.Data ?? []);
+      toggle2();
+    } else ErrorAlert(intl.formatMessage({ id: 'general.no_data' }));
+  };
+
   const handleUpdateQty = (newQty) => {
     let newArr = [...state.data];
 
@@ -289,8 +300,15 @@ const FGPackingLot = (props) => {
   return (
     <React.Fragment>
       <Grid container direction="row" spacing={2} justifyContent="space-between" alignItems="width-end">
-        <Grid item xs={5}>
+        <Grid item xs={6}>
           <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mt: 1 }} />
+          <MuiButton
+            text="print"
+            color="secondary"
+            onClick={handlePrint}
+            sx={{ mt: 1 }}
+            disabled={PackingLabelId == null ? true : false}
+          />
         </Grid>
         <Grid item>
           <MuiAutocomplete
@@ -325,7 +343,7 @@ const FGPackingLot = (props) => {
         <Grid item>
           <MuiButton text="search" color="info" onClick={fetchData} sx={{ mt: 1 }} />
         </Grid>
-        <Grid item>
+        {/* <Grid item>
           <FormControlLabel
             sx={{ mt: 1 }}
             control={
@@ -339,7 +357,7 @@ const FGPackingLot = (props) => {
               id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted',
             })}
           />
-        </Grid>
+        </Grid> */}
       </Grid>
       <MuiDataGrid
         showLoading={state.isLoading}
@@ -371,6 +389,8 @@ const FGPackingLot = (props) => {
         mode={mode}
       />
       <FGPackingLotDetail PackingLabelId={PackingLabelId} handleUpdateQty={handleUpdateQty} />
+
+      <ActualPrintDialog isOpen={isShowing2} onClose={toggle2} listData={DataPrint} />
     </React.Fragment>
   );
 };

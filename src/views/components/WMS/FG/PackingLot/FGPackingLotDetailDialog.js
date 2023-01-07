@@ -1,98 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiSelectField, MuiTextField } from '@controls';
-import { Grid, TextField } from '@mui/material';
-import { useIntl } from 'react-intl';
-import * as yup from 'yup';
-import { bomService, fgPackingService } from '@services';
+import { MuiButton, MuiDialog, MuiTextField } from '@controls';
+import { Box, Grid } from '@mui/material';
+import { fgPackingService } from '@services';
 import { ErrorAlert, SuccessAlert } from '@utils';
-import { CREATE_ACTION } from '@constants/ConfigConstants';
-import { useFormik } from 'formik';
+import React, { useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
 
-const FGPackingLotDetailDialog = ({
-  initModal,
-  isOpen,
-  onClose,
-  setNewData,
-  setUpdateData,
-  mode,
-  PackingLabelId,
-  handleUpdateQty,
-}) => {
+const FGPackingLotDetailDialog = ({ isOpen, onClose, setNewData, setUpdateData, PackingLabelId, handleUpdateQty }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
+  const lotInputRef = useRef(null);
 
-  const schema = yup.object().shape({
-    LotId: yup
-      .string()
-      .nullable()
-      .required(intl.formatMessage({ id: 'general.field_required' })),
-  });
+  const scanBtnClick = async () => {
+    let inputVal = '';
 
-  const formik = useFormik({
-    validationSchema: schema,
-    initialValues: { LotId: '' },
-    enableReinitialize: true,
-    onSubmit: async (values) => onSubmit(values),
-  });
+    if (lotInputRef.current.value) {
+      inputVal = lotInputRef.current.value.trim();
+      setDialogState({ ...dialogState, isSubmit: true });
 
-  const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
+      const res = await fgPackingService.createPADetail({ LotIdScan: inputVal, PackingLabelId: PackingLabelId });
+      if (res.HttpResponseCode === 200 && res.Data) {
+        SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        setNewData(res.Data);
+        handleUpdateQty(res.Data.Qty);
+        setDialogState({ ...dialogState, isSubmit: false });
+      } else {
+        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        setDialogState({ ...dialogState, isSubmit: false });
+      }
 
-  //handle
-  const handleReset = () => {
-    resetForm();
+      lotInputRef.current.value = '';
+    }
   };
 
-  const handleCloseDialog = () => {
-    resetForm();
-    onClose();
-  };
-
-  const onSubmit = async (data) => {
-    setDialogState({ ...dialogState, isSubmit: true });
-
-    const res = await fgPackingService.createPADetail({ ...data, PackingLabelId: PackingLabelId });
-    if (res.HttpResponseCode === 200 && res.Data) {
-      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-      setNewData(res.Data);
-      handleUpdateQty(res.Data.Qty);
-      setDialogState({ ...dialogState, isSubmit: false });
-    } else {
-      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-      setDialogState({ ...dialogState, isSubmit: false });
+  const keyPress = async (e) => {
+    if (e.key === 'Enter') {
+      await scanBtnClick();
     }
   };
 
   return (
     <MuiDialog
       maxWidth="sm"
-      title={intl.formatMessage({ id: mode == CREATE_ACTION ? 'general.create' : 'general.modify' })}
+      title={intl.formatMessage({ id: 'general.create' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
       disable_animate={300}
-      onClose={handleCloseDialog}
+      onClose={onClose}
     >
-      <form onSubmit={handleSubmit}>
-        <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={12}>
+      <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+        <Grid item xs={12}>
+          <Box className="d-flex align-items-center my-3">
             <MuiTextField
-              fullWidth
-              name="LotId"
-              disabled={dialogState.isSubmit}
-              value={values.Remark}
-              onChange={handleChange}
-              label="Lot"
-              error={touched.LotId && Boolean(errors.LotId)}
-              helperText={touched.LotId && errors.LotId}
+              ref={lotInputRef}
+              label="lot"
+              onChange={(e) => (lotInputRef.current.value = e.target.value)}
+              onKeyDown={keyPress}
             />
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container direction="row-reverse">
-              <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
-              <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} />
-            </Grid>
-          </Grid>
+            <MuiButton text="scan" color="success" onClick={scanBtnClick} sx={{ ml: 2, whiteSpace: 'nowrap' }} />
+          </Box>
         </Grid>
-      </form>
+      </Grid>
     </MuiDialog>
   );
 };

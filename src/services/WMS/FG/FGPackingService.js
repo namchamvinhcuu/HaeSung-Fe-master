@@ -50,6 +50,16 @@ export const getPADetail = async (params) => {
   }
 };
 
+export const getPADetailPrint = async (params) => {
+  try {
+    return await axios.get(`${apiName}/get-detail-print`, {
+      params: { ...params },
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
 export const createPADetail = async (params) => {
   try {
     return await axios.post(`${apiName}/create-detail`, {
