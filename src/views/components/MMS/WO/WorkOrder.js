@@ -349,7 +349,7 @@ const WorkOrder = (props) => {
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD');
         }
       },
     },
