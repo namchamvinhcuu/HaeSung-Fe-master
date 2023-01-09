@@ -9,18 +9,20 @@ import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateField } from '@controls';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
-import { Badge, Grid, IconButton } from '@mui/material';
-import { fgPackingService } from '@services';
+import UndoIcon from '@mui/icons-material/Undo';
+import { Badge, FormControlLabel, Grid, IconButton, Switch } from '@mui/material';
+import { stockAdjustmentService } from '@services';
 import { addDays, ErrorAlert, SuccessAlert } from '@utils';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
-import FGPackingDialog from './FGPackingDialog';
-import FGPackingLotDetail from './FGPackingLotDetail';
-import FGPackingLotPrintDialog from './FGPackingLotPrintDialog';
+import InventoryAdjustmentgDialog from './InventoryAdjustmentgDialog';
+import InventoryAdjustmentDetail from './InventoryAdjustmentDetail';
+// import FGPackingDialog from './FGPackingDialog';
+// import FGPackingLotDetail from './FGPackingLotDetail';
+// import FGPackingLotPrintDialog from './FGPackingLotPrintDialog';
 
-const FGPackingLot = (props) => {
+const InventoryAdjustment = (props) => {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
@@ -33,7 +35,7 @@ const FGPackingLot = (props) => {
     page: 1,
     pageSize: 8,
     searchData: {
-      MaterialId: null,
+      AreaId: null,
       StartDate: new Date(),
       EndDate: addDays(new Date(), 7),
       showDelete: true,
@@ -43,7 +45,7 @@ const FGPackingLot = (props) => {
   const [newData, setNewData] = useState({});
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
-  const [PackingLabelId, setPackingLabelId] = useState(null);
+  const [StockAdjustmentId, setStockAdjustmentId] = useState(null);
   const [DataPrint, setDataPrint] = useState([]);
 
   const columns = [
@@ -53,7 +55,7 @@ const FGPackingLot = (props) => {
       flex: 0.1,
       align: 'center',
       filterable: false,
-      renderCell: (index) => index.api.getRowIndex(index.row.PackingLabelId) + 1 + (state.page - 1) * state.pageSize,
+      renderCell: (index) => index.api.getRowIndex(index.row.StockAdjustmentId) + 1 + (state.page - 1) * state.pageSize,
     },
     { field: 'row_version', hide: true },
     {
@@ -66,19 +68,7 @@ const FGPackingLot = (props) => {
       renderCell: (params) => {
         return (
           <Grid container spacing={1} alignItems="center" justifyContent="center">
-            <Grid item xs={4} style={{ textAlign: 'center' }}>
-              <IconButton
-                aria-label="print"
-                size="small"
-                sx={[
-                  { '&:hover': { border: '1px solid #9c27b0' }, color: params.row.isPrint ? '#9c27b0' : '#00000042' },
-                ]}
-                onClick={() => handlePrint(params.row)}
-              >
-                <LocalPrintshopIcon fontSize="inherit" />
-              </IconButton>
-            </Grid>
-            <Grid item xs={4} style={{ textAlign: 'center' }}>
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="delete"
                 color="error"
@@ -86,10 +76,10 @@ const FGPackingLot = (props) => {
                 sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                <DeleteIcon fontSize="inherit" />
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
-            <Grid item xs={4} style={{ textAlign: 'center' }}>
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="edit"
                 color="warning"
@@ -105,36 +95,36 @@ const FGPackingLot = (props) => {
       },
     },
     {
-      field: 'PackingLabelId',
-      headerName: intl.formatMessage({ id: 'packing.PackingLabelId' }),
-      flex: 0.5,
-    },
-    {
-      field: 'PackingSerial',
-      headerName: intl.formatMessage({ id: 'packing.PackingSerial' }),
-      flex: 0.5,
-    },
-    {
-      field: 'SamsungLabelCode',
-      headerName: intl.formatMessage({ id: 'packing.SamsungLabelCode' }),
+      field: 'StockAdjustmentId',
+      headerName: intl.formatMessage({ id: 'stockAdjustment.StockAdjustmentId' }),
       flex: 0.6,
     },
     {
-      field: 'MaterialCode',
-      headerName: intl.formatMessage({ id: 'bom.MaterialId' }),
+      field: 'Requester',
+      headerName: intl.formatMessage({ id: 'stockAdjustment.Requester' }),
       flex: 0.5,
     },
     {
-      field: 'Qty',
-      headerName: intl.formatMessage({ id: 'packing.Qty' }),
-      flex: 0.3,
+      field: 'AreaName',
+      headerName: intl.formatMessage({ id: 'stockAdjustment.AreaId' }),
+      flex: 0.6,
     },
     {
-      field: 'PackingDate',
-      headerName: intl.formatMessage({ id: 'packing.PackingDate' }),
+      field: 'AdjustmentStatus',
+      headerName: intl.formatMessage({ id: 'stockAdjustment.AdjustmentStatus' }),
+      flex: 0.4,
+      valueFormatter: (params) => (params?.value ? 'Done' : 'Yet'),
+    },
+    {
+      field: 'DueDate',
+      headerName: intl.formatMessage({ id: 'stockAdjustment.DueDate' }),
       flex: 0.5,
-      valueFormatter: (params) =>
-        params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
+      valueFormatter: (params) => (params?.value ? moment(params?.value).format('YYYY-MM-DD') : null),
+    },
+    {
+      field: 'Remark',
+      headerName: intl.formatMessage({ id: 'stockAdjustment.Remark' }),
+      flex: 0.6,
     },
     {
       field: 'createdName',
@@ -187,7 +177,7 @@ const FGPackingLot = (props) => {
     if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData) && isRendered) {
       let newArr = [...state.data];
       const index = _.findIndex(newArr, function (o) {
-        return o.PackingLabelId == updateData.PackingLabelId;
+        return o.StockAdjustmentId == updateData.StockAdjustmentId;
       });
       if (index !== -1) {
         newArr[index] = updateData;
@@ -208,7 +198,7 @@ const FGPackingLot = (props) => {
       )
     ) {
       try {
-        let res = await fgPackingService.deletePA(item);
+        let res = await stockAdjustmentService.deleteSA(item);
 
         if (res && res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }));
@@ -252,19 +242,6 @@ const FGPackingLot = (props) => {
     }
   };
 
-  const handleUpdateQty = (newQty) => {
-    let newArr = [...state.data];
-
-    const index = _.findIndex(newArr, function (o) {
-      return o.PackingLabelId == PackingLabelId;
-    });
-
-    if (index !== -1) {
-      var update = newArr[index];
-      setUpdateData({ ...update, Qty: update.Qty + newQty });
-    }
-  };
-
   async function fetchData() {
     let flag = true;
     let message = '';
@@ -291,18 +268,18 @@ const FGPackingLot = (props) => {
 
     if (flag && isRendered) {
       setState({ ...state, isLoading: true });
-      setPackingLabelId(null);
+      setStockAdjustmentId(null);
 
       const params = {
         page: state.page,
         pageSize: state.pageSize,
         keyWord: state.searchData.keyWord,
-        MaterialId: state.searchData.MaterialId,
+        AreaId: state.searchData.AreaId,
         StartDate: state.searchData.StartDate,
         EndDate: state.searchData.EndDate,
         isActived: state.searchData.showDelete,
       };
-      const res = await fgPackingService.getPA(params);
+      const res = await stockAdjustmentService.getSA(params);
 
       if (res && isRendered)
         setState({
@@ -319,7 +296,7 @@ const FGPackingLot = (props) => {
   return (
     <React.Fragment>
       <Grid container direction="row" spacing={2} justifyContent="space-between" alignItems="width-end">
-        <Grid item xs={6}>
+        <Grid item xs={5}>
           <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mr: 1 }} />
           <Badge badgeContent={DataPrint.length} color="warning">
             <MuiButton
@@ -333,12 +310,11 @@ const FGPackingLot = (props) => {
         </Grid>
         <Grid item>
           <MuiAutocomplete
-            label={intl.formatMessage({ id: 'bom.MaterialId' })}
-            fetchDataFunc={fgPackingService.getMaterial}
-            displayLabel="MaterialCode"
-            displayValue="MaterialId"
-            displayGroup="GroupMaterial"
-            onChange={(e, item) => handleSearch(item ? item.MaterialId ?? null : null, 'MaterialId')}
+            label={intl.formatMessage({ id: 'stockAdjustment.AreaId' })}
+            fetchDataFunc={stockAdjustmentService.getArea}
+            displayLabel="commonDetailName"
+            displayValue="commonDetailId"
+            onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'AreaId')}
             sx={{ width: 250 }}
             variant="standard"
           />
@@ -364,6 +340,21 @@ const FGPackingLot = (props) => {
         <Grid item>
           <MuiButton text="search" color="info" onClick={fetchData} sx={{ mt: 1 }} />
         </Grid>
+        <Grid item>
+          <FormControlLabel
+            sx={{ mt: 1 }}
+            control={
+              <Switch
+                defaultChecked={true}
+                color="primary"
+                onChange={(e) => handleSearch(e.target.checked, 'showDelete')}
+              />
+            }
+            label={intl.formatMessage({
+              id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted',
+            })}
+          />
+        </Grid>
       </Grid>
       <MuiDataGrid
         showLoading={state.isLoading}
@@ -376,8 +367,8 @@ const FGPackingLot = (props) => {
         pageSize={state.pageSize}
         rowCount={state.totalRow}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
-        getRowId={(rows) => rows.PackingLabelId}
-        onSelectionModelChange={(newSelectedRowId) => setPackingLabelId(newSelectedRowId[0])}
+        getRowId={(rows) => rows.StockAdjustmentId}
+        onSelectionModelChange={(newSelectedRowId) => setStockAdjustmentId(newSelectedRowId[0])}
         onCellClick={(param, e) => (e.defaultMuiPrevented = param.field === 'action')}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;
@@ -385,7 +376,7 @@ const FGPackingLot = (props) => {
         initialState={{ pinnedColumns: { right: ['action'] } }}
       />
 
-      <FGPackingDialog
+      <InventoryAdjustmentgDialog
         initModal={rowData}
         isOpen={isShowing}
         onClose={toggle}
@@ -394,9 +385,9 @@ const FGPackingLot = (props) => {
         mode={mode}
       />
 
-      <FGPackingLotDetail PackingLabelId={PackingLabelId} handleUpdateQty={handleUpdateQty} />
+      <InventoryAdjustmentDetail StockAdjustmentId={StockAdjustmentId} />
 
-      <FGPackingLotPrintDialog isOpen={isShowing2} onClose={toggle2} listData={DataPrint} />
+      {/* <FGPackingLotPrintDialog isOpen={isShowing2} onClose={toggle2} listData={DataPrint} /> */}
     </React.Fragment>
   );
 };
@@ -421,4 +412,4 @@ const mapDispatchToProps = (dispatch) => {
   return { changeLanguage };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(FGPackingLot);
+export default connect(mapStateToProps, mapDispatchToProps)(InventoryAdjustment);
