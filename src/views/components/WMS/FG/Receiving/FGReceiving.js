@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
 import { User_Operations } from '@appstate/user';
 import { Store } from '@appstate';
-import { fgReceivingService } from '@services';
+import { fgReceivingService, fgSOService } from '@services';
 import moment from 'moment';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -12,18 +12,24 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import { useIntl } from 'react-intl';
 import { ErrorAlert, SuccessAlert, isNumber } from '@utils';
-import { MuiButton, MuiDataGrid, MuiTextField } from '@controls';
+import { MuiButton, MuiDataGrid, MuiTextField, MuiDateField, MuiAutocomplete } from '@controls';
 import { LotDto } from '@models';
 
 const FGReceiving = (props) => {
   let isRendered = useRef(true);
   const [newData, setNewData] = useState({ ...LotDto });
+  const initETDLoad = new Date();
   const [FGRecevingState, setFGRecevingState] = useState({
     isLoading: false,
     data: [],
     totalRow: 0,
     page: 1,
     pageSize: 20,
+    searchData: {
+      searchStartDay: initETDLoad,
+      searchEndDay: initETDLoad,
+      MaterialId: null,
+    },
   });
 
   const lotInputRef = useRef(null);
@@ -71,6 +77,9 @@ const FGReceiving = (props) => {
     const params = {
       page: FGRecevingState.page,
       pageSize: FGRecevingState.pageSize,
+      MaterialId: FGRecevingState.searchData.MaterialId,
+      searchStartDay: FGRecevingState.searchData.searchStartDay,
+      searchEndDay: FGRecevingState.searchData.searchEndDay,
     };
 
     const res = await fgReceivingService.getAll(params);
@@ -201,11 +210,61 @@ const FGReceiving = (props) => {
       }
     }
   };
+  const getMaterial = async () => {
+    const res = await fgSOService.getMaterialModelFinish();
+    return res;
+  };
+  const handleSearch = (e, inputName) => {
+    let newSearchData = { ...FGRecevingState.searchData };
+    newSearchData[inputName] = e;
+    setFGRecevingState({ ...FGRecevingState, searchData: { ...newSearchData } });
+  };
   return (
     <React.Fragment>
       <Grid container spacing={2} direction="row" justifyContent="space-between" alignItems="flex-end">
-        <Grid item xs={4}></Grid>
-        <Grid item xs={8}>
+        <Grid item xs={5.5} className="ml-2">
+          <Grid container spacing={2} direction="row" justifyContent="space-between" alignItems="center">
+            <Grid item xs={5}>
+              <MuiAutocomplete
+                label={intl.formatMessage({ id: 'forecast.MaterialId' })}
+                fetchDataFunc={getMaterial}
+                displayLabel="MaterialCode"
+                displayValue="MaterialId"
+                displayGroup="GroupMaterial"
+                onChange={(e, item) => {
+                  handleSearch(item ? item?.MaterialId ?? null : null, 'MaterialId');
+                }}
+                variant="standard"
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <MuiDateField
+                disabled={FGRecevingState.isLoading}
+                label="From Incoming Date"
+                value={FGRecevingState.searchData.searchStartDay}
+                onChange={(e) => {
+                  handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchStartDay');
+                }}
+                variant="standard"
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <MuiDateField
+                disabled={FGRecevingState.isLoading}
+                label="To Incoming Date"
+                value={FGRecevingState.searchData.searchEndDay}
+                onChange={(e) => {
+                  handleSearch(e ? moment(e).format('YYYY-MM-DD') : null, 'searchEndDay');
+                }}
+                variant="standard"
+              />
+            </Grid>
+            <Grid item xs={1}>
+              <MuiButton text="search" color="info" onClick={fetchData} sx={{ whiteSpace: 'nowrap' }} />
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={5}>
           <Grid container spacing={2} direction="row" justifyContent="space-between" alignItems="center">
             <Grid item xs={9.5}>
               <MuiTextField
@@ -218,7 +277,7 @@ const FGReceiving = (props) => {
               />
             </Grid>
             <Grid item xs={2.5}>
-              <MuiButton text="scan" color="success" onClick={scanBtnClick} />
+              <MuiButton text="scan" color="success" onClick={scanBtnClick} sx={{ whiteSpace: 'nowrap' }} />
             </Grid>
           </Grid>
         </Grid>
