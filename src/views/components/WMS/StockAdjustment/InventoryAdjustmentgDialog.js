@@ -1,24 +1,29 @@
 import { CREATE_ACTION } from '@constants/ConfigConstants';
-import { MuiAutocomplete, MuiDialog, MuiResetButton, MuiSubmitButton, MuiTextField } from '@controls';
+import { MuiAutocomplete, MuiDialog, MuiResetButton, MuiSubmitButton, MuiTextField, MuiDateField } from '@controls';
 import { Grid } from '@mui/material';
-import { fgPackingService } from '@services';
+import { stockAdjustmentService } from '@services';
 import { ErrorAlert, SuccessAlert } from '@utils';
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import * as yup from 'yup';
+import moment from 'moment';
 
-const FGPackingDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode }) => {
+const InventoryAdjustmentgDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode }) => {
   const intl = useIntl();
   const [dialogState, setDialogState] = useState({ isSubmit: false });
 
   const schema = yup.object().shape({
-    MaterialId: yup
+    AreaId: yup
       .number()
       .nullable()
       .required(intl.formatMessage({ id: 'general.field_required' })),
-    SamsungLabelCode: yup
+    Requester: yup
       .string()
+      .nullable()
+      .required(intl.formatMessage({ id: 'general.field_required' })),
+    DueDate: yup
+      .date()
       .nullable()
       .required(intl.formatMessage({ id: 'general.field_required' })),
   });
@@ -30,18 +35,7 @@ const FGPackingDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
     onSubmit: async (values) => onSubmit(values),
   });
 
-  const {
-    handleChange,
-    handleBlur,
-    handleSubmit,
-    values,
-    setFieldValue,
-    errors,
-    touched,
-    isValid,
-    resetForm,
-    setValues,
-  } = formik;
+  const { handleChange, handleSubmit, values, setFieldValue, errors, touched, resetForm } = formik;
 
   const handleReset = () => {
     resetForm();
@@ -56,7 +50,7 @@ const FGPackingDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
     setDialogState({ ...dialogState, isSubmit: true });
 
     if (mode == CREATE_ACTION) {
-      const res = await fgPackingService.createPA(data);
+      const res = await stockAdjustmentService.createSA(data);
       if (res.HttpResponseCode === 200 && res.Data) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
         setNewData(res.Data);
@@ -66,7 +60,7 @@ const FGPackingDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
         setDialogState({ ...dialogState, isSubmit: false });
       }
     } else {
-      const res = await fgPackingService.updatePA(data);
+      const res = await stockAdjustmentService.updateSA(data);
       if (res.HttpResponseCode === 200) {
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
         setUpdateData(res.Data);
@@ -82,7 +76,7 @@ const FGPackingDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
   return (
     <MuiDialog
       maxWidth="sm"
-      title={intl.formatMessage({ id: mode == CREATE_ACTION ? 'general.create' : 'general.modify' })}
+      title={intl.formatMessage({ id: 'general.create' })}
       isOpen={isOpen}
       disabledCloseBtn={dialogState.isSubmit}
       disable_animate={300}
@@ -93,30 +87,53 @@ const FGPackingDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
           <Grid item xs={12}>
             <MuiAutocomplete
               required
-              value={values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null}
+              value={values.AreaId ? { commonDetailId: values.AreaId, commonDetailName: values.AreaName } : null}
               disabled={dialogState.isSubmit}
-              label={intl.formatMessage({ id: 'bom.MaterialId' })}
-              fetchDataFunc={fgPackingService.getMaterial}
-              displayLabel="MaterialCode"
-              displayValue="MaterialId"
+              label={intl.formatMessage({ id: 'stockAdjustment.AreaId' })}
+              fetchDataFunc={stockAdjustmentService.getArea}
+              displayLabel="commonDetailName"
+              displayValue="commonDetailId"
               onChange={(e, value) => {
-                setFieldValue('MaterialCode', value?.MaterialCode || '', true);
-                setFieldValue('MaterialId', value?.MaterialId || '', true);
+                setFieldValue('AreaName', value?.commonDetailName || '', true);
+                setFieldValue('AreaId', value?.commonDetailId || '', true);
               }}
-              error={touched.MaterialId && Boolean(errors.MaterialId)}
-              helperText={touched.MaterialId && errors.MaterialId}
+              error={touched.AreaId && Boolean(errors.AreaId)}
+              helperText={touched.AreaId && errors.AreaId}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <MuiTextField
+              fullWidth
+              name="Requester"
+              disabled={dialogState.isSubmit}
+              value={values.Requester}
+              onChange={handleChange}
+              label={intl.formatMessage({ id: 'stockAdjustment.Requester' }) + ' *'}
+              error={touched.Requester && Boolean(errors.Requester)}
+              helperText={touched.Requester && errors.Requester}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <MuiDateField
+              required
+              disabled={dialogState.isSubmit}
+              label={intl.formatMessage({ id: 'stockAdjustment.DueDate' })}
+              value={values.DueDate ?? null}
+              onChange={(e) => setFieldValue('DueDate', moment(e).add(7, 'hours'))}
+              error={touched.DueDate && Boolean(errors.DueDate)}
+              helperText={touched.DueDate && errors.DueDate}
             />
           </Grid>
           <Grid item xs={12}>
             <MuiTextField
               fullWidth
-              name="SamsungLabelCode"
+              multiline
+              name="Remark"
               disabled={dialogState.isSubmit}
-              value={values.SamsungLabelCode}
+              value={values.Remark}
               onChange={handleChange}
-              label={intl.formatMessage({ id: 'packing.SamsungLabelCode' }) + ' *'}
-              error={touched.SamsungLabelCode && Boolean(errors.SamsungLabelCode)}
-              helperText={touched.SamsungLabelCode && errors.SamsungLabelCode}
+              label={intl.formatMessage({ id: 'stockAdjustment.Remark' })}
             />
           </Grid>
           <Grid item xs={12}>
@@ -132,13 +149,10 @@ const FGPackingDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData
 };
 
 const defaultValue = {
-  PackingLabelId: 0,
-  PackingSerial: '',
-  MaterialId: null,
-  MaterialCode: '',
-  SamsungLabelCode: '',
-  Qty: 1,
-  Version: '',
+  Requester: '',
+  AreaId: null,
+  AreaName: '',
+  Requester: '',
 };
 
-export default FGPackingDialog;
+export default InventoryAdjustmentgDialog;

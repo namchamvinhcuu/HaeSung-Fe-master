@@ -542,5 +542,20 @@
   },
   "fgdelivery" : {
     "qty_order_not_bigger_remain":"Oder Qty không lớn hơn Remain Qty"
-  } 
+  },
+  "stockAdjustment": {
+    "StockAdjustmentId":"Stock Adjustment #",
+    "AreaId" : "Area",
+    "Requester": "Requester",
+    "AdjustmentStatus": "Status",
+    "DueDate": "DueDate",
+    "Remark": "Remark",
+    "StockQty": "Stock Qty",
+    "CheckQty": "Check Qty",
+    "GapQty": "Gap Qty",
+    "Shelf": "Shelf",
+    "CheckStatus": "Check Status",
+    "CheckDate": "Check Date",
+    "Error_SelectShelfForScan": "Select shelf for scan"
+  }
 }
