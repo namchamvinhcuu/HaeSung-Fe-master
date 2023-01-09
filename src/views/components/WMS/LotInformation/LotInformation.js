@@ -101,6 +101,12 @@ const LotInformation = (props) => {
                     </p>
                   </Box>
                   <Box className="d-flex mb-2">
+                    <Typography sx={{ ...styles.title }}>Material Type:</Typography>
+                    <p style={{ ...styles.underline }} className="ml-2">
+                      {lot?.MaterialTypeName}
+                    </p>
+                  </Box>
+                  <Box className="d-flex mb-2">
                     <Typography sx={{ ...styles.title }}>Warehouse Name:</Typography>
                     <p style={{ ...styles.underline }} className="ml-2">
                       {lot?.WarehouseTypeName}
@@ -122,12 +128,6 @@ const LotInformation = (props) => {
                     <Typography sx={{ ...styles.title }}>Total Qty:</Typography>
                     <p style={{ ...styles.underline }} className="ml-2">
                       {lot?.TotalSOQty}
-                    </p>
-                  </Box>
-                  <Box className="d-flex mb-2">
-                    <Typography sx={{ ...styles.title }}>QC Result:</Typography>
-                    <p style={{ ...styles.underline }} className="ml-2">
-                      {lot?.QCResult ? 'OKE' : 'NG'}
                     </p>
                   </Box>
                 </Grid>
@@ -173,6 +173,12 @@ const LotInformation = (props) => {
                         {moment(lot?.IncomingDate).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss')}
                       </p>
                     )}
+                  </Box>
+                  <Box className="d-flex mb-2">
+                    <Typography sx={{ ...styles.title }}>QC Result:</Typography>
+                    <p style={{ ...styles.underline }} className="ml-2">
+                      {lot?.QCResult ? 'OKE' : 'NG'}
+                    </p>
                   </Box>
                 </Grid>
               </Grid>
