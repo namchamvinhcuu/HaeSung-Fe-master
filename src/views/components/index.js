@@ -50,6 +50,7 @@ import MappingTray from './MMS/MappingTray/MappingTray';
 import MappingLot from './MMS/MappingLot/MappingLot';
 import HMIHistory from './MMS/HMIHistory/HMIHistory';
 //WMS
+import LotInformation from './WMS/LotInformation/LotInformation';
 //WMS - Material
 import IQC from './WMS/Material/IQC/IQC';
 import MaterialPicking from './WMS/Material/Picking/MaterialPicking';
@@ -183,6 +184,7 @@ export {
   MappingBin,
   SplitLot,
   MergeLot,
+  LotInformation,
   //PO
   DeliveryOrder,
   ForecastPO,

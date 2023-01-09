@@ -266,46 +266,46 @@ const FGDelivery = (props) => {
         index.api.getRowIndex(index.row.DoId) + 1 + (deliveryOrderState.page - 1) * deliveryOrderState.pageSize,
     },
 
-    {
-      field: 'action',
-      headerName: '',
-      width: 80,
-      // headerAlign: 'center',
-      disableClickEventBubbling: true,
-      sortable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => {
-        return (
-          <Grid container spacing={1} alignItems="center" justifyContent="center">
-            <Grid item xs={6}>
-              <IconButton
-                aria-label="edit"
-                color="warning"
-                size="small"
-                sx={[{ '&:hover': { border: '1px solid orange' } }]}
-                onClick={() => {
-                  toggleDialog(UPDATE_ACTION);
-                }}
-              >
-                <EditIcon fontSize="inherit" />
-              </IconButton>
-            </Grid>
+    // {
+    //   field: 'action',
+    //   headerName: '',
+    //   width: 80,
+    //   // headerAlign: 'center',
+    //   disableClickEventBubbling: true,
+    //   sortable: false,
+    //   disableColumnMenu: true,
+    //   renderCell: (params) => {
+    //     return (
+    //       <Grid container spacing={1} alignItems="center" justifyContent="center">
+    //         <Grid item xs={6}>
+    //           <IconButton
+    //             aria-label="edit"
+    //             color="warning"
+    //             size="small"
+    //             sx={[{ '&:hover': { border: '1px solid orange' } }]}
+    //             onClick={() => {
+    //               toggleDialog(UPDATE_ACTION);
+    //             }}
+    //           >
+    //             <EditIcon fontSize="inherit" />
+    //           </IconButton>
+    //         </Grid>
 
-            <Grid item xs={6}>
-              <IconButton
-                aria-label="delete"
-                color="error"
-                size="small"
-                sx={[{ '&:hover': { border: '1px solid red' } }]}
-                onClick={() => handleDelete(params.row)}
-              >
-                {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
-              </IconButton>
-            </Grid>
-          </Grid>
-        );
-      },
-    },
+    //         <Grid item xs={6}>
+    //           <IconButton
+    //             aria-label="delete"
+    //             color="error"
+    //             size="small"
+    //             sx={[{ '&:hover': { border: '1px solid red' } }]}
+    //             onClick={() => handleDelete(params.row)}
+    //           >
+    //             {showActivedData ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
+    //           </IconButton>
+    //         </Grid>
+    //       </Grid>
+    //     );
+    //   },
+    // },
 
     {
       field: 'DoCode',

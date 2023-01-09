@@ -539,5 +539,8 @@
     "PackingDate": "Packing Date",
     "scanned": "lot scanned",
     "Packing_Lot_Shipped":"Packing lot is shipped, can't delete"
-  }
+  },
+  "fgdelivery" : {
+    "qty_order_not_bigger_remain":"Oder Qty không lớn hơn Remain Qty"
+  } 
 }
