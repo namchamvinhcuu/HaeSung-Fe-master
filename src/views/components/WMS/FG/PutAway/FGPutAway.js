@@ -165,7 +165,6 @@ const FGPutAway = (props) => {
   };
 
   const columns = [
-    { field: 'Id', headerName: '', hide: true },
     {
       field: 'id',
       headerName: '',
@@ -199,16 +198,19 @@ const FGPutAway = (props) => {
         );
       },
     },
-    {
-      field: 'MaterialColorCode',
-      headerName: 'Material Code',
-      width: 250,
-    },
+
+    { field: 'Id', headerName: 'Lot #', hide: false, width: 150 },
     {
       field: 'LotSerial',
       headerName: 'Lot Serial',
       width: 250,
     },
+    {
+      field: 'MaterialColorCode',
+      headerName: 'Assy Code',
+      width: 250,
+    },
+
     {
       field: 'Qty',
       headerName: 'Qty',

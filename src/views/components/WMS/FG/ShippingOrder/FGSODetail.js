@@ -237,11 +237,11 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
         index.api.getRowIndex(index.row.FGsoDetailId) + 1 + (fgSODetailState.page - 1) * fgSODetailState.pageSize,
     },
 
-    // {
-    //   field: 'FGsoCode',
-    //   headerName: intl.formatMessage({ id: 'material-so-detail.MsoCode' }),
-    //   /*flex: 0.7,*/ width: 150,
-    // },
+    {
+      field: 'LotId',
+      headerName: 'Lot #',
+      /*flex: 0.7,*/ width: 150,
+    },
 
     {
       field: 'MaterialColorCode',

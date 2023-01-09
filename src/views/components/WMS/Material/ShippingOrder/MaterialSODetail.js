@@ -254,6 +254,12 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
     },
 
     {
+      field: 'LotId',
+      headerName: 'Lot #',
+      /*flex: 0.7,*/ width: 150,
+    },
+
+    {
       field: 'MaterialColorCode',
       headerName: intl.formatMessage({
         id: 'material-so-detail.MaterialColorCode',
