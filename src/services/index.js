@@ -60,6 +60,8 @@ import * as fgSOService from './WMS/FG/FGSOService';
 import * as hmiService from './mms/HMIHistoryService';
 import * as ngStockService from './WMS/NG/NGStockService';
 
+import * as lotInformation from './WMS/LotInformation/LotInformationService';
+
 export {
   loginService,
   menuService,
@@ -115,4 +117,5 @@ export {
   oqcService,
   fgDeliveryService,
   fgPackingService,
+  lotInformation,
 };
