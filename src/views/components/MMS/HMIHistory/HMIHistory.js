@@ -181,19 +181,19 @@ const HMIHistory = (props) => {
     {
       field: 'WoCode',
       headerName: intl.formatMessage({ id: 'work_order.WoCode' }),
-      /*flex: 0.7,*/ width: 120,
+      /*flex: 0.7,*/ width: 150,
     },
 
     {
       field: 'MaterialCode',
       headerName: intl.formatMessage({ id: 'work_order.MaterialCode' }),
-      /*flex: 0.7,*/ width: 120,
+      /*flex: 0.7,*/ width: 150,
     },
 
     {
       field: 'FPoMasterCode',
       headerName: intl.formatMessage({ id: 'work_order.FPoMasterCode' }),
-      /*flex: 0.7,*/ width: 120,
+      /*flex: 0.7,*/ width: 150,
     },
 
     {
