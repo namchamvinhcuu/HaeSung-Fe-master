@@ -10,7 +10,8 @@ import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateField } from '@controls
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UndoIcon from '@mui/icons-material/Undo';
-import { FormControlLabel, Grid, IconButton, Switch } from '@mui/material';
+import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
+import { Badge, FormControlLabel, Grid, IconButton, Switch } from '@mui/material';
 import { fgPackingService } from '@services';
 import { addDays, ErrorAlert, SuccessAlert } from '@utils';
 import moment from 'moment';
@@ -44,7 +45,7 @@ const FGPackingLot = (props) => {
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
   const [PackingLabelId, setPackingLabelId] = useState(null);
-  const [DataPrint, setDataPrint] = useState(null);
+  const [DataPrint, setDataPrint] = useState([]);
 
   const columns = [
     {
@@ -59,14 +60,26 @@ const FGPackingLot = (props) => {
     {
       field: 'action',
       headerName: '',
-      witdh: 100,
+      witdh: 90,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
           <Grid container spacing={1} alignItems="center" justifyContent="center">
-            <Grid item xs={6} style={{ textAlign: 'center' }}>
+            <Grid item xs={4} style={{ textAlign: 'center' }}>
+              <IconButton
+                aria-label="print"
+                size="small"
+                sx={[
+                  { '&:hover': { border: '1px solid #9c27b0' }, color: params.row?.isPrint ? '#9c27b0' : '#00000042' },
+                ]}
+                onClick={() => handlePrint(params.row)}
+              >
+                <LocalPrintshopIcon fontSize="inherit" />
+              </IconButton>
+            </Grid>
+            <Grid item xs={4} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="delete"
                 color="error"
@@ -77,7 +90,7 @@ const FGPackingLot = (props) => {
                 {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
-            <Grid item xs={6} style={{ textAlign: 'center' }}>
+            <Grid item xs={4} style={{ textAlign: 'center' }}>
               <IconButton
                 aria-label="edit"
                 color="warning"
@@ -115,7 +128,7 @@ const FGPackingLot = (props) => {
     {
       field: 'Qty',
       headerName: intl.formatMessage({ id: 'packing.Qty' }),
-      flex: 0.4,
+      flex: 0.3,
     },
     {
       field: 'PackingDate',
@@ -127,7 +140,7 @@ const FGPackingLot = (props) => {
     {
       field: 'createdName',
       headerName: intl.formatMessage({ id: 'general.createdName' }),
-      flex: 0.5,
+      flex: 0.4,
     },
     {
       field: 'createdDate',
@@ -139,7 +152,7 @@ const FGPackingLot = (props) => {
     {
       field: 'modifiedName',
       headerName: intl.formatMessage({ id: 'general.modifiedName' }),
-      flex: 0.5,
+      flex: 0.4,
     },
     {
       field: 'modifiedDate',
@@ -182,6 +195,9 @@ const FGPackingLot = (props) => {
       }
 
       setState({ ...state, data: [...newArr] });
+
+      let newArrPrint = newArr.filter((x) => x.isPrint);
+      setDataPrint(newArrPrint);
     }
   }, [updateData]);
 
@@ -229,15 +245,11 @@ const FGPackingLot = (props) => {
     }
   };
 
-  const handlePrint = async () => {
-    let newArr = [...state.data];
-    const index = _.findIndex(newArr, function (o) {
-      return o.PackingLabelId == PackingLabelId;
-    });
-    if (index !== -1) {
-      let dataPrint = newArr[index];
-      setDataPrint(dataPrint);
-      toggle2();
+  const handlePrint = (row) => {
+    if (row.isPrint) {
+      setUpdateData({ ...row, isPrint: false });
+    } else {
+      setUpdateData({ ...row, isPrint: true });
     }
   };
 
@@ -309,14 +321,16 @@ const FGPackingLot = (props) => {
     <React.Fragment>
       <Grid container direction="row" spacing={2} justifyContent="space-between" alignItems="width-end">
         <Grid item xs={6}>
-          <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mt: 1 }} />
-          <MuiButton
-            text="print"
-            color="secondary"
-            onClick={() => handlePrint()}
-            sx={{ mt: 1 }}
-            disabled={PackingLabelId == null ? true : false}
-          />
+          <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mr: 1 }} />
+          <Badge badgeContent={DataPrint.length} color="warning">
+            <MuiButton
+              text="print"
+              color="secondary"
+              onClick={() => toggle2()}
+              sx={{ m: 0 }}
+              disabled={DataPrint.length > 0 ? false : true}
+            />
+          </Badge>
         </Grid>
         <Grid item>
           <MuiAutocomplete
@@ -380,6 +394,7 @@ const FGPackingLot = (props) => {
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
         getRowId={(rows) => rows.PackingLabelId}
         onSelectionModelChange={(newSelectedRowId) => setPackingLabelId(newSelectedRowId[0])}
+        onCellClick={(param, e) => (e.defaultMuiPrevented = param.field === 'action')}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;
         }}
@@ -391,14 +406,13 @@ const FGPackingLot = (props) => {
         isOpen={isShowing}
         onClose={toggle}
         setNewData={setNewData}
-        //setNewDataChild={setNewDataChild}
-
         setUpdateData={setUpdateData}
         mode={mode}
       />
+
       <FGPackingLotDetail PackingLabelId={PackingLabelId} handleUpdateQty={handleUpdateQty} />
 
-      <FGPackingLotPrintDialog isOpen={isShowing2} onClose={toggle2} dataPrint={DataPrint} />
+      <FGPackingLotPrintDialog isOpen={isShowing2} onClose={toggle2} listData={DataPrint} />
     </React.Fragment>
   );
 };
