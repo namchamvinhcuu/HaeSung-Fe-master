@@ -1,24 +1,13 @@
 import { Store } from '@appstate';
 import { User_Operations } from '@appstate/user';
-import { MuiButton, MuiDialog } from '@controls';
-import {
-  Box,
-  DialogActions,
-  DialogContent,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Zoom,
-} from '@mui/material';
+import { MuiDialog } from '@controls';
+import { Box, DialogContent, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import QRCode from 'react-qr-code';
 import { connect } from 'react-redux';
-import ReactToPrint from 'react-to-print';
 import { bindActionCreators } from 'redux';
 
 const FGPackingLotPrintDialog = ({ listData, isOpen, onClose }) => {
@@ -139,21 +128,6 @@ const FGPackingLotPrintDialog = ({ listData, isOpen, onClose }) => {
       </MuiDialog>
     </React.Fragment>
   );
-};
-
-const style = {
-  table: {
-    width: '100%',
-    marginTop: '40px',
-    textAlign: 'center',
-    fontSize: '20px',
-    pageBreakAfter: 'always',
-    border: 'black solid 2px',
-  },
-  cell: {
-    border: 'black solid 1px',
-    padding: '15px 0',
-  },
 };
 
 User_Operations.toString = function () {

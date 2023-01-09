@@ -9,9 +9,8 @@ import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateField } from '@controls';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import UndoIcon from '@mui/icons-material/Undo';
 import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
-import { Badge, FormControlLabel, Grid, IconButton, Switch } from '@mui/material';
+import { Badge, Grid, IconButton } from '@mui/material';
 import { fgPackingService } from '@services';
 import { addDays, ErrorAlert, SuccessAlert } from '@utils';
 import moment from 'moment';
@@ -72,9 +71,9 @@ const FGPackingLot = (props) => {
                 aria-label="print"
                 size="small"
                 sx={[
-                  { '&:hover': { border: '1px solid #9c27b0' }, color: params.row?.isPrint ? '#9c27b0' : '#00000042' },
+                  { '&:hover': { border: '1px solid #9c27b0' }, color: params.row.isPrint ? '#9c27b0' : '#00000042' },
                 ]}
-                onClick={() => handlePrint(params.row)}
+                onClick={() => setUpdateData({ ...params.row, isPrint: params.row.isPrint ? false : true })}
               >
                 <LocalPrintshopIcon fontSize="inherit" />
               </IconButton>
@@ -87,7 +86,7 @@ const FGPackingLot = (props) => {
                 sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
+                <DeleteIcon fontSize="inherit" />
               </IconButton>
             </Grid>
             <Grid item xs={4} style={{ textAlign: 'center' }}>
@@ -245,14 +244,6 @@ const FGPackingLot = (props) => {
     }
   };
 
-  const handlePrint = (row) => {
-    if (row.isPrint) {
-      setUpdateData({ ...row, isPrint: false });
-    } else {
-      setUpdateData({ ...row, isPrint: true });
-    }
-  };
-
   const handleUpdateQty = (newQty) => {
     let newArr = [...state.data];
 
@@ -365,21 +356,6 @@ const FGPackingLot = (props) => {
         <Grid item>
           <MuiButton text="search" color="info" onClick={fetchData} sx={{ mt: 1 }} />
         </Grid>
-        {/* <Grid item>
-          <FormControlLabel
-            sx={{ mt: 1 }}
-            control={
-              <Switch
-                defaultChecked={true}
-                color="primary"
-                onChange={(e) => handleSearch(e.target.checked, 'showDelete')}
-              />
-            }
-            label={intl.formatMessage({
-              id: state.searchData.showDelete ? 'general.data_actived' : 'general.data_deleted',
-            })}
-          />
-        </Grid> */}
       </Grid>
       <MuiDataGrid
         showLoading={state.isLoading}
