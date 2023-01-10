@@ -176,7 +176,7 @@ export default function FGPackingLotDetail({ PackingLabelId, newDataChild, handl
             color="success"
             onClick={handleAdd}
             sx={{ mt: 1, mb: 1 }}
-            disabled={PackingLabelId && IsShipped ? false : true}
+            disabled={PackingLabelId && !IsShipped ? false : true}
           />
         </Grid>
       </Grid>
