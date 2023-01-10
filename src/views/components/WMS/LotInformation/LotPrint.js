@@ -17,11 +17,17 @@ const LotPrint = ({ item, innerRef }) => {
     },
   };
   const getWeekByCreatedDate = (date) => {
-    let todaydate = new Date(date);
-    let oneJan = new Date(todaydate.getFullYear(), 0, 1);
-    let numberOfDays = Math.floor((todaydate - oneJan) / (24 * 60 * 60 * 1000));
-    let curWeek = Math.ceil((todaydate.getDay() + 1 + numberOfDays) / 7);
-    return curWeek;
+    const currentDate = new Date(date);
+    const startDate = new Date(currentDate.getFullYear(), 0, 1);
+    var days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000));
+    var weekNumber = Math.ceil(days / 7);
+    return weekNumber;
+
+    // let todaydate = new Date(date);
+    // let oneJan = new Date(todaydate.getFullYear(), 0, 1);
+    // let numberOfDays = Math.floor((todaydate - oneJan) / (24 * 60 * 60 * 1000));
+    // let curWeek = Math.ceil((todaydate.getDay() + 1 + numberOfDays) / 7);
+    // return curWeek;
   };
 
   return (
