@@ -11,7 +11,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import FGPackingLotDetailDialog from './FGPackingLotDetailDialog';
 
-export default function FGPackingLotDetail({ PackingLabelId, newDataChild, handleUpdateQty }) {
+export default function FGPackingLotDetail({ PackingLabelId, newDataChild, handleUpdateQty, IsShipped }) {
   const intl = useIntl();
   let isRendered = useRef(true);
   const [mode, setMode] = useState(CREATE_ACTION);
@@ -126,24 +126,17 @@ export default function FGPackingLotDetail({ PackingLabelId, newDataChild, handl
   const handleDelete = async (item) => {
     if (
       window.confirm(
-        intl.formatMessage({
-          id: item.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
-        })
+        intl.formatMessage({ id: item.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' })
       )
     ) {
       try {
-        let child = state.data.filter((x) => x.ParentId == item.PackingLabelId);
-        if (child.length == 0) {
-          let res = await fgPackingService.deletePADetail(item);
-          if (res && res.HttpResponseCode === 200) {
-            SuccessAlert(intl.formatMessage({ id: 'general.success' }));
-            await fetchData(PackingLabelId);
-            handleUpdateQty(item.Qty * -1);
-          } else {
-            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-          }
+        let res = await fgPackingService.deletePADetail(item);
+        if (res && res.HttpResponseCode === 200) {
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
+          await fetchData(PackingLabelId);
+          handleUpdateQty(item.Qty * -1);
         } else {
-          ErrorAlert(intl.formatMessage({ id: 'bom.delete_error' }));
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         }
       } catch (error) {
         console.log(error);
@@ -183,7 +176,7 @@ export default function FGPackingLotDetail({ PackingLabelId, newDataChild, handl
             color="success"
             onClick={handleAdd}
             sx={{ mt: 1, mb: 1 }}
-            disabled={PackingLabelId ? false : true}
+            disabled={PackingLabelId && IsShipped ? false : true}
           />
         </Grid>
       </Grid>

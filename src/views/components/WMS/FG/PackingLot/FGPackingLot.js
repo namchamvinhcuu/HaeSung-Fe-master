@@ -44,6 +44,7 @@ const FGPackingLot = (props) => {
   const [updateData, setUpdateData] = useState({});
   const [rowData, setRowData] = useState({});
   const [PackingLabelId, setPackingLabelId] = useState(null);
+  const [IsShipped, setIsShipped] = useState(false);
   const [DataPrint, setDataPrint] = useState([]);
 
   const columns = [
@@ -377,7 +378,11 @@ const FGPackingLot = (props) => {
         rowCount={state.totalRow}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
         getRowId={(rows) => rows.PackingLabelId}
-        onSelectionModelChange={(newSelectedRowId) => setPackingLabelId(newSelectedRowId[0])}
+        onSelectionModelChange={(Ids) => {
+          setPackingLabelId(Ids[0]);
+          let dataRow = state.data.find((x) => x.PackingLabelId == Ids[0]);
+          setIsShipped(dataRow.DoId != null ? true : false);
+        }}
         onCellClick={(param, e) => (e.defaultMuiPrevented = param.field === 'action')}
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;
@@ -394,7 +399,7 @@ const FGPackingLot = (props) => {
         mode={mode}
       />
 
-      <FGPackingLotDetail PackingLabelId={PackingLabelId} handleUpdateQty={handleUpdateQty} />
+      <FGPackingLotDetail PackingLabelId={PackingLabelId} handleUpdateQty={handleUpdateQty} IsShipped={IsShipped} />
 
       <FGPackingLotPrintDialog isOpen={isShowing2} onClose={toggle2} listData={DataPrint} />
     </React.Fragment>
