@@ -137,7 +137,6 @@ const MaterialReceiving = (props) => {
   };
 
   const columns = [
-    { field: 'Id', headerName: '', hide: true },
     {
       field: 'id',
       headerName: '',
@@ -175,20 +174,19 @@ const MaterialReceiving = (props) => {
       },
     },
 
-    // {
-    //     field: "LotCode",
-    //     headerName: "Lot Code",
-    //     width: 350,
-    // },
-
     {
-      field: 'MaterialColorCode',
-      headerName: 'Material Code',
-      width: 250,
+      field: 'Id',
+      headerName: 'Lot #',
+      width: 180,
     },
     {
       field: 'LotSerial',
       headerName: 'Lot Serial',
+      width: 250,
+    },
+    {
+      field: 'MaterialColorCode',
+      headerName: 'Material Code',
       width: 250,
     },
 

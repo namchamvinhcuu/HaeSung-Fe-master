@@ -36,7 +36,6 @@ const WIPShipToNG = (props) => {
   const [newData, setNewData] = useState({ ...LotDto });
 
   const columns = [
-    { field: 'Id', headerName: '', hide: true },
     {
       field: 'id',
       headerName: '',
@@ -68,6 +67,11 @@ const WIPShipToNG = (props) => {
           </Grid>
         );
       },
+    },
+    {
+      field: 'Id',
+      headerName: 'Lot #',
+      width: 180,
     },
     { field: 'MaterialColorCode', headerName: 'Material Code', flex: 0.4 },
     { field: 'Qty', headerName: 'Qty', flex: 0.3 },

@@ -166,8 +166,6 @@ const MaterialPutAway = (props) => {
   };
 
   const columns = [
-    { field: 'Id', headerName: '', hide: true },
-
     {
       field: 'id',
       headerName: '',
@@ -202,16 +200,19 @@ const MaterialPutAway = (props) => {
         );
       },
     },
-
     {
-      field: 'MaterialColorCode',
-      headerName: 'Material Code',
-      width: 250,
+      field: 'Id',
+      headerName: 'Lot #',
+      width: 180,
     },
-
     {
       field: 'LotSerial',
       headerName: 'Lot Serial',
+      width: 250,
+    },
+    {
+      field: 'MaterialColorCode',
+      headerName: 'Material Code',
       width: 250,
     },
 

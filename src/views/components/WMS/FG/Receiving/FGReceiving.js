@@ -117,8 +117,6 @@ const FGReceiving = (props) => {
   }, [newData]);
 
   const columns = [
-    { field: 'Id', headerName: '', hide: true },
-
     {
       field: 'id',
       headerName: '',
@@ -155,16 +153,19 @@ const FGReceiving = (props) => {
         );
       },
     },
-
     {
-      field: 'MaterialColorCode',
-      headerName: 'Material Code',
-      width: 250,
+      field: 'Id',
+      headerName: 'Lot #',
+      width: 180,
     },
-
     {
       field: 'LotSerial',
       headerName: 'Lot Serial',
+      width: 250,
+    },
+    {
+      field: 'MaterialColorCode',
+      headerName: 'Material Code',
       width: 250,
     },
 
