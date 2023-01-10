@@ -439,3 +439,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ebf1f6', end
   .bg-rgba-03{
     background-color: rgba(0, 0, 0, 0.15);
   }
+.print-hidden{
+    display: none;
+}
+@media print {
+    .print-hidden {
+        display: block;
+    }
+}

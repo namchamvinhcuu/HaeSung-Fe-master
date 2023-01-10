@@ -1,6 +1,6 @@
 import { Store } from '@appstate';
 import { User_Operations } from '@appstate/user';
-import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Grid, Typography } from '@mui/material';
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
@@ -11,13 +11,15 @@ import { lotInformation } from '@services';
 import { ErrorAlert, SuccessAlert } from '@utils';
 import { useIntl } from 'react-intl';
 import moment from 'moment';
+import LotPrint from './LotPrint';
+import ReactToPrint from 'react-to-print';
 
 const LotInformation = (props) => {
   const [lot, setLot] = useState('');
   const intl = useIntl();
   let isRendered = useRef(true);
   const lotInputRef = useRef(null);
-
+  const componentRef = React.useRef();
   const handleLotInputChange = (e) => {
     lotInputRef.current.value = e.target.value;
   };
@@ -70,11 +72,23 @@ const LotInformation = (props) => {
     <React.Fragment>
       <Box sx={{ display: 'grid', justifyContent: 'center' }}>
         <Grid container spacing={2} className="align-items-center mb-5" sx={{ minWidth: '45vw' }}>
-          <Grid item xs={9.5}>
+          <Grid item xs={7}>
             <MuiTextField ref={lotInputRef} label="Lot" onChange={handleLotInputChange} onKeyDown={keyPress} />
           </Grid>
-          <Grid item xs={2.5}>
+          <Grid item>
             <MuiButton text="scan" color="success" onClick={scanBtnClick} sx={{ whiteSpace: 'nowrap' }} />
+          </Grid>
+          <Grid item>
+            <ReactToPrint
+              trigger={() => {
+                return (
+                  <Button variant="contained" color="primary" disabled={lot ? false : true}>
+                    {intl.formatMessage({ id: 'general.print' })}
+                  </Button>
+                );
+              }}
+              content={() => componentRef.current}
+            />
           </Grid>
         </Grid>
         {lot?.Id && (
@@ -124,12 +138,6 @@ const LotInformation = (props) => {
                       {lot?.NGQty}
                     </p>
                   </Box>
-                  <Box className="d-flex mb-2">
-                    <Typography sx={{ ...styles.title }}>Total Qty:</Typography>
-                    <p style={{ ...styles.underline }} className="ml-2">
-                      {lot?.TotalSOQty}
-                    </p>
-                  </Box>
                 </Grid>
                 <Grid item xs={5.5} md={5.5}>
                   <Box
@@ -177,7 +185,7 @@ const LotInformation = (props) => {
                   <Box className="d-flex mb-2">
                     <Typography sx={{ ...styles.title }}>QC Result:</Typography>
                     <p style={{ ...styles.underline }} className="ml-2">
-                      {lot?.QCResult ? 'OKE' : 'NG'}
+                      {lot?.QCResult ? 'OK' : 'NG'}
                     </p>
                   </Box>
                 </Grid>
@@ -186,6 +194,7 @@ const LotInformation = (props) => {
           </Card>
         )}
       </Box>
+      <LotPrint item={lot} innerRef={componentRef} />
     </React.Fragment>
   );
 };
