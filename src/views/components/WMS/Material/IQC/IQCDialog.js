@@ -13,11 +13,14 @@ const IQCDialog = (props) => {
   // const [materialId, setMaterialId] = useState(0);
   // const [qcList, setQCList] = useState([]);
   const [QCResult, setQCResult] = useState('');
+
   const optionQCResult = [
     { QCResult: 'True', QCResultName: 'OK' },
     { QCResult: 'False', QCResultName: 'NG' },
   ];
+
   const intl = useIntl();
+
   const [dialogState, setDialogState] = useState({
     isSubmit: false,
   });
@@ -45,10 +48,12 @@ const IQCDialog = (props) => {
         // otherwise: yup.string()
       }),
   });
+
   const handleReset = () => {
     setQCResult('');
     resetForm();
   };
+
   const handleCloseDialog = () => {
     setDialogState({
       ...dialogState,
@@ -56,6 +61,7 @@ const IQCDialog = (props) => {
     resetForm();
     onClose();
   };
+
   const formik = useFormik({
     validationSchema: schema,
     initialValues: initModal,
@@ -93,10 +99,12 @@ const IQCDialog = (props) => {
       }
     }
   };
+
   const getMaterialTypeRaw = async () => {
     const res = await iqcService.getMaterialModelTypeRaw();
     return res;
   };
+
   useEffect(() => {
     if (mode === UPDATE_ACTION) {
       getSelectQCByLotId(initModal.Id);
@@ -104,6 +112,7 @@ const IQCDialog = (props) => {
     }
     setQCResult('');
   }, [initModal]);
+
   const getSelectQCByLotId = async (id) => {
     const res = await iqcService.getSelectQCByLotId({ LotId: id });
     setFieldValue('QcIDList', res.Data);
