@@ -55,6 +55,7 @@ export default function FGPackingLotDetail({ PackingLabelId, newDataChild, handl
               size="small"
               sx={[{ '&:hover': { border: '1px solid red' } }]}
               onClick={() => handleDelete(params.row)}
+              disabled={IsShipped ? true : false}
             >
               {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
             </IconButton>
