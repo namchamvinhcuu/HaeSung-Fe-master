@@ -406,7 +406,7 @@
     "OrderQty": "SL yêu cầu",
     "ActualQty": "SL thực tế",
     "NGQty": "SL NG",
-    "HMIQty": "SL HMI",
+    "HMIQty": "Inject MC",
     "StartDate": "Ngày bắt đầu",
     "Week": "Tuần",
     "Year": "Năm",
