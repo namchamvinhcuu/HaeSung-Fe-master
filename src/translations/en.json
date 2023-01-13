@@ -406,7 +406,7 @@
     "OrderQty": "Order Qty",
     "ActualQty": "Actual Qty",
     "NGQty": "NG Qty",
-    "HMIQty": "HMI Qty",
+    "HMIQty": "Inject MC",
     "StartDate": "Working Date",
     "Week": "Week",
     "Year": "Year",

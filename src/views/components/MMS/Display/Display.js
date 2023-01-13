@@ -47,13 +47,13 @@ const Display = (props) => {
         <div style={{ height: '100%', backgroundColor: '#000' }}>
           <div style={{ display: 'flex', height: '5%', backgroundColor: '#6c757d' }}>
             <div style={{ ...style.grid, width: '50%', minHeight: 'unset' }}>
-              <h2 style={{ margin: 0, fontWeight: '600', fontFamily: 'cursive' }}>
+              <h2 style={{ margin: 0, fontWeight: '600' }}>
                 <HomeIcon sx={{ fontSize: 33, mr: 2, mb: 1 }} />
                 HANLIM
               </h2>
             </div>
             <div style={{ ...style.grid, width: '50%', minHeight: 'unset' }}>
-              <h2 style={{ margin: 0, fontWeight: '600', fontFamily: 'cursive' }}>
+              <h2 style={{ margin: 0, fontWeight: '600' }}>
                 <ScheduleIcon sx={{ fontSize: 33, mr: 2, mb: 1 }} />
                 <Clock format={'DD/MM/YYYY (HH:mm:ss)'} ticking={true} />
               </h2>
@@ -62,18 +62,16 @@ const Display = (props) => {
           <div style={{ height: '95%' }}>
             <div style={{ height: '16%', display: 'flex' }}>
               <div style={{ ...style.grid, width: '33.3333%', backgroundColor: '#9370db' }}>
-                <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Total Target</h2>
-                <h1 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{totalOrderQty}</h1>
+                <h2 style={{ fontWeight: '600', fontFamily: 'Arial, Helvetica, sans-serif' }}>Total Target</h2>
+                <h1 style={{ fontWeight: '600' }}>{Number(totalOrderQty).toLocaleString()}</h1>
               </div>
               <div style={{ ...style.grid, width: '33.3333%', backgroundColor: '#00c6bb' }}>
-                <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Total Actual</h2>
-                <h1 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{totalActualQty}</h1>
+                <h2 style={{ fontWeight: '600' }}>Total Actual</h2>
+                <h1 style={{ fontWeight: '600' }}>{Number(totalActualQty).toLocaleString()}</h1>
               </div>
               <div style={{ ...style.grid, width: '33.3333%', backgroundColor: '#e9a424' }}>
-                <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Avg Efficiency</h2>
-                <h1 style={{ fontWeight: '600', fontFamily: 'cursive' }}>
-                  {totalEfficiency > 100 ? 100 : Math.round(totalEfficiency)}%
-                </h1>
+                <h2 style={{ fontWeight: '600' }}>Avg Efficiency</h2>
+                <h1 style={{ fontWeight: '600' }}>{totalEfficiency > 100 ? 100 : Math.round(totalEfficiency)}%</h1>
               </div>
             </div>
             <div style={{ height: '84%', display: 'flex' }}>
@@ -81,32 +79,32 @@ const Display = (props) => {
                 <div
                   style={{ ...style.grid, height: '16.66%', border: 'solid 1px #434242', backgroundColor: '#ff0000' }}
                 >
-                  <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>WO</h2>
+                  <h2 style={{ fontWeight: '600' }}>WO</h2>
                 </div>
                 <div
                   style={{ ...style.grid, height: '16.66%', border: 'solid 1px #434242', backgroundColor: '#68B984' }}
                 >
-                  <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>CODE</h2>
+                  <h2 style={{ fontWeight: '600' }}>CODE</h2>
                 </div>
                 <div
                   style={{ ...style.grid, height: '16.66%', border: 'solid 1px #434242', backgroundColor: '#9370db' }}
                 >
-                  <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Target</h2>
+                  <h2 style={{ fontWeight: '600' }}>Target</h2>
                 </div>
                 <div
                   style={{ ...style.grid, height: '16.66%', border: 'solid 1px #434242', backgroundColor: '#009EFF' }}
                 >
-                  <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>HMI Qty</h2>
+                  <h2 style={{ fontWeight: '600' }}>Inject MC</h2>
                 </div>
                 <div
                   style={{ ...style.grid, height: '16.66%', border: 'solid 1px #434242', backgroundColor: '#00c6bb' }}
                 >
-                  <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Actual</h2>
+                  <h2 style={{ fontWeight: '600' }}>Actual</h2>
                 </div>
                 <div
                   style={{ ...style.grid, height: '16.66%', border: 'solid 1px #434242', backgroundColor: '#e9a424' }}
                 >
-                  <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>Efficiency</h2>
+                  <h2 style={{ fontWeight: '600' }}>Efficiency</h2>
                 </div>
               </div>
               <div style={{ width: '80%', height: '100%', display: 'flex', overflow: 'auto', whiteSpace: 'nowrap' }}>
@@ -116,26 +114,22 @@ const Display = (props) => {
                     return (
                       <div style={{ width: '100%', height: '100%' }} key={index}>
                         <div style={{ ...style.grid, height: '16.66%', display: 'grid', border: 'solid 1px #222222' }}>
-                          <h2 style={{ fontWeight: '600', fontFamily: 'cursive', marginLeft: 10, marginRight: 10 }}>
-                            {item.woCode}
-                          </h2>
+                          <h2 style={{ fontWeight: '600', marginLeft: 10, marginRight: 10 }}>{item.woCode}</h2>
                         </div>
                         <div style={{ ...style.grid, height: '16.66%', display: 'grid', border: 'solid 1px #222222' }}>
-                          <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{item.materialCode}</h2>
+                          <h2 style={{ fontWeight: '600' }}>{item.materialCode}</h2>
                         </div>
                         <div style={{ ...style.grid, height: '16.66%', display: 'grid', border: 'solid 1px #222222' }}>
-                          <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{item.orderQty}</h2>
+                          <h2 style={{ fontWeight: '600' }}>{Number(item.orderQty).toLocaleString()}</h2>
                         </div>
                         <div style={{ ...style.grid, height: '16.66%', display: 'grid', border: 'solid 1px #222222' }}>
-                          <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{item.hmiQty}</h2>
+                          <h2 style={{ fontWeight: '600' }}>{Number(item.hmiQty).toLocaleString()}</h2>
                         </div>
                         <div style={{ ...style.grid, height: '16.66%', display: 'grid', border: 'solid 1px #222222' }}>
-                          <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>{item.actualQty}</h2>
+                          <h2 style={{ fontWeight: '600' }}>{Number(item.actualQty).toLocaleString()}</h2>
                         </div>
                         <div style={{ ...style.grid, height: '16.66%', display: 'grid', border: 'solid 1px #222222' }}>
-                          <h2 style={{ fontWeight: '600', fontFamily: 'cursive' }}>
-                            {efficiency > 100 ? 100 : efficiency}%
-                          </h2>
+                          <h2 style={{ fontWeight: '600' }}>{efficiency > 100 ? 100 : efficiency}%</h2>
                         </div>
                       </div>
                     );
