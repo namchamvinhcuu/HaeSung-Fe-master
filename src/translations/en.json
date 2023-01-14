@@ -556,6 +556,8 @@
     "Shelf": "Shelf",
     "CheckStatus": "Check Status",
     "CheckDate": "Check Date",
-    "Error_SelectShelfForScan": "Select shelf for scan"
+    "Error_SelectShelfForScan": "Select shelf for scan",
+    "confirmedBy":"User Confirmed",
+    "confirm":"Confirm"
   }
 }

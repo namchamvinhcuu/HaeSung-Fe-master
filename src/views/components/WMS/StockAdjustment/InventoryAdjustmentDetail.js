@@ -1,20 +1,27 @@
 import { useModal } from '@basesShared';
-import { CREATE_ACTION } from '@constants/ConfigConstants';
-import { MuiButton, MuiDataGrid, MuiTextField, MuiAutocomplete } from '@controls';
+import {
+  MuiButton,
+  MuiDataGrid,
+  MuiTextField,
+  MuiAutocomplete,
+  MuiDialog,
+  MuiResetButton,
+  MuiSubmitButton,
+} from '@controls';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UndoIcon from '@mui/icons-material/Undo';
-import { Grid, IconButton, Tooltip, Typography } from '@mui/material';
+import { Button, Grid, IconButton, Tooltip, Typography } from '@mui/material';
 import { stockAdjustmentService } from '@services';
 import { ErrorAlert, SuccessAlert, isNumber } from '@utils';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
-// import FGPackingLotDetailDialog from './FGPackingLotDetailDialog';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
 export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataChild, handleUpdateQty }) {
   const intl = useIntl();
   let isRendered = useRef(true);
-  const [mode, setMode] = useState(CREATE_ACTION);
   const { isShowing, toggle } = useModal();
   const [state, setState] = useState({
     isLoading: false,
@@ -28,6 +35,7 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
   const [newData, setNewData] = useState({});
   const [updateData, setUpdateData] = useState({});
   const [ShelfId, setShelfId] = useState(null);
+  const [rowData, setRowData] = useState({});
 
   const lotInputRef = useRef(null);
 
@@ -45,7 +53,7 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
     {
       field: 'action',
       headerName: '',
-      witdh: 100,
+      witdh: 50,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
@@ -93,12 +101,13 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
       editable: true,
       renderCell: (params) => {
         return (
-          <Tooltip title={intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' })}>
+          <Tooltip title={params.row.isConfirm ? '' : intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' })}>
             <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.CheckQty}</Typography>
           </Tooltip>
         );
       },
     },
+
     {
       field: 'GapQty',
       headerName: intl.formatMessage({ id: 'stockAdjustment.GapQty' }),
@@ -116,6 +125,32 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
       flex: 0.5,
       valueFormatter: (params) =>
         params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
+    },
+    {
+      field: 'confirmedName',
+      headerName: intl.formatMessage({ id: 'stockAdjustment.confirmedBy' }),
+      flex: 0.5,
+      alignItems: 'center',
+      renderCell: (params) => {
+        return params.row.isConfirm ? (
+          <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.confirmedName}</Typography>
+        ) : (
+          <Button
+            variant="contained"
+            sx={{ lineHeight: 1, padding: '5px 10px' }}
+            color={'success'}
+            size="small"
+            onClick={() => handleConfirm(params.row)}
+          >
+            Confirm
+          </Button>
+        );
+      },
+    },
+    {
+      field: 'Remark',
+      headerName: intl.formatMessage({ id: 'stockAdjustment.Remark' }),
+      flex: 0.5,
     },
   ];
 
@@ -218,6 +253,7 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
   async function fetchData(StockAdjustmentId) {
     setState({ ...state, isLoading: true });
     const params = {
+      CheckStatus: false,
       page: state.page,
       pageSize: state.pageSize,
       StockAdjustmentId: StockAdjustmentId,
@@ -233,14 +269,13 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
   }
 
   const handleRowUpdate = async (newRow) => {
-    console.log(newRow);
     if (!isNumber(newRow.CheckQty) || newRow.CheckQty < 0) {
       ErrorAlert(intl.formatMessage({ id: 'forecast.OrderQty_required_bigger' }));
       newRow.CheckQty = 0;
       return newRow;
     }
 
-    var res = await stockAdjustmentService.modifySADetail(newRow);
+    var res = await stockAdjustmentService.modifySADetail({ ...newRow, CheckQty: Number(newRow.CheckQty) });
 
     if (res.HttpResponseCode === 200 && res.Data) {
       SuccessAlert(intl.formatMessage({ id: 'general.success' }));
@@ -252,6 +287,11 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
     }
 
     return newRow;
+  };
+
+  const handleConfirm = async (row) => {
+    setRowData(row);
+    toggle();
   };
 
   const handleProcessRowUpdateError = React.useCallback((error) => {
@@ -319,21 +359,82 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
         // experimentalFeatures={{ newEditingApi: true }}
 
         processRowUpdate={handleRowUpdate}
-        //isCellEditable={(params) => params.row.Id}
+        isCellEditable={(params) => !params.row.isConfirm}
         onProcessRowUpdateError={handleProcessRowUpdateError}
         experimentalFeatures={{ newEditingApi: true }}
         initialState={{ pinnedColumns: { right: ['action'] } }}
       />
 
-      {/* <FGPackingLotDetailDialog
-        initModal={rowData}
-        isOpen={isShowing}
-        onClose={toggle}
-        setNewData={setNewData}
-        handleUpdateQty={handleUpdateQty}
-        mode={mode}
-        StockAdjustmentId={StockAdjustmentId}
-      /> */}
+      <ConfirmDialog initModal={rowData} isOpen={isShowing} onClose={toggle} setUpdateData={setUpdateData} />
     </>
   );
 }
+
+const ConfirmDialog = ({ initModal, isOpen, onClose, setUpdateData }) => {
+  const intl = useIntl();
+  const [dialogState, setDialogState] = useState({ isSubmit: false });
+
+  const formik = useFormik({
+    initialValues: initModal,
+    enableReinitialize: true,
+    onSubmit: async (values) => onSubmit(values),
+  });
+
+  const { handleChange, handleSubmit, values, setFieldValue, errors, touched, resetForm } = formik;
+
+  const handleReset = () => {
+    resetForm();
+  };
+
+  const handleCloseDialog = () => {
+    resetForm();
+    onClose();
+  };
+
+  const onSubmit = async (data) => {
+    setDialogState({ ...dialogState, isSubmit: true });
+
+    const res = await stockAdjustmentService.confirmSADetail(data);
+    if (res.HttpResponseCode === 200) {
+      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      setUpdateData(res.Data);
+      setDialogState({ ...dialogState, isSubmit: false });
+      handleCloseDialog();
+    } else {
+      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      setDialogState({ ...dialogState, isSubmit: false });
+    }
+  };
+
+  return (
+    <MuiDialog
+      maxWidth="sm"
+      title={intl.formatMessage({ id: 'stockAdjustment.confirm' })}
+      isOpen={isOpen}
+      disabledCloseBtn={dialogState.isSubmit}
+      disable_animate={300}
+      onClose={handleCloseDialog}
+    >
+      <form onSubmit={handleSubmit}>
+        <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={12}>
+            <MuiTextField
+              fullWidth
+              name="Remark"
+              disabled={dialogState.isSubmit}
+              value={values.Remark}
+              onChange={handleChange}
+              label={intl.formatMessage({ id: 'stockAdjustment.Remark' }) + ' *'}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Grid container direction="row-reverse">
+              <MuiSubmitButton text="save" loading={dialogState.isSubmit} />
+              <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} />
+            </Grid>
+          </Grid>
+        </Grid>
+      </form>
+    </MuiDialog>
+  );
+};

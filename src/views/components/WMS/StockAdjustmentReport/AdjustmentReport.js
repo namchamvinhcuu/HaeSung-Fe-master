@@ -7,27 +7,17 @@ import { bindActionCreators } from 'redux';
 import { useModal, useModal2 } from '@basesShared';
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateField } from '@controls';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import UndoIcon from '@mui/icons-material/Undo';
 import { Badge, FormControlLabel, Grid, IconButton, Switch } from '@mui/material';
 import { stockAdjustmentService } from '@services';
 import { addDays, ErrorAlert, SuccessAlert } from '@utils';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
-import InventoryAdjustmentgDialog from './InventoryAdjustmentgDialog';
 import InventoryAdjustmentDetail from './InventoryAdjustmentDetail';
-// import FGPackingDialog from './FGPackingDialog';
-// import FGPackingLotDetail from './FGPackingLotDetail';
-// import FGPackingLotPrintDialog from './FGPackingLotPrintDialog';
 
-const InventoryAdjustment = (props) => {
+const AdjustmentReport = (props) => {
   const intl = useIntl();
   let isRendered = useRef(true);
-  const [mode, setMode] = useState(CREATE_ACTION);
-  const { isShowing, toggle } = useModal();
-  const { isShowing2, toggle2 } = useModal2();
   const [state, setState] = useState({
     isLoading: false,
     data: [],
@@ -58,42 +48,6 @@ const InventoryAdjustment = (props) => {
       renderCell: (index) => index.api.getRowIndex(index.row.StockAdjustmentId) + 1 + (state.page - 1) * state.pageSize,
     },
     { field: 'row_version', hide: true },
-    {
-      field: 'action',
-      headerName: '',
-      witdh: 90,
-      disableClickEventBubbling: true,
-      sortable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => {
-        return (
-          <Grid container spacing={1} alignItems="center" justifyContent="center">
-            <Grid item xs={6} style={{ textAlign: 'center' }}>
-              <IconButton
-                aria-label="delete"
-                color="error"
-                size="small"
-                sx={[{ '&:hover': { border: '1px solid red' } }]}
-                onClick={() => handleDelete(params.row)}
-              >
-                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
-              </IconButton>
-            </Grid>
-            <Grid item xs={6} style={{ textAlign: 'center' }}>
-              <IconButton
-                aria-label="edit"
-                color="warning"
-                size="small"
-                sx={[{ '&:hover': { border: '1px solid orange' } }]}
-                onClick={() => handleUpdate(params.row)}
-              >
-                <EditIcon fontSize="inherit" />
-              </IconButton>
-            </Grid>
-          </Grid>
-        );
-      },
-    },
     {
       field: 'StockAdjustmentId',
       headerName: intl.formatMessage({ id: 'stockAdjustment.StockAdjustmentId' }),
@@ -158,71 +112,6 @@ const InventoryAdjustment = (props) => {
       isRendered = false;
     };
   }, [state.page, state.pageSize, state.searchData.showDelete]);
-
-  useEffect(() => {
-    if (!_.isEmpty(newData) && isRendered) {
-      const data = [newData, ...state.data];
-      if (data.length > state.pageSize) {
-        data.pop();
-      }
-      setState({
-        ...state,
-        data: [...data],
-        totalRow: state.totalRow + 1,
-      });
-    }
-  }, [newData]);
-
-  useEffect(() => {
-    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData) && isRendered) {
-      let newArr = [...state.data];
-      const index = _.findIndex(newArr, function (o) {
-        return o.StockAdjustmentId == updateData.StockAdjustmentId;
-      });
-      if (index !== -1) {
-        newArr[index] = updateData;
-      }
-
-      setState({ ...state, data: [...newArr] });
-
-      let newArrPrint = newArr.filter((x) => x.isPrint);
-      setDataPrint(newArrPrint);
-    }
-  }, [updateData]);
-
-  //handle
-  const handleDelete = async (item) => {
-    if (
-      window.confirm(
-        intl.formatMessage({ id: item.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' })
-      )
-    ) {
-      try {
-        let res = await stockAdjustmentService.deleteSA(item);
-
-        if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
-          await fetchData();
-        } else {
-          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
-  const handleAdd = () => {
-    setMode(CREATE_ACTION);
-    setRowData();
-    toggle();
-  };
-
-  const handleUpdate = (row) => {
-    setMode(UPDATE_ACTION);
-    setRowData({ ...row });
-    toggle();
-  };
 
   const handlePrint = (row) => {
     if (row.isPrint) {
@@ -296,18 +185,7 @@ const InventoryAdjustment = (props) => {
   return (
     <React.Fragment>
       <Grid container direction="row" spacing={2} justifyContent="space-between" alignItems="width-end">
-        <Grid item xs={5}>
-          <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mr: 1 }} />
-          {/* <Badge badgeContent={DataPrint.length} color="warning">
-            <MuiButton
-              text="print"
-              color="secondary"
-              onClick={() => toggle2()}
-              sx={{ m: 0 }}
-              disabled={DataPrint.length > 0 ? false : true}
-            />
-          </Badge> */}
-        </Grid>
+        <Grid item xs={5}></Grid>
         <Grid item>
           <MuiAutocomplete
             label={intl.formatMessage({ id: 'stockAdjustment.AreaId' })}
@@ -357,6 +235,7 @@ const InventoryAdjustment = (props) => {
         </Grid>
       </Grid>
       <MuiDataGrid
+        checkboxSelection
         showLoading={state.isLoading}
         isPagingServer={true}
         headerHeight={45}
@@ -374,15 +253,6 @@ const InventoryAdjustment = (props) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;
         }}
         initialState={{ pinnedColumns: { right: ['action'] } }}
-      />
-
-      <InventoryAdjustmentgDialog
-        initModal={rowData}
-        isOpen={isShowing}
-        onClose={toggle}
-        setNewData={setNewData}
-        setUpdateData={setUpdateData}
-        mode={mode}
       />
 
       <InventoryAdjustmentDetail StockAdjustmentId={StockAdjustmentId} />
@@ -412,4 +282,4 @@ const mapDispatchToProps = (dispatch) => {
   return { changeLanguage };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(InventoryAdjustment);
+export default connect(mapStateToProps, mapDispatchToProps)(AdjustmentReport);

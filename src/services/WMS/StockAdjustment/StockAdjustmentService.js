@@ -70,6 +70,16 @@ export const modifySADetail = async (params) => {
   }
 };
 
+export const confirmSADetail = async (params) => {
+  try {
+    return await axios.post(`${apiName}/confirm-detail`, {
+      ...params,
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
 export const deleteSADetail = async (params) => {
   try {
     return await axios.delete(`${apiName}/delete-detail`, { data: params });

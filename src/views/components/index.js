@@ -78,6 +78,7 @@ import FGPicking from './WMS/FG/Picking/FGPicking';
 import OQC from './WMS/FG/OQC/OQC';
 import FGDelivery from './WMS/FG/FGDelivery/FGDelivery';
 import InventoryAdjustment from './WMS/StockAdjustment/InventoryAdjustment';
+import AdjustmentReport from './WMS/StockAdjustmentReport/AdjustmentReport';
 
 //WMS - NG
 import NGStock from './WMS/NG/NGStock';
@@ -178,6 +179,7 @@ export {
   OQC,
   FGDelivery,
   InventoryAdjustment,
+  AdjustmentReport,
 
   //WMS - NG
   NGStock,
