@@ -85,7 +85,7 @@ const FGPackingLot = (props) => {
                 color="error"
                 size="small"
                 sx={[{ '&:hover': { border: '1px solid red' } }]}
-                disabled={params.row.DoId != null ? true : false}
+                disabled={params.row?.DoId != null ? true : false}
                 onClick={() => handleDelete(params.row)}
               >
                 <DeleteIcon fontSize="inherit" />
@@ -97,7 +97,7 @@ const FGPackingLot = (props) => {
                 color="warning"
                 size="small"
                 sx={[{ '&:hover': { border: '1px solid orange' } }]}
-                disabled={params.row.DoId != null ? true : false}
+                disabled={params.row?.DoId != null ? true : false}
                 onClick={() => handleUpdate(params.row)}
               >
                 <EditIcon fontSize="inherit" />
@@ -383,7 +383,7 @@ const FGPackingLot = (props) => {
         onSelectionModelChange={(Ids) => {
           setPackingLabelId(Ids[0]);
           let dataRow = state.data.find((x) => x.PackingLabelId == Ids[0]);
-          setIsShipped(dataRow.DoId != null ? true : false);
+          setIsShipped(dataRow?.DoId != null ? true : false);
         }}
         onCellClick={(param, e) => (e.defaultMuiPrevented = param.field === 'action')}
         getRowClassName={(params) => {
