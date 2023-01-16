@@ -27,6 +27,7 @@ const AdjustmentReportPrintDialog = ({ isOpen, onClose, DataPrint }) => {
   async function fetchData(StockAdjustmentId) {
     setState({ ...state, isLoading: true });
     const params = {
+      isConfirm: true,
       CheckStatus: true,
       page: 0,
       pageSize: 0,
