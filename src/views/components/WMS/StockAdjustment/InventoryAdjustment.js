@@ -224,14 +224,6 @@ const InventoryAdjustment = (props) => {
     toggle();
   };
 
-  const handlePrint = (row) => {
-    if (row.isPrint) {
-      setUpdateData({ ...row, isPrint: false });
-    } else {
-      setUpdateData({ ...row, isPrint: true });
-    }
-  };
-
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...state.searchData };
     newSearchData[inputName] = e;
@@ -298,15 +290,6 @@ const InventoryAdjustment = (props) => {
       <Grid container direction="row" spacing={2} justifyContent="space-between" alignItems="width-end">
         <Grid item xs={5}>
           <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mr: 1 }} />
-          {/* <Badge badgeContent={DataPrint.length} color="warning">
-            <MuiButton
-              text="print"
-              color="secondary"
-              onClick={() => toggle2()}
-              sx={{ m: 0 }}
-              disabled={DataPrint.length > 0 ? false : true}
-            />
-          </Badge> */}
         </Grid>
         <Grid item>
           <MuiAutocomplete
@@ -386,8 +369,6 @@ const InventoryAdjustment = (props) => {
       />
 
       <InventoryAdjustmentDetail StockAdjustmentId={StockAdjustmentId} />
-
-      {/* <FGPackingLotPrintDialog isOpen={isShowing2} onClose={toggle2} listData={DataPrint} /> */}
     </React.Fragment>
   );
 };
