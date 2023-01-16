@@ -525,7 +525,7 @@ const WMSLayout = (props) => {
 
   useEffect(() => {
     getDataLot();
-  }, [BinId]);
+  }, [BinId, lotState.page, lotState.pageSize]);
 
   const handleRowUpdate = async (newRow) => {
     const index = _.findIndex(lotState.data, function (o) {
