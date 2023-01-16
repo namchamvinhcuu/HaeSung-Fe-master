@@ -198,23 +198,25 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
 
   //handle
   const handleDelete = async (item) => {
-    if (
-      window.confirm(
-        intl.formatMessage({
-          id: item.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
-        })
-      )
-    ) {
-      try {
-        let res = await stockAdjustmentService.deleteSADetail(item);
-        if (res && res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
-          await fetchData(StockAdjustmentId);
-        } else {
-          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    if (!item?.isConfirm) {
+      if (
+        window.confirm(
+          intl.formatMessage({
+            id: item.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
+          })
+        )
+      ) {
+        try {
+          let res = await stockAdjustmentService.deleteSADetail(item);
+          if (res && res.HttpResponseCode === 200) {
+            SuccessAlert(intl.formatMessage({ id: 'general.success' }));
+            await fetchData(StockAdjustmentId);
+          } else {
+            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
       }
     }
   };

@@ -532,20 +532,20 @@
     "NGQty_wrong": "NG qty larger lot Qty"
   },
   "packing": {
-    "PackingLabelId" : "Packing #",
+    "PackingLabelId": "Packing #",
     "PackingSerial": "Packing Serial",
     "SamsungLabelCode": "Samsung Label",
     "Qty": "Qty",
     "PackingDate": "Packing Date",
     "scanned": "lot scanned",
-    "Packing_Lot_Shipped":"Packing lot is shipped, can't delete"
+    "Packing_Lot_Shipped": "Packing lot is shipped, can't delete"
   },
-  "fgdelivery" : {
-    "qty_order_not_bigger_remain":"Oder Qty không lớn hơn Remain Qty"
+  "fgdelivery": {
+    "qty_order_not_bigger_remain": "Oder Qty không lớn hơn Remain Qty"
   },
   "stockAdjustment": {
-    "StockAdjustmentId":"Stock Adjustment #",
-    "AreaId" : "Area",
+    "StockAdjustmentId": "Stock Adjustment #",
+    "AreaId": "Area",
     "Requester": "Requester",
     "AdjustmentStatus": "Status",
     "DueDate": "DueDate",
@@ -557,7 +557,9 @@
     "CheckStatus": "Check Status",
     "CheckDate": "Check Date",
     "Error_SelectShelfForScan": "Select shelf for scan",
-    "confirmedBy":"User Confirmed",
-    "confirm":"Confirm"
+    "confirmedBy": "User Confirmed",
+    "confirm": "Confirm",
+
+    "cannot_delete_confirmed": "Không thể xóa vì đã được confirmed"
   }
 }
