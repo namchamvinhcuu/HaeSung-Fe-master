@@ -1,28 +1,14 @@
 import { useModal } from '@basesShared';
-import {
-  MuiButton,
-  MuiDataGrid,
-  MuiTextField,
-  MuiAutocomplete,
-  MuiDialog,
-  MuiResetButton,
-  MuiSubmitButton,
-} from '@controls';
-import DeleteIcon from '@mui/icons-material/Delete';
-import UndoIcon from '@mui/icons-material/Undo';
-import { Button, Grid, IconButton, Tooltip, Typography } from '@mui/material';
+import { MuiDataGrid } from '@controls';
+import { Grid, Tooltip, Typography } from '@mui/material';
 import { stockAdjustmentService } from '@services';
-import { ErrorAlert, SuccessAlert, isNumber } from '@utils';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
 
-export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataChild, handleUpdateQty }) {
+export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
   const intl = useIntl();
   let isRendered = useRef(true);
-  const { isShowing, toggle } = useModal();
   const [state, setState] = useState({
     isLoading: false,
     data: [],
@@ -32,12 +18,6 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
     searchData: { showDelete: true, MaterialId: null },
     StockAdjustmentId: StockAdjustmentId,
   });
-  const [newData, setNewData] = useState({});
-  const [updateData, setUpdateData] = useState({});
-  const [ShelfId, setShelfId] = useState(null);
-  const [rowData, setRowData] = useState({});
-
-  const lotInputRef = useRef(null);
 
   const columns = [
     {
@@ -59,6 +39,11 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
       field: 'LotSerial',
       headerName: intl.formatMessage({ id: 'lot.LotSerial' }),
       flex: 0.5,
+    },
+    {
+      field: 'BinCode',
+      headerName: intl.formatMessage({ id: 'lot.BinCode' }),
+      flex: 0.4,
     },
     {
       field: 'MaterialCode',
@@ -117,7 +102,7 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
 
   //useEffect
   useEffect(() => {
-    fetchData(StockAdjustmentId);
+    if (StockAdjustmentId) fetchData(StockAdjustmentId);
     return () => {
       isRendered = false;
     };
@@ -156,9 +141,6 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
           rowCount={state.totalRow}
           onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
           getRowId={(rows) => rows.Id}
-          getRowClassName={(params) => {
-            if (_.isEqual(params.row, newData) || _.isEqual(params.row, newDataChild)) return `Mui-created`;
-          }}
         />
       </Grid>
     </>

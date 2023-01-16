@@ -84,6 +84,11 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
       flex: 0.5,
     },
     {
+      field: 'BinCode',
+      headerName: intl.formatMessage({ id: 'lot.BinCode' }),
+      flex: 0.4,
+    },
+    {
       field: 'MaterialCode',
       headerName: intl.formatMessage({ id: 'material.MaterialCode' }),
       flex: 0.5,

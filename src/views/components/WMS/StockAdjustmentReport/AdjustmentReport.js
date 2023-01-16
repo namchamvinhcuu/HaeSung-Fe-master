@@ -4,20 +4,21 @@ import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { useModal, useModal2 } from '@basesShared';
-import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
+import { useModal } from '@basesShared';
 import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateField } from '@controls';
-import { Badge, FormControlLabel, Grid, IconButton, Switch } from '@mui/material';
+import { FormControlLabel, Grid, Switch } from '@mui/material';
 import { stockAdjustmentService } from '@services';
-import { addDays, ErrorAlert, SuccessAlert } from '@utils';
+import { addDays, ErrorAlert } from '@utils';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
+import AdjustmentReportPrintDialog from './AdjustmentReportPrintDialog';
 import InventoryAdjustmentDetail from './InventoryAdjustmentDetail';
 
 const AdjustmentReport = (props) => {
   const intl = useIntl();
   let isRendered = useRef(true);
+  const { isShowing, toggle } = useModal();
   const [state, setState] = useState({
     isLoading: false,
     data: [],
@@ -32,11 +33,8 @@ const AdjustmentReport = (props) => {
     },
   });
 
-  const [newData, setNewData] = useState({});
-  const [updateData, setUpdateData] = useState({});
-  const [rowData, setRowData] = useState({});
   const [StockAdjustmentId, setStockAdjustmentId] = useState(null);
-  const [DataPrint, setDataPrint] = useState([]);
+  const [DataPrint, setDataPrint] = useState({});
 
   const columns = [
     {
@@ -113,11 +111,11 @@ const AdjustmentReport = (props) => {
     };
   }, [state.page, state.pageSize, state.searchData.showDelete]);
 
-  const handlePrint = (row) => {
-    if (row.isPrint) {
-      setUpdateData({ ...row, isPrint: false });
-    } else {
-      setUpdateData({ ...row, isPrint: true });
+  const handlePrint = () => {
+    if (StockAdjustmentId) {
+      let data = state.data.find((x) => x.StockAdjustmentId == StockAdjustmentId);
+      setDataPrint(data);
+      toggle();
     }
   };
 
@@ -185,7 +183,9 @@ const AdjustmentReport = (props) => {
   return (
     <React.Fragment>
       <Grid container direction="row" spacing={2} justifyContent="space-between" alignItems="width-end">
-        <Grid item xs={5}></Grid>
+        <Grid item xs={5}>
+          <MuiButton text="print" color="secondary" onClick={handlePrint} disabled={StockAdjustmentId ? false : true} />
+        </Grid>
         <Grid item>
           <MuiAutocomplete
             label={intl.formatMessage({ id: 'stockAdjustment.AreaId' })}
@@ -235,7 +235,6 @@ const AdjustmentReport = (props) => {
         </Grid>
       </Grid>
       <MuiDataGrid
-        checkboxSelection
         showLoading={state.isLoading}
         isPagingServer={true}
         headerHeight={45}
@@ -249,15 +248,12 @@ const AdjustmentReport = (props) => {
         getRowId={(rows) => rows.StockAdjustmentId}
         onSelectionModelChange={(newSelectedRowId) => setStockAdjustmentId(newSelectedRowId[0])}
         onCellClick={(param, e) => (e.defaultMuiPrevented = param.field === 'action')}
-        getRowClassName={(params) => {
-          if (_.isEqual(params.row, newData)) return `Mui-created`;
-        }}
         initialState={{ pinnedColumns: { right: ['action'] } }}
       />
 
       <InventoryAdjustmentDetail StockAdjustmentId={StockAdjustmentId} />
 
-      {/* <FGPackingLotPrintDialog isOpen={isShowing2} onClose={toggle2} listData={DataPrint} /> */}
+      <AdjustmentReportPrintDialog isOpen={isShowing} onClose={toggle} DataPrint={DataPrint} />
     </React.Fragment>
   );
 };

@@ -4,9 +4,9 @@ import { Grid } from '@mui/material';
 import { stockAdjustmentService } from '@services';
 import { ErrorAlert, SuccessAlert } from '@utils';
 import { useFormik } from 'formik';
+import * as yup from 'yup';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
-import * as yup from 'yup';
 import moment from 'moment';
 
 const InventoryAdjustmentgDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mode }) => {
