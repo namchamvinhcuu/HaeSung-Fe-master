@@ -258,6 +258,7 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
   async function fetchData(StockAdjustmentId) {
     setState({ ...state, isLoading: true });
     const params = {
+      isConfirm: false,
       CheckStatus: false,
       page: state.page,
       pageSize: state.pageSize,

@@ -112,6 +112,7 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
     setState({ ...state, isLoading: true });
     const params = {
       CheckStatus: true,
+      isConfirm: true,
       page: state.page,
       pageSize: state.pageSize,
       StockAdjustmentId: StockAdjustmentId,
