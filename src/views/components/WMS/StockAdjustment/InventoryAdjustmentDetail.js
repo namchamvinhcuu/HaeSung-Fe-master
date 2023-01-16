@@ -19,7 +19,7 @@ import { useIntl } from 'react-intl';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
-export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataChild, handleUpdateQty }) {
+export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
   const intl = useIntl();
   let isRendered = useRef(true);
   const { isShowing, toggle } = useModal();
@@ -206,18 +206,12 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
       )
     ) {
       try {
-        let child = state.data.filter((x) => x.ParentId == item.StockAdjustmentId);
-        if (child.length == 0) {
-          let res = await stockAdjustmentService.deleteSADetail(item);
-          if (res && res.HttpResponseCode === 200) {
-            SuccessAlert(intl.formatMessage({ id: 'general.success' }));
-            await fetchData(StockAdjustmentId);
-            handleUpdateQty(item.Qty * -1);
-          } else {
-            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-          }
+        let res = await stockAdjustmentService.deleteSADetail(item);
+        if (res && res.HttpResponseCode === 200) {
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
+          await fetchData(StockAdjustmentId);
         } else {
-          ErrorAlert(intl.formatMessage({ id: 'bom.delete_error' }));
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         }
       } catch (error) {
         console.log(error);
@@ -311,8 +305,6 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
       <Grid container direction="row" justifyContent="space-between" sx={{ mb: 1, mt: 0 }} spacing={2}>
         <Grid item xs={3}>
           <MuiAutocomplete
-            // value={values.AreaId ? { commonDetailId: values.AreaId, commonDetailName: values.AreaName } : null}
-            // disabled={dialogState.isSubmit}
             label={intl.formatMessage({ id: 'stockAdjustment.Shelf' })}
             fetchDataFunc={() => stockAdjustmentService.getShelf(StockAdjustmentId)}
             disabled={StockAdjustmentId ? false : true}
@@ -325,9 +317,6 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
           <MuiTextField
             fullWidth
             name="Lot"
-            // disabled={dialogState.isSubmit}
-            // value={values.Requester}
-            // onChange={handleChange}
             disabled={StockAdjustmentId ? false : true}
             ref={lotInputRef}
             label="lot"
@@ -359,12 +348,8 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
         getRowId={(rows) => rows.Id}
         getRowClassName={(params) => {
-          if (_.isEqual(params.row, newData) || _.isEqual(params.row, newDataChild)) return `Mui-created`;
+          if (_.isEqual(params.row, newData)) return `Mui-created`;
         }}
-        // processRowUpdate={handleRowUpdate}
-        // onProcessRowUpdateError={handleProcessRowUpdateError}
-        // experimentalFeatures={{ newEditingApi: true }}
-
         processRowUpdate={handleRowUpdate}
         isCellEditable={(params) => !params.row.isConfirm}
         onProcessRowUpdateError={handleProcessRowUpdateError}
