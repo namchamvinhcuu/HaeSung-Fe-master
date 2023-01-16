@@ -66,6 +66,7 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId, newDataCh
               size="small"
               sx={[{ '&:hover': { border: '1px solid red' } }]}
               onClick={() => handleDelete(params.row)}
+              disabled={params.row.isConfirm ? true : false}
             >
               {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
             </IconButton>
