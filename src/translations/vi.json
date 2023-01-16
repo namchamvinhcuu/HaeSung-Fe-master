@@ -34,6 +34,7 @@
     "confirm_create": "Xác nhận tạo mới",
     "confirm_modify": "Xác nhận chỉnh sửa",
     "confirm_delete": "Xác nhận xóa dữ liệu",
+    "confirm_finish": "Confirm to kết thúc",
     "id": "Id",
     "code": "Mã",
     "name": "Tên",

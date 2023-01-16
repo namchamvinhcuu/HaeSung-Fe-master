@@ -32,6 +32,16 @@ export const updateSA = async (params) => {
   }
 };
 
+export const finishSA = async (params) => {
+  try {
+    return await axios.put(`${apiName}/finish`, {
+      ...params,
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
 export const deleteSA = async (params) => {
   try {
     return await axios.delete(`${apiName}/delete`, { data: params });

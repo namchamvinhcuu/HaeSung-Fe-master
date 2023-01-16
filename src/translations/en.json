@@ -34,6 +34,7 @@
     "confirm_create": "Confirm to create",
     "confirm_modify": "Confirm to modify",
     "confirm_delete": "Confirm to delete",
+    "confirm_finish": "Confirm to finish",
     "id": "Id",
     "code": "Code",
     "name": "Name",

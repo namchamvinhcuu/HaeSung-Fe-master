@@ -10,7 +10,7 @@ import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateField } from '@controls
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UndoIcon from '@mui/icons-material/Undo';
-import { Badge, FormControlLabel, Grid, IconButton, Switch } from '@mui/material';
+import { Badge, FormControlLabel, Grid, IconButton, Switch, Button, Typography } from '@mui/material';
 import { stockAdjustmentService } from '@services';
 import { addDays, ErrorAlert, SuccessAlert } from '@utils';
 import moment from 'moment';
@@ -75,6 +75,7 @@ const InventoryAdjustment = (props) => {
                 size="small"
                 sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
+                disabled={params.row.AdjustmentStatus}
               >
                 {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
@@ -86,6 +87,7 @@ const InventoryAdjustment = (props) => {
                 size="small"
                 sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={() => handleUpdate(params.row)}
+                disabled={params.row.AdjustmentStatus}
               >
                 <EditIcon fontSize="inherit" />
               </IconButton>
@@ -113,7 +115,22 @@ const InventoryAdjustment = (props) => {
       field: 'AdjustmentStatus',
       headerName: intl.formatMessage({ id: 'stockAdjustment.AdjustmentStatus' }),
       flex: 0.4,
-      valueFormatter: (params) => (params?.value ? 'Done' : 'Yet'),
+      // valueFormatter: (params) => (params?.value ? 'Done' : 'Yet'),
+      renderCell: (params) => {
+        return params.row.AdjustmentStatus ? (
+          <Typography sx={{ fontSize: 14, width: '100%' }}>Finished</Typography>
+        ) : (
+          <Button
+            variant="contained"
+            sx={{ lineHeight: 1, padding: '5px 10px' }}
+            color={'success'}
+            size="small"
+            onClick={() => handleFinish(params.row)}
+          >
+            Finish
+          </Button>
+        );
+      },
     },
     {
       field: 'DueDate',
@@ -203,6 +220,24 @@ const InventoryAdjustment = (props) => {
         if (res && res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchData();
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const handleFinish = async (item) => {
+    if (window.confirm(intl.formatMessage({ id: 'general.confirm_finish' }))) {
+      try {
+        let res = await stockAdjustmentService.finishSA(item);
+
+        if (res && res.HttpResponseCode === 200) {
+          SuccessAlert(intl.formatMessage({ id: 'general.success' }));
+          // await fetchData();
+          setUpdateData(res.Data);
         } else {
           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
         }
