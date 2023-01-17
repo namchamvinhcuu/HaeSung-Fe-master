@@ -16,6 +16,8 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
   const [BomCode, setBomCode] = useState('');
   const [MaterialType, setMaterialType] = useState('');
   const [dialogState, setDialogState] = useState({ isSubmit: false });
+  const [ParentList, setParentList] = useState([]);
+  const [MaterialList, setMaterialList] = useState([]);
 
   const schema = yup.object().shape({
     MaterialId: yup
@@ -69,6 +71,16 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
     }
   }, [initModal, mode]);
 
+  useEffect(() => {
+    getParent(0);
+    getMaterial(0);
+  }, []);
+
+  useEffect(() => {
+    if (MaterialType == 'BARE MATERIAL') getMaterial(2, bomId);
+    else getMaterial(1, bomId);
+  }, [MaterialType]);
+
   const handleReset = () => {
     resetForm();
   };
@@ -76,6 +88,7 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
   const handleCloseDialog = () => {
     setCheckLV(true);
     setHideCheckLV(true);
+    getMaterial(0);
     resetForm();
     setBomCode('');
     onClose();
@@ -131,11 +144,17 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
 
   const getParent = async (BomId) => {
     const res = await bomService.getParent(BomId);
+    if (res.Data) {
+      setParentList([...res.Data]);
+    }
     return res;
   };
 
   const getMaterial = async (id, BomId) => {
     const res = await bomService.getMaterial(id, BomId);
+    if (res.Data) {
+      setMaterialList([...res.Data]);
+    }
     return res;
   };
 
@@ -186,13 +205,13 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
           ) : (
             <>
               <Grid item xs={12}>
-                <MuiAutocomplete
+                <MuiSelectField
                   required
                   name="ParentId"
                   value={values.ParentId ? { BomId: values.ParentId, BomCode: values.ParentCode } : null}
                   disabled={mode == UPDATE_ACTION ? true : dialogState.isSubmit}
                   label={intl.formatMessage({ id: 'bom.ParentId' })}
-                  fetchDataFunc={() => getParent()}
+                  options={ParentList}
                   displayLabel="BomCode"
                   displayValue="BomId"
                   displayGroup="BomLevelGroup"
@@ -208,17 +227,14 @@ const BOMDialog = ({ initModal, isOpen, onClose, setNewData, setNewDataChild, se
                 />
               </Grid>
               <Grid item xs={12}>
-                <MuiAutocomplete
+                <MuiSelectField
                   required
                   value={
                     values.MaterialId ? { MaterialId: values.MaterialId, MaterialCode: values.MaterialCode } : null
                   }
                   disabled={dialogState.isSubmit}
                   label={intl.formatMessage({ id: 'bomDetail.MaterialId' })}
-                  fetchDataFunc={() => {
-                    if (MaterialType == 'BARE MATERIAL') getMaterial(2, bomId);
-                    else getMaterial(1, bomId);
-                  }}
+                  options={MaterialList}
                   displayLabel="MaterialCode"
                   displayValue="MaterialId"
                   displayGroup="GroupMaterial"
