@@ -102,7 +102,7 @@ const FGPackingLotPrintDialog = ({ listData, isOpen, onClose }) => {
                               <p style={{ margin: 0 }}>
                                 {moment(dataPrint?.PackingDate).add(7, 'hours').format('YYYY-MM-DD')}
                               </p>
-                              {moment(dataPrint?.PackingDate).add(7, 'hours').format('hh:mm:ss')}
+                              {moment(dataPrint?.PackingDate).add(7, 'hours').format('HH:mm:ss')}
                             </TableCell>
                             <TableCell colSpan={3} sx={{ ...style.borderBot, textAlign: 'center' }}>
                               <b style={{ fontSize: '22px' }}>{dataPrint?.PackingSerial}</b>

@@ -238,7 +238,7 @@ const MappingLot = (props) => {
                           <p style={{ margin: 0 }}>
                             {moment(lotModel?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
                           </p>
-                          {moment(lotModel?.createdDate).add(7, 'hours').format('hh:mm:ss')}
+                          {moment(lotModel?.createdDate).add(7, 'hours').format('HH:mm:ss')}
                         </TableCell>
                         <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
                           <b style={{ fontSize: '22px' }}>{lotModel?.LotSerial}</b>
