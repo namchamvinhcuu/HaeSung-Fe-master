@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 
 import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
 import { ForecastPODto } from '@models';
-import { FormControlLabel, Switch, Tooltip, Typography } from '@mui/material';
+import { FormControlLabel, Switch, Tooltip, Typography, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { fixedPOService } from '@services';
 import { ErrorAlert, getCurrentWeek, isNumber, SuccessAlert } from '@utils';
@@ -31,6 +31,8 @@ const FixedPO = (props) => {
       Week: getCurrentWeek(),
     },
   });
+
+  const [disableChangeOrderQty, setDisableChangeOrderQty] = useState(true);
 
   const [newData, setNewData] = useState({ ...ForecastPODto });
   const [selectedRow, setSelectedRow] = useState({
@@ -233,6 +235,21 @@ const FixedPO = (props) => {
       headerName: intl.formatMessage({ id: 'forecast.OrderQty' }),
       width: 150,
       editable: true,
+      renderCell: (params) => {
+        return (
+          <TextField
+            variant="standard"
+            fullWidth
+            disabled={disableChangeOrderQty}
+            value={params.row.OrderQty ?? 0}
+            inputProps={{
+              onDoubleClick: () => {
+                setDisableChangeOrderQty(false);
+              },
+            }}
+          />
+        );
+      },
     },
     {
       field: 'Week',

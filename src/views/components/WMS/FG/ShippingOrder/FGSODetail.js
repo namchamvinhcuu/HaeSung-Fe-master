@@ -6,6 +6,7 @@ import { MuiButton, MuiDataGrid, MuiSearchField, MuiTextField } from '@controls'
 import { FGSODetailDto } from '@models';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
+import TextField from '@mui/material/TextField';
 import { Box, Button, Dialog, DialogContent, DialogTitle, Tooltip, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -198,13 +199,28 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
       headerName: 'Order Qty',
       /*flex: 0.7,*/ width: 150,
       editable: true,
+      // renderCell: (params) => {
+      //   return (
+      //     <Tooltip
+      //       title={params.row.FGsoDetailStatus ? '' : intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' })}
+      //     >
+      //       <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.FGsoOrderQty}</Typography>
+      //     </Tooltip>
+      //   );
+      // },
       renderCell: (params) => {
         return (
-          <Tooltip
-            title={params.row.FGsoDetailStatus ? '' : intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' })}
-          >
-            <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.FGsoOrderQty}</Typography>
-          </Tooltip>
+          <TextField
+            variant="standard"
+            fullWidth
+            disabled={true}
+            value={params.row.FGsoOrderQty ?? 0}
+            // inputProps={{
+            //   onDoubleClick: () => {
+            //     setDisableText(false);
+            //   },
+            // }}
+          />
         );
       },
     },

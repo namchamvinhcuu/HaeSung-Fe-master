@@ -33,18 +33,18 @@ const Analytics = (props) => {
 
   const columns = [
     { field: 'MaterialId', hide: true },
-    {
-      field: 'LineName',
-      headerName: intl.formatMessage({ id: 'forecast.LineName' }),
-      width: 200,
-      renderCell: (params) => {
-        return (
-          <Tooltip title={params.row.LineName ?? ''} className="col-text-elip">
-            <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.LineName}</Typography>
-          </Tooltip>
-        );
-      },
-    },
+    // {
+    //   field: 'LineName',
+    //   headerName: intl.formatMessage({ id: 'forecast.LineName' }),
+    //   width: 200,
+    //   renderCell: (params) => {
+    //     return (
+    //       <Tooltip title={params.row.LineName ?? ''} className="col-text-elip">
+    //         <Typography sx={{ fontSize: 14, maxWidth: 200 }}>{params.row.LineName}</Typography>
+    //       </Tooltip>
+    //     );
+    //   },
+    // },
     { field: 'MaterialCode', headerName: intl.formatMessage({ id: 'forecast.MaterialCode' }), width: 120 },
     {
       field: 'DescriptionMaterial',
@@ -209,7 +209,7 @@ const Analytics = (props) => {
         rowsPerPageOptions={[5, 10, 20]}
         onPageChange={(newPage) => setState({ ...state, page: newPage + 1 })}
         getRowId={(rows) => rows.FPOId}
-        initialState={{ pinnedColumns: { left: ['LineName', 'MaterialCode'] } }}
+        initialState={{ pinnedColumns: { left: ['MaterialCode'], right: ['StockQty'] } }}
       />
     </React.Fragment>
   );

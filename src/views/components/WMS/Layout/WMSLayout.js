@@ -114,14 +114,14 @@ const WMSLayout = (props) => {
       field: 'Qty',
       headerName: 'Qty',
       flex: 0.3,
-      editable: true,
-      renderCell: (params) => {
-        return (
-          <Tooltip title={intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' })}>
-            <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.Qty}</Typography>
-          </Tooltip>
-        );
-      },
+      // editable: true,
+      // renderCell: (params) => {
+      //   return (
+      //     <Tooltip title={intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' })}>
+      //       <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.Qty}</Typography>
+      //     </Tooltip>
+      //   );
+      // },
     },
     {
       field: 'IncomingDate',
