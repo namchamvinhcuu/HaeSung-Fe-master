@@ -10,7 +10,7 @@ import {
 } from '@controls';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UndoIcon from '@mui/icons-material/Undo';
-import { Button, Grid, IconButton, Tooltip, Typography } from '@mui/material';
+import { Button, Grid, IconButton, Tooltip, Typography, TextField } from '@mui/material';
 import { stockAdjustmentService } from '@services';
 import { ErrorAlert, SuccessAlert, isNumber } from '@utils';
 import moment from 'moment';
@@ -105,11 +105,26 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
       flex: 0.4,
       description: intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' }),
       editable: true,
+      // renderCell: (params) => {
+      //   return (
+      //     <Tooltip title={params.row.isConfirm ? '' : intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' })}>
+      //       <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.CheckQty}</Typography>
+      //     </Tooltip>
+      //   );
+      // },
       renderCell: (params) => {
         return (
-          <Tooltip title={params.row.isConfirm ? '' : intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' })}>
-            <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.CheckQty}</Typography>
-          </Tooltip>
+          <TextField
+            variant="standard"
+            fullWidth
+            disabled={true}
+            value={params.row.FGsoOrderQty ?? 0}
+            // inputProps={{
+            //   onDoubleClick: () => {
+            //     setDisableText(false);
+            //   },
+            // }}
+          />
         );
       },
     },
