@@ -292,7 +292,7 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
               {params.row.FGsoDetailStatus ? <span style={{ color: 'rgba(0,0,0,0.7)' }}>Picked</span> : 'Picking'}
             </Button>
 
-            <Button
+            {/* <Button
               // disabled={params.row.FGsoDetailStatus}
               variant="contained"
               color="secondary"
@@ -300,9 +300,8 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
               sx={{ textTransform: 'capitalize', fontSize: '14px', marginLeft: '5px' }}
               onClick={() => handleFindBin(params.row.BinId)}
             >
-              {/* {params.row.FGsoDetailStatus ? <span style={{ color: 'rgba(0,0,0,0.7)' }}>Picked</span> : 'Picking'} */}
               Find Bin
-            </Button>
+            </Button> */}
           </>
         );
       },

@@ -36,8 +36,8 @@ const InventoryAdjustment = (props) => {
     pageSize: 8,
     searchData: {
       AreaId: null,
-      StartDate: new Date(),
-      EndDate: addDays(new Date(), 7),
+      StartDate: addDays(new Date(), -30),
+      EndDate: new Date(),
       showDelete: true,
     },
   });
