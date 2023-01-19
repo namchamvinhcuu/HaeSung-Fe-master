@@ -220,7 +220,7 @@ const OQC = (props) => {
                         <p style={{ margin: 0 }}>
                           {moment(LotModel?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
                         </p>
-                        {moment(LotModel?.createdDate).add(7, 'hours').format('hh:mm:ss')}
+                        {moment(LotModel?.createdDate).add(7, 'hours').format('HH:mm:ss')}
                       </TableCell>
                       <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
                         <b style={{ fontSize: '22px' }}>{LotModel?.LotSerial}</b>

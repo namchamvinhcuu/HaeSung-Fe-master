@@ -27,7 +27,7 @@ const Analytics = (props) => {
       FPoMasterId: 0,
       weekStart: curWeekS < 1 ? 1 : curWeekS,
       weekEnd: curWeekE > 52 ? 52 : curWeekE,
-      Year: 2022,
+      Year: new Date().getFullYear(),
     },
   });
 
