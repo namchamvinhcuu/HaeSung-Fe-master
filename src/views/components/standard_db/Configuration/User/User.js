@@ -105,6 +105,7 @@ export default function User() {
     },
     { field: 'userName', headerName: intl.formatMessage({ id: 'general.name' }), flex: 0.7 },
     { field: 'RoleNameList', headerName: intl.formatMessage({ id: 'user.roleName' }), flex: 0.7 },
+    { field: 'LineName', headerName: intl.formatMessage({ id: 'work_order.LineName' }), flex: 0.7 },
   ];
 
   useEffect(() => {
