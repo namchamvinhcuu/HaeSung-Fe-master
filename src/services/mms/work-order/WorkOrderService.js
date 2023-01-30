@@ -99,6 +99,16 @@ export const modify = async (params) => {
   }
 };
 
+export const handleShowingWO = async (params) => {
+  try {
+    return await axios.put(`${API}/showing-wo`, {
+      ...params,
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
 export const handleDelete = async (params) => {
   try {
     return await axios.put(`${API}/delete-reuse-wo`, {

@@ -8,6 +8,8 @@ import { bindActionCreators } from 'redux';
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateField, MuiSearchField } from '@controls';
 import { WorkOrderDto } from '@models';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UndoIcon from '@mui/icons-material/Undo';
@@ -17,7 +19,7 @@ import IconButton from '@mui/material/IconButton';
 import { workOrderService } from '@services';
 import { addDays, ErrorAlert, SuccessAlert } from '@utils';
 import _ from 'lodash';
-import { debounce } from 'lodash';
+// import { debounce } from 'lodash';
 import moment from 'moment';
 import { useIntl } from 'react-intl';
 import WorkOrderDialog from './WorkOrderDialog';
@@ -61,6 +63,44 @@ const WorkOrder = (props) => {
       setMode(UPDATE_ACTION);
     }
     setIsOpenDialog(!isOpenDialog);
+  };
+
+  const setDisableShowingWO = (startDate) => {
+    const itemStartDate = moment(startDate).format('YYYY-MM-DD');
+
+    const currentDate = moment(initStartDate).add(-7, 'hours').format('YYYY-MM-DD');
+
+    if (itemStartDate != currentDate) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const showingWO = async (workOrder) => {
+    if (
+      window.confirm(
+        intl.formatMessage({
+          id: 'general.confirm_showing',
+        })
+      )
+    ) {
+      try {
+        let res = await workOrderService.handleShowingWO(workOrder);
+        if (res) {
+          if (res && res.HttpResponseCode === 200) {
+            await fetchData();
+            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+          } else {
+            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+          }
+        } else {
+          ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const handleshowActivedData = async (event) => {
@@ -251,7 +291,7 @@ const WorkOrder = (props) => {
     {
       field: 'action',
       headerName: '',
-      width: 80,
+      width: 120,
       // headerAlign: 'center',
       disableClickEventBubbling: true,
       sortable: false,
@@ -259,7 +299,25 @@ const WorkOrder = (props) => {
       renderCell: (params) => {
         return (
           <Grid container spacing={1} alignItems="center" justifyContent="center">
-            <Grid item xs={6}>
+            <Grid item xs={4}>
+              <IconButton
+                aria-label="edit"
+                color="primary"
+                size="small"
+                sx={[{ '&:hover': { border: '1px solid blue' } }]}
+                disabled={params.row.IsShowing || !params.row.LineId || setDisableShowingWO(params.row.StartDate)}
+                onClick={() => {
+                  showingWO(params.row);
+                }}
+              >
+                {params.row.IsShowing ? (
+                  <VisibilityIcon fontSize="inherit" />
+                ) : (
+                  <VisibilityOffIcon fontSize="inherit" />
+                )}
+              </IconButton>
+            </Grid>
+            <Grid item xs={4}>
               <IconButton
                 aria-label="edit"
                 color="warning"
@@ -273,7 +331,7 @@ const WorkOrder = (props) => {
               </IconButton>
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <IconButton
                 aria-label="delete"
                 color="error"
@@ -349,7 +407,8 @@ const WorkOrder = (props) => {
       width: 150,
       valueFormatter: (params) => {
         if (params.value !== null) {
-          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD');
+          // return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD');
+          return moment(params?.value).format('YYYY-MM-DD');
         }
       },
     },

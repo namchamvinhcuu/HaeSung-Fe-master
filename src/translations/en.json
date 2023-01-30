@@ -35,6 +35,7 @@
     "confirm_modify": "Confirm to modify",
     "confirm_delete": "Confirm to delete",
     "confirm_finish": "Confirm to finish",
+    "confirm_showing": "Confirm to display WO",
     "id": "Id",
     "code": "Code",
     "name": "Name",

@@ -27,6 +27,10 @@ const WorkOrderDto = {
   Year: new Date().getFullYear(),
   MaterialBuyerCode: '',
 
+  IsShowing: false,
+  IsChecked: false,
+  IsInputScan: false,
+
   isActived: true,
   createdDate: new Date(),
   createdBy: 0,
