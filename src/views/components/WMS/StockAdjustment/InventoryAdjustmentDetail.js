@@ -118,7 +118,7 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
             variant="standard"
             fullWidth
             disabled={true}
-            value={params.row.FGsoOrderQty ?? 0}
+            value={params.row.CheckQty ?? 0}
             // inputProps={{
             //   onDoubleClick: () => {
             //     setDisableText(false);
