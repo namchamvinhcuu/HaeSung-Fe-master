@@ -32,13 +32,13 @@ const Display = (props) => {
       fontSize: 26,
       color: '#fff',
       fontWeight: '600',
-      minHeight: '105px',
+      minHeight: '93px',
     },
   };
 
   return (
     <React.Fragment>
-      <Grid item xs={4} sx={{ mb: 2 }}>
+      <Grid item xs={4} sx={{ mb: 1 }}>
         <Button variant="contained" startIcon={<FullscreenIcon />} onClick={handle.enter}>
           Full Screen
         </Button>
@@ -60,7 +60,7 @@ const Display = (props) => {
             </div>
           </div>
           <div style={{ height: '95%' }}>
-            <div style={{ height: '16%', display: 'flex' }}>
+            <div style={{ height: '13%', display: 'flex' }}>
               <div style={{ ...style.grid, width: '33.3333%', backgroundColor: '#9370db' }}>
                 <h2 style={{ fontWeight: '600', fontFamily: 'Arial, Helvetica, sans-serif' }}>Total Target</h2>
                 <h1 style={{ fontWeight: '600' }}>{Number(totalOrderQty).toLocaleString()}</h1>
@@ -74,35 +74,40 @@ const Display = (props) => {
                 <h1 style={{ fontWeight: '600' }}>{totalEfficiency > 100 ? 100 : Math.round(totalEfficiency)}%</h1>
               </div>
             </div>
-            <div style={{ height: '84%', display: 'flex' }}>
+            <div style={{ height: '87%', display: 'flex' }}>
               <div style={{ width: '20%', height: '100%' }}>
                 <div
-                  style={{ ...style.grid, height: '16.66%', border: 'solid 1px #434242', backgroundColor: '#ff0000' }}
+                  style={{ ...style.grid, height: '14.22%', border: 'solid 1px #434242', backgroundColor: '#ff0000' }}
                 >
                   <h2 style={{ fontWeight: '600' }}>WO</h2>
                 </div>
                 <div
-                  style={{ ...style.grid, height: '16.66%', border: 'solid 1px #434242', backgroundColor: '#68B984' }}
+                  style={{ ...style.grid, height: '14.22%', border: 'solid 1px #434242', backgroundColor: '#68B984' }}
                 >
                   <h2 style={{ fontWeight: '600' }}>CODE</h2>
                 </div>
                 <div
-                  style={{ ...style.grid, height: '16.66%', border: 'solid 1px #434242', backgroundColor: '#9370db' }}
+                  style={{ ...style.grid, height: '14.22%', border: 'solid 1px #434242', backgroundColor: '#1F8A70' }}
+                >
+                  <h2 style={{ fontWeight: '600' }}>Line</h2>
+                </div>
+                <div
+                  style={{ ...style.grid, height: '14.22%', border: 'solid 1px #434242', backgroundColor: '#9370db' }}
                 >
                   <h2 style={{ fontWeight: '600' }}>Target</h2>
                 </div>
                 <div
-                  style={{ ...style.grid, height: '16.66%', border: 'solid 1px #434242', backgroundColor: '#009EFF' }}
+                  style={{ ...style.grid, height: '14.22%', border: 'solid 1px #434242', backgroundColor: '#009EFF' }}
                 >
                   <h2 style={{ fontWeight: '600' }}>Inject MC</h2>
                 </div>
                 <div
-                  style={{ ...style.grid, height: '16.66%', border: 'solid 1px #434242', backgroundColor: '#00c6bb' }}
+                  style={{ ...style.grid, height: '14.22%', border: 'solid 1px #434242', backgroundColor: '#00c6bb' }}
                 >
                   <h2 style={{ fontWeight: '600' }}>Actual</h2>
                 </div>
                 <div
-                  style={{ ...style.grid, height: '16.66%', border: 'solid 1px #434242', backgroundColor: '#e9a424' }}
+                  style={{ ...style.grid, height: '14.22%', border: 'solid 1px #434242', backgroundColor: '#e9a424' }}
                 >
                   <h2 style={{ fontWeight: '600' }}>Efficiency</h2>
                 </div>
@@ -113,22 +118,25 @@ const Display = (props) => {
                     let efficiency = Math.round((item.actualQty / item.orderQty) * 100);
                     return (
                       <div style={{ width: '100%', height: '100%' }} key={index}>
-                        <div style={{ ...style.grid, height: '16.66%', display: 'grid', border: 'solid 1px #222222' }}>
+                        <div style={{ ...style.grid, height: '14.22%', display: 'grid', border: 'solid 1px #222222' }}>
                           <h2 style={{ fontWeight: '600', marginLeft: 10, marginRight: 10 }}>{item.woCode}</h2>
                         </div>
-                        <div style={{ ...style.grid, height: '16.66%', display: 'grid', border: 'solid 1px #222222' }}>
+                        <div style={{ ...style.grid, height: '14.22%', display: 'grid', border: 'solid 1px #222222' }}>
                           <h2 style={{ fontWeight: '600' }}>{item.materialCode}</h2>
                         </div>
-                        <div style={{ ...style.grid, height: '16.66%', display: 'grid', border: 'solid 1px #222222' }}>
+                        <div style={{ ...style.grid, height: '14.22%', display: 'grid', border: 'solid 1px #222222' }}>
+                          <h2 style={{ fontWeight: '600' }}>{item.lineName}</h2>
+                        </div>
+                        <div style={{ ...style.grid, height: '14.22%', display: 'grid', border: 'solid 1px #222222' }}>
                           <h2 style={{ fontWeight: '600' }}>{Number(item.orderQty).toLocaleString()}</h2>
                         </div>
-                        <div style={{ ...style.grid, height: '16.66%', display: 'grid', border: 'solid 1px #222222' }}>
+                        <div style={{ ...style.grid, height: '14.22%', display: 'grid', border: 'solid 1px #222222' }}>
                           <h2 style={{ fontWeight: '600' }}>{Number(item.hmiQty).toLocaleString()}</h2>
                         </div>
-                        <div style={{ ...style.grid, height: '16.66%', display: 'grid', border: 'solid 1px #222222' }}>
+                        <div style={{ ...style.grid, height: '14.22%', display: 'grid', border: 'solid 1px #222222' }}>
                           <h2 style={{ fontWeight: '600' }}>{Number(item.actualQty).toLocaleString()}</h2>
                         </div>
-                        <div style={{ ...style.grid, height: '16.66%', display: 'grid', border: 'solid 1px #222222' }}>
+                        <div style={{ ...style.grid, height: '14.22%', display: 'grid', border: 'solid 1px #222222' }}>
                           <h2 style={{ fontWeight: '600' }}>{efficiency > 100 ? 100 : efficiency}%</h2>
                         </div>
                       </div>
