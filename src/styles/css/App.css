@@ -447,3 +447,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ebf1f6', end
         display: block;
     }
 }
+.edit-quantity-dialog .MuiInput-underline::before{
+    bottom: 1px !important;
+}
