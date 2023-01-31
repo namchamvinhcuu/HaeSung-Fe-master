@@ -203,7 +203,8 @@
     "ETAStatus_required": "ETAStatus không được để trống",
     "duplicated_code": "Mold Code đã trùng",
     "duplicated_serial": "Mold Serial đã trùng",
-    "SerialCode": "Serial / Code"
+    "SerialCode": "Serial / Code",
+    "duplicated_code_seri" :"Code và Serial đã trùng"
   },
   "staff": {
     "StaffCode": "Mã Nhân Viên",

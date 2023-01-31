@@ -203,7 +203,8 @@
     "ETAStatus_required": "ETA Status required",
     "duplicated_code": "Mold Code duplicated",
     "duplicated_serial": "Mold Serial duplicated",
-    "SerialCode": "Serial / Code"
+    "SerialCode": "Serial / Code",
+    "duplicated_code_seri" :"Duplicated code and serial"
   },
   "staff": {
     "StaffCode": "Staff Code",
