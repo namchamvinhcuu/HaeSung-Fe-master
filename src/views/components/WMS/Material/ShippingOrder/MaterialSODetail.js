@@ -491,6 +491,7 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
       />
 
       <MaterialSODetailDialog
+        maxWidth="lg"
         initModal={rowData}
         setNewData={setNewDataArr}
         setUpdateData={setUpdateData}

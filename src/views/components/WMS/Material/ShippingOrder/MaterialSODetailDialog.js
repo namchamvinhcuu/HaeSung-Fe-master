@@ -1,6 +1,7 @@
 import { CREATE_ACTION } from '@constants/ConfigConstants';
 import { MuiAutocomplete, MuiDataGrid, MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls';
-import { Grid, TextField, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
+import TextField from '@mui/material/TextField';
 import { iqcService, materialSOService } from '@services';
 import { ErrorAlert, isNumber, SuccessAlert } from '@utils';
 import { useFormik } from 'formik';
@@ -13,6 +14,7 @@ import * as yup from 'yup';
 const MaterialSODetailDialog = (props) => {
   const intl = useIntl();
   let isRendered = useRef(true);
+  const { maxWidth } = props;
 
   const [dialogState, setDialogState] = useState({
     isSubmit: false,
@@ -299,7 +301,7 @@ const MaterialSODetailDialog = (props) => {
 
   return (
     <MuiDialog
-      maxWidth="md"
+      maxWidth={maxWidth}
       title={intl.formatMessage({
         id: mode == CREATE_ACTION ? 'general.create' : 'general.modify',
       })}
