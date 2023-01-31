@@ -39,8 +39,8 @@ const WorkOrder = (props) => {
     pageSize: 20,
     searchData: {
       ...WorkOrderDto,
-      StartSearchingDate: moment(initStartDate).add(-7, 'hours'),
-      EndSearchingDate: moment(addDays(initStartDate, 30)).add(-7, 'hours'),
+      StartSearchingDate: moment(initStartDate),
+      EndSearchingDate: moment(addDays(initStartDate, 30)),
     },
   });
 
