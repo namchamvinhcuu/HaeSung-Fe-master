@@ -346,7 +346,7 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
             text="scan"
             color="success"
             onClick={scanBtnClick}
-            sx={{ mt: 0 }}
+            sx={{ mt: 0.18, whiteSpace: 'nowrap' }}
             disabled={StockAdjustmentId ? false : true}
           />
         </Grid>

@@ -1,6 +1,6 @@
 import { CREATE_ACTION } from '@constants/ConfigConstants';
 import { MuiAutocomplete, MuiDataGrid, MuiDialog, MuiResetButton, MuiSubmitButton } from '@controls';
-import { Grid, Typography } from '@mui/material';
+import { Grid, TextField, Typography } from '@mui/material';
 import { fgSOService } from '@services';
 import { ErrorAlert, isNumber, SuccessAlert } from '@utils';
 import { useFormik } from 'formik';
@@ -199,6 +199,17 @@ const FGSODetailDialog = (props) => {
       description: intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' }),
       /*flex: 0.7,*/ width: 150,
       editable: true,
+      renderCell: (params) => {
+        return (
+          <TextField
+            className="edit-quantity-dialog"
+            variant="standard"
+            fullWidth
+            disabled={true}
+            value={params.row.RequestQty ?? 0}
+          />
+        );
+      },
     },
     {
       field: 'QCResult',
@@ -283,7 +294,7 @@ const FGSODetailDialog = (props) => {
 
   return (
     <MuiDialog
-      maxWidth="md"
+      maxWidth="lg"
       title={intl.formatMessage({
         id: mode == CREATE_ACTION ? 'general.create' : 'general.modify',
       })}
