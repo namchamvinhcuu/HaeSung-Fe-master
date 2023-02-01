@@ -222,7 +222,7 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
             variant="standard"
             fullWidth
             disabled={true}
-            value={params.row.FGsoOrderQty ?? 0}
+            value={params.row.SOrderQty ?? 0}
             // inputProps={{
             //   onDoubleClick: () => {
             //     setDisableText(false);
