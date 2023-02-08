@@ -52,125 +52,274 @@ const DeliveryOrder = (props) => {
 
   const [showActivedData, setShowActivedData] = useState(true);
 
-  const [materialArr, setMaterialArr] = useState([]);
+  // const [materialArr, setMaterialArr] = useState([]);
 
   const toggleDialog = (mode) => {
-    if (mode === CREATE_ACTION) {
-      setMode(CREATE_ACTION);
-    } else {
-      setMode(UPDATE_ACTION);
-    }
+    setMode(mode === CREATE_ACTION ? CREATE_ACTION : UPDATE_ACTION);
     setIsOpenDialog(!isOpenDialog);
   };
 
-  const handleshowActivedData = async (event) => {
+  // const handleshowActivedData = async (event) => {
+  //   setShowActivedData(event.target.checked);
+  //   if (!event.target.checked) {
+  //     setDeliveryOrderState({
+  //       ...deliveryOrderState,
+  //       page: 1,
+  //     });
+  //   }
+  // };
+
+  const handleshowActivedData = (event) => {
     setShowActivedData(event.target.checked);
     if (!event.target.checked) {
-      setDeliveryOrderState({
-        ...deliveryOrderState,
+      setDeliveryOrderState((prevState) => ({
+        ...prevState,
         page: 1,
-      });
+      }));
     }
   };
+
+  // const handleRowSelection = (arrIds) => {
+  //   const rowSelected = deliveryOrderState.data.filter(function (item) {
+  //     return item.DoId === arrIds[0];
+  //   });
+
+  //   if (selected) {
+  //     setSelectedRow({ ...selected });
+  //   }
+
+  //   if (rowSelected && rowSelected.length > 0) {
+  //     setSelectedRow({ ...rowSelected[0] });
+  //   } else {
+  //     setSelectedRow({ ...DeliveryOrderDto });
+  //   }
+  // };
 
   const handleRowSelection = (arrIds) => {
-    const rowSelected = deliveryOrderState.data.filter(function (item) {
-      return item.DoId === arrIds[0];
-    });
+    const rowSelected = deliveryOrderState.data.find((item) => item.DoId === arrIds[0]);
+    setSelectedRow(rowSelected ? { ...rowSelected } : { ...DeliveryOrderDto });
+  };
 
-    if (rowSelected && rowSelected.length > 0) {
-      setSelectedRow({ ...rowSelected[0] });
-    } else {
-      setSelectedRow({ ...DeliveryOrderDto });
+  // const handleDelete = async (deliveryOrder) => {
+  //   // Show a confirmation window to the user, with a message based on the value of `showActivedData`
+  //   if (
+  //     window.confirm(
+  //       intl.formatMessage({
+  //         id: showActivedData ? 'General.confirm_delete' : 'General.confirm_redo_deleted',
+  //       })
+  //     )
+  //   ) {
+  //     try {
+  //       // Call the `handleDelete` function from `deliveryOrderService` with the `deliveryOrder` argument
+  //       let res = await deliveryOrderService.handleDelete(deliveryOrder);
+  //       // If the response has a `HttpResponseCode` of 200, fetch the data again
+  //       if (res && res.HttpResponseCode === 200) {
+  //         await fetchData();
+  //       } else {
+  //         // Show an error alert with a message from the response
+  //         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+  //       }
+  //     } catch (error) {
+  //       // Log any error that occurs
+  //       console.log(error);
+  //     }
+  //   }
+  // };
+
+  const handleDelete = async (deliveryOrder) => {
+    const confirmMessage = intl.formatMessage({
+      id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
+    });
+    if (!window.confirm(confirmMessage)) return;
+
+    try {
+      const res = await deliveryOrderService.handleDelete(deliveryOrder);
+      if (!res || res.HttpResponseCode !== 200) {
+        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        return;
+      }
+      await fetchData();
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const handleDelete = async (deliveryOrder) => {
-    if (
-      window.confirm(
-        intl.formatMessage({
-          id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
-        })
-      )
-    ) {
-      try {
-        let res = await deliveryOrderService.handleDelete(deliveryOrder);
-        if (res && res.HttpResponseCode === 200) {
-          await fetchData();
-        } else {
-          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
+  // const changeSearchData = (e, inputName) => {
+  //   let newSearchData = { ...deliveryOrderState.searchData };
+
+  //   newSearchData[inputName] = e;
+
+  //   switch (inputName) {
+  //     case 'ETDLoad':
+  //     case 'DeliveryTime':
+  //       newSearchData[inputName] = e;
+  //       break;
+  //     case 'FPoMasterId':
+  //       newSearchData[inputName] = e ? e.FPoMasterId : DeliveryOrderDto.FPoMasterId;
+  //       newSearchData['FPoMasterCode'] = e ? e.FPoMasterCode : DeliveryOrderDto.FPoMasterCode;
+  //       newSearchData.MaterialId = 0;
+  //       newSearchData.MaterialCode = '';
+  //       break;
+  //     case 'MaterialId':
+  //       newSearchData[inputName] = e ? e.MaterialId : DeliveryOrderDto.MaterialId;
+  //       newSearchData['MaterialCode'] = e ? e.MaterialCode : DeliveryOrderDto.MaterialCode;
+  //       break;
+  //     default:
+  //       newSearchData[inputName] = e.target.value;
+  //       break;
+  //   }
+
+  //   setDeliveryOrderState({
+  //     ...deliveryOrderState,
+  //     searchData: { ...newSearchData },
+  //   });
+  // };
+
+  const handleChangeData = (e, inputName, newSearchData) => {
+    // If event object is present, use the event object's property value,
+    // otherwise use the default property value from DeliveryOrderDto
+    newSearchData[inputName] = e ? e[inputName] : DeliveryOrderDto[inputName];
+    newSearchData[`${inputName}Code`] = e ? e[`${inputName}Code`] : DeliveryOrderDto[`${inputName}Code`];
   };
 
   const changeSearchData = (e, inputName) => {
     let newSearchData = { ...deliveryOrderState.searchData };
 
-    newSearchData[inputName] = e;
-
+    // Switch statement to handle different cases based on input name
     switch (inputName) {
       case 'ETDLoad':
-      case 'DeliveryTime':
+        // case 'DeliveryTime':
+        // Directly set the event object as value for these cases
+
         newSearchData[inputName] = e;
         break;
       case 'FPoMasterId':
-        newSearchData[inputName] = e ? e.FPoMasterId : DeliveryOrderDto.FPoMasterId;
-        newSearchData['FPoMasterCode'] = e ? e.FPoMasterCode : DeliveryOrderDto.FPoMasterCode;
+        // Set values for FPoMasterId and FPoMasterCode properties
+        handleChangeData(e, inputName, newSearchData);
+        // Reset MaterialId and MaterialCode properties
         newSearchData.MaterialId = 0;
         newSearchData.MaterialCode = '';
         break;
       case 'MaterialId':
-        newSearchData[inputName] = e ? e.MaterialId : DeliveryOrderDto.MaterialId;
-        newSearchData['MaterialCode'] = e ? e.MaterialCode : DeliveryOrderDto.MaterialCode;
+        // Set values for MaterialId and MaterialCode properties
+        handleChangeData(e, inputName, newSearchData);
         break;
       default:
+        // Set the value of the input to the target value of the event object for other cases
         newSearchData[inputName] = e.target.value;
         break;
     }
 
-    setDeliveryOrderState({
-      ...deliveryOrderState,
+    // //Update the deliveryOrderState state with the new searchData object
+    // setDeliveryOrderState((prevState) => {
+    //   prevState = { ...prevState, searchData: { ...newSearchData } };
+    //   return prevState;
+    // });
+
+    setDeliveryOrderState((prevState) => ({
+      ...prevState,
       searchData: { ...newSearchData },
-    });
+    }));
   };
 
-  const getPoMasterArr = async () => {
-    return await deliveryOrderService.getPoMasterArr();
-  };
+  // const getPoMasterArr = async () => {
+  //   return await deliveryOrderService.getPoMasterArr();
+  // };
 
-  const getMaterialArr = async (fPoMasterId) => {
-    const res = await deliveryOrderService.getMaterialArr(fPoMasterId);
-    if (res && isRendered) {
-      setMaterialArr(!res.Data ? [] : [...res.Data]);
-    }
-  };
+  // const getMaterialArr = async (fPoMasterId) => {
+  //   const res = await deliveryOrderService.getMaterialArr(fPoMasterId);
+  //   if (res && isRendered) {
+  //     setMaterialArr(!res.Data ? [] : [...res.Data]);
+  //   }
+  // };
 
-  const fetchData = async () => {
+  // const fetchData = async () => {
+  //   let flag = true;
+  //   let message = '';
+  //   const checkObj = { ...deliveryOrderState.searchData };
+  //   _.forOwn(checkObj, (value, key) => {
+  //     switch (key) {
+  //       case 'ETDLoad':
+  //         if (value == 'Invalid Date') {
+  //           message = 'delivery_order.ETDLoad_invalid';
+  //           flag = false;
+  //         }
+  //         break;
+  //       case 'DeliveryTime':
+  //         if (value == 'Invalid Date') {
+  //           message = 'delivery_order.DeliveryTime_invalid';
+  //           flag = false;
+  //         }
+  //         break;
+
+  //       default:
+  //         break;
+  //     }
+  //   });
+
+  //   if (flag) {
+  //     setDeliveryOrderState({
+  //       ...deliveryOrderState,
+  //       isLoading: true,
+  //     });
+
+  //     const params = {
+  //       page: deliveryOrderState.page,
+  //       pageSize: deliveryOrderState.pageSize,
+  //       DoCode: deliveryOrderState.searchData.DoCode.trim(),
+  //       FPoCode: deliveryOrderState.searchData.FPoCode.trim(),
+  //       FPoMasterCode: deliveryOrderState.searchData.FPoMasterCode.trim(),
+  //       FPoMasterId: deliveryOrderState.searchData.FPoMasterId,
+  //       MaterialId: deliveryOrderState.searchData.MaterialId,
+  //       ETDLoad: deliveryOrderState.searchData.ETDLoad,
+  //       // DeliveryTime: deliveryOrderState.searchData.DeliveryTime,
+  //       isActived: showActivedData,
+  //     };
+
+  //     const res = await deliveryOrderService.get(params);
+
+  //     if (res && isRendered)
+  //       setDeliveryOrderState({
+  //         ...deliveryOrderState,
+  //         data: !res.Data ? [] : [...res.Data],
+  //         totalRow: res.TotalRow,
+  //         isLoading: false,
+  //       });
+  //   } else {
+  //     ErrorAlert(intl.formatMessage({ id: message }));
+  //   }
+  // };
+
+  const validateData = () => {
     let flag = true;
-    let message = '';
+    let message = 'general.system_error';
     const checkObj = { ...deliveryOrderState.searchData };
+
+    // Check if ETDLoad or DeliveryTime has invalid date
     _.forOwn(checkObj, (value, key) => {
       switch (key) {
         case 'ETDLoad':
-          if (value == 'Invalid Date') {
+          if (value === 'Invalid date') {
             message = 'delivery_order.ETDLoad_invalid';
             flag = false;
           }
           break;
-        case 'DeliveryTime':
-          if (value == 'Invalid Date') {
-            message = 'delivery_order.DeliveryTime_invalid';
-            flag = false;
-          }
-          break;
-
+        // case 'DeliveryTime':
+        //   if (value === 'Invalid date') {
+        //     message = 'delivery_order.DeliveryTime_invalid';
+        //     flag = false;
+        //   }
+        //   break;
         default:
           break;
       }
     });
+    return [flag, message];
+  };
+
+  const fetchData = async () => {
+    // Validate the data
+    const [flag, message] = validateData();
 
     if (flag) {
       setDeliveryOrderState({
@@ -178,71 +327,78 @@ const DeliveryOrder = (props) => {
         isLoading: true,
       });
 
+      // Prepare the request parameters
       const params = {
         page: deliveryOrderState.page,
         pageSize: deliveryOrderState.pageSize,
-        DoCode: deliveryOrderState.searchData.DoCode.trim(),
-        FPoCode: deliveryOrderState.searchData.FPoCode.trim(),
-        FPoMasterCode: deliveryOrderState.searchData.FPoMasterCode.trim(),
+        DoCode: deliveryOrderState.searchData.DoCode?.trim() || null,
+        FPoCode: deliveryOrderState.searchData.FPoCode?.trim() || null,
+        FPoMasterCode: deliveryOrderState.searchData.FPoMasterCode?.trim() || null,
         FPoMasterId: deliveryOrderState.searchData.FPoMasterId,
         MaterialId: deliveryOrderState.searchData.MaterialId,
         ETDLoad: deliveryOrderState.searchData.ETDLoad,
-        // DeliveryTime: deliveryOrderState.searchData.DeliveryTime,
         isActived: showActivedData,
       };
 
+      // Fetch the data from the API
       const res = await deliveryOrderService.get(params);
 
-      if (res && isRendered)
+      // Update the state with the fetched data
+      if (res && isRendered) {
         setDeliveryOrderState({
           ...deliveryOrderState,
           data: !res.Data ? [] : [...res.Data],
           totalRow: res.TotalRow,
           isLoading: false,
         });
+      }
     } else {
       ErrorAlert(intl.formatMessage({ id: message }));
     }
   };
 
-  useEffect(() => {
-    if (isRendered)
-      if (deliveryOrderState.searchData.FPoMasterId !== 0) {
-        getMaterialArr(deliveryOrderState.searchData.FPoMasterId);
-      } else {
-        setMaterialArr([]);
-      }
-  }, [deliveryOrderState.searchData.FPoMasterId]);
+  // useEffect(() => {
+  //   // fetch material arr when FPoMasterId is changed
+  //   if (isRendered && deliveryOrderState.searchData.FPoMasterId !== 0) {
+  //     getMaterialArr(deliveryOrderState.searchData.FPoMasterId);
+  //   } else {
+  //     setMaterialArr([]);
+  //   }
+  // }, [deliveryOrderState.searchData.FPoMasterId]);
 
   useEffect(() => {
+    // fetch data whenever page, pageSize or showActivedData is changed
     fetchData();
 
+    // return a cleanup function to prevent memory leak
     return () => {
       isRendered = false;
     };
   }, [deliveryOrderState.page, deliveryOrderState.pageSize, showActivedData]);
 
   useEffect(() => {
+    // update delivery order state whenever newData is changed
     if (!_.isEmpty(newData) && !_.isEqual(newData, DeliveryOrderDto)) {
       const data = [newData, ...deliveryOrderState.data];
       if (data.length > deliveryOrderState.pageSize) {
         data.pop();
       }
-      if (isRendered)
+      if (isRendered) {
         setDeliveryOrderState({
           ...deliveryOrderState,
           data: [...data],
           totalRow: deliveryOrderState.totalRow + 1,
         });
+      }
     }
   }, [newData]);
 
   useEffect(() => {
+    // update delivery order state whenever selectedRow is changed
+
     if (!_.isEmpty(selectedRow) && !_.isEqual(selectedRow, DeliveryOrderDto)) {
       let newArr = [...deliveryOrderState.data];
-      const index = _.findIndex(newArr, function (o) {
-        return o.DoId == selectedRow.DoId;
-      });
+      const index = _.findIndex(newArr, (o) => o.DoId === selectedRow.DoId);
       if (index !== -1) {
         newArr[index] = selectedRow;
       }

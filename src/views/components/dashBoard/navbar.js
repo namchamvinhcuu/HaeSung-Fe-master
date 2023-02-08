@@ -241,25 +241,46 @@ class NavBar extends Component {
   };
 
   reConnectToServer = async () => {
-    if (this.connection) {
-      if (this.connection.state === HubConnectionState.Connected) {
+    // if (this.connection) {
+    //   if (this.connection.state === HubConnectionState.Connected) {
+    //     if (this.state.onlineUsers.length === 0) {
+    //       // console.log('connected to server');
+    //       await this.connection.invoke('SendOnlineUsers');
+    //     }
+    //   }
+
+    //   if (this.connection.state === HubConnectionState.Disconnected) {
+    //     // console.log('disconnected to server');
+    //     if (this._isMounted) {
+    //       await this.connection.stop();
+    //       await this.connection.start();
+    //       await this.connection.invoke('SendOnlineUsers');
+    //     }
+    //   }
+    // } else {
+    //   console.log('[reconnect fail]');
+    //   await this.startConnection();
+    // }
+
+    if (!this.connection) {
+      console.log('[reconnect fail]');
+      await this.startConnection();
+      return;
+    }
+
+    switch (this.connection.state) {
+      case HubConnectionState.Connected:
         if (this.state.onlineUsers.length === 0) {
-          // console.log('connected to server');
           await this.connection.invoke('SendOnlineUsers');
         }
-      }
-
-      if (this.connection.state === HubConnectionState.Disconnected) {
-        // console.log('disconnected to server');
+        break;
+      case HubConnectionState.Disconnected:
         if (this._isMounted) {
           await this.connection.stop();
           await this.connection.start();
           await this.connection.invoke('SendOnlineUsers');
         }
-      }
-    } else {
-      console.log('[reconnect fail]');
-      await this.startConnection();
+        break;
     }
   };
 
