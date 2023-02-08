@@ -8,7 +8,17 @@ import eventBus from './EventBus';
 import { api_post_prevent_doubleclick, api_get_prevent_doubleclick } from './callApi_preventDoubleClick';
 
 import { historyApp, historyDashboard } from './history';
-import { calDateAgo, toCamel, dateToTicks, addDays, minusDays, getCurrentWeek, isNumber, delayDuration } from './Utils';
+import {
+  calDateAgo,
+  toCamel,
+  dateToTicks,
+  addDays,
+  minusDays,
+  getCurrentWeek,
+  isNumber,
+  isValidDate,
+  delayDuration,
+} from './Utils';
 import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from './LocalStorageUtils';
 import UserManager from './currentUser';
 import { instance as axios } from './AxiosInstance';
@@ -42,6 +52,7 @@ export {
   addDays,
   minusDays,
   isNumber,
+  isValidDate,
   delayDuration,
   getCurrentWeek,
   GetLocalStorage,

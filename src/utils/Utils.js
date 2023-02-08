@@ -98,4 +98,9 @@ const delayDuration = (delay) => {
   return new Promise((res) => setTimeout(res, delay));
 };
 
-export { calDateAgo, toCamel, dateToTicks, addDays, minusDays, getCurrentWeek, isNumber, delayDuration };
+const isValidDate = (date) => {
+  let d = new Date(date);
+  return d.toString() !== 'Invalid Date';
+};
+
+export { calDateAgo, toCamel, dateToTicks, addDays, minusDays, getCurrentWeek, isNumber, isValidDate, delayDuration };

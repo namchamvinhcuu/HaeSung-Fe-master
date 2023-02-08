@@ -17,12 +17,13 @@ import { FormControlLabel, Switch } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import { workOrderService } from '@services';
-import { addDays, ErrorAlert, SuccessAlert } from '@utils';
+import { addDays, ErrorAlert, SuccessAlert, isValidDate } from '@utils';
 import _ from 'lodash';
 // import { debounce } from 'lodash';
 import moment from 'moment';
 import { useIntl } from 'react-intl';
 import WorkOrderDialog from './WorkOrderDialog';
+import { useMemo } from 'react';
 
 const WorkOrder = (props) => {
   let isRendered = useRef(true);
@@ -57,49 +58,71 @@ const WorkOrder = (props) => {
   const [showActivedData, setShowActivedData] = useState(true);
 
   const toggleDialog = (mode) => {
-    if (mode === CREATE_ACTION) {
-      setMode(CREATE_ACTION);
-    } else {
-      setMode(UPDATE_ACTION);
-    }
+    // Set mode based on the argument passed
+    setMode(mode === CREATE_ACTION ? CREATE_ACTION : UPDATE_ACTION);
+
+    // Toggle the value of isOpenDialog
     setIsOpenDialog(!isOpenDialog);
   };
 
   const setDisableShowingWO = (startDate) => {
+    // Format the start date passed to YYYY-MM-DD
     const itemStartDate = moment(startDate).format('YYYY-MM-DD');
 
+    // Format the initStartDate with a subtract of 7 hours and then format it to YYYY-MM-DD
     const currentDate = moment(initStartDate).add(-7, 'hours').format('YYYY-MM-DD');
 
-    if (itemStartDate != currentDate) {
-      return true;
-    }
-
-    return false;
+    // Return the result of the comparison between itemStartDate and currentDate
+    return itemStartDate !== currentDate;
   };
 
+  // const showingWO = async (workOrder) => {
+  //   if (
+  //     window.confirm(
+  //       intl.formatMessage({
+  //         id: 'general.confirm_showing',
+  //       })
+  //     )
+  //   ) {
+  //     try {
+  //       let res = await workOrderService.handleShowingWO(workOrder);
+  //       if (res) {
+  //         if (res && res.HttpResponseCode === 200) {
+  //           await fetchData();
+  //           SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+  //         } else {
+  //           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+  //         }
+  //       } else {
+  //         ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  // };
+
   const showingWO = async (workOrder) => {
-    if (
-      window.confirm(
-        intl.formatMessage({
-          id: 'general.confirm_showing',
-        })
-      )
-    ) {
-      try {
-        let res = await workOrderService.handleShowingWO(workOrder);
-        if (res) {
-          if (res && res.HttpResponseCode === 200) {
-            await fetchData();
-            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-          } else {
-            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-          }
-        } else {
-          ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
-        }
-      } catch (error) {
-        console.log(error);
-      }
+    // Show a confirmation window
+    if (!window.confirm(intl.formatMessage({ id: 'general.confirm_showing' }))) return;
+
+    try {
+      // Get the result from handleShowingWO function
+      const res = await workOrderService.handleShowingWO(workOrder);
+
+      // Check the response status code
+      const isSuccess = res?.HttpResponseCode === 200;
+
+      // Fetch the data if the status code is success
+      if (isSuccess) await fetchData();
+
+      // Show the alert message based on the response status code
+      (isSuccess ? SuccessAlert : ErrorAlert)(
+        intl.formatMessage({ id: res?.ResponseMessage ?? 'general.system_error' })
+      );
+    } catch (error) {
+      // Log the error
+      console.log(error);
     }
   };
 
@@ -114,66 +137,131 @@ const WorkOrder = (props) => {
   };
 
   const handleRowSelection = (arrIds) => {
-    const rowSelected = workOrderState.data.filter(function (item) {
-      return item.WoId === arrIds[0];
-    });
+    // const rowSelected = workOrderState.data.filter(function (item) {
+    //   return item.WoId === arrIds[0];
+    // });
+    // if (rowSelected && rowSelected.length > 0) {
+    //   setSelectedRow({ ...rowSelected[0] });
+    // } else {
+    //   setSelectedRow({ ...WorkOrderDto });
+    // }
 
-    if (rowSelected && rowSelected.length > 0) {
-      setSelectedRow({ ...rowSelected[0] });
-    } else {
-      setSelectedRow({ ...WorkOrderDto });
-    }
+    // Filter the data to get the selected row
+    const rowSelected = workOrderState.data.find((item) => item.WoId === arrIds[0]);
+
+    setSelectedRow(rowSelected ? { ...rowSelected } : { ...WorkOrderDto });
   };
 
+  // const handleDelete = async (workOrder) => {
+  //   if (
+  //     window.confirm(
+  //       intl.formatMessage({
+  //         id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
+  //       })
+  //     )
+  //   ) {
+  //     try {
+  //       let res = await workOrderService.handleDelete(workOrder);
+  //       if (res) {
+  //         if (res && res.HttpResponseCode === 200) {
+  //           await fetchData();
+  //           SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+  //         } else {
+  //           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+  //         }
+  //       } else {
+  //         ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  // };
   const handleDelete = async (workOrder) => {
-    if (
-      window.confirm(
-        intl.formatMessage({
-          id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
-        })
-      )
-    ) {
+    // Prompt the user to confirm the delete action
+    const confirm = window.confirm(
+      intl.formatMessage({
+        id: showActivedData ? 'general.confirm_delete' : 'general.confirm_redo_deleted',
+      })
+    );
+
+    if (confirm) {
       try {
-        let res = await workOrderService.handleDelete(workOrder);
-        if (res) {
-          if (res && res.HttpResponseCode === 200) {
+        // Call the handleDelete method of the workOrderService with the workOrder as a parameter
+        const response = await workOrderService.handleDelete(workOrder);
+
+        // If there is a response from the API
+        if (response) {
+          // If the HTTP response code is 200 (OK)
+          if (response.HttpResponseCode === 200) {
+            // Fetch the updated data and display a success alert
             await fetchData();
-            SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+            SuccessAlert(intl.formatMessage({ id: response.ResponseMessage }));
           } else {
-            ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+            // If the HTTP response code is not 200 (OK), show an error alert
+            ErrorAlert(intl.formatMessage({ id: response.ResponseMessage }));
           }
         } else {
+          // If there is no response from the API, show a system error alert
           ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
         }
       } catch (error) {
+        // Log any errors that occur during the API call
         console.log(error);
       }
     }
   };
 
+  // const changeSearchData = (e, inputName) => {
+  //   let newSearchData = { ...workOrderState.searchData };
+
+  //   newSearchData[inputName] = e;
+
+  //   switch (inputName) {
+  //     case 'StartSearchingDate':
+  //     case 'EndSearchingDate':
+  //       newSearchData[inputName] = e;
+  //       break;
+  //     case 'MaterialId':
+  //       newSearchData[inputName] = e ? e.MaterialId : WorkOrderDto.MaterialId;
+  //       newSearchData['MaterialCode'] = e ? e.MaterialCode : WorkOrderDto.MaterialCode;
+  //       break;
+
+  //     default:
+  //       newSearchData[inputName] = e.target.value;
+  //       break;
+  //   }
+
+  //   setWorkOrderState({
+  //     ...workOrderState,
+  //     searchData: { ...newSearchData },
+  //   });
+  // };
   const changeSearchData = (e, inputName) => {
-    let newSearchData = { ...workOrderState.searchData };
+    // Destructure the MaterialId and MaterialCode properties from the selected material object, if it exists
+    const { MaterialId, MaterialCode } = e || {};
 
-    newSearchData[inputName] = e;
+    // Create a new searchData object with updated values
+    const newSearchData = {
+      ...workOrderState.searchData,
+      // Update the corresponding property in the new searchData object
+      [inputName]:
+        // If inputName is 'MaterialId', use the MaterialId from the selected material object or the default from WorkOrderDto
+        inputName === 'MaterialId'
+          ? MaterialId || WorkOrderDto.MaterialId
+          : // If inputName is 'StartSearchingDate' or 'EndSearchingDate', use the provided date value
+          inputName === 'StartSearchingDate' || inputName === 'EndSearchingDate'
+          ? e
+          : // Otherwise, use the input value
+            e.target.value,
+      // Use the MaterialCode from the selected material object or the default from WorkOrderDto
+      MaterialCode: MaterialCode || WorkOrderDto.MaterialCode,
+    };
 
-    switch (inputName) {
-      case 'StartSearchingDate':
-      case 'EndSearchingDate':
-        newSearchData[inputName] = e;
-        break;
-      case 'MaterialId':
-        newSearchData[inputName] = e ? e.MaterialId : WorkOrderDto.MaterialId;
-        newSearchData['MaterialCode'] = e ? e.MaterialCode : WorkOrderDto.MaterialCode;
-        break;
-
-      default:
-        newSearchData[inputName] = e.target.value;
-        break;
-    }
-
+    // Update the workOrderState with the updated searchData object
     setWorkOrderState({
       ...workOrderState,
-      searchData: { ...newSearchData },
+      searchData: newSearchData,
     });
   };
 
@@ -182,36 +270,124 @@ const WorkOrder = (props) => {
     return res;
   };
 
-  const fetchData = async () => {
+  // const fetchData = async () => {
+  //   let flag = true;
+  //   let message = '';
+  //   const checkObj = { ...workOrderState.searchData };
+  //   _.forOwn(checkObj, (value, key) => {
+  //     switch (key) {
+  //       case 'StartSearchingDate':
+  //         if (value == 'Invalid Date') {
+  //           message = 'general.StartSearchingDate_invalid';
+  //           flag = false;
+  //         }
+  //         break;
+  //       case 'EndSearchingDate':
+  //         if (value == 'Invalid Date') {
+  //           message = 'general.EndSearchingDate_invalid';
+  //           flag = false;
+  //         }
+  //         break;
+
+  //       default:
+  //         break;
+  //     }
+  //   });
+
+  //   if (flag && isRendered) {
+  //     setWorkOrderState({
+  //       ...workOrderState,
+  //       isLoading: true,
+  //     });
+
+  //     const params = {
+  //       page: workOrderState.page,
+  //       pageSize: workOrderState.pageSize,
+  //       WoCode: workOrderState.searchData.WoCode.trim(),
+  //       MaterialId: workOrderState.searchData.MaterialId,
+  //       StartSearchingDate: new Date(workOrderState.searchData.StartSearchingDate),
+  //       EndSearchingDate: new Date(workOrderState.searchData.EndSearchingDate),
+  //       isActived: showActivedData,
+  //     };
+
+  //     const res = await workOrderService.get(params);
+
+  //     if (res && isRendered)
+  //       setWorkOrderState({
+  //         ...workOrderState,
+  //         data: !res.Data ? [] : [...res.Data],
+  //         totalRow: res.TotalRow,
+  //         isLoading: false,
+  //       });
+  //   } else {
+  //     ErrorAlert(intl.formatMessage({ id: message }));
+  //   }
+  // };
+
+  // Function to check if dates are valid
+  const checkInvalidDates = (checkObj) => {
     let flag = true;
-    let message = '';
-    const checkObj = { ...workOrderState.searchData };
+    let message = 'general.system_error';
+    // Loop through each property of the checkObj object
     _.forOwn(checkObj, (value, key) => {
       switch (key) {
         case 'StartSearchingDate':
-          if (value == 'Invalid Date') {
+          // Check if the value of StartSearchingDate is valid Date Format
+          if (!isValidDate(value)) {
+            // Set the message to 'general.StartSearchingDate_invalid'
             message = 'general.StartSearchingDate_invalid';
+            // Set flag to false
             flag = false;
           }
           break;
-        case 'DeliveryTime':
-          if (value == 'Invalid Date') {
+        case 'EndSearchingDate':
+          // Check if the value of EndSearchingDate is valid Date Format
+          if (!isValidDate(value)) {
+            // Set the message to 'general.EndSearchingDate_invalid'
             message = 'general.EndSearchingDate_invalid';
+            // Set flag to false
             flag = false;
           }
           break;
 
         default:
+          // If the key does not match the above cases, do nothing
           break;
       }
     });
+    // Return the flag and message
+    return { flag, message };
+  };
 
+  // getWorkOrderData function for retrieving work order data
+  const getWorkOrderData = async (params) => {
+    // Fetch the work order data from the service
+    const res = await workOrderService.get(params);
+    // Check if the response exists and the component is rendered
+    if (res && isRendered) {
+      // Return the data and total row from the response
+      return {
+        data: !res.Data ? [] : [...res.Data],
+        totalRow: res.TotalRow,
+      };
+    }
+    // Return an empty data array and total row 0 if the response does not exist or the component is not rendered
+    return { data: [], totalRow: 0 };
+  };
+
+  const fetchData = async () => {
+    // Check if there are invalid dates in the searchData object
+    const { flag, message } = checkInvalidDates(workOrderState.searchData);
+
+    // If there are no invalid dates and the component is rendered
     if (flag && isRendered) {
+      // Set the isLoading state to true
       setWorkOrderState({
         ...workOrderState,
         isLoading: true,
       });
 
+      // Get the parameters for the get API request
       const params = {
         page: workOrderState.page,
         pageSize: workOrderState.pageSize,
@@ -222,16 +398,18 @@ const WorkOrder = (props) => {
         isActived: showActivedData,
       };
 
-      const res = await workOrderService.get(params);
+      // Get the work order data from the API
+      const { data, totalRow } = await getWorkOrderData(params);
 
-      if (res && isRendered)
-        setWorkOrderState({
-          ...workOrderState,
-          data: !res.Data ? [] : [...res.Data],
-          totalRow: res.TotalRow,
-          isLoading: false,
-        });
+      // Set the data and totalRow state
+      setWorkOrderState({
+        ...workOrderState,
+        data,
+        totalRow,
+        isLoading: false,
+      });
     } else {
+      // If there are invalid dates or the component is not rendered, show error alert
       ErrorAlert(intl.formatMessage({ id: message }));
     }
   };
