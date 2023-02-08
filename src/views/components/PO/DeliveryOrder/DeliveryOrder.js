@@ -318,18 +318,21 @@ const DeliveryOrder = (props) => {
   // };
 
   const validateData = () => {
-    let flag = true;
-    let message = 'General.system_error';
-    const checkObj = { ...deliveryOrderState.searchData };
+    let flag = true; // Initialize flag to true
+    let message = 'general.system_error'; // Initialize message to a default value
+    const checkObj = { ...deliveryOrderState.searchData }; // Spread the searchData object into checkObj
 
+    // Iterate over the key-value pairs of checkObj
     for (const [key, value] of Object.entries(checkObj)) {
+      // Check if key is ETDLoad and value is 'Invalid date'
       if (key === 'ETDLoad' && value === 'Invalid date') {
-        message = 'delivery_order.ETDLoad_invalid';
-        flag = false;
+        message = 'delivery_order.ETDLoad_invalid'; // Update message
+        flag = false; // Update flag
+        break; // Exit the loop
       }
     }
 
-    return [flag, message];
+    return [flag, message]; // Return the updated flag and message
   };
 
   const fetchData = async () => {
