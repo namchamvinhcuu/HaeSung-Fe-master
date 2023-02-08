@@ -290,30 +290,45 @@ const DeliveryOrder = (props) => {
   //   }
   // };
 
+  // const validateData = () => {
+  //   let flag = true;
+  //   let message = 'general.system_error';
+  //   const checkObj = { ...deliveryOrderState.searchData };
+
+  //   // Check if ETDLoad or DeliveryTime has invalid date
+  //   _.forOwn(checkObj, (value, key) => {
+  //     switch (key) {
+  //       case 'ETDLoad':
+  //         if (value === 'Invalid date') {
+  //           message = 'delivery_order.ETDLoad_invalid';
+  //           flag = false;
+  //         }
+  //         break;
+  //       // case 'DeliveryTime':
+  //       //   if (value === 'Invalid date') {
+  //       //     message = 'delivery_order.DeliveryTime_invalid';
+  //       //     flag = false;
+  //       //   }
+  //       //   break;
+  //       default:
+  //         break;
+  //     }
+  //   });
+  //   return [flag, message];
+  // };
+
   const validateData = () => {
     let flag = true;
-    let message = 'general.system_error';
+    let message = 'General.system_error';
     const checkObj = { ...deliveryOrderState.searchData };
 
-    // Check if ETDLoad or DeliveryTime has invalid date
-    _.forOwn(checkObj, (value, key) => {
-      switch (key) {
-        case 'ETDLoad':
-          if (value === 'Invalid date') {
-            message = 'delivery_order.ETDLoad_invalid';
-            flag = false;
-          }
-          break;
-        // case 'DeliveryTime':
-        //   if (value === 'Invalid date') {
-        //     message = 'delivery_order.DeliveryTime_invalid';
-        //     flag = false;
-        //   }
-        //   break;
-        default:
-          break;
+    for (const [key, value] of Object.entries(checkObj)) {
+      if (key === 'ETDLoad' && value === 'Invalid date') {
+        message = 'delivery_order.ETDLoad_invalid';
+        flag = false;
       }
-    });
+    }
+
     return [flag, message];
   };
 
