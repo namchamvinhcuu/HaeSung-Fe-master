@@ -1,33 +1,33 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { useFormCustom } from '@hooks';
 import { firstLogin } from '@utils';
+import React, { useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-import Paper from '@mui/material/Paper';
-import Avatar from '@mui/material/Avatar';
+import login_background from '@static/images/login_background.png';
+
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Autocomplete from '@mui/material/Autocomplete';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
+import Paper from '@mui/material/Paper';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { ErrorAlert, SuccessAlert } from '@utils';
-import { loginService } from '@services';
-import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils';
 import * as ConfigConstants from '@constants/ConfigConstants';
-import store from '@states/store';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
-import { versionAppService } from '@services';
+import { loginService, versionAppService } from '@services';
+import store from '@states/store';
+import { ErrorAlert, RemoveLocalStorage, SetLocalStorage } from '@utils';
 
 const theme = createTheme();
 
@@ -167,8 +167,7 @@ const Login = (props) => {
           sm={4}
           md={7}
           sx={{
-            backgroundImage:
-              'url(https://images.unsplash.com/photo-1483058712412-4245e9b90334?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80)',
+            backgroundImage: `url(${login_background})`,
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) => (t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900]),
             backgroundSize: 'cover',

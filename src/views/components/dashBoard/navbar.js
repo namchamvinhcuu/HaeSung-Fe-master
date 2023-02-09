@@ -79,29 +79,83 @@ class NavBar extends Component {
     // })
   }
 
+  // startConnection = async () => {
+  //   try {
+  //     this.connection = new HubConnectionBuilder()
+  //       .withUrl(`${ConfigConstants.BASE_URL}/signalr`, {
+  //         // accessTokenFactory: () => GetLocalStorage(ConfigConstants.TOKEN_ACCESS),
+  //         skipNegotiation: true,
+  //         transport: HttpTransportType.WebSockets,
+  //       })
+  //       .configureLogging(LogLevel.None)
+  //       .withAutomaticReconnect({
+  //         nextRetryDelayInMilliseconds: (retryContext) => {
+  //           //reconnect after 5-20s
+  //           return 5000 + Math.random() * 15000;
+  //         },
+  //       })
+  //       .build();
+
+  //     if (this.connection.state === HubConnectionState.Disconnected) {
+  //       await this.connection.start();
+  //     }
+
+  //     this.connection.on('ReceivedOnlineUsers', (data) => {
+  //       if (data && data.length > 0) {
+  //         this._isMounted &&
+  //           this.setState({
+  //             onlineUsers: [...data],
+  //           });
+  //       }
+  //     });
+
+  //     this.connection.on('WorkOrderGetDisplay', (res) => {
+  //       if (res) {
+  //         const { saveDisplayData } = this.props;
+  //         saveDisplayData(res);
+  //       }
+  //     });
+
+  //     await this.connection.invoke('SendOnlineUsers');
+  //     await this.connection.invoke('GetDisplayWO');
+
+  //     this.connection.onclose((e) => {
+  //       // this.connection = null;
+  //     });
+  //   } catch (error) {
+  //     console.log('[websocket error] :', error);
+  //   }
+  // };
+
+  // startConnection function sets up a SignalR connection with the given URL and configures its behavior.
+
   startConnection = async () => {
     try {
+      // Create a new HubConnection using the given URL and options
       this.connection = new HubConnectionBuilder()
         .withUrl(`${ConfigConstants.BASE_URL}/signalr`, {
           // accessTokenFactory: () => GetLocalStorage(ConfigConstants.TOKEN_ACCESS),
           skipNegotiation: true,
           transport: HttpTransportType.WebSockets,
         })
-        .configureLogging(LogLevel.None)
+        .configureLogging(LogLevel.None) // Disable logging
         .withAutomaticReconnect({
           nextRetryDelayInMilliseconds: (retryContext) => {
-            //reconnect after 5-20s
+            // Return a random delay between 5s and 20s for automatic reconnect
             return 5000 + Math.random() * 15000;
           },
         })
         .build();
 
+      // Check if the connection is disconnected, then start the connection
       if (this.connection.state === HubConnectionState.Disconnected) {
         await this.connection.start();
       }
 
+      // Register a callback for the 'ReceivedOnlineUsers' event
       this.connection.on('ReceivedOnlineUsers', (data) => {
         if (data && data.length > 0) {
+          // Update the onlineUsers state only if the component is mounted
           this._isMounted &&
             this.setState({
               onlineUsers: [...data],
@@ -109,20 +163,25 @@ class NavBar extends Component {
         }
       });
 
+      // Register a callback for the 'WorkOrderGetDisplay' event
       this.connection.on('WorkOrderGetDisplay', (res) => {
         if (res) {
+          // Call the saveDisplayData action creator
           const { saveDisplayData } = this.props;
           saveDisplayData(res);
         }
       });
 
+      // Invoke the 'SendOnlineUsers' and 'GetDisplayWO' methods on the server
       await this.connection.invoke('SendOnlineUsers');
       await this.connection.invoke('GetDisplayWO');
 
+      // Register a callback for the close event
       this.connection.onclose((e) => {
         // this.connection = null;
       });
     } catch (error) {
+      // Log the error if there is any
       console.log('[websocket error] :', error);
     }
   };
@@ -491,7 +550,7 @@ const PDFModal = ({ isShowing, hide, pdfURL, title }) => {
   // useEffect(() => { }, [data]);
 
   const [numPages, setNumPages] = React.useState(null);
-  const [pageNumber, setPageNumber] = React.useState(1);
+  // const [pageNumber, setPageNumber] = React.useState(1);
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
