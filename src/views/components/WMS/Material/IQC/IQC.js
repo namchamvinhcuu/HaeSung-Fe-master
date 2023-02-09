@@ -2,19 +2,15 @@ import { Store } from '@appstate';
 import { User_Operations } from '@appstate/user';
 import { useModal, useModal2 } from '@basesShared';
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
-import { MuiButton, MuiDataGrid, MuiDateField, MuiSearchField, MuiDialog } from '@controls';
+import { MuiButton, MuiDataGrid, MuiDateField, MuiDialog, MuiSearchField } from '@controls';
 import { LotDto } from '@models';
-import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UndoIcon from '@mui/icons-material/Undo';
 import {
   Box,
   Button,
-  Dialog,
-  DialogActions,
   DialogContent,
-  DialogTitle,
   Grid,
   IconButton,
   Table,
@@ -33,7 +29,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import QRCode from 'react-qr-code';
 import { connect } from 'react-redux';
-import ReactToPrint from 'react-to-print';
 import { bindActionCreators } from 'redux';
 import IQCDialog from './IQCDialog';
 
@@ -61,6 +56,7 @@ const IQC = (props) => {
       searchEndDay: initETDLoad,
     },
   });
+
   const columns = [
     {
       field: 'id',
@@ -189,16 +185,19 @@ const IQC = (props) => {
       },
     },
   ];
+
   const handleAdd = () => {
     setMode(CREATE_ACTION);
     setRowData({ ...LotDto });
     toggle();
   };
+
   const handleUpdate = (row) => {
     setMode(UPDATE_ACTION);
     setRowData({ ...row });
     toggle();
   };
+
   const handleDelete = async (iqc) => {
     if (
       window.confirm(
@@ -223,6 +222,7 @@ const IQC = (props) => {
       }
     }
   };
+
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...iqcState.searchData };
 
@@ -273,18 +273,12 @@ const IQC = (props) => {
   }
 
   const handleRowSelection = (arrIds) => {
-    const rowSelected = iqcState.data.filter(function (item) {
-      return arrIds.includes(item.Id);
-      // return _.findIndex(iqcState.data, function(o) { return o.user == 'barney'; });
-    });
-    setRowSelected(rowSelected);
-    // console.log('rowSelected', rowSelected)
+    const arrIdSet = new Set(arrIds);
+    const rowSelected = iqcState.data.filter((item) => arrIdSet.has(item.Id));
 
-    // if (rowSelected && rowSelected.length > 0) {
-    //   setSelectedRow({ ...rowSelected[0] });
-    // } else {
-    //   setSelectedRow({ ...WorkOrderDto });
-    // }
+    // const rowSelected = iqcState.data.filter((item) => arrIds.includes(item.Id));
+
+    setRowSelected(rowSelected ? [...rowSelected] : []);
   };
 
   useEffect(() => {
@@ -292,9 +286,11 @@ const IQC = (props) => {
       isRendered = false;
     };
   }, []);
+
   useEffect(() => {
     fetchData();
   }, [iqcState.page, iqcState.pageSize, iqcState.searchData.showDelete]);
+
   useEffect(() => {
     if (!_.isEmpty(newData) && isRendered && !_.isEqual(newData, LotDto)) {
       const data = [newData, ...iqcState.data];
@@ -372,25 +368,6 @@ const IQC = (props) => {
             <Grid item>
               <MuiButton text="search" color="info" onClick={fetchData} />
             </Grid>
-            {/* <Grid item>
-              <FormControlLabel
-                sx={{ mt: 0.5 }}
-                control={
-                  <Switch
-                    defaultChecked={true}
-                    color="primary"
-                    onChange={(e) =>
-                      handleSearch(e.target.checked, "showDelete")
-                    }
-                  />
-                }
-                label={intl.formatMessage({
-                  id: iqcState.searchData.showDelete
-                    ? "general.data_actived"
-                    : "general.data_deleted",
-                })}
-              />
-            </Grid> */}
           </Grid>
         </Grid>
       </Grid>
@@ -432,13 +409,18 @@ const IQC = (props) => {
     </React.Fragment>
   );
 };
+
 const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
   const DialogTransition = React.forwardRef(function DialogTransition(props, ref) {
     return <Zoom direction="up" ref={ref} {...props} />;
   });
+
   const intl = useIntl();
+
   const [dialogState, setDialogState] = useState({ isSubmit: false });
+
   const componentRef = React.useRef();
+
   const style = {
     styleBorderAndCenter: {
       borderRight: '1px solid black',
@@ -449,18 +431,15 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
       padding: '10px',
     },
   };
+
   const getWeekByCreatedDate = (date) => {
     const currentDate = new Date(date);
     const startDate = new Date(currentDate.getFullYear(), 0, 1);
     var days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000));
     var weekNumber = Math.ceil(days / 7);
     return weekNumber;
-    // let todaydate = new Date(date);
-    // let oneJan = new Date(todaydate.getFullYear(), 0, 1);
-    // let numberOfDays = Math.floor((todaydate - oneJan) / (24 * 60 * 60 * 1000));
-    // let curWeek = Math.ceil((todaydate.getDay() + 1 + numberOfDays) / 7);
-    // return curWeek;
   };
+
   const handleCloseDialog = () => {
     hide();
   };
@@ -574,6 +553,7 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
     </React.Fragment>
   );
 };
+
 User_Operations.toString = function () {
   return 'User_Operations';
 };
