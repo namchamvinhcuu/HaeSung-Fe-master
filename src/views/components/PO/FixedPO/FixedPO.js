@@ -52,30 +52,58 @@ const FixedPO = (props) => {
   };
 
   const handleRowSelection = (arrIds) => {
-    const rowSelected = fixedPOState.data.filter(function (item) {
-      return item.FPOId === arrIds[0];
-    });
+    // const rowSelected = fixedPOState.data.filter(function (item) {
+    //   return item.FPOId === arrIds[0];
+    // });
 
-    if (rowSelected && rowSelected.length > 0) {
-      setSelectedRow({ ...rowSelected[0] });
-    } else {
-      setSelectedRow({ ...ForecastPODto });
-    }
+    // if (rowSelected && rowSelected.length > 0) {
+    //   setSelectedRow({ ...rowSelected[0] });
+    // } else {
+    //   setSelectedRow({ ...ForecastPODto });
+    // }
+    const rowSelected = fixedPOState.data.find((item) => item.FPOId === arrIds[0]);
+    setSelectedRow(rowSelected ? { ...rowSelected } : { ...ForecastPODto });
   };
 
+  // const changeSearchData = (e, inputName) => {
+  //   let newSearchData = { ...fixedPOState.searchData };
+
+  //   switch (inputName) {
+  //     case 'MaterialId':
+  //       newSearchData[inputName] = e ? e.MaterialId : ForecastPODto.MaterialId;
+  //       newSearchData['MaterialCode'] = e ? e.MaterialCode : ForecastPODto.MaterialCode;
+  //       break;
+
+  //     default:
+  //       newSearchData[inputName] = parseInt(e.target.value, 10);
+  //       break;
+  //   }
+  //   setFixedPOState({
+  //     ...fixedPOState,
+  //     searchData: { ...newSearchData },
+  //   });
+  // };
+
   const changeSearchData = (e, inputName) => {
+    // Create a new object `newSearchData` that is a shallow copy of the `fixedPOState.searchData` object
     let newSearchData = { ...fixedPOState.searchData };
 
+    // Check the inputName and update the corresponding field in the `newSearchData` object
     switch (inputName) {
       case 'MaterialId':
+        // If `e` is truthy, update `MaterialId` and `MaterialCode` to its respective values.
+        // If `e` is falsy, update `MaterialId` and `MaterialCode` to their default values in the `ForecastPODto` object.
         newSearchData[inputName] = e ? e.MaterialId : ForecastPODto.MaterialId;
         newSearchData['MaterialCode'] = e ? e.MaterialCode : ForecastPODto.MaterialCode;
         break;
 
+      // For other input names, update the field with the integer value of the `e.target.value`
       default:
         newSearchData[inputName] = parseInt(e.target.value, 10);
         break;
     }
+
+    // Update the `fixedPOState` with the updated `newSearchData` object
     setFixedPOState({
       ...fixedPOState,
       searchData: { ...newSearchData },
@@ -87,19 +115,46 @@ const FixedPO = (props) => {
     return res;
   };
 
+  // const handleRowUpdate = async (newRow) => {
+  //   if (!isNumber(newRow.OrderQty) || newRow.OrderQty < 0) {
+  //     ErrorAlert(intl.formatMessage({ id: 'forecast.OrderQty_required_bigger' }));
+  //     return selectedRow;
+  //   }
+  //   newRow = { ...newRow, OrderQty: parseInt(newRow.OrderQty) };
+  //   const res = await fixedPOService.modify(newRow);
+  //   if (res && res.HttpResponseCode === 200 && isRendered) {
+  //     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+  //     setSelectedRow(res.Data);
+  //     return res.Data;
+  //   } else {
+  //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+  //     return selectedRow;
+  //   }
+  // };
   const handleRowUpdate = async (newRow) => {
+    // Check if the type of `newRow.OrderQty` is not a number or if it is less than 0
     if (!isNumber(newRow.OrderQty) || newRow.OrderQty < 0) {
+      // Show an error alert with the message `forecast.OrderQty_required_bigger`
       ErrorAlert(intl.formatMessage({ id: 'forecast.OrderQty_required_bigger' }));
+      // Return the current selected row
       return selectedRow;
     }
-    newRow = { ...newRow, OrderQty: parseInt(newRow.OrderQty) };
+    // Convert the `newRow.OrderQty` to an integer
+    newRow.OrderQty = parseInt(newRow.OrderQty);
+    // Call the `fixedPOService.modify` function with the updated `newRow` object
     const res = await fixedPOService.modify(newRow);
-    if (res && res.HttpResponseCode === 200 && isRendered) {
+    // If the response is truthy, the `HttpResponseCode` is 200, and the component is rendered
+    if (res && res.HttpResponseCode === 200) {
+      // Show a success alert with the message from the `ResponseMessage` field of the response object
       SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      // Update the selected row with the `Data` field from the response object
       setSelectedRow(res.Data);
+      // Return the updated selected row
       return res.Data;
     } else {
+      // If the response is falsy or the `HttpResponseCode` is not 200, show an error alert with the message from the `ResponseMessage` field of the response object
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      // Return the current selected row
       return selectedRow;
     }
   };
@@ -108,7 +163,60 @@ const FixedPO = (props) => {
     ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
   }, []);
 
-  const fetchData = async () => {
+  // const fetchData = async () => {
+  //   let flag = true;
+  //   let message = '';
+  //   const checkObj = { ...fixedPOState.searchData };
+  //   _.forOwn(checkObj, (value, key) => {
+  //     switch (key) {
+  //       case 'Year':
+  //         if (!Number.isInteger(value) || value < 2022 || value > 2050) {
+  //           message = 'general.year_invalid';
+  //           flag = false;
+  //         }
+  //         break;
+  //       case 'Week':
+  //         if (!isNumber(value) || value < 1 || value > 52) {
+  //           message = 'general.week_invalid';
+  //           flag = false;
+  //         }
+  //         break;
+
+  //       default:
+  //         break;
+  //     }
+  //   });
+
+  //   if (flag && isRendered) {
+  //     setFixedPOState({
+  //       ...fixedPOState,
+  //       isLoading: true,
+  //     });
+
+  //     const params = {
+  //       page: fixedPOState.page,
+  //       pageSize: fixedPOState.pageSize,
+  //       MaterialId: fixedPOState.searchData.MaterialId,
+  //       Year: fixedPOState.searchData.Year,
+  //       Week: fixedPOState.searchData.Week,
+  //       isActived: showActivedData,
+  //     };
+
+  //     const res = await fixedPOService.get(params);
+
+  //     if (res && isRendered)
+  //       setFixedPOState({
+  //         ...fixedPOState,
+  //         data: !res.Data ? [] : [...res.Data],
+  //         totalRow: res.TotalRow,
+  //         isLoading: false,
+  //       });
+  //   } else {
+  //     ErrorAlert(intl.formatMessage({ id: message }));
+  //   }
+  // };
+
+  const isValidTimeSearchData = () => {
     let flag = true;
     let message = '';
     const checkObj = { ...fixedPOState.searchData };
@@ -126,13 +234,20 @@ const FixedPO = (props) => {
             flag = false;
           }
           break;
-
         default:
           break;
       }
     });
 
-    if (flag && isRendered) {
+    if (!flag) {
+      ErrorAlert(intl.formatMessage({ id: message }));
+    }
+
+    return flag;
+  };
+
+  const fetchData = _.debounce(async () => {
+    if (isValidTimeSearchData() && isRendered) {
       setFixedPOState({
         ...fixedPOState,
         isLoading: true,
@@ -156,10 +271,67 @@ const FixedPO = (props) => {
           totalRow: res.TotalRow,
           isLoading: false,
         });
-    } else {
-      ErrorAlert(intl.formatMessage({ id: message }));
     }
-  };
+  }, 200);
+
+  // const fetchData = async () => {
+  //   // Check the searchData fields to ensure their validity before making the API call
+  //   let flag = true;
+  //   let message = '';
+  //   const checkObj = { ...fixedPOState.searchData };
+  //   _.forOwn(checkObj, (value, key) => {
+  //     switch (key) {
+  //       case 'Year':
+  //         if (!Number.isInteger(value) || value < 2022 || value > 2050) {
+  //           message = 'general.year_invalid';
+  //           flag = false;
+  //         }
+  //         break;
+  //       case 'Week':
+  //         if (!isNumber(value) || value < 1 || value > 52) {
+  //           message = 'general.week_invalid';
+  //           flag = false;
+  //         }
+  //         break;
+  //       // Add more cases for other fields as needed
+  //       default:
+  //         break;
+  //     }
+  //   });
+  //   // If the fields are valid, make the API call
+  //   if (flag && isRendered) {
+  //     // Set isLoading to true to indicate the start of loading data
+  //     setFixedPOState({
+  //       ...fixedPOState,
+  //       isLoading: true,
+  //     });
+
+  //     // Prepare the parameters for the API call
+  //     const params = {
+  //       page: fixedPOState.page,
+  //       pageSize: fixedPOState.pageSize,
+  //       MaterialId: fixedPOState.searchData.MaterialId,
+  //       Year: fixedPOState.searchData.Year,
+  //       Week: fixedPOState.searchData.Week,
+  //       isActived: showActivedData,
+  //     };
+
+  //     // Make the API call
+  //     const res = await fixedPOService.get(params);
+
+  //     // If the API call was successful, update the state with the response data
+  //     if (res && isRendered)
+  //       setFixedPOState({
+  //         ...fixedPOState,
+  //         data: !res.Data ? [] : [...res.Data],
+  //         totalRow: res.TotalRow,
+  //         isLoading: false,
+  //       });
+  //   } else {
+  //     // If the fields are not valid, display an error message
+  //     ErrorAlert(intl.formatMessage({ id: message }));
+  //   }
+  // };
 
   useEffect(() => {
     fetchData();

@@ -33,6 +33,8 @@ const ForecastPODetail = ({ FPoMasterId }) => {
   const [valueYear, setValueYear] = useState('');
   const curWeek = getCurrentWeek();
   const [currentWeek, setCurrentWeek] = useState(curWeek);
+  const [valueStart, setValueStart] = useState('');
+  const [valueEnd, setValueEnd] = useState('');
 
   const [forecastState, setForecastState] = useState({
     isLoading: false,
@@ -50,44 +52,6 @@ const ForecastPODetail = ({ FPoMasterId }) => {
     FPoMasterId: FPoMasterId,
   });
 
-  useEffect(() => {
-    // getYearList();
-    return () => {
-      isRendered = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    fetchData(FPoMasterId);
-  }, [forecastState.page, forecastState.pageSize, FPoMasterId, forecastState.searchData.showDelete]);
-
-  useEffect(() => {
-    if (!_.isEmpty(newData) && isRendered && !_.isEqual(newData, ForecastPODto)) {
-      const data = [newData, ...forecastState.data];
-      if (data.length > forecastState.pageSize) {
-        data.pop();
-      }
-      setForecastState({
-        ...forecastState,
-        data: [...data],
-        totalRow: forecastState.totalRow + 1,
-      });
-    }
-  }, [newData]);
-
-  useEffect(() => {
-    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData) && isRendered) {
-      let newArr = [...forecastState.data];
-      const index = _.findIndex(newArr, function (o) {
-        return o.FPOId == updateData.FPOId;
-      });
-      if (index !== -1) {
-        newArr[index] = updateData;
-      }
-      setForecastState({ ...forecastState, data: [...newArr] });
-    }
-  }, [updateData]);
-
   const handleAdd = () => {
     setMode(CREATE_ACTION);
     setRowData();
@@ -100,151 +64,7 @@ const ForecastPODetail = ({ FPoMasterId }) => {
     toggle();
   };
 
-  const columns = [
-    { field: 'FPOId', headerName: '', hide: true },
-    {
-      field: 'id',
-      headerName: '',
-      width: 80,
-      filterable: false,
-      renderCell: (index) =>
-        index.api.getRowIndex(index.row.FPOId) + 1 + (forecastState.page - 1) * forecastState.pageSize,
-    },
-    {
-      field: 'action',
-      headerName: '',
-      width: 80,
-      disableClickEventBubbling: true,
-      sortable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => {
-        return (
-          <Grid container spacing={1} alignItems="center" justifyContent="center">
-            <Grid item xs={6} style={{ textAlign: 'center' }}>
-              <IconButton
-                aria-label="delete"
-                color="error"
-                size="small"
-                sx={[{ '&:hover': { border: '1px solid red' } }]}
-                onClick={() => handleDelete(params.row)}
-              >
-                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
-              </IconButton>
-            </Grid>
-
-            <Grid item xs={6} style={{ textAlign: 'center' }}>
-              <IconButton
-                aria-label="edit"
-                color="warning"
-                size="small"
-                sx={[{ '&:hover': { border: '1px solid orange' } }]}
-                onClick={() => handleUpdate(params.row)}
-              >
-                <EditIcon fontSize="inherit" />
-              </IconButton>
-            </Grid>
-          </Grid>
-        );
-      },
-    },
-    {
-      field: 'Inch',
-      headerName: 'Inch',
-      width: 100,
-    },
-    {
-      field: 'FPoCode',
-      headerName: intl.formatMessage({ id: 'forecast.FPoCode' }),
-      width: 135,
-    },
-    {
-      field: 'LineName',
-      headerName: intl.formatMessage({ id: 'forecast.LineId' }),
-      width: 200,
-    },
-    {
-      field: 'MaterialCode',
-      headerName: intl.formatMessage({ id: 'forecast.MaterialId' }),
-      width: 200,
-    },
-    {
-      field: 'BuyerCode',
-      headerName: intl.formatMessage({ id: 'forecast.BuyerId' }),
-      width: 200,
-    },
-    {
-      field: 'DescriptionMaterial',
-      headerName: intl.formatMessage({ id: 'forecast.Desciption' }),
-      width: 300,
-      renderCell: (params) => {
-        return (
-          <Tooltip title={params.row.DescriptionMaterial ?? ''} className="col-text-elip">
-            <Typography sx={{ fontSize: 14, maxWidth: 300 }}>{params.row.DescriptionMaterial}</Typography>
-          </Tooltip>
-        );
-      },
-    },
-    {
-      field: 'Description',
-      headerName: 'Desc 2',
-      width: 180,
-    },
-    {
-      field: 'Week',
-      headerName: intl.formatMessage({ id: 'forecast.Week' }),
-      width: 100,
-    },
-    {
-      field: 'Year',
-      headerName: intl.formatMessage({ id: 'forecast.Year' }),
-      width: 100,
-    },
-    {
-      field: 'Amount',
-      headerName: intl.formatMessage({ id: 'forecast.Amount' }),
-      width: 100,
-    },
-
-    {
-      field: 'createdName',
-      headerName: intl.formatMessage({ id: 'general.createdName' }),
-      width: 150,
-    },
-    {
-      field: 'createdDate',
-      headerName: intl.formatMessage({ id: 'general.created_date' }),
-      width: 150,
-      valueFormatter: (params) => {
-        if (params.value !== null) {
-          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
-        }
-      },
-    },
-    {
-      field: 'modifiedName',
-      headerName: intl.formatMessage({ id: 'general.modifiedName' }),
-      width: 150,
-    },
-    {
-      field: 'modifiedDate',
-      headerName: intl.formatMessage({ id: 'general.modified_date' }),
-      width: 150,
-      valueFormatter: (params) => {
-        if (params.value !== null) {
-          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
-        }
-      },
-    },
-  ];
-
-  // const getYearList = async () => {
-  //   const res = await forecastService.getYearModel();
-  //   if (res.HttpResponseCode === 200 && res.Data && isRendered) {
-  //     setYearList([...res.Data]);
-  //   }
-  // };
-
-  async function fetchData(FPoMasterId) {
+  const fetchData = async (FPoMasterId) => {
     if (
       forecastState.searchData.keyWordWeekStart > forecastState.searchData.keyWordWeekEnd &&
       forecastState.searchData.keyWordWeekEnd != 0
@@ -265,14 +85,14 @@ const ForecastPODetail = ({ FPoMasterId }) => {
       FPoMasterId: FPoMasterId,
     };
     const res = await forecastService.getForecastList(params);
-    if (res && res.Data && isRendered)
+    if (res && isRendered)
       setForecastState({
         ...forecastState,
         data: res.Data ?? [],
         totalRow: res.TotalRow,
         isLoading: false,
       });
-  }
+  };
 
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...forecastState.searchData };
@@ -314,21 +134,195 @@ const ForecastPODetail = ({ FPoMasterId }) => {
     }
   };
 
-  const [valueStart, setValueStart] = useState('');
-  const [valueEnd, setValueEnd] = useState('');
-  // useEffect(() => {
-  //   if (!_.isEmpty(newDataChild)) {
-  //     const data = [newDataChild, ...forecastState.data];
-  //     if (data.length > forecastState.pageSize) {
-  //       data.pop();
-  //     }
-  //     setState({
-  //       ...forecastState,
-  //       data: [...data],
-  //       totalRow: forecastState.totalRow + 1,
-  //     });
-  //   }
-  // }, [newDataChild]);
+  const columns = [
+    { field: 'FPOId', headerName: '', hide: true },
+
+    {
+      field: 'id',
+      headerName: '',
+      width: 80,
+      filterable: false,
+      renderCell: (index) =>
+        index.api.getRowIndex(index.row.FPOId) + 1 + (forecastState.page - 1) * forecastState.pageSize,
+    },
+
+    {
+      field: 'action',
+      headerName: '',
+      width: 80,
+      disableClickEventBubbling: true,
+      sortable: false,
+      disableColumnMenu: true,
+      renderCell: (params) => {
+        return (
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
+              <IconButton
+                aria-label="edit"
+                color="warning"
+                size="small"
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
+                onClick={() => handleUpdate(params.row)}
+              >
+                <EditIcon fontSize="inherit" />
+              </IconButton>
+            </Grid>
+
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
+              <IconButton
+                aria-label="delete"
+                color="error"
+                size="small"
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
+                onClick={() => handleDelete(params.row)}
+              >
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
+              </IconButton>
+            </Grid>
+          </Grid>
+        );
+      },
+    },
+
+    {
+      field: 'Inch',
+      headerName: 'Inch',
+      width: 100,
+    },
+
+    {
+      field: 'FPoCode',
+      headerName: intl.formatMessage({ id: 'forecast.FPoCode' }),
+      width: 135,
+    },
+
+    {
+      field: 'LineName',
+      headerName: intl.formatMessage({ id: 'forecast.LineId' }),
+      width: 200,
+    },
+
+    {
+      field: 'MaterialCode',
+      headerName: intl.formatMessage({ id: 'forecast.MaterialId' }),
+      width: 200,
+    },
+
+    {
+      field: 'BuyerCode',
+      headerName: intl.formatMessage({ id: 'forecast.BuyerId' }),
+      width: 200,
+    },
+
+    {
+      field: 'DescriptionMaterial',
+      headerName: intl.formatMessage({ id: 'forecast.Desciption' }),
+      width: 300,
+      // renderCell: (params) => {
+      //   return (
+      //     <Tooltip title={params.row.DescriptionMaterial ?? ''} className="col-text-elip">
+      //       <Typography sx={{ fontSize: 14, maxWidth: 300 }}>{params.row.DescriptionMaterial}</Typography>
+      //     </Tooltip>
+      //   );
+      // },
+    },
+
+    {
+      field: 'Description',
+      headerName: 'Desc 2',
+      width: 180,
+    },
+
+    {
+      field: 'Week',
+      headerName: intl.formatMessage({ id: 'forecast.Week' }),
+      width: 100,
+    },
+
+    {
+      field: 'Year',
+      headerName: intl.formatMessage({ id: 'forecast.Year' }),
+      width: 100,
+    },
+
+    {
+      field: 'Amount',
+      headerName: intl.formatMessage({ id: 'forecast.Amount' }),
+      width: 100,
+    },
+
+    {
+      field: 'createdName',
+      headerName: intl.formatMessage({ id: 'general.createdName' }),
+      width: 150,
+    },
+
+    {
+      field: 'createdDate',
+      headerName: intl.formatMessage({ id: 'general.created_date' }),
+      width: 150,
+      valueFormatter: (params) => {
+        if (params.value !== null) {
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
+        }
+      },
+    },
+
+    {
+      field: 'modifiedName',
+      headerName: intl.formatMessage({ id: 'general.modifiedName' }),
+      width: 150,
+    },
+
+    {
+      field: 'modifiedDate',
+      headerName: intl.formatMessage({ id: 'general.modified_date' }),
+      width: 150,
+      valueFormatter: (params) => {
+        if (params.value !== null) {
+          return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
+        }
+      },
+    },
+  ];
+
+  useEffect(() => {
+    return () => {
+      isRendered = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    fetchData(FPoMasterId);
+  }, [forecastState.page, forecastState.pageSize, FPoMasterId, forecastState.searchData.showDelete]);
+
+  useEffect(() => {
+    if (!_.isEmpty(newData) && isRendered && !_.isEqual(newData, ForecastPODto)) {
+      const data = [newData, ...forecastState.data];
+      if (data.length > forecastState.pageSize) {
+        data.pop();
+      }
+      setForecastState({
+        ...forecastState,
+        data: [...data],
+        totalRow: forecastState.totalRow + 1,
+      });
+    }
+  }, [newData]);
+
+  useEffect(() => {
+    if (!_.isEmpty(updateData) && !_.isEqual(updateData, rowData) && isRendered) {
+      let newArr = [...forecastState.data];
+      const index = _.findIndex(newArr, function (o) {
+        return o.FPOId == updateData.FPOId;
+      });
+      if (index !== -1) {
+        newArr[index] = updateData;
+      }
+      setForecastState({ ...forecastState, data: [...newArr] });
+    }
+  }, [updateData]);
+
   return (
     <React.Fragment>
       <Grid container direction="row" justifyContent="space-between" alignItems="flex-end">

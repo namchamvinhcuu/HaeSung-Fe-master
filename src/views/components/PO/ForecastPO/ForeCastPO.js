@@ -145,6 +145,7 @@ export default function ForecastPOMaster(props) {
 
   const columns = [
     { field: 'FPoMasterId', headerName: '', hide: true },
+
     {
       field: 'id',
       headerName: '',
@@ -155,6 +156,7 @@ export default function ForecastPOMaster(props) {
         1 +
         (forecastMasterState.page - 1) * forecastMasterState.pageSize,
     },
+
     {
       field: 'action',
       headerName: '',
@@ -167,18 +169,6 @@ export default function ForecastPOMaster(props) {
           <Grid container spacing={1} alignItems="center" justifyContent="center">
             <Grid item xs={6} style={{ textAlign: 'center' }}>
               <IconButton
-                aria-label="delete"
-                color="error"
-                size="small"
-                sx={[{ '&:hover': { border: '1px solid red' } }]}
-                onClick={() => handleDelete(params.row)}
-              >
-                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
-              </IconButton>
-            </Grid>
-
-            <Grid item xs={6} style={{ textAlign: 'center' }}>
-              <IconButton
                 aria-label="edit"
                 color="warning"
                 size="small"
@@ -188,10 +178,23 @@ export default function ForecastPOMaster(props) {
                 <EditIcon fontSize="inherit" />
               </IconButton>
             </Grid>
+
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
+              <IconButton
+                aria-label="delete"
+                color="error"
+                size="small"
+                sx={[{ '&:hover': { border: '1px solid red' } }]}
+                onClick={() => handleDelete(params.row)}
+              >
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
+              </IconButton>
+            </Grid>
           </Grid>
         );
       },
     },
+
     {
       field: 'FPoMasterCode',
       headerName: 'FPO Master Code',
@@ -209,6 +212,7 @@ export default function ForecastPOMaster(props) {
       headerName: intl.formatMessage({ id: 'general.createdName' }),
       width: 150,
     },
+
     {
       field: 'createdDate',
       headerName: intl.formatMessage({ id: 'general.created_date' }),
@@ -219,11 +223,13 @@ export default function ForecastPOMaster(props) {
         }
       },
     },
+
     {
       field: 'modifiedName',
       headerName: intl.formatMessage({ id: 'general.modifiedName' }),
       width: 150,
     },
+
     {
       field: 'modifiedDate',
       headerName: intl.formatMessage({ id: 'general.modified_date' }),
