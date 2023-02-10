@@ -270,7 +270,7 @@ const DeliveryOrderDialog = (props) => {
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList onChange={handleChangeTab}>
               <Tab label="Single" value="tab1" />
-              <Tab label="Excel" value="tab2" />
+              {mode === CREATE_ACTION && <Tab label="Excel" value="tab2" />}
             </TabList>
           </Box>
           <TabPanel value="tab1" sx={{ p: 0, pt: 2 }}>
@@ -499,89 +499,92 @@ const DeliveryOrderDialog = (props) => {
               </Grid>
             </form>
           </TabPanel>
-          <TabPanel value="tab2" sx={{ p: 0 }}>
-            <Grid>
-              <Grid item xs={12} sx={{ p: 3 }}>
-                <input type="file" name="file" id="excelinput" onChange={changeHandler} ref={refFile} />
-              </Grid>
-              <Grid item xs={12}>
-                <Grid container direction="row-reverse">
-                  <MuiButton
-                    text="upload"
-                    color="success"
-                    onClick={handleUpload}
-                    disabled={selectedFile ? false : true}
-                  />
-                  <MuiButton
-                    text="excel"
-                    variant="outlined"
-                    color="primary"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.location.href = `${BASE_URL}/TemplateImport/DeliveryOrder.xlsx`;
-                    }}
-                  />
+
+          {mode === CREATE_ACTION && (
+            <TabPanel value="tab2" sx={{ p: 0 }}>
+              <Grid>
+                <Grid item xs={12} sx={{ p: 3 }}>
+                  <input type="file" name="file" id="excelinput" onChange={changeHandler} ref={refFile} />
+                </Grid>
+                <Grid item xs={12}>
+                  <Grid container direction="row-reverse">
+                    <MuiButton
+                      text="upload"
+                      color="success"
+                      onClick={handleUpload}
+                      disabled={selectedFile ? false : true}
+                    />
+                    <MuiButton
+                      text="excel"
+                      variant="outlined"
+                      color="primary"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.location.href = `${BASE_URL}/TemplateImport/DeliveryOrder.xlsx`;
+                      }}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-            <Box sx={{ mt: 2 }}>
-              <table className="table table-striped" style={{ border: 'solid 1px #dee2e6' }}>
-                <thead>
-                  <tr>
-                    {dataReadFile[0] && <th scope="col">STT</th>}
-                    {dataReadFile[0]?.map((item, index) => {
-                      return (
-                        <th key={`TITLE ${index}`} scope="col">
-                          {item}
-                        </th>
-                      );
-                    })}
-                  </tr>
-                </thead>
-                <tbody>
-                  {dataReadFile?.slice(1).length > 0 ? (
-                    dataReadFile?.slice(1)?.map((item, index) => {
-                      return (
-                        <tr key={`ITEM${index}`}>
-                          <td scope="col">{index + 1}</td>
-                          {item?.map((data, index) => {
-                            return (
-                              <td key={`DATA${index}`} scope="col">
-                                {_.isObject(data) ? moment(data).format('YYYY-MM-DD') : String(data)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      );
-                    })
-                  ) : ExcelHistory.length > 0 ? (
-                    <>
-                      <tr>
-                        <th colSpan={3}>History</th>
-                      </tr>
-                      {ExcelHistory.map((item, index) => {
-                        if (item != '')
-                          return (
-                            <tr key={`ITEM${index}`}>
-                              <td style={{ width: '15%' }}>{index + 1}</td>
-                              <td style={{ width: '20%' }}>{item.split('|')[0]}</td>
-                              <td style={{ width: '65%' }}>{item.split('|')[1]}</td>
-                            </tr>
-                          );
-                      })}
-                    </>
-                  ) : (
+              <Box sx={{ mt: 2 }}>
+                <table className="table table-striped" style={{ border: 'solid 1px #dee2e6' }}>
+                  <thead>
                     <tr>
-                      <td colSpan="100" className="text-center">
-                        <i className="fa fa-database" aria-hidden="true" style={{ fontSize: '35px', opacity: 0.6 }} />
-                        <h3 style={{ opacity: 0.6, marginTop: '5px' }}>No Data</h3>
-                      </td>
+                      {dataReadFile[0] && <th scope="col">STT</th>}
+                      {dataReadFile[0]?.map((item, index) => {
+                        return (
+                          <th key={`TITLE ${index}`} scope="col">
+                            {item}
+                          </th>
+                        );
+                      })}
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </Box>
-          </TabPanel>
+                  </thead>
+                  <tbody>
+                    {dataReadFile?.slice(1).length > 0 ? (
+                      dataReadFile?.slice(1)?.map((item, index) => {
+                        return (
+                          <tr key={`ITEM${index}`}>
+                            <td scope="col">{index + 1}</td>
+                            {item?.map((data, index) => {
+                              return (
+                                <td key={`DATA${index}`} scope="col">
+                                  {_.isObject(data) ? moment(data).format('YYYY-MM-DD') : String(data)}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        );
+                      })
+                    ) : ExcelHistory.length > 0 ? (
+                      <>
+                        <tr>
+                          <th colSpan={3}>History</th>
+                        </tr>
+                        {ExcelHistory.map((item, index) => {
+                          if (item != '')
+                            return (
+                              <tr key={`ITEM${index}`}>
+                                <td style={{ width: '15%' }}>{index + 1}</td>
+                                <td style={{ width: '20%' }}>{item.split('|')[0]}</td>
+                                <td style={{ width: '65%' }}>{item.split('|')[1]}</td>
+                              </tr>
+                            );
+                        })}
+                      </>
+                    ) : (
+                      <tr>
+                        <td colSpan="100" className="text-center">
+                          <i className="fa fa-database" aria-hidden="true" style={{ fontSize: '35px', opacity: 0.6 }} />
+                          <h3 style={{ opacity: 0.6, marginTop: '5px' }}>No Data</h3>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </Box>
+            </TabPanel>
+          )}
         </TabContext>
       </MuiDialog>
     </React.Fragment>

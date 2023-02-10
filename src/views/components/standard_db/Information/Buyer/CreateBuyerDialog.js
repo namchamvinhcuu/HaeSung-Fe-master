@@ -141,7 +141,8 @@ const CreateBuyerDialog = (props) => {
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList onChange={handleChangeTab} aria-label="lab API tabs example">
             <Tab label="Single" value="tab1" />
-            <Tab label="Excel" value="tab2" />
+            {/* <Tab label="Excel" value="tab2" /> */}
+            {mode === CREATE_ACTION && <Tab label="Excel" value="tab2" />}
           </TabList>
         </Box>
         <TabPanel value="tab1">
@@ -214,73 +215,76 @@ const CreateBuyerDialog = (props) => {
             </Grid>
           </form>
         </TabPanel>
-        <TabPanel value="tab2">
-          <Grid>
-            <Grid item xs={12} sx={{ p: 3 }}>
-              <input type="file" name="file" onChange={changeHandler} id="upload-excel" ref={refFile} />
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container direction="row-reverse">
-                <MuiButton
-                  text="upload"
-                  color="success"
-                  onClick={handleUpload}
-                  disabled={selectedFile ? false : true}
-                />
-                <MuiButton
-                  text="excel"
-                  variant="outlined"
-                  color="primary"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.location.href = `${BASE_URL}/TemplateImport/Buyer.xlsx`;
-                  }}
-                />
+
+        {mode === CREATE_ACTION && (
+          <TabPanel value="tab2">
+            <Grid>
+              <Grid item xs={12} sx={{ p: 3 }}>
+                <input type="file" name="file" onChange={changeHandler} id="upload-excel" ref={refFile} />
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container direction="row-reverse">
+                  <MuiButton
+                    text="upload"
+                    color="success"
+                    onClick={handleUpload}
+                    disabled={selectedFile ? false : true}
+                  />
+                  <MuiButton
+                    text="excel"
+                    variant="outlined"
+                    color="primary"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.href = `${BASE_URL}/TemplateImport/Buyer.xlsx`;
+                    }}
+                  />
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-          <Box sx={{ mt: 2 }}>
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                  {dataReadFile[0] && <th scope="col">STT</th>}
-                  {dataReadFile[0]?.map((item, index) => {
-                    return (
-                      <th key={`TITLE ${index}`} scope="col">
-                        {item}
-                      </th>
-                    );
-                  })}
-                </tr>
-              </thead>
-              <tbody>
-                {dataReadFile?.slice(1).length > 0 ? (
-                  dataReadFile?.slice(1)?.map((item, index) => {
-                    return (
-                      <tr key={`ITEM${index}`}>
-                        <td scope="col">{index + 1}</td>
-                        {item?.map((data, index) => {
-                          return (
-                            <td key={`DATA${index}`} scope="col">
-                              {String(data)}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    );
-                  })
-                ) : (
+            <Box sx={{ mt: 2 }}>
+              <table className="table table-striped">
+                <thead>
                   <tr>
-                    <td colSpan="100" className="text-center">
-                      <i className="fa fa-database" aria-hidden="true" style={{ fontSize: '35px', opacity: 0.6 }} />
-                      <h3 style={{ opacity: 0.6, marginTop: '5px' }}>No Data</h3>
-                    </td>
+                    {dataReadFile[0] && <th scope="col">STT</th>}
+                    {dataReadFile[0]?.map((item, index) => {
+                      return (
+                        <th key={`TITLE ${index}`} scope="col">
+                          {item}
+                        </th>
+                      );
+                    })}
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </Box>
-        </TabPanel>
+                </thead>
+                <tbody>
+                  {dataReadFile?.slice(1).length > 0 ? (
+                    dataReadFile?.slice(1)?.map((item, index) => {
+                      return (
+                        <tr key={`ITEM${index}`}>
+                          <td scope="col">{index + 1}</td>
+                          {item?.map((data, index) => {
+                            return (
+                              <td key={`DATA${index}`} scope="col">
+                                {String(data)}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan="100" className="text-center">
+                        <i className="fa fa-database" aria-hidden="true" style={{ fontSize: '35px', opacity: 0.6 }} />
+                        <h3 style={{ opacity: 0.6, marginTop: '5px' }}>No Data</h3>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </Box>
+          </TabPanel>
+        )}
       </TabContext>
     </MuiDialog>
   );

@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "clean": "rimraf build",
-    "build": "set NODE_OPTIONS=--openssl-legacy-provider && npm run clean  && webpack --mode production && npm run copy  ",
-    "build2": "npm run clean  && webpack --mode production && npm run copy ",
+    "build": "npm run clean  && webpack --mode production && npm run copy",
     "copy": "@powershell copy 'web.config' 'public/'",
     "start": " webpack-dev-server --mode development",
     "dev2": "set NODE_OPTIONS=--openssl-legacy-provider && webpack-dev-server --mode development"
