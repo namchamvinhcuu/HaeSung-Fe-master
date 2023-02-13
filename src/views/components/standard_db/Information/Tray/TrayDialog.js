@@ -114,7 +114,7 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
 
   const changeHandler = (event) => {
     setSelectedFile(event.target.files[0]);
-    readXlsxFile(event.target.files[0]).then(function (data) {
+    readXlsxFile(event.target.files[0]).then((data) => {
       setDataReadFile(data);
     });
   };

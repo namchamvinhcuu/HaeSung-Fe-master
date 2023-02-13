@@ -75,11 +75,7 @@ const FGSOMaster = (props) => {
   });
 
   const toggleDialog = (mode) => {
-    if (mode === CREATE_ACTION) {
-      setMode(CREATE_ACTION);
-    } else {
-      setMode(UPDATE_ACTION);
-    }
+    setMode(mode === CREATE_ACTION ? CREATE_ACTION : UPDATE_ACTION);
     setIsOpenDialog(!isOpenDialog);
   };
 
@@ -115,15 +111,18 @@ const FGSOMaster = (props) => {
   };
 
   const handleRowSelection = (arrIds) => {
-    const rowSelected = fgSOState.data.filter(function (item) {
-      return item.FGsoId === arrIds[0];
-    });
+    // const rowSelected = fgSOState.data.filter(function (item) {
+    //   return item.FGsoId === arrIds[0];
+    // });
 
-    if (rowSelected && rowSelected.length > 0) {
-      setSelectedRow({ ...rowSelected[0] });
-    } else {
-      setSelectedRow({ ...FGSOMasterDto });
-    }
+    // if (rowSelected && rowSelected.length > 0) {
+    //   setSelectedRow({ ...rowSelected[0] });
+    // } else {
+    //   setSelectedRow({ ...FGSOMasterDto });
+    // }
+
+    const rowSelected = deliveryOrderState.data.find((item) => item.FGsoId === arrIds[0]);
+    setSelectedRow(rowSelected ? { ...rowSelected } : { ...FGSOMasterDto });
   };
 
   const handleDelete = async (materialSOMaster) => {
@@ -212,7 +211,6 @@ const FGSOMaster = (props) => {
 
   const columns = [
     // { field: 'FGsoId', headerName: '', hide: true },
-
     {
       field: 'id',
       headerName: '',
@@ -515,9 +513,9 @@ const Material_Info = ({ isShowing, hide, FGsoId }) => {
   const componentPringtRef = React.useRef();
   const intl = useIntl();
 
-  const DialogTransition = React.forwardRef(function DialogTransition(props, ref) {
-    return <Zoom direction="up" ref={ref} {...props} />;
-  });
+  // const DialogTransition = React.forwardRef(function DialogTransition(props, ref) {
+  //   return <Zoom direction="up" ref={ref} {...props} />;
+  // });
 
   const style = {
     titleCell: {
@@ -548,9 +546,11 @@ const Material_Info = ({ isShowing, hide, FGsoId }) => {
       padding: '10px',
     },
   };
+
   const handleCloseDialog = () => {
     hide();
   };
+
   return (
     <MuiDialog
       maxWidth="md"
@@ -743,6 +743,7 @@ const Material_Info = ({ isShowing, hide, FGsoId }) => {
     </MuiDialog>
   );
 };
+
 User_Operations.toString = function () {
   return 'User_Operations';
 };
