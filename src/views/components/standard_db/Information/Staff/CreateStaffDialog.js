@@ -153,8 +153,8 @@ const CreateStaffDialog = (props) => {
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList onChange={handleChangeTab}>
             <Tab label="Single" value="tab1" />
-            {/* <Tab label="Excel" value="tab2" /> */}
-            {mode === CREATE_ACTION && <Tab label="Excel" value="tab2" />}
+            <Tab label="Excel" value="tab2" />
+            {/* {mode === CREATE_ACTION && <Tab label="Excel" value="tab2" />} */}
           </TabList>
         </Box>
         <TabPanel value="tab1">
@@ -215,64 +215,64 @@ const CreateStaffDialog = (props) => {
             </Grid>
           </form>
         </TabPanel>
-        {mode === CREATE_ACTION && (
-          <TabPanel value="tab2">
-            <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-              <Grid item xs={6} sx={{ p: 3 }}>
-                <input type="file" name="file" id="excelinput" required onChange={changeHandler} ref={refFile} />
-              </Grid>
-              <Grid item xs={6}>
-                <Grid container direction="row-reverse">
-                  <MuiButton text="upload" color="success" onClick={handleUpload} />
-                  <MuiButton
-                    text="excel"
-                    variant="outlined"
-                    color="primary"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.location.href = `${BASE_URL}/TemplateImport/Staff.xlsx`;
-                    }}
-                  />
-                </Grid>
-              </Grid>
-              <Grid item xs={12}>
-                <div className="row">
-                  <div className="col-sm-12 mt-2">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th scope="col">STT</th>
-                          <th scope="col">Staff Code</th>
-                          <th scope="col">Staff Name</th>
-                          <th scope="col">Contact</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {/* <OutTable data={rowsExcel} columns={columnExcel} tableClassName="ExcelTable" tableHeaderRowClass="heading" /> */}
-                        {rowsExcel?.length ? (
-                          rowsExcel.map((value, index) => (
-                            <tr key={index}>
-                              <th scope="row">{index + 1}</th>
-                              <td>{value[0]}</td>
-                              <td>{value[1]}</td>
-                              <td>{value[2]}</td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan="5" className="text-center">
-                              No data
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+        {/* {mode === CREATE_ACTION && ( */}
+        <TabPanel value="tab2">
+          <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+            <Grid item xs={6} sx={{ p: 3 }}>
+              <input type="file" name="file" id="excelinput" required onChange={changeHandler} ref={refFile} />
+            </Grid>
+            <Grid item xs={6}>
+              <Grid container direction="row-reverse">
+                <MuiButton text="upload" color="success" onClick={handleUpload} />
+                <MuiButton
+                  text="excel"
+                  variant="outlined"
+                  color="primary"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href = `${BASE_URL}/TemplateImport/Staff.xlsx`;
+                  }}
+                />
               </Grid>
             </Grid>
-          </TabPanel>
-        )}
+            <Grid item xs={12}>
+              <div className="row">
+                <div className="col-sm-12 mt-2">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Staff Code</th>
+                        <th scope="col">Staff Name</th>
+                        <th scope="col">Contact</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {/* <OutTable data={rowsExcel} columns={columnExcel} tableClassName="ExcelTable" tableHeaderRowClass="heading" /> */}
+                      {rowsExcel?.length ? (
+                        rowsExcel.map((value, index) => (
+                          <tr key={index}>
+                            <th scope="row">{index + 1}</th>
+                            <td>{value[0]}</td>
+                            <td>{value[1]}</td>
+                            <td>{value[2]}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="5" className="text-center">
+                            No data
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </Grid>
+          </Grid>
+        </TabPanel>
+        {/* )} */}
       </TabContext>
     </MuiDialog>
   );
