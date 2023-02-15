@@ -139,12 +139,15 @@
     "userName": "Tài khoản",
     "userPassword": "Mật khẩu",
     "newPassword": "Mật khẩu mới",
+    "confirmPassword": "Nhập lại mật khẩu",
     "not_found": "User: không tồn tại",
     "existed": "User: đã được tạo",
     "password_invalid": "User: mật khẩu không hợp lệ",
     "userName_required": "Tên user không được để trống",
     "userPassword_required": "Mật khẩu không được để trống",
     "newPassword_required": "Mật khẩu mới không được để trống",
+    "confirmPassword_required": "Mật khẩu nhập lại không được để trống",
+    "confirmPassword_notmatch": "Mật khẩu nhập lại không đúng",
     "roleName": "Role"
   },
   "esl": {

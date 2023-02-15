@@ -24,6 +24,11 @@ import { withTranslation } from 'react-i18next';
 import NotifyUnread from './NotifyUnread';
 import { ChangeLanguage } from '@containers';
 import { loginService, documentService } from '@services';
+import { useState } from 'react';
+import { Abc, Visibility, VisibilityOff } from '@mui/icons-material';
+import { TextField, InputAdornment, IconButton } from '@mui/material';
+
+import UserChangePassDialog from '../standard_db/Configuration/User/UserChangePassDialog';
 
 const styles = (theme) => ({
   tabs: {
@@ -68,9 +73,13 @@ class NavBar extends Component {
       isShowing: false,
       pdfURL: '',
       title_guide: '',
+
+      isShowingChangePass: false,
+
       showNotifyPopup: false,
       onlineUsers: [],
     };
+
     this.connection = null;
     this._isMounted = false;
 
@@ -264,6 +273,14 @@ class NavBar extends Component {
     }
   };
 
+  handleChangePass = async (e) => {
+    e.preventDefault();
+
+    this.setState({
+      isShowingChangePass: true,
+    });
+  };
+
   // handleLang(e, code) {
   //   e.preventDefault();
   //   var arr = code.split('-')
@@ -275,6 +292,10 @@ class NavBar extends Component {
 
   toggle() {
     this.setState({ isShowing: !this.state.isShowing });
+  }
+
+  toggleChangePass() {
+    this.setState({ isShowingChangePass: !this.state.isShowingChangePass });
   }
 
   forceLogout = async () => {
@@ -479,6 +500,18 @@ class NavBar extends Component {
             } */}
 
             <li className="nav-item">
+              <a
+                className="nav-link"
+                onClick={this.handleChangePass.bind(this)}
+                href="#"
+                role="button"
+                title="change password"
+              >
+                <i className="fa fa-user"></i>
+              </a>
+            </li>
+
+            <li className="nav-item">
               <a className="nav-link" onClick={this.handleGuide.bind(this)} href="#" role="button" title="help">
                 <i className="fa fa-question"></i>
               </a>
@@ -530,7 +563,6 @@ class NavBar extends Component {
             </li>
           </ul>
         </nav>
-
         {this.state.isShowing && (
           <PDFModal
             isShowing={true}
@@ -539,8 +571,9 @@ class NavBar extends Component {
             title={this.state.title_guide}
           />
         )}
-
         {this.state.showNotifyPopup && <NotifyUnread onClose={this.handleNotifyUnreadClosed.bind(this)} />}
+
+        <UserChangePassDialog isOpen={this.state.isShowingChangePass} onClose={this.toggleChangePass.bind(this)} />
       </>
     );
   }
