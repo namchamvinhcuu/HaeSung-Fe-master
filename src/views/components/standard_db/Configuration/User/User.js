@@ -64,7 +64,11 @@ export default function User() {
       renderCell: (params) => {
         return (
           <Grid container spacing={1} alignItems="center" justifyContent="center">
-            <Grid item xs={RoleArr.includes('ROOT') ? 4 : 6} style={{ textAlign: 'center' }}>
+            <Grid
+              item
+              xs={RoleArr.includes('ROOT') || RoleArr.includes('ADMIN') ? 4 : 6}
+              style={{ textAlign: 'center' }}
+            >
               <IconButton
                 aria-label="delete"
                 color="error"
@@ -75,7 +79,11 @@ export default function User() {
                 <DeleteIcon fontSize="inherit" />
               </IconButton>
             </Grid>
-            <Grid item xs={RoleArr.includes('ROOT') ? 4 : 6} style={{ textAlign: 'center' }}>
+            <Grid
+              item
+              xs={RoleArr.includes('ROOT') || RoleArr.includes('ADMIN') ? 4 : 6}
+              style={{ textAlign: 'center' }}
+            >
               <IconButton
                 aria-label="edit"
                 color="warning"
@@ -86,7 +94,7 @@ export default function User() {
                 <EditIcon fontSize="inherit" />
               </IconButton>
             </Grid>
-            {RoleArr.includes('ROOT') && (
+            {(RoleArr.includes('ROOT') || RoleArr.includes('ADMIN')) && (
               <Grid item xs={4} style={{ textAlign: 'center' }}>
                 <IconButton
                   aria-label="edit"
