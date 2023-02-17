@@ -121,7 +121,7 @@ const FGSOMaster = (props) => {
     //   setSelectedRow({ ...FGSOMasterDto });
     // }
 
-    const rowSelected = deliveryOrderState.data.find((item) => item.FGsoId === arrIds[0]);
+    const rowSelected = fgSOState.data.find((item) => item.FGsoId === arrIds[0]);
     setSelectedRow(rowSelected ? { ...rowSelected } : { ...FGSOMasterDto });
   };
 
