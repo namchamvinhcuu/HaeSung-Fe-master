@@ -121,8 +121,8 @@ const FGSOMaster = (props) => {
     //   setSelectedRow({ ...FGSOMasterDto });
     // }
 
-    const rowSelected = deliveryOrderState.data.find((item) => item.FGsoId === arrIds[0]);
-    setSelectedRow(rowSelected ? { ...rowSelected } : { ...FGSOMasterDto });
+    const rowSelected = fgSOState.data.find((item) => item.FGsoId === arrIds[0]);
+    setSelectedRow(rowSelected ? { ...rowSelected } : { ...FGSOMasgitterDto });
   };
 
   const handleDelete = async (materialSOMaster) => {
