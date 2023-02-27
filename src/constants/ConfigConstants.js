@@ -1,12 +1,12 @@
 // export const API_URL = 'http://baseapi.autonsi.com/api/';
 // export const BASE_URL = 'http://baseapi.autonsi.com';
 
-// export const API_URL = 'https://localhost:44301/api/';
-// export const BASE_URL = 'https://localhost:44301';
+export const API_URL = 'https://localhost:44301/api/';
+export const BASE_URL = 'https://localhost:44301';
 
-// //http://localhost:81/index.html
-export const API_URL = 'http://192.168.1.35:81/api/';
-export const BASE_URL = 'http://192.168.1.35:81';
+////http://localhost:81/index.html
+// export const API_URL = 'http://192.168.1.35:81/api/';
+// export const BASE_URL = 'http://192.168.1.35:81';
 
 export const LOGIN_URL = '/api/login/checklogin';
 export const REFRESH_TOKEN_URL = '/api/refreshtoken';
