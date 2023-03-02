@@ -260,6 +260,7 @@ export default function Tray() {
       <Grid container direction="row" justifyContent="space-between" alignItems="width-end">
         <Grid item xs={3}>
           <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mt: 1 }} />
+          <MuiButton text="excel" color="warning" onClick={trayService.downloadExcel} sx={{ mt: 1 }} />
           <Button
             disabled={rowSelected.length > 0 ? false : true}
             variant="contained"

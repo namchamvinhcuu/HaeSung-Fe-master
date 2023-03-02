@@ -270,6 +270,7 @@ const Supplier = (props) => {
       <Grid container spacing={2} direction="row" justifyContent="space-between" alignItems="flex-end">
         <Grid item xs={5}>
           <MuiButton text="create" color="success" onClick={toggleCreateDialog} />
+          <MuiButton text="excel" color="warning" onClick={supplierService.downloadExcel} sx={{ mt: 1 }} />
         </Grid>
         <Grid item xs>
           <MuiSearchField
