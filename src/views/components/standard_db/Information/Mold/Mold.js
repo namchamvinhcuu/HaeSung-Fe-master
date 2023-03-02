@@ -287,6 +287,7 @@ export default function Mold() {
       <Grid container direction="row" justifyContent="space-between" alignItems="width-end">
         <Grid item xs={3}>
           <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mt: 1 }} />
+          <MuiButton text="excel" color="warning" onClick={moldService.downloadExcel} sx={{ mt: 1 }} />
         </Grid>
         <Grid item xs>
           <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
