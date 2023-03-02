@@ -229,6 +229,7 @@ const StandardQC = (props) => {
       <Grid container direction="row" justifyContent="space-between" alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
         <Grid item xs={6}>
           <MuiButton text="create" color="success" onClick={toggleCreateDialog} />
+          <MuiButton text="excel" color="warning" onClick={standardQCService.downloadExcel} sx={{ mt: 1 }} />
         </Grid>
         <Grid item>
           <MuiSearchField

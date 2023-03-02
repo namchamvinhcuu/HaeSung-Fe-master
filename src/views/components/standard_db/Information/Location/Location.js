@@ -248,6 +248,7 @@ const Location = (props) => {
       <Grid container direction="row" justifyContent="space-between" alignItems="width-end">
         <Grid item xs={3}>
           <MuiButton text="create" color="success" onClick={toggleCreateDialog} />
+          <MuiButton text="excel" color="warning" onClick={locationService.downloadExcel} sx={{ mt: 1 }} />
         </Grid>
         <Grid item xs>
           <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">

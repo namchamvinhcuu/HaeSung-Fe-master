@@ -287,6 +287,7 @@ const QCMaster = (props) => {
       <Grid container direction="row" justifyContent="space-between" alignItems="width-end" sx={{ pr: 1 }}>
         <Grid item xs={3}>
           <MuiButton text="create" color="success" onClick={toggleCreateDialog} />
+          <MuiButton text="excel" color="warning" onClick={qcMasterService.downloadExcel} sx={{ mt: 1 }} />
         </Grid>
         <Grid item xs>
           <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
