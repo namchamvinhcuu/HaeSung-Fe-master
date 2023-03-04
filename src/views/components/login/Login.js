@@ -28,6 +28,7 @@ import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import { loginService, versionAppService } from '@services';
 import store from '@states/store';
 import { ErrorAlert, RemoveLocalStorage, SetLocalStorage } from '@utils';
+import { display } from '@mui/system';
 
 const theme = createTheme();
 
@@ -47,6 +48,17 @@ const Login = (props) => {
     },
   ];
 
+  const appList = [
+    {
+      id_app: 1,
+      name_file: 'Hanlim.apk',
+    },
+    {
+      id_app: 2,
+      name_file: 'HanlimDisplay.apk',
+    },
+  ];
+
   // const [languageSelected, setLanguageSelected] = useState(null)
 
   const [errorMessages, setErrorMessages] = useState(null);
@@ -59,7 +71,9 @@ const Login = (props) => {
   };
   const { values, setValues, handleInputChange } = useFormCustom(initModal);
 
-  const [buttonState, setButtonState] = React.useState('loaded');
+  const [btnDownloadState, setBtnDownloadState] = useState('loaded');
+  const [btnDownloadDisplayState, setBtnDownloadDisplayState] = useState('loaded');
+
   const dataModalRef = useRef(initModal);
 
   const [isSubmit, setIsSubmit] = useState(false);
@@ -72,12 +86,13 @@ const Login = (props) => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  const handleDownload = async (e) => {
+
+  const handleDownload = async (appInfo) => {
     try {
-      setButtonState('loading');
+      appInfo.id_app === 1 ? setBtnDownloadState('loading') : setBtnDownloadDisplayState('loading');
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      await versionAppService.downloadApp();
-      setButtonState('loaded');
+      await versionAppService.downloadApp(appInfo);
+      appInfo.id_app === 1 ? setBtnDownloadState('loaded') : setBtnDownloadDisplayState('loaded');
     } catch (error) {
       console.log(`ERROR: ${error}`);
     }
@@ -287,25 +302,55 @@ const Login = (props) => {
             {errorMessages && (
               <p style={{ color: 'red', textAlign: 'center' }}>{<FormattedMessage id={errorMessages} />}</p>
             )}
-            <Box>
-              <button
-                className="btn btn-success"
-                style={{ width: '100%', marginTop: '25px' }}
-                type="submit"
-                onClick={() => handleDownload()}
-                disabled={buttonState === 'loading'}
-              >
-                {buttonState === 'loaded' ? props.children : 'Loading...'}
-                <span className="d-block" aria-hidden="true">
-                  <div className="d-flex" style={{ color: 'white' }}>
-                    <PhoneAndroidIcon />
 
-                    <div className="d-block">
-                      <small style={{ opacity: 0.9, fontSize: '18px' }}>Download App</small>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 2,
+                alignItems: 'center',
+              }}
+            >
+              <Box>
+                <button
+                  className="btn btn-success"
+                  style={{ width: '100%', marginTop: '25px' }}
+                  type="submit"
+                  onClick={() => handleDownload(appList[0])}
+                  disabled={btnDownloadState === 'loading'}
+                >
+                  {btnDownloadState === 'loaded' ? props.children : 'Loading...'}
+                  <span className="d-block" aria-hidden="true">
+                    <div className="d-flex" style={{ color: 'white' }}>
+                      <PhoneAndroidIcon />
+
+                      <div className="d-block">
+                        <small style={{ opacity: 0.9, fontSize: '18px' }}>Download App</small>
+                      </div>
                     </div>
-                  </div>
-                </span>
-              </button>
+                  </span>
+                </button>
+              </Box>
+
+              <Box>
+                <button
+                  className="btn btn-info"
+                  style={{ width: '100%', marginTop: '25px' }}
+                  type="submit"
+                  onClick={() => handleDownload(appList[1])}
+                  disabled={btnDownloadDisplayState === 'loading'}
+                >
+                  {btnDownloadDisplayState === 'loaded' ? props.children : 'Loading...'}
+                  <span className="d-block" aria-hidden="true">
+                    <div className="d-flex" style={{ color: 'white' }}>
+                      <PhoneAndroidIcon />
+
+                      <div className="d-block">
+                        <small style={{ opacity: 0.9, fontSize: '18px' }}>Download Display App</small>
+                      </div>
+                    </div>
+                  </span>
+                </button>
+              </Box>
             </Box>
           </Box>
         </Grid>

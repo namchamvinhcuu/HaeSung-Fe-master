@@ -22,7 +22,7 @@ const modify = async (formData) => {
   } catch (error) {}
 };
 
-const downloadApp = async () => {
+const downloadApp = async (params) => {
   try {
     const token = GetLocalStorage(ConfigConstants.TOKEN_ACCESS);
     const options = {
@@ -36,20 +36,22 @@ const downloadApp = async () => {
       },
     };
 
-    fetch(`${ConfigConstants.API_URL}VersionApp/download-versionApp`, options).then((response) => {
-      response.blob().then((blob) => {
-        let url = URL.createObjectURL(blob);
-        let downloadLink = document.createElement('a');
-        downloadLink.href = url;
-        downloadLink.download = 'Hanlim.apk';
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
+    fetch(`${ConfigConstants.API_URL}VersionApp/download-versionApp?idApp=${params.id_app}`, options).then(
+      (response) => {
+        response.blob().then((blob) => {
+          let url = URL.createObjectURL(blob);
+          let downloadLink = document.createElement('a');
+          downloadLink.href = url;
+          downloadLink.download = `${params.name_file}`;
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
 
-        document.body.removeChild(downloadLink);
-        URL.revokeObjectURL(url);
-      });
-      //window.location.href = response.url;
-    });
+          document.body.removeChild(downloadLink);
+          URL.revokeObjectURL(url);
+        });
+        //window.location.href = response.url;
+      }
+    );
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }
