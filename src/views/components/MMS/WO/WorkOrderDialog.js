@@ -128,17 +128,8 @@ const WorkOrderDialog = (props) => {
     LineId: yup
       .number()
       .nullable()
-      .when('MaterialId', (val) => {
-        if (MaterialType === 'BARE MATERIAL') {
-          return yup
-            .number()
-            .nullable()
-            .required(intl.formatMessage({ id: 'general.field_required' }))
-            .min(1, intl.formatMessage({ id: 'general.field_required' }));
-        } else {
-          return yup.number().notRequired();
-        }
-      }),
+      .required(intl.formatMessage({ id: 'general.field_required' }))
+      .min(1, intl.formatMessage({ id: 'general.field_required' })),
     BomId: yup
       .number()
       .nullable()

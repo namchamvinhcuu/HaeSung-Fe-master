@@ -1,4 +1,4 @@
-import { useModal } from '@basesShared';
+import { useModal, useModal2 } from '@basesShared';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
@@ -8,7 +8,7 @@ import AndroidIcon from '@mui/icons-material/Android';
 import DownloadIcon from '@mui/icons-material/Download';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Box, Button, Card, CardActions, Collapse, Divider, IconButton, TextField } from '@mui/material';
+import { Box, Button, Card, CardActions, Collapse, Divider, IconButton, TextField, Grid } from '@mui/material';
 import { versionAppService } from '@services';
 import { ErrorAlert, SuccessAlert } from '@utils';
 import React, { useEffect, useRef, useState } from 'react';
@@ -20,17 +20,17 @@ const VersionApp = ({ t, ...props }) => {
   let isRendered = useRef(true);
   const intl = useIntl();
   const { isShowing, toggle } = useModal();
+  const { isShowing2, toggle2 } = useModal2();
 
   const versionAppDto = {
     id_app: 0,
     app_version: 0,
+    name_file: '',
     url: '',
     file: '',
   };
 
-  const [info, setInfo] = useState({
-    ...versionAppDto,
-  });
+  const [appList, setAppList] = useState([versionAppDto]);
 
   const [data, setData] = useState([versionAppDto]);
   const [error, setError] = useState({});
@@ -51,9 +51,11 @@ const VersionApp = ({ t, ...props }) => {
     const res = await versionAppService.getListApkApp();
     if (res && isRendered)
       if (res.HttpResponseCode === 200 && res.Data) {
-        setInfo({ ...res.Data });
+        // data: !res.Data ? [] : [...res.Data],
+
+        setAppList([...res.Data]);
       } else {
-        setInfo({});
+        setAppList({});
       }
   };
 
@@ -68,15 +70,15 @@ const VersionApp = ({ t, ...props }) => {
     setSelectedFile(null);
   };
 
-  const handleDownload = async (e) => {
+  const handleDownload = async (appInfo) => {
     try {
-      await versionAppService.downloadApp();
+      await versionAppService.downloadApp(appInfo);
     } catch (error) {
       console.log(`ERROR: ${error}`);
     }
   };
 
-  const handleUpload = async () => {
+  const handleUpload = async (appInfo) => {
     if (!selectedFile) {
       return ErrorAlert('Chưa chọn file update');
     }
@@ -84,14 +86,15 @@ const VersionApp = ({ t, ...props }) => {
     if (data.app_version && data.url) {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      formData.append('id_app', info.id_app);
+      formData.append('id_app', appInfo.id_app);
       formData.append('app_version', data.app_version);
       formData.append('url', data.url);
 
       const res = await versionAppService.modify(formData);
       if (res.HttpResponseCode === 200) {
+        console.log('HttpResponseCode === 200');
         SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-        setInfo({ ...res.Data });
+        setAppList([...res.Data]);
         await resetInputFile();
       } else {
         ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
@@ -107,83 +110,107 @@ const VersionApp = ({ t, ...props }) => {
 
   return (
     <>
-      <Box sx={{ pb: 3, height: 700, width: '100%' }}>
-        <div>
-          <Card sx={{ margin: 'auto', width: 700, textAlign: 'center', mt: 5 }}>
-            {info != null ? (
-              <>
-                <AndroidIcon sx={{ fontSize: 180, margin: 'auto', display: 'block' }} />
-                <p style={{ fontWeight: 600, fontSize: '28px' }}> {info.name_file}</p>
-                <p>Version: {info.app_version}</p>
-                <p>Date: {info.change_date}</p>
-                <Button variant="contained" sx={{ m: 1 }} startIcon={<DownloadIcon />} onClick={() => handleDownload()}>
-                  {t('Download')}
-                </Button>
-              </>
-            ) : null}
-            <CardActions disableSpacing>
-              <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggle} sx={{ mr: 2 }}>
-                <SettingsIcon />
-              </IconButton>
-            </CardActions>
-            <Collapse in={isShowing} timeout="auto" unmountOnExit sx={{ pr: 3, pl: 3 }}>
-              <Divider light style={{ marginBottom: '20px' }} />
-              <TextField
-                fullWidth
-                type="text"
-                margin="dense"
-                label="Version"
-                onChange={(e) => {
-                  setData({ ...data, app_version: e.target.value });
-                  setError({
-                    ...error,
-                    app_version:
-                      e.target.value == ''
-                        ? 'This field is required.'
-                        : e.target.value.length > 8
-                        ? 'Max length is 8 letter.'
-                        : '',
-                  });
-                }}
-                error={error.app_version ? true : false}
-                helperText={error.app_version ? error.app_version : ''}
-              />
-              <TextField
-                fullWidth
-                type="text"
-                margin="dense"
-                label="Url"
-                onChange={(e) => {
-                  setData({ ...data, url: e.target.value });
-                  setError({
-                    ...error,
-                    url: e.target.value == '' ? 'This field is required.' : '',
-                  });
-                }}
-                error={error.url ? true : false}
-                helperText={error.url ? error.url : ''}
-              />
-              <input
-                type="file"
-                name="file"
-                key={inputKey || ''}
-                onChange={changeHandler}
-                style={{ float: 'left', marginTop: '20px' }}
-              />
-              <div style={{ marginBottom: '20px' }}>
-                <Button
-                  variant="contained"
-                  sx={{ mt: 3, width: '100%', height: '56px' }}
-                  startIcon={<FileUploadIcon />}
-                  onClick={() => handleUpload()}
-                >
-                  {t('Upload')}
-                </Button>
-              </div>
-            </Collapse>
-          </Card>
-        </div>
-      </Box>
+      <Grid container spacing={1}>
+        {appList.map((appInfo) => {
+          return (
+            <Grid item lg={6} md={12} key={appInfo.id_app}>
+              <Box sx={{ height: 700, width: '100%' }}>
+                <div>
+                  <Card sx={{ margin: 'auto', width: 600, textAlign: 'center', mt: 3 }}>
+                    {appInfo != null ? (
+                      <>
+                        <AndroidIcon sx={{ fontSize: 180, margin: 'auto', display: 'block' }} />
+                        <p style={{ fontWeight: 600, fontSize: '28px' }}> {appInfo.name_file}</p>
+                        <p>Version: {appInfo.app_version}</p>
+                        <p>Date: {appInfo.change_date}</p>
+                        <Button
+                          variant="contained"
+                          sx={{ m: 1 }}
+                          startIcon={<DownloadIcon />}
+                          onClick={() => handleDownload(appInfo)}
+                        >
+                          {t('Download')}
+                        </Button>
+                      </>
+                    ) : null}
+                    <CardActions disableSpacing>
+                      <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        onClick={appInfo.id_app === 1 ? toggle : toggle2}
+                        sx={{ mr: 2 }}
+                      >
+                        <SettingsIcon />
+                      </IconButton>
+                    </CardActions>
+                    <Collapse
+                      in={appInfo.id_app === 1 ? isShowing : isShowing2}
+                      timeout="auto"
+                      unmountOnExit
+                      sx={{ pr: 3, pl: 3 }}
+                    >
+                      <Divider light style={{ marginBottom: '20px' }} />
+                      <TextField
+                        fullWidth
+                        type="text"
+                        margin="dense"
+                        label="Version"
+                        onChange={(e) => {
+                          setData({ ...data, app_version: e.target.value });
+                          setError({
+                            ...error,
+                            app_version:
+                              e.target.value == ''
+                                ? 'This field is required.'
+                                : e.target.value.length > 8
+                                ? 'Max length is 8 letter.'
+                                : '',
+                          });
+                        }}
+                        error={error.app_version ? true : false}
+                        helperText={error.app_version ? error.app_version : ''}
+                      />
+                      <TextField
+                        fullWidth
+                        type="text"
+                        margin="dense"
+                        label="Url"
+                        onChange={(e) => {
+                          setData({ ...data, url: e.target.value });
+                          setError({
+                            ...error,
+                            url: e.target.value == '' ? 'This field is required.' : '',
+                          });
+                        }}
+                        error={error.url ? true : false}
+                        helperText={error.url ? error.url : ''}
+                      />
+                      <input
+                        type="file"
+                        name="file"
+                        key={inputKey || ''}
+                        onChange={changeHandler}
+                        style={{ float: 'left', marginTop: '20px' }}
+                      />
+                      <div style={{ marginBottom: '20px' }}>
+                        <Button
+                          variant="contained"
+                          sx={{ mt: 3, width: '100%', height: '56px' }}
+                          startIcon={<FileUploadIcon />}
+                          onClick={() => handleUpload(appInfo)}
+                        >
+                          {t('Upload')}
+                        </Button>
+                      </div>
+                    </Collapse>
+                  </Card>
+                </div>
+              </Box>
+            </Grid>
+          );
+        })}
+      </Grid>
     </>
   );
 };
