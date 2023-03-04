@@ -22,6 +22,8 @@ const CreateDialog = (props) => {
   const [dialogState, setDialogState] = useState({
     isSubmit: false,
   });
+
+  const pattern3DigisAfterComma = /^\d+(\.\d{0,3})?$/;
   const schemaY = yup.object().shape({
     MaterialCode: yup
       .string()
@@ -37,7 +39,15 @@ const CreateDialog = (props) => {
       .min(1, intl.formatMessage({ id: 'general.field_required' }))
       .required(intl.formatMessage({ id: 'general.field_required' })),
     Description: yup.string().trim(),
-    Inch: yup.number().test('is-decimal', 'Invalid decimal', (value) => (value + '').match(/^\d*\.{1}\d*$/)),
+    Inch: yup
+      .number()
+      // .test('is-decimal', 'Invalid decimal', (value) => (value + '').match(/^\d+(\.\d{0,3})?$/)),
+      .test('is-decimal', 'The amount should be a decimal with maximum two digits after comma', (val) => {
+        if (val) {
+          return pattern3DigisAfterComma.test(val);
+        }
+        return true;
+      }),
     QCMasterId: yup
       .number()
       .min(1, intl.formatMessage({ id: 'general.field_required' }))
