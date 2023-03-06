@@ -105,7 +105,7 @@ const TrayDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
     },
     IsReuse: {
       prop: 'IsReuse',
-      type: Boolean,
+      type: String,
     },
   };
   const handleChangeTab = (event, newValue) => {

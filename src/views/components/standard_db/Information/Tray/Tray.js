@@ -258,7 +258,7 @@ export default function Tray() {
   return (
     <React.Fragment>
       <Grid container direction="row" justifyContent="space-between" alignItems="width-end">
-        <Grid item xs={3}>
+        <Grid item xs={6}>
           <MuiButton text="create" color="success" onClick={handleAdd} sx={{ mt: 1 }} />
           <MuiButton text="excel" color="warning" onClick={trayService.downloadExcel} sx={{ mt: 1 }} />
           <Button
