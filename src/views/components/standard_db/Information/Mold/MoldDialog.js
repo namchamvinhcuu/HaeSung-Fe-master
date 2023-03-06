@@ -33,6 +33,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
   const refFile = useRef();
   const [value, setValue] = React.useState('tab1');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [ExcelHistory, setExcelHistory] = useState([]);
 
   const schemay = yup.object().shape({
     MoldSerial: yup.string().required(intl.formatMessage({ id: 'mold.MoldSerial_required' })),
@@ -100,6 +101,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
   const handleCloseDialog = () => {
     resetForm();
     onClose();
+    setExcelHistory([]);
   };
 
   const onSubmit = async (data) => {
@@ -167,7 +169,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
     },
     'ETA DATE': {
       prop: 'ETADate',
-      type: String,
+      type: Date,
       required: true,
     },
     'MACHINE TON': {
@@ -175,14 +177,14 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
       type: String,
       required: true,
     },
-    CABITY: {
+    CAVITY: {
       prop: 'Cabity',
       type: Number,
       required: true,
     },
     'ETA STATUS': {
       prop: 'ETAStatus',
-      type: Boolean,
+      type: String,
       required: true,
     },
     REMARK: {
@@ -208,21 +210,29 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
 
   const handleSubmitFile = async (rows) => {
     const res = await moldService.createMoldByExcel(rows);
-    if (res.HttpResponseCode === 200) {
-      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    setExcelHistory([]);
+    if (res.ResponseMessage !== '') {
       fetchData();
-      handleCloseDialog();
+      setExcelHistory(res.ResponseMessage.split(','));
+      // SuccessAlert(intl.formatMessage({ id: 'general.success' }));
     } else {
-      if (res.HttpResponseCode === 400 && res.ResponseMessage === 'general.duplicated_code') {
-        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-      }
-      if (res.HttpResponseCode === 400 && res.ResponseMessage === 'mold.duplicated_serial') {
-        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-      }
-      if (res.HttpResponseCode === 400 && res.ResponseMessage === '') {
-        ErrorAlert(intl.formatMessage({ id: 'Files.Data_Invalid' }));
-      }
+      ErrorAlert(intl.formatMessage({ id: 'Files.Data_Invalid' }));
     }
+    // if (res.HttpResponseCode === 200) {
+    //   SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //   fetchData();
+
+    //   // handleCloseDialog();
+    // } else {
+    //   if (res.HttpResponseCode === 400) {
+    //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //   }
+
+    //   if (res.HttpResponseCode === 400 && res.ResponseMessage === '') {
+    //     ErrorAlert(intl.formatMessage({ id: 'Files.Data_Invalid' }));
+    //   }
+    // }
+    // setExcelHistory(res.ResponseMessage.split(','));
   };
 
   const handleUpload = async () => {
@@ -533,6 +543,22 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
                         </tr>
                       );
                     })
+                  ) : ExcelHistory.length > 0 ? (
+                    <>
+                      <tr>
+                        <th colSpan={3}>History</th>
+                      </tr>
+                      {ExcelHistory.map((item, index) => {
+                        if (item != '')
+                          return (
+                            <tr key={`ITEM${index}`}>
+                              <td style={{ width: '15%' }}>{index + 1}</td>
+                              <td style={{ width: '20%' }}>{item.split('|')[0]}</td>
+                              <td style={{ width: '65%' }}>{item.split('|')[1]}</td>
+                            </tr>
+                          );
+                      })}
+                    </>
                   ) : (
                     <tr>
                       <td colSpan="100" className="text-center">
