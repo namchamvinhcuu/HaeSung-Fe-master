@@ -1,17 +1,11 @@
+import * as ConfigConstants from '@constants/ConfigConstants';
+import { GetLocalStorage, RemoveLocalStorage, SetLocalStorage } from '@utils';
 import axios from 'axios';
-import _ from 'lodash';
 import dayjs from 'dayjs';
 import jwt_decode from 'jwt-decode';
-import * as ConfigConstants from '@constants/ConfigConstants';
-import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils';
-import config from './config';
-import { FormattedMessage, useIntl } from 'react-intl';
 
-import { firstLogin, login } from '@utils';
-import { ErrorAlert, SuccessAlert } from '@utils';
-import { historyApp } from '@utils';
-import { loginService } from '@services';
 import store from '@states/store';
+import { historyApp } from '@utils';
 
 // const API_URL = config.api.API_BASE_URL;
 const API_URL = ConfigConstants.BASE_URL;
