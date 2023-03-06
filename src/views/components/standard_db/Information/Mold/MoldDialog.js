@@ -177,7 +177,7 @@ const MoldDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData, mod
       type: String,
       required: true,
     },
-    CABITY: {
+    CAVITY: {
       prop: 'Cabity',
       type: Number,
       required: true,

@@ -125,7 +125,7 @@ export default function Mold() {
     },
     {
       field: 'Cabity',
-      headerName: intl.formatMessage({ id: 'mold.Cabity' }),
+      headerName: intl.formatMessage({ id: 'mold.Cavity' }),
       width: 100,
     },
     {
