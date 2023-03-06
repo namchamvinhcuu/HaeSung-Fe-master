@@ -1,4 +1,4 @@
-import { MuiButton, MuiDataGrid } from '@controls';
+import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
@@ -26,6 +26,9 @@ const CommonDetail = ({ rowmaster }) => {
     totalRow: 0,
     page: 1,
     pageSize: 10,
+    searchData: {
+      keyWord: '',
+    },
   });
 
   const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
@@ -67,6 +70,7 @@ const CommonDetail = ({ rowmaster }) => {
       commonMasterId: rowmaster.commonMasterId,
       page: menuState.page,
       pageSize: menuState.pageSize,
+      keyword: menuState.searchData.keyWord,
     };
 
     const res = await commonService.getCommonDetailList(params);
@@ -204,10 +208,36 @@ const CommonDetail = ({ rowmaster }) => {
     { field: 'modifiedBy', headerName: 'modifiedBy', flex: 0.3, hide: true },
   ];
 
+  const handleSearch = (e, inputName) => {
+    let newSearchData = { ...menuState.searchData };
+    newSearchData[inputName] = e;
+    setMenuState({
+      ...menuState,
+      searchData: { ...newSearchData },
+    });
+  };
+
   return (
     <React.Fragment>
-      <Grid container>
+       <Grid container direction="row" justifyContent="space-between" alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+      <Grid item xs={6}>
         <MuiButton text="create" color="success" onClick={toggleCreateCommonDetailDialog} />
+      </Grid>
+        <Grid item xs>
+          <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
+            <Grid item xs={6}>
+              <MuiSearchField
+                variant="keyWord"
+                label="general.name"
+                onClick={fetchData}
+                onChange={(e) => handleSearch(e.target.value, 'keyWord')}
+              />
+            </Grid>
+            <Grid item xs>
+              <MuiButton text="search" color="info" onClick={fetchData} />
+            </Grid>
+          </Grid>
+        </Grid>
       </Grid>
       {menuState?.data && (
         <MuiDataGrid
