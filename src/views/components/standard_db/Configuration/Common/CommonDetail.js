@@ -2,7 +2,7 @@ import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
+import { Switch, FormControlLabel, IconButton } from '@mui/material';
 import { commonService } from '@services';
 import _ from 'lodash';
 import moment from 'moment';
@@ -28,6 +28,7 @@ const CommonDetail = ({ rowmaster }) => {
     pageSize: 10,
     searchData: {
       keyWord: '',
+      showDelete: true,
     },
   });
 
@@ -71,6 +72,7 @@ const CommonDetail = ({ rowmaster }) => {
       page: menuState.page,
       pageSize: menuState.pageSize,
       keyword: menuState.searchData.keyWord,
+      showDelete: menuState.searchData.showDelete,
     };
 
     const res = await commonService.getCommonDetailList(params);
@@ -90,7 +92,7 @@ const CommonDetail = ({ rowmaster }) => {
     return () => {
       isCancelled = true;
     };
-  }, [rowmaster.commonMasterId, menuState.page, menuState.pageSize, rowmaster]);
+  }, [rowmaster.commonMasterId, menuState.page, menuState.pageSize, rowmaster, menuState.searchData.showDelete]);
 
   useEffect(() => {
     if (!_.isEmpty(newData) && !_.isEqual(newData, initCommonDetailModel)) {
@@ -211,21 +213,30 @@ const CommonDetail = ({ rowmaster }) => {
   const handleSearch = (e, inputName) => {
     let newSearchData = { ...menuState.searchData };
     newSearchData[inputName] = e;
-    setMenuState({
-      ...menuState,
-      searchData: { ...newSearchData },
-    });
+
+    if (inputName == 'showDelete') {
+      setMenuState({
+        ...menuState,
+        page: 1,
+        searchData: { ...newSearchData },
+      });
+    } else {
+      setMenuState({
+        ...menuState,
+        searchData: { ...newSearchData },
+      });
+    }
   };
 
   return (
     <React.Fragment>
-       <Grid container direction="row" justifyContent="space-between" alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
-      <Grid item xs={6}>
-        <MuiButton text="create" color="success" onClick={toggleCreateCommonDetailDialog} />
-      </Grid>
+      <Grid container direction="row" justifyContent="space-between" alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+        <Grid item xs={6}>
+          <MuiButton text="create" color="success" onClick={toggleCreateCommonDetailDialog} />
+        </Grid>
         <Grid item xs>
           <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
-            <Grid item xs={6}>
+            <Grid item xs={8}>
               <MuiSearchField
                 variant="keyWord"
                 label="general.name"
@@ -237,6 +248,19 @@ const CommonDetail = ({ rowmaster }) => {
               <MuiButton text="search" color="info" onClick={fetchData} />
             </Grid>
           </Grid>
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            sx={{ mb: 0 }}
+            control={
+              <Switch
+                defaultChecked={true}
+                color="primary"
+                onChange={(e) => handleSearch(e.target.checked, 'showDelete')}
+              />
+            }
+            label={menuState.searchData.showDelete ? 'Active Data' : 'Delete Data'}
+          />
         </Grid>
       </Grid>
       {menuState?.data && (
