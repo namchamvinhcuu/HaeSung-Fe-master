@@ -22,6 +22,7 @@ const CreateDialog = (props) => {
   const [dialogState, setDialogState] = useState({
     isSubmit: false,
   });
+  const [ExcelHistory, setExcelHistory] = useState([]);
 
   const pattern3DigisAfterComma = /^\d+(\.\d{0,3})?$/;
   const schemaY = yup.object().shape({
@@ -100,6 +101,7 @@ const CreateDialog = (props) => {
     setDialogState({
       ...dialogState,
     });
+    setExcelHistory([]);
     onClose();
   };
   const [value, setValue] = React.useState('tab1');
@@ -154,17 +156,13 @@ const CreateDialog = (props) => {
 
   const handleSubmitFile = async (rows) => {
     const res = await productService.createProductByExcel(rows);
-    if (res.HttpResponseCode === 200) {
-      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    setExcelHistory([]);
+    if (res.ResponseMessage !== '') {
       fetchData();
-      handleCloseDialog();
+      setExcelHistory(res.ResponseMessage.split(','));
+      // SuccessAlert(intl.formatMessage({ id: 'general.success' }));
     } else {
-      if (res.HttpResponseCode === 400 && res.ResponseMessage === 'general.duplicated_code') {
-        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-      }
-      if (res.HttpResponseCode === 400 && res.ResponseMessage === '') {
-        ErrorAlert(intl.formatMessage({ id: 'Files.Data_Invalid' }));
-      }
+      ErrorAlert(intl.formatMessage({ id: 'Files.Data_Invalid' }));
     }
   };
 
@@ -406,6 +404,22 @@ const CreateDialog = (props) => {
                       </tr>
                     );
                   })
+                ) : ExcelHistory.length > 0 ? (
+                  <>
+                    <tr>
+                      <th colSpan={3}>History</th>
+                    </tr>
+                    {ExcelHistory.map((item, index) => {
+                      if (item != '')
+                        return (
+                          <tr key={`ITEM${index}`}>
+                            <td style={{ width: '15%' }}>{index + 1}</td>
+                            <td style={{ width: '20%' }}>{item.split('|')[0]}</td>
+                            <td style={{ width: '65%' }}>{item.split('|')[1]}</td>
+                          </tr>
+                        );
+                    })}
+                  </>
                 ) : (
                   <tr>
                     <td colSpan="100" className="text-center">
