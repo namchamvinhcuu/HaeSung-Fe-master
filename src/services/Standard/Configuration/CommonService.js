@@ -95,7 +95,8 @@ const modifyCommonDetail = async (params) => {
 
 const deleteCommonDetail = async (params) => {
   try {
-    return await axios.delete('/api/CommonDetail/delete-commondetail/' + params.commonDetailId, {});
+    console.log(params);
+    return await axios.delete('/api/CommonDetail/delete-commondetail/', { data: params });
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }

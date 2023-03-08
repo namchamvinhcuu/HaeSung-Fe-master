@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { Grid, IconButton, TextField } from '@mui/material';
+import UndoIcon from '@mui/icons-material/Undo';
+import { Grid, IconButton, Switch, FormControlLabel } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { useIntl } from 'react-intl';
@@ -41,13 +42,13 @@ export default function User() {
     totalRow: 0,
     page: 1,
     pageSize: 20,
-    search: {
+    searchData: {
       keyWord: '',
+      showDelete: true,
     },
   });
   const [newData, setNewData] = useState({});
   const [rowData, setRowData] = useState({});
-  const [search, setSearch] = useState('');
 
   const RoleUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
   const RoleArr = RoleUser.RoleNameList.replace(' ', '').split(',');
@@ -76,7 +77,7 @@ export default function User() {
                 sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDelete(params.row)}
               >
-                <DeleteIcon fontSize="inherit" />
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
             <Grid
@@ -121,12 +122,19 @@ export default function User() {
     return () => {
       isRendered = false;
     };
-  }, [userState.page, userState.pageSize]);
+  }, [userState.page, userState.pageSize, userState.searchData.showDelete]);
 
   const handleDelete = async (user) => {
-    if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
+    if (
+      window.confirm(
+        intl.formatMessage({ id: user.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' })
+      )
+    ) {
       try {
-        let res = await userService.deleteUser(user.userId);
+        let res = await userService.deleteUser({
+          userId: user.userId,
+          row_version: user.row_version,
+        });
         if (res && res.HttpResponseCode === 200) {
           SuccessAlert(intl.formatMessage({ id: 'general.success' }));
           await fetchData();
@@ -149,6 +157,24 @@ export default function User() {
     toggle2();
   };
 
+  const handleSearch = (e, inputName) => {
+    let newSearchData = { ...userState.searchData };
+    newSearchData[inputName] = e;
+
+    if (inputName == 'showDelete') {
+      setUserState({
+        ...userState,
+        page: 1,
+        searchData: { ...newSearchData },
+      });
+    } else {
+      setUserState({
+        ...userState,
+        searchData: { ...newSearchData },
+      });
+    }
+  };
+
   async function fetchData() {
     setUserState({
       ...userState,
@@ -157,7 +183,8 @@ export default function User() {
     const params = {
       page: userState.page,
       pageSize: userState.pageSize,
-      keyword: search,
+      keyword: userState.searchData.keyWord,
+      showDelete: userState.searchData.showDelete,
     };
     const res = await userService.getUserList(params);
     if (res && res.Data && isRendered)
@@ -186,26 +213,44 @@ export default function User() {
   return (
     <React.Fragment>
       <ThemeProvider theme={myTheme}>
-        <Grid container sx={{ mb: 1 }}>
-          <Grid item xs={8}>
+        <Grid container direction="row" justifyContent="space-between" alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
+          <Grid item xs={6}>
             <MuiButton text="create" color="success" onClick={toggle} />
           </Grid>
-          <Grid item xs={4} container>
-            <Grid item xs={9}>
-              <MuiSearchField
-                fullWidth
-                variant="keyword"
-                size="small"
-                label="user.userName"
-                onClick={fetchData}
-                onChange={(e) => setSearch(e.target.value, 'keyword')}
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <MuiButton text="search" color="info" onClick={fetchData} sx={{ mt: 1, ml: 2 }} />
+
+          <Grid item xs>
+            <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
+              <Grid item xs={8}>
+                <MuiSearchField
+                  fullWidth
+                  variant="keyWord"
+                  size="small"
+                  label="user.userName"
+                  onClick={fetchData}
+                  onChange={(e) => handleSearch(e.target.value, 'keyword')}
+                />
+              </Grid>
+              <Grid item xs>
+                <MuiButton text="search" color="info" onClick={fetchData} />
+              </Grid>
             </Grid>
           </Grid>
+
+          <Grid item>
+            <FormControlLabel
+              sx={{ mb: 0 }}
+              control={
+                <Switch
+                  defaultChecked={true}
+                  color="primary"
+                  onChange={(e) => handleSearch(e.target.checked, 'showDelete')}
+                />
+              }
+              label={userState.searchData.showDelete ? 'Active Data' : 'Delete Data'}
+            />
+          </Grid>
         </Grid>
+
         <MuiDataGrid
           showLoading={userState.isLoading}
           isPagingServer={true}

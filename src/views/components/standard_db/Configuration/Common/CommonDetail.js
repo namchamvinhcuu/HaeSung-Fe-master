@@ -1,6 +1,7 @@
 import { MuiButton, MuiDataGrid, MuiSearchField } from '@controls';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import UndoIcon from '@mui/icons-material/Undo';
 import Grid from '@mui/material/Grid';
 import { Switch, FormControlLabel, IconButton } from '@mui/material';
 import { commonService } from '@services';
@@ -125,10 +126,17 @@ const CommonDetail = ({ rowmaster }) => {
     }
   }, [selectedRow]);
 
-  const handleDeleteCommonMS = async (menu) => {
-    if (window.confirm(intl.formatMessage({ id: 'general.confirm_delete' }))) {
+  const handleDeleteCommonMS = async (row) => {
+    if (
+      window.confirm(
+        intl.formatMessage({ id: row.isActived ? 'general.confirm_delete' : 'general.confirm_redo_deleted' })
+      )
+    ) {
       try {
-        let res = await commonService.deleteCommonDetail(menu);
+        let res = await commonService.deleteCommonDetail({
+          commonDetailId: row.commonDetailId,
+          row_version: row.row_version,
+        });
         if (res && res.HttpResponseCode === 200) {
           await fetchData();
         }
@@ -176,7 +184,8 @@ const CommonDetail = ({ rowmaster }) => {
                 sx={[{ '&:hover': { border: '1px solid red' } }]}
                 onClick={() => handleDeleteCommonMS(params.row)}
               >
-                <DeleteIcon fontSize="inherit" />
+                {/* <DeleteIcon fontSize="inherit" /> */}
+                {params.row.isActived ? <DeleteIcon fontSize="inherit" /> : <UndoIcon fontSize="inherit" />}
               </IconButton>
             </Grid>
           </Grid>

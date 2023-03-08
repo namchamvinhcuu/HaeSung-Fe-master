@@ -58,9 +58,14 @@ const changeRoles = async (params) => {
   }
 };
 
-const deleteUser = async (userId) => {
+const deleteUser = async (params) => {
   try {
-    return await axios.delete(`${apiName}/delete-user/${userId}`);
+    return await axios.delete(`${apiName}/delete-user`, {
+      data: { ...params },
+      headers: {
+        'Content-Type': 'application/json;',
+      },
+    });
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }
