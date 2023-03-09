@@ -36,7 +36,7 @@ const downloadApp = async (params) => {
       },
     };
 
-    fetch(`${ConfigConstants.API_URL}VersionApp/download-versionApp?idApp=${params.id_app}`, options).then(
+    fetch(`${ConfigConstants.API_URL}VersionApp/download-versionApp?idApp=${params.app_type}`, options).then(
       (response) => {
         response.blob().then((blob) => {
           let url = URL.createObjectURL(blob);
