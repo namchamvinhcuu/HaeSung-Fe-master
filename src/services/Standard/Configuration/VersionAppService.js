@@ -4,7 +4,7 @@ import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils';
 
 const getListApkApp = async (params) => {
   try {
-    return await axios.get('/api/VersionApp/get-all-versionApp', {
+    return await axios.get('/api/VersionApp', {
       params: {
         ...params,
       },
