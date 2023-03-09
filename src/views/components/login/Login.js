@@ -88,10 +88,10 @@ const Login = (props) => {
 
   const handleDownload = async (appInfo) => {
     try {
-      appInfo.id_app === 1 ? setBtnDownloadState('loading') : setBtnDownloadDisplayState('loading');
+      appInfo.app_type === 1 ? setBtnDownloadState('loading') : setBtnDownloadDisplayState('loading');
       await new Promise((resolve) => setTimeout(resolve, 1000));
       await versionAppService.downloadApp(appInfo);
-      appInfo.id_app === 1 ? setBtnDownloadState('loaded') : setBtnDownloadDisplayState('loaded');
+      appInfo.app_type === 1 ? setBtnDownloadState('loaded') : setBtnDownloadDisplayState('loaded');
     } catch (error) {
       console.log(`ERROR: ${error}`);
     }
