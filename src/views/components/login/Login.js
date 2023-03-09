@@ -28,7 +28,6 @@ import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import { loginService, versionAppService } from '@services';
 import store from '@states/store';
 import { ErrorAlert, RemoveLocalStorage, SetLocalStorage } from '@utils';
-import { delayDuration } from '@utils';
 
 const theme = createTheme();
 
