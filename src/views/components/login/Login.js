@@ -49,12 +49,12 @@ const Login = (props) => {
 
   const appList = [
     {
-      id_app: 1,
-      name_file: 'Hanlim.apk',
+      app_type: 1,
+      name_file: 'hanlim_autonsi.apk',
     },
     {
-      id_app: 2,
-      name_file: 'HanlimDisplay.apk',
+      app_type: 2,
+      name_file: 'hanlim_display.apk',
     },
   ];
 

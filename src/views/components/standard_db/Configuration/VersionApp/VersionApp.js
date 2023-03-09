@@ -24,6 +24,7 @@ const VersionApp = ({ t, ...props }) => {
 
   const versionAppDto = {
     id_app: 0,
+    app_type: 0,
     app_version: 0,
     name_file: '',
     url: '',
@@ -87,6 +88,7 @@ const VersionApp = ({ t, ...props }) => {
       const formData = new FormData();
       formData.append('file', selectedFile);
       formData.append('id_app', appInfo.id_app);
+      formData.append('app_type', appInfo.app_type);
       formData.append('app_version', data.app_version);
       formData.append('url', data.url);
 
