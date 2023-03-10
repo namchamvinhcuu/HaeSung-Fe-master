@@ -37,8 +37,8 @@ const Actual = (props) => {
     searchData: {
       WoCode: '',
       MaterialId: 0,
-      StartSearchingDate: moment(initStartDate),
-      EndSearchingDate: moment(addDays(initStartDate, 30)),
+      StartSearchingDate: initStartDate,
+      EndSearchingDate: addDays(initStartDate, 30),
       showDelete: true,
     },
   });
@@ -230,8 +230,8 @@ const Actual = (props) => {
         pageSize: state.pageSize,
         WoCode: state.searchData.WoCode.trim(),
         MaterialId: state.searchData.MaterialId,
-        StartSearchingDate: new Date(state.searchData.StartSearchingDate),
-        EndSearchingDate: new Date(state.searchData.EndSearchingDate),
+        StartSearchingDate: state.searchData.StartSearchingDate,
+        EndSearchingDate: state.searchData.EndSearchingDate,
         isActived: state.searchData.showDelete,
       };
 

@@ -40,8 +40,8 @@ const WorkOrder = (props) => {
     pageSize: 20,
     searchData: {
       ...WorkOrderDto,
-      StartSearchingDate: moment(initStartDate),
-      EndSearchingDate: moment(addDays(initStartDate, 30)),
+      StartSearchingDate: initStartDate,
+      EndSearchingDate: addDays(initStartDate, 30),
     },
   });
 
@@ -393,8 +393,8 @@ const WorkOrder = (props) => {
         pageSize: workOrderState.pageSize,
         WoCode: workOrderState.searchData.WoCode.trim(),
         MaterialId: workOrderState.searchData.MaterialId,
-        StartSearchingDate: new Date(workOrderState.searchData.StartSearchingDate),
-        EndSearchingDate: new Date(workOrderState.searchData.EndSearchingDate),
+        StartSearchingDate: workOrderState.searchData.StartSearchingDate,
+        EndSearchingDate: workOrderState.searchData.EndSearchingDate,
         isActived: showActivedData,
       };
 

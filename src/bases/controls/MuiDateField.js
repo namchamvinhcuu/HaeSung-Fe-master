@@ -3,6 +3,7 @@ import TextField from '@mui/material/TextField';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import moment from 'moment';
 
 export default function MuiDateField({
   label,
@@ -29,7 +30,7 @@ export default function MuiDateField({
         disabled={disabled}
         label={labelFomart}
         value={value ? value : null}
-        onChange={onChange}
+        onChange={(e) => onChange(e != null ? moment(e).format('YYYY-MM-DDT00:00:00') : null)}
         onBlur={onBlur}
         inputFormat="yyyy-MM-dd"
         renderInput={(params) => (
