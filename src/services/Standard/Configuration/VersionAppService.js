@@ -4,7 +4,7 @@ import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils';
 
 const getListApkApp = async (params) => {
   try {
-    return await axios.get('/api/VersionApp/get-all-versionApp', {
+    return await axios.get('/api/VersionApp', {
       params: {
         ...params,
       },
@@ -36,22 +36,39 @@ const downloadApp = async (params) => {
       },
     };
 
-    fetch(`${ConfigConstants.API_URL}VersionApp/download-versionApp?appType=${params.app_type}`, options).then(
-      (response) => {
-        response.blob().then((blob) => {
-          let url = URL.createObjectURL(blob);
-          let downloadLink = document.createElement('a');
-          downloadLink.href = url;
-          downloadLink.download = `${params.name_file}`;
-          document.body.appendChild(downloadLink);
-          downloadLink.click();
+    // fetch(`${ConfigConstants.API_URL}VersionApp/download-versionApp?appType=${params.app_type}`, options).then(
+    //   (response) => {
+    //     response.blob().then((blob) => {
+    //       let url = URL.createObjectURL(blob);
+    //       let downloadLink = document.createElement('a');
+    //       downloadLink.href = url;
+    //       downloadLink.download = `${params.name_file}`;
+    //       document.body.appendChild(downloadLink);
+    //       downloadLink.click();
 
-          document.body.removeChild(downloadLink);
-          URL.revokeObjectURL(url);
-        });
-        //window.location.href = response.url;
-      }
-    );
+    //       document.body.removeChild(downloadLink);
+    //       URL.revokeObjectURL(url);
+    //     });
+    //     //window.location.href = response.url;
+    //   }
+    // );
+
+    fetch(`${ConfigConstants.API_URL}VersionApp/download-versionApp?appType=${params.app_type}`, options)
+      .then((res) => {
+        return res.blob();
+      })
+      .then((blob) => {
+        let url = URL.createObjectURL(blob);
+        let downloadLink = document.createElement('a');
+        downloadLink.href = url;
+        downloadLink.download = `${params.name_file}`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(url);
+      })
+      .catch((err) => console.error(err));
+    // return;
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }

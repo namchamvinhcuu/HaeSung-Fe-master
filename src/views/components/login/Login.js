@@ -50,11 +50,15 @@ const Login = (props) => {
   const appList = [
     {
       app_type: 1,
-      name_file: 'hanlim_autonsi.apk',
+      name_file: 'hanlim_scan.apk',
     },
     {
       app_type: 2,
       name_file: 'hanlim_display.apk',
+    },
+    {
+      app_type: 3,
+      name_file: 'hanlim_actual.apk',
     },
   ];
 
@@ -72,6 +76,7 @@ const Login = (props) => {
 
   const [btnDownloadState, setBtnDownloadState] = useState('loaded');
   const [btnDownloadDisplayState, setBtnDownloadDisplayState] = useState('loaded');
+  const [btnDownloadActualState, setBtnDownloadActualState] = useState('loaded');
 
   const dataModalRef = useRef(initModal);
 
@@ -88,10 +93,43 @@ const Login = (props) => {
 
   const handleDownload = async (appInfo) => {
     try {
-      appInfo.app_type === 1 ? setBtnDownloadState('loading') : setBtnDownloadDisplayState('loading');
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      await versionAppService.downloadApp(appInfo);
-      appInfo.app_type === 1 ? setBtnDownloadState('loaded') : setBtnDownloadDisplayState('loaded');
+      // appInfo.app_type === 1 ? setBtnDownloadState('loading') : setBtnDownloadDisplayState('loading');
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      // await versionAppService.downloadApp(appInfo);
+      // appInfo.app_type === 1 ? setBtnDownloadState('loaded') : setBtnDownloadDisplayState('loaded');
+
+      switch (appInfo.app_type) {
+        case 1:
+          setBtnDownloadState('loading');
+          break;
+
+        case 2:
+          setBtnDownloadDisplayState('loading');
+          break;
+
+        default:
+          setBtnDownloadActualState('loading');
+          break;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      // delayDuration(3000);
+
+      switch (appInfo.app_type) {
+        case 1:
+          setBtnDownloadState('loaded');
+          break;
+
+        case 2:
+          setBtnDownloadDisplayState('loaded');
+          break;
+
+        default:
+          setBtnDownloadActualState('loaded');
+          break;
+      }
+
+      versionAppService.downloadApp(appInfo);
     } catch (error) {
       console.log(`ERROR: ${error}`);
     }
@@ -319,11 +357,20 @@ const Login = (props) => {
                 >
                   {btnDownloadState === 'loaded' ? props.children : 'Loading...'}
                   <span className="d-block" aria-hidden="true">
-                    <div className="d-flex" style={{ color: 'white' }}>
+                    <div
+                      className="d-flex"
+                      style={{
+                        color: 'white',
+                        minWidth: '100px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
                       <PhoneAndroidIcon />
 
                       <div className="d-block">
-                        <small style={{ opacity: 0.9, fontSize: '18px' }}>Download App</small>
+                        <small style={{ opacity: 0.9, fontSize: '18px' }}>Scan</small>
                       </div>
                     </div>
                   </span>
@@ -340,11 +387,56 @@ const Login = (props) => {
                 >
                   {btnDownloadDisplayState === 'loaded' ? props.children : 'Loading...'}
                   <span className="d-block" aria-hidden="true">
-                    <div className="d-flex" style={{ color: 'white' }}>
+                    <div
+                      className="d-flex"
+                      style={{
+                        color: 'white',
+                        minWidth: '100px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
                       <PhoneAndroidIcon />
 
                       <div className="d-block">
-                        <small style={{ opacity: 0.9, fontSize: '18px' }}>Download Display App</small>
+                        <small style={{ opacity: 0.9, fontSize: '18px' }}>Display</small>
+                      </div>
+                    </div>
+                  </span>
+                </button>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 2,
+                alignItems: 'center',
+              }}
+            >
+              <Box>
+                <button
+                  className="btn btn-warning"
+                  style={{ width: '100%', marginTop: '25px' }}
+                  type="submit"
+                  onClick={() => handleDownload(appList[2])}
+                  disabled={btnDownloadActualState === 'loading'}
+                >
+                  {btnDownloadActualState === 'loaded' ? props.children : 'Loading...'}
+                  <span className="d-block" aria-hidden="true">
+                    <div
+                      className="d-flex"
+                      style={{
+                        color: 'white',
+                        minWidth: '100px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <PhoneAndroidIcon />
+                      <div className="d-block">
+                        <small style={{ opacity: 0.9, fontSize: '18px' }}>Actual</small>
                       </div>
                     </div>
                   </span>

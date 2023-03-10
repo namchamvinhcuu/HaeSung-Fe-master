@@ -1,4 +1,4 @@
-import { useModal, useModal2 } from '@basesShared';
+import { useModal, useModal2, useModal3 } from '@basesShared';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
@@ -21,6 +21,7 @@ const VersionApp = ({ t, ...props }) => {
   const intl = useIntl();
   const { isShowing, toggle } = useModal();
   const { isShowing2, toggle2 } = useModal2();
+  const { isShowing3, toggle3 } = useModal3();
 
   const versionAppDto = {
     id_app: 0,
@@ -110,6 +111,18 @@ const VersionApp = ({ t, ...props }) => {
     }
   };
 
+  const handleToggle = (appType) => {
+    if (appType === 1) return toggle();
+    else if (appType === 2) return toggle2();
+    else if (appType === 3) return toggle3();
+  };
+
+  const handleShowing = (appType) => {
+    if (appType === 1) return isShowing;
+    else if (appType === 2) return isShowing2;
+    else if (appType === 3) return isShowing3;
+  };
+
   return (
     <>
       <Grid container spacing={1}>
@@ -140,18 +153,13 @@ const VersionApp = ({ t, ...props }) => {
                         edge="start"
                         color="inherit"
                         aria-label="menu"
-                        onClick={appInfo.id_app === 1 ? toggle : toggle2}
+                        onClick={() => handleToggle(appInfo.app_type)}
                         sx={{ mr: 2 }}
                       >
                         <SettingsIcon />
                       </IconButton>
                     </CardActions>
-                    <Collapse
-                      in={appInfo.id_app === 1 ? isShowing : isShowing2}
-                      timeout="auto"
-                      unmountOnExit
-                      sx={{ pr: 3, pl: 3 }}
-                    >
+                    <Collapse in={handleShowing(appInfo.app_type)} timeout="auto" unmountOnExit sx={{ pr: 3, pl: 3 }}>
                       <Divider light style={{ marginBottom: '20px' }} />
                       <TextField
                         fullWidth
