@@ -227,7 +227,7 @@ export default function User() {
                   size="small"
                   label="user.userName"
                   onClick={fetchData}
-                  onChange={(e) => handleSearch(e.target.value, 'keyword')}
+                  onChange={(e) => handleSearch(e.target.value, 'keyWord')}
                 />
               </Grid>
               <Grid item xs>
