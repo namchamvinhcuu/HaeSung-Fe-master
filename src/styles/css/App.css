@@ -450,3 +450,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ebf1f6', end
 .edit-quantity-dialog .MuiInput-underline::before{
     bottom: 1px !important;
 }
+.no-padding [class*=MuiDialogContent-root]{
+    padding: 0px !important;
+}
+

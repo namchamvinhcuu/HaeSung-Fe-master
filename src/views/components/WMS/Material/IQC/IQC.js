@@ -454,15 +454,13 @@ const Modal_Qr_Code = ({ isShowing, hide, rowSelected }) => {
         disable_animate={300}
         onClose={handleCloseDialog}
         isShowButtonPrint
+        className="no-padding"
       >
-        <DialogContent ref={componentRef} sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Box>
+        <DialogContent ref={componentRef} sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <Box sx={{ width: '100%' }}>
             {rowSelected?.map((item, index) => {
               return (
-                <Box
-                  sx={{ border: '1px solid black', mb: 2, maxWidth: '450px', pageBreakAfter: 'always' }}
-                  key={`IQCQRCODE_${index}`}
-                >
+                <Box sx={{ border: '1px solid black', mb: 2, pageBreakAfter: 'always' }} key={`IQCQRCODE_${index}`}>
                   <TableContainer sx={{ overflowX: 'hidden' }}>
                     <Table>
                       <TableBody>
