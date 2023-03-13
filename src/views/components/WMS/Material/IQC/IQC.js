@@ -7,6 +7,7 @@ import { LotDto } from '@models';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UndoIcon from '@mui/icons-material/Undo';
+import ReactDOMServer from 'react-dom/server';
 import {
   Box,
   Button,
@@ -281,6 +282,102 @@ const IQC = (props) => {
     setRowSelected(rowSelected ? [...rowSelected] : []);
   };
 
+  const getWeekByCreatedDate = (date) => {
+    const currentDate = new Date(date);
+    const startDate = new Date(currentDate.getFullYear(), 0, 1);
+    var days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000));
+    var weekNumber = Math.ceil(days / 7);
+    return weekNumber;
+  };
+
+  const handleButtonPrintClick = () => {
+    var style = {
+      styleBorderAndCenter: {
+        borderRight: '1px solid black',
+        textAlign: 'center',
+        fontSize: '22px',
+      },
+      borderBot: {
+        borderBottom: '1px solid black',
+        padding: '10px',
+      },
+    };
+
+    const newWindow = window.open('', '', '');
+    const componentContent = rowSelected?.map((item, index) => {
+      return (
+        <div
+          style={{ border: '1px solid black', m: 2, pageBreakAfter: 'always', width: '100%' }}
+          key={`IQCQRCODE_${index}`}
+        >
+          <table style={{ borderCollapse: 'collapse', textAlign: 'center', width: '100%' }}>
+            <tbody>
+              <tr>
+                <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>CODE</td>
+                <td
+                  colSpan={2}
+                  style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
+                  sx={{ padding: '0px 3px !important' }}
+                >
+                  <b style={{ fontSize: '22px' }}>{item?.MaterialColorCode}</b>
+                </td>
+                <td rowSpan={2} sx={{ textAlign: 'center' }} style={style.borderBot}>
+                  <QRCode value={`${item?.Id}`} size={80} />
+                </td>
+              </tr>
+              <tr>
+                <td colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                  {item?.Description}
+                </td>
+              </tr>
+              <tr>
+                <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</td>
+                <td
+                  style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
+                  sx={{ padding: '0px 3px !important' }}
+                >
+                  <b style={{ fontSize: '22px' }}>{`${item?.Qty} ${item?.Unit}`} </b>
+                </td>
+                <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</td>
+                <td sx={{ textAlign: 'center', padding: '5px !important' }} style={style.borderBot}>
+                  {item?.SupplierCode}
+                </td>
+              </tr>
+              <tr>
+                <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>LOT No.</td>
+                <td colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                  {item?.Id}
+                </td>
+                <td sx={{ textAlign: 'center' }} style={style.borderBot}>
+                  {item?.QCResult ? 'OK' : 'NG'}
+                </td>
+              </tr>
+              <tr>
+                <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }} sx={{ whiteSpace: 'nowrap' }}>
+                  {moment(item?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
+                  <span style={{ display: 'block' }}>
+                    {moment(item?.createdDate).add(7, 'hours').format('HH:mm:ss')}
+                  </span>
+                </td>
+                <td rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
+                  <b style={{ fontSize: '22px' }}>{item?.LotSerial}</b>
+                </td>
+              </tr>
+              <tr>
+                <td style={style.styleBorderAndCenter} sx={{ padding: '5px' }}>
+                  W{getWeekByCreatedDate(item?.createdDate)} / T{moment(item?.createdDate).add(7, 'hours').format('MM')}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      );
+    });
+    const htmlContent = ReactDOMServer.renderToString(componentContent);
+    newWindow.document.write(htmlContent);
+    newWindow.document.close();
+  };
+
   useEffect(() => {
     return () => {
       isRendered = false;
@@ -331,6 +428,15 @@ const IQC = (props) => {
             sx={{ mx: 2 }}
           >
             Print QR Code
+          </Button>
+          <Button
+            disabled={rowSelected.length > 0 ? false : true}
+            variant="contained"
+            color="secondary"
+            onClick={handleButtonPrintClick}
+            sx={{ mx: 2 }}
+          >
+            Print QR Code 2
           </Button>
         </Grid>
         <Grid item>
