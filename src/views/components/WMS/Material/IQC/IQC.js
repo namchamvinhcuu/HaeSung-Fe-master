@@ -420,7 +420,7 @@ const IQC = (props) => {
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item>
           <MuiButton text="create" color="success" onClick={handleAdd} />
-          <Button
+          {/* <Button
             disabled={rowSelected.length > 0 ? false : true}
             variant="contained"
             color="secondary"
@@ -428,7 +428,7 @@ const IQC = (props) => {
             sx={{ mx: 2 }}
           >
             Print QR Code
-          </Button>
+          </Button> */}
           <Button
             disabled={rowSelected.length > 0 ? false : true}
             variant="contained"
@@ -436,7 +436,7 @@ const IQC = (props) => {
             onClick={handleButtonPrintClick}
             sx={{ mx: 2 }}
           >
-            Print QR Code 2
+            Print LOT
           </Button>
         </Grid>
         <Grid item>
