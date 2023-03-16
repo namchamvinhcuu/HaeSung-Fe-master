@@ -12,7 +12,9 @@ import { ErrorAlert, SuccessAlert } from '@utils';
 import { useIntl } from 'react-intl';
 import moment from 'moment';
 import LotPrint from './LotPrint';
+import LotPrintNewWindow from './LotPrintNewWindow';
 import ReactToPrint from 'react-to-print';
+import ReactDOMServer from 'react-dom/server';
 
 const LotInformation = (props) => {
   const [lot, setLot] = useState('');
@@ -46,6 +48,14 @@ const LotInformation = (props) => {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
     }
   };
+
+  const handleButtonPrintClick = () => {
+    const newWindow = window.open('', '', '');
+    const htmlContent = ReactDOMServer.renderToString(<LotPrintNewWindow item={lot} />);
+    newWindow.document.write(htmlContent);
+    newWindow.document.close();
+  };
+
   useEffect(() => {
     lotInputRef.current.focus();
 
@@ -88,6 +98,16 @@ const LotInformation = (props) => {
                 );
               }}
               content={() => componentRef.current}
+            />
+          </Grid>
+
+          <Grid item>
+            <MuiButton
+              text="print"
+              color="secondary"
+              onClick={() => handleButtonPrintClick()}
+              sx={{ m: 0 }}
+              disabled={lot ? false : true}
             />
           </Grid>
         </Grid>

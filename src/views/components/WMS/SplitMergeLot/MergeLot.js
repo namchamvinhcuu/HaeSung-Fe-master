@@ -14,6 +14,8 @@ import { splitMergeLotService } from '@services';
 import moment from 'moment';
 import { useModal } from '@basesShared';
 import ActualPrintDialog from '../../MMS/Actual/ActualPrintDialog';
+import ActualPrint from '../../MMS/Actual/ActualPrint';
+import ReactDOMServer from 'react-dom/server';
 
 const MergeLot = (props) => {
   let isRendered = useRef(true);
@@ -81,6 +83,14 @@ const MergeLot = (props) => {
     }
   };
 
+  const handleButtonPrintClick = () => {
+    const newWindow = window.open('', '', '');
+    const listData = [LotModel, LotModel2];
+    const htmlContent = ReactDOMServer.renderToString(<ActualPrint listData={listData} />);
+    newWindow.document.write(htmlContent);
+    newWindow.document.close();
+  };
+
   const style = {
     styleBorderAndCenter: {
       borderRight: '1px solid black',
@@ -109,7 +119,13 @@ const MergeLot = (props) => {
           </Grid>
         </Grid>
         <Grid item>
-          <MuiButton text="print" disabled={LotModel == null ? true : false} onClick={() => toggle()} color="info" />
+          <MuiButton
+            text="print"
+            disabled={LotModel == null ? true : false}
+            // onClick={() => toggle()}
+            onClick={() => handleButtonPrintClick()}
+            color="info"
+          />
           <MuiButton
             text="save"
             color="success"

@@ -15,6 +15,8 @@ import moment from 'moment';
 import ReactToPrint from 'react-to-print';
 import { useModal } from '@basesShared';
 import ActualPrintDialog from '../../MMS/Actual/ActualPrintDialog';
+import ActualPrint from '../../MMS/Actual/ActualPrint';
+import ReactDOMServer from 'react-dom/server';
 
 const SplitLot = (props) => {
   let isRendered = useRef(true);
@@ -29,6 +31,17 @@ const SplitLot = (props) => {
   const [LotModelSplit, setLotModelSplit] = useState(null);
   const [state, setState] = useState({ isLoading: false });
   const { isShowing, toggle } = useModal();
+
+  const style = {
+    styleBorderAndCenter: {
+      borderRight: '1px solid black',
+      textAlign: 'center',
+    },
+    borderBot: {
+      borderBottom: '1px solid black',
+      padding: '10px',
+    },
+  };
 
   const keyPress = async (e) => {
     if (e.key === 'Enter') {
@@ -96,15 +109,12 @@ const SplitLot = (props) => {
     }
   };
 
-  const style = {
-    styleBorderAndCenter: {
-      borderRight: '1px solid black',
-      textAlign: 'center',
-    },
-    borderBot: {
-      borderBottom: '1px solid black',
-      padding: '10px',
-    },
+  const handleButtonPrintClick = () => {
+    const newWindow = window.open('', '', '');
+    const listData = [LotModel, LotModelSplit];
+    const htmlContent = ReactDOMServer.renderToString(<ActualPrint listData={listData} />);
+    newWindow.document.write(htmlContent);
+    newWindow.document.close();
   };
 
   return (
@@ -156,7 +166,8 @@ const SplitLot = (props) => {
           <MuiButton
             text="print"
             disabled={LotModelSplit == null ? true : LotModelSplit?.Id == null ? true : false}
-            onClick={() => toggle()}
+            // onClick={() => toggle()}
+            onClick={() => handleButtonPrintClick()}
             color="info"
           />
           <MuiButton
