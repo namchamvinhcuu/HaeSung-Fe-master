@@ -19,6 +19,8 @@ import { useIntl } from 'react-intl';
 import FGPackingDialog from './FGPackingDialog';
 import FGPackingLotDetail from './FGPackingLotDetail';
 import FGPackingLotPrintDialog from './FGPackingLotPrintDialog';
+import FGPackingLotPrint from './FGPackingLotPrint';
+import ReactDOMServer from 'react-dom/server';
 
 const FGPackingLot = (props) => {
   const intl = useIntl();
@@ -268,6 +270,13 @@ const FGPackingLot = (props) => {
     }
   };
 
+  const handleButtonPrintClick = () => {
+    const newWindow = window.open('', '', '');
+    const htmlContent = ReactDOMServer.renderToString(<FGPackingLotPrint listData={DataPrint} />);
+    newWindow.document.write(htmlContent);
+    newWindow.document.close();
+  };
+
   async function fetchData() {
     let flag = true;
     let message = '';
@@ -328,7 +337,8 @@ const FGPackingLot = (props) => {
             <MuiButton
               text="print"
               color="secondary"
-              onClick={() => toggle2()}
+              //onClick={() => toggle2()}
+              onClick={() => handleButtonPrintClick()}
               sx={{ m: 0 }}
               disabled={DataPrint.length > 0 ? false : true}
             />
