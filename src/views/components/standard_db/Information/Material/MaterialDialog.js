@@ -1,4 +1,5 @@
-import { CREATE_ACTION, BASE_URL } from '@constants/ConfigConstants';
+import { CREATE_ACTION, BASE_URL, UPDATE_ACTION } from '@constants/ConfigConstants';
+
 import { MuiAutocomplete, MuiDialog, MuiResetButton, MuiSubmitButton, MuiButton } from '@controls';
 import { Box, Grid, Link, TextField } from '@mui/material';
 import { materialService } from '@services';
@@ -59,14 +60,14 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
       .number()
       .nullable()
       .required(intl.formatMessage({ id: 'general.field_required' })),
-    SupplierId: yup
-      .number()
+    SupplierIdList: yup
+      .array()
       .nullable()
       .when('MaterialTypeName', (MaterialTypeName) => {
         if (MaterialTypeName !== 'BARE MATERIAL')
           return yup
-            .number()
-            .nullable()
+            .array()
+            .min(1, intl.formatMessage({ id: 'general.field_required' }))
             .required(intl.formatMessage({ id: 'general.field_required' }));
       }),
     MoldCode: yup
@@ -117,7 +118,6 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
 
   const onSubmit = async (data) => {
     setDialogState({ ...dialogState, isSubmit: true });
-
     if (mode == CREATE_ACTION) {
       if (data.MaterialTypeName == 'BARE MATERIAL') {
         var unitBare = UnitList.filter((x) => x.commonDetailName == 'PCS');
@@ -254,6 +254,16 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
       setDataReadFile(data);
     });
   };
+  useEffect(() => {
+    if (mode === UPDATE_ACTION) {
+      getSupplierByMaterialId(initModal.MaterialId);
+    }
+  }, [initModal]);
+  const getSupplierByMaterialId = async (MaterialId) => {
+    const res = await materialService.getSupplierByMaterialId({ MaterialId });
+    setFieldValue('SupplierIdList', res.Data);
+    return res;
+  };
 
   return (
     <MuiDialog
@@ -306,7 +316,7 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                   onChange={(e, value) => {
                     if (value?.commonDetailName == 'BARE MATERIAL') {
                       setFieldValue('SupplierName', '');
-                      setFieldValue('SupplierId', null);
+                      setFieldValue('SupplierIdList', []);
                       var unitBare = UnitList.filter((x) => x.commonDetailName == 'PCS');
                       setFieldValue('UnitName', unitBare[0].commonDetailName);
                       setFieldValue('Unit', unitBare[0].commonDetailId);
@@ -327,9 +337,8 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
               <Grid item xs={6}>
                 <MuiAutocomplete
                   required
-                  value={
-                    values.SupplierId ? { SupplierId: values.SupplierId, SupplierName: values.SupplierName } : null
-                  }
+                  // values.SupplierId ? { SupplierId: values.SupplierId, SupplierName: values.SupplierName } : null
+                  value={values.SupplierIdList ? values.SupplierIdList : []}
                   disabled={
                     values.MaterialTypeName == 'BARE MATERIAL' || values.MaterialType == null
                       ? true
@@ -339,12 +348,13 @@ const MaterialDialog = ({ initModal, isOpen, onClose, setNewData, setUpdateData,
                   fetchDataFunc={getSupplier}
                   displayLabel="SupplierName"
                   displayValue="SupplierId"
+                  name="SupplierIdList"
                   onChange={(e, value) => {
-                    setFieldValue('SupplierName', value?.SupplierName || '');
-                    setFieldValue('SupplierId', value?.SupplierId || '');
+                    setFieldValue('SupplierIdList', value || []);
                   }}
-                  error={touched.SupplierId && Boolean(errors.SupplierId)}
-                  helperText={touched.SupplierId && errors.SupplierId}
+                  error={touched.SupplierIdList && Boolean(errors.SupplierIdList)}
+                  helperText={touched.SupplierIdList && errors.SupplierIdList}
+                  multiple={true}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -559,7 +569,7 @@ const defaultValue = {
   MaterialTypeName: '',
   Unit: null,
   UnitName: '',
-  SupplierId: null,
+  SupplierIdList: [],
   SupplierName: '',
   QCMasterId: null,
   QCMasterCode: '',

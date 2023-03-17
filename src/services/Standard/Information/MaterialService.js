@@ -121,6 +121,13 @@ const downloadExcel = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 };
+const getSupplierByMaterialId = async (params) => {
+  try {
+    return await axios.get(`${apiName}/get-supplier-by-materialId`, { params: { ...params } });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
 
 export {
   getMaterialList,
@@ -135,4 +142,5 @@ export {
   getQCMasterByMaterialType,
   getAllMoldCode,
   downloadExcel,
+  getSupplierByMaterialId,
 };
