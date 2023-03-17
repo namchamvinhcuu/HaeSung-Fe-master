@@ -7,11 +7,11 @@ const LotPrintNewWindow = ({ item }) => {
     styleBorderAndCenter: {
       borderRight: '1px solid black',
       textAlign: 'center',
-      fontSize: '22px',
+      fontSize: '18px',
     },
     borderBot: {
       borderBottom: '1px solid black',
-      padding: '10px',
+      // padding: '10px',
     },
   };
 
@@ -25,28 +25,25 @@ const LotPrintNewWindow = ({ item }) => {
           <tbody>
             <tr>
               <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>CODE</td>
-              <td
-                colSpan={2}
-                style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: '0px 3px !important' }}
-              >
-                <b style={{ fontSize: '32px' }}>{item?.MaterialCode}</b>
+              <td colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: '1px !important' }}>
+                <b style={{ fontSize: '15px' }}>{item?.MaterialCode}</b>
               </td>
               <td rowSpan={2} style={{ ...style.borderBot, textAlign: 'center' }}>
-                <QRCode value={`${item?.Id}`} size={80} />
+                <QRCode value={`${item?.Id}`} size={60} />
               </td>
             </tr>
             <tr>
-              <td colSpan={3} style={{ ...style.styleBorderAndCenter, fontSize: '18px', ...style.borderBot }}>
+              <td colSpan={3} style={{ ...style.styleBorderAndCenter, fontSize: '12px', ...style.borderBot }}>
                 {item?.Description}
               </td>
             </tr>
             <tr>
               <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</td>
-              <td style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: '0px 3px !important' }}>
-                <b style={{ fontSize: '32px' }}>{`${item?.Qty} ${item?.Unit}`} </b>
+              <td style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: '0px !important' }}>
+                <b style={{ fontSize: '15px' }}>{`${item?.Qty} ${item?.Unit}`} </b>
               </td>
               <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</td>
-              <td style={{ ...style.borderBot, textAlign: 'center', padding: '5px !important' }}>
+              <td style={{ ...style.borderBot, textAlign: 'center', padding: '1px !important' }}>
                 {item?.SupplierCode}
               </td>
             </tr>
@@ -63,11 +60,11 @@ const LotPrintNewWindow = ({ item }) => {
                 <span style={{ display: 'block' }}>{moment(item?.createdDate).add(7, 'hours').format('HH:mm:ss')}</span>
               </td>
               <td rowSpan={2} colSpan={3} style={{ textAlign: 'center' }}>
-                <b style={{ fontSize: '32px' }}>{item?.LotSerial}</b>
+                <b style={{ fontSize: '15px' }}>{item?.LotSerial}</b>
               </td>
             </tr>
             <tr>
-              <td style={{ ...style.styleBorderAndCenter, padding: '5px' }}>
+              <td style={{ ...style.styleBorderAndCenter, padding: '1px' }}>
                 {`W${moment(item?.createdDate).week()} / T${moment(item?.createdDate).add(7, 'hours').format('MM')}`}
               </td>
             </tr>
