@@ -4,7 +4,6 @@ import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
 import { useModal } from '@basesShared';
 import {
   MuiAutocomplete,
@@ -24,6 +23,8 @@ import moment from 'moment';
 import { useIntl } from 'react-intl';
 import * as yup from 'yup';
 import ActualPrintDialog from './ActualPrintDialog';
+import ActualPrint from './ActualPrint';
+import ReactDOMServer from 'react-dom/server';
 
 const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
   const intl = useIntl();
@@ -188,14 +189,19 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
     onClose();
   };
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
     let data = [];
     for (let i = 0; i < rowSelected.length; i++) {
       var item = state.data.filter((x) => x.Id == rowSelected[i]);
       data.push(item[0]);
     }
     setListData(data);
-    toggle();
+
+    const newWindow = window.open('', '', '');
+    const htmlContent = ReactDOMServer.renderToString(<ActualPrint listData={data} />);
+    newWindow.document.write(htmlContent);
+    newWindow.document.close();
+    // toggle();
   };
 
   const handleDataDemo = () => {

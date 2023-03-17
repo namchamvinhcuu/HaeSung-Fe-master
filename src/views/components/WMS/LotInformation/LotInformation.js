@@ -88,7 +88,7 @@ const LotInformation = (props) => {
           <Grid item>
             <MuiButton text="scan" color="success" onClick={scanBtnClick} sx={{ whiteSpace: 'nowrap' }} />
           </Grid>
-          <Grid item>
+          {/* <Grid item>
             <ReactToPrint
               trigger={() => {
                 return (
@@ -99,7 +99,7 @@ const LotInformation = (props) => {
               }}
               content={() => componentRef.current}
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item>
             <MuiButton
