@@ -180,7 +180,7 @@ const MergeLot = (props) => {
                         </TableCell>
                         <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</TableCell>
                         <TableCell sx={{ textAlign: 'center', padding: '5px !important' }} style={style.borderBot}>
-                          HANLIM
+                          {LotModel.SupplierCode || 'HANLIM'}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -281,7 +281,7 @@ const MergeLot = (props) => {
                         </TableCell>
                         <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</TableCell>
                         <TableCell sx={{ textAlign: 'center', padding: '5px !important' }} style={style.borderBot}>
-                          HANLIM
+                          {LotModel2.SupplierCode || 'HANLIM'}
                         </TableCell>
                       </TableRow>
                       <TableRow>

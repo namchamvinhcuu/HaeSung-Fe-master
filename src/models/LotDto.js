@@ -8,6 +8,7 @@ const LotDto = {
   QCResult: true,
   WarehouseType: 0,
   LocationId: 0,
+  SupplierId: null,
 
   MaterialCode: '',
   MaterialColorCode: '',

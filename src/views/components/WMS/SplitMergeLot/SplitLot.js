@@ -225,7 +225,7 @@ const SplitLot = (props) => {
                         </TableCell>
                         <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</TableCell>
                         <TableCell sx={{ textAlign: 'center', padding: '5px !important' }} style={style.borderBot}>
-                          HANLIM
+                          {LotModel.SupplierCode || 'HANLIM'}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -308,7 +308,7 @@ const SplitLot = (props) => {
                         </TableCell>
                         <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</TableCell>
                         <TableCell sx={{ textAlign: 'center', padding: '5px !important' }} style={style.borderBot}>
-                          HANLIM
+                          {LotModelSplit.SupplierCode || 'HANLIM'}
                         </TableCell>
                       </TableRow>
                       <TableRow>

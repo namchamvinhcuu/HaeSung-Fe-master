@@ -1,7 +1,7 @@
 import { CREATE_ACTION, UPDATE_ACTION } from '@constants/ConfigConstants';
 import { MuiAutocomplete, MuiDialog, MuiResetButton, MuiSelectField, MuiSubmitButton } from '@controls';
 import { Grid, TextField } from '@mui/material';
-import { iqcService } from '@services';
+import { iqcService, materialService } from '@services';
 import { ErrorAlert, SuccessAlert } from '@utils';
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
@@ -30,6 +30,9 @@ const IQCDialog = (props) => {
       .number()
       .required(intl.formatMessage({ id: 'forecast.MaterialId_required' }))
       .min(1, intl.formatMessage({ id: 'forecast.MaterialId_required' })),
+
+    SupplierId: yup.number().nullable(),
+
     Qty: yup
       .number()
       .nullable()
@@ -118,7 +121,14 @@ const IQCDialog = (props) => {
     setFieldValue('QcIDList', res.Data);
     return res;
   };
-
+  const getSupplierByMaterialId = async (MaterialId) => {
+    const res = await materialService.getSupplierByMaterialId({ MaterialId });
+    setFieldValue('SupplierIdList', res.Data);
+    return res;
+  };
+  useEffect(() => {
+    console.log({ errors, values, touched });
+  }, [errors, values, touched]);
   return (
     <MuiDialog
       maxWidth="sm"
@@ -160,6 +170,7 @@ const IQCDialog = (props) => {
                 setFieldValue('MaterialId', value?.MaterialId);
                 // setMaterialId(value?.MaterialId);
                 setFieldValue('QcIDList', []);
+                getSupplierByMaterialId(value?.MaterialId);
               }}
               error={touched.MaterialId && Boolean(errors.MaterialId)}
               helperText={touched.MaterialId && errors.MaterialId}
@@ -167,6 +178,35 @@ const IQCDialog = (props) => {
               disabled={dialogState.isSubmit}
             />
           </Grid>
+          {values.MaterialId ? (
+            <Grid item xs={12}>
+              <MuiAutocomplete
+                label={intl.formatMessage({ id: 'material.SupplierId' }) + ' *'}
+                fetchDataFunc={() => getSupplierByMaterialId(values.MaterialId)}
+                displayLabel="SupplierName"
+                displayValue="SupplierId"
+                name="SupplierId"
+                value={
+                  values.SupplierId
+                    ? {
+                        SupplierId: values.SupplierId,
+                        SupplierName: values.SupplierName,
+                      }
+                    : null
+                }
+                onChange={(e, value) => {
+                  setFieldValue('SupplierId', value?.SupplierId);
+                  setFieldValue('SupplierName', value?.SupplierName);
+                }}
+                error={touched.SupplierId && Boolean(errors.SupplierId)}
+                helperText={touched.SupplierId && errors.SupplierId}
+                variant="outlined"
+                disabled={dialogState.isSubmit}
+              />
+            </Grid>
+          ) : (
+            <></>
+          )}
           <Grid item xs={12}>
             <TextField
               fullWidth
