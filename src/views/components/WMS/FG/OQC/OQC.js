@@ -13,6 +13,8 @@ import { Box, Grid, Table, TableBody, TableCell, TableContainer, TableRow } from
 import { oqcService } from '@services';
 import moment from 'moment';
 import ActualPrintDialog from '../../../MMS/Actual/ActualPrintDialog';
+import ActualPrint from '../../../MMS/Actual/ActualPrint';
+import ReactDOMServer from 'react-dom/server';
 
 const OQC = (props) => {
   let isRendered = useRef(true);
@@ -84,6 +86,13 @@ const OQC = (props) => {
         console.log(error);
       }
     }
+  };
+
+  const handleButtonPrintClick = () => {
+    const newWindow = window.open('', '', '');
+    const htmlContent = ReactDOMServer.renderToString(<ActualPrint listData={[LotModelQC]} />);
+    newWindow.document.write(htmlContent);
+    newWindow.document.close();
   };
 
   const style = {
@@ -313,7 +322,12 @@ const OQC = (props) => {
                     </TableRow>
                     <TableRow>
                       <TableCell colSpan={4} style={{ textAlign: 'center', borderTop: '1px solid black' }}>
-                        <MuiButton text="print" onClick={() => toggle()} color="info" />
+                        <MuiButton
+                          text="print"
+                          onClick={() => handleButtonPrintClick()}
+                          //onClick={() => toggle()}
+                          color="info"
+                        />
                       </TableCell>
                     </TableRow>
                   </TableBody>
