@@ -7,6 +7,7 @@ const LotPrintNewWindow = ({ item }) => {
     styleBorderAndCenter: {
       borderRight: '1px solid black',
       textAlign: 'center',
+      fontSize: '22px',
     },
     borderBot: {
       borderBottom: '1px solid black',
@@ -28,21 +29,21 @@ const LotPrintNewWindow = ({ item }) => {
                 colSpan={2}
                 style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: '0px 3px !important' }}
               >
-                <b style={{ fontSize: '22px' }}>{item?.MaterialCode}</b>
+                <b style={{ fontSize: '32px' }}>{item?.MaterialCode}</b>
               </td>
               <td rowSpan={2} style={{ ...style.borderBot, textAlign: 'center' }}>
                 <QRCode value={`${item?.Id}`} size={80} />
               </td>
             </tr>
             <tr>
-              <td colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+              <td colSpan={3} style={{ ...style.styleBorderAndCenter, fontSize: '18px', ...style.borderBot }}>
                 {item?.Description}
               </td>
             </tr>
             <tr>
               <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</td>
               <td style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: '0px 3px !important' }}>
-                <b style={{ fontSize: '22px' }}>{`${item?.Qty} ${item?.Unit}`} </b>
+                <b style={{ fontSize: '32px' }}>{`${item?.Qty} ${item?.Unit}`} </b>
               </td>
               <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</td>
               <td style={{ ...style.borderBot, textAlign: 'center', padding: '5px !important' }}>
@@ -62,7 +63,7 @@ const LotPrintNewWindow = ({ item }) => {
                 <span style={{ display: 'block' }}>{moment(item?.createdDate).add(7, 'hours').format('HH:mm:ss')}</span>
               </td>
               <td rowSpan={2} colSpan={3} style={{ textAlign: 'center' }}>
-                <b style={{ fontSize: '22px' }}>{item?.LotSerial}</b>
+                <b style={{ fontSize: '32px' }}>{item?.LotSerial}</b>
               </td>
             </tr>
             <tr>

@@ -7,6 +7,7 @@ const FGPackingLotPrint = ({ listData }) => {
     styleBorderAndCenter: {
       borderRight: '1px solid black',
       textAlign: 'center',
+      fontSize: '22px',
     },
     borderBot: {
       borderBottom: '1px solid black',
@@ -39,7 +40,7 @@ const FGPackingLotPrint = ({ listData }) => {
                   </tr>
 
                   <tr>
-                    <td colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                    <td colSpan={3} style={{ ...style.styleBorderAndCenter, fontSize: '18px', ...style.borderBot }}>
                       {dataPrint?.MaterialDescription}
                     </td>
                   </tr>

@@ -7,6 +7,7 @@ const ActualPrint = ({ listData }) => {
     styleBorderAndCenter: {
       borderRight: '1px solid black',
       textAlign: 'center',
+      fontSize: '22px',
     },
     borderBot: {
       borderBottom: '1px solid black',
@@ -38,7 +39,7 @@ const ActualPrint = ({ listData }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                    <td colSpan={3} style={{ ...style.styleBorderAndCenter, fontSize: '18px', ...style.borderBot }}>
                       {item?.MaterialDescription}
                     </td>
                   </tr>
