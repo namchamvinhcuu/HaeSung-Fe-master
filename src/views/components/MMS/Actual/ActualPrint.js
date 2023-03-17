@@ -7,11 +7,11 @@ const ActualPrint = ({ listData }) => {
     styleBorderAndCenter: {
       borderRight: '1px solid black',
       textAlign: 'center',
-      fontSize: '22px',
+      fontSize: '18px',
     },
     borderBot: {
       borderBottom: '1px solid black',
-      padding: '10px',
+      // padding: '10px',
     },
   };
 
@@ -30,16 +30,16 @@ const ActualPrint = ({ listData }) => {
                     <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>CODE</td>
                     <td
                       colSpan={2}
-                      style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: '0px 3px !important' }}
+                      style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: '1px !important' }}
                     >
-                      <b style={{ fontSize: '22px' }}>{item?.MaterialColorCode}</b>
+                      <b style={{ fontSize: '15px' }}>{item?.MaterialColorCode}</b>
                     </td>
                     <td rowSpan={2} style={{ ...style.borderBot, textAlign: 'center' }}>
-                      <QRCode value={`${item?.Id}`} size={80} />
+                      <QRCode value={`${item?.Id}`} size={60} />
                     </td>
                   </tr>
                   <tr>
-                    <td colSpan={3} style={{ ...style.styleBorderAndCenter, fontSize: '18px', ...style.borderBot }}>
+                    <td colSpan={3} style={{ ...style.styleBorderAndCenter, fontSize: '12px', ...style.borderBot }}>
                       {item?.MaterialDescription}
                     </td>
                   </tr>
@@ -53,10 +53,10 @@ const ActualPrint = ({ listData }) => {
                         padding: '0px 3px !important',
                       }}
                     >
-                      <b style={{ fontSize: '22px' }}>{`${item?.Qty} ${item?.UnitName}`} </b>
+                      <b style={{ fontSize: '15px' }}>{`${item?.Qty} ${item?.UnitName}`} </b>
                     </td>
                     <td style={{ ...style.styleBorderAndCenter, ...style.borderBot, width: '25%' }}>VENDOR</td>
-                    <td style={{ ...style.borderBot, textAlign: 'center', padding: '5px !important', width: '25%' }}>
+                    <td style={{ ...style.borderBot, textAlign: 'center', padding: '1px !important', width: '25%' }}>
                       HANLIM
                     </td>
                   </tr>
@@ -75,11 +75,11 @@ const ActualPrint = ({ listData }) => {
                       </span>
                     </td>
                     <td rowSpan={2} colSpan={3} style={{ textAlign: 'center' }}>
-                      <b style={{ fontSize: '22px' }}>{item?.LotSerial}</b>
+                      <b style={{ fontSize: '15px' }}>{item?.LotSerial}</b>
                     </td>
                   </tr>
                   <tr>
-                    <td style={{ ...style.styleBorderAndCenter, padding: '5px' }}>
+                    <td style={{ ...style.styleBorderAndCenter, padding: '1px' }}>
                       {`W${moment(item?.QCDate).week()} / T${moment(item?.QCDate).format('MM')}`}
                     </td>
                   </tr>

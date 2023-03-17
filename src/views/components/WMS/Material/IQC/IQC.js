@@ -295,11 +295,11 @@ const IQC = (props) => {
       styleBorderAndCenter: {
         borderRight: '1px solid black',
         textAlign: 'center',
-        fontSize: '22px',
+        fontSize: '18px',
       },
       borderBot: {
         borderBottom: '1px solid black',
-        padding: '10px',
+        // padding: '10px',
       },
     };
 
@@ -317,29 +317,26 @@ const IQC = (props) => {
                 <td
                   colSpan={2}
                   style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
-                  sx={{ padding: '0px 3px !important' }}
+                  sx={{ padding: '1px  !important' }}
                 >
-                  <b style={{ fontSize: '22px' }}>{item?.MaterialColorCode}</b>
+                  <b style={{ fontSize: '15px' }}>{item?.MaterialColorCode}</b>
                 </td>
                 <td rowSpan={2} sx={{ textAlign: 'center' }} style={style.borderBot}>
-                  <QRCode value={`${item?.Id}`} size={80} />
+                  <QRCode value={`${item?.Id}`} size={60} />
                 </td>
               </tr>
               <tr>
-                <td colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                <td colSpan={3} style={{ ...style.styleBorderAndCenter, fontSize: '12px', ...style.borderBot }}>
                   {item?.Description}
                 </td>
               </tr>
               <tr>
                 <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</td>
-                <td
-                  style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
-                  sx={{ padding: '0px 3px !important' }}
-                >
-                  <b style={{ fontSize: '22px' }}>{`${item?.Qty} ${item?.Unit}`} </b>
+                <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }} sx={{ padding: '0px  !important' }}>
+                  <b style={{ fontSize: '15px' }}>{`${item?.Qty} ${item?.Unit}`} </b>
                 </td>
                 <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</td>
-                <td sx={{ textAlign: 'center', padding: '5px !important' }} style={style.borderBot}>
+                <td sx={{ textAlign: 'center', padding: '1px !important' }} style={style.borderBot}>
                   {item?.SupplierCode}
                 </td>
               </tr>
@@ -360,11 +357,11 @@ const IQC = (props) => {
                   </span>
                 </td>
                 <td rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
-                  <b style={{ fontSize: '22px' }}>{item?.LotSerial}</b>
+                  <b style={{ fontSize: '15px' }}>{item?.LotSerial}</b>
                 </td>
               </tr>
               <tr>
-                <td style={style.styleBorderAndCenter} sx={{ padding: '5px' }}>
+                <td style={style.styleBorderAndCenter} sx={{ padding: '1px' }}>
                   W{getWeekByCreatedDate(item?.createdDate)} / T{moment(item?.createdDate).add(7, 'hours').format('MM')}
                 </td>
               </tr>

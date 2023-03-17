@@ -86,9 +86,10 @@ const style = {
   table: {
     width: '100%',
     marginTop: '5px',
+    marginTop: '5px',
     textAlign: 'center',
     fontSize: '20px',
-    pageBreakAfter: 'always',
+    // pageBreakAfter: 'always',
     border: 'black solid 2px',
   },
   cell: {

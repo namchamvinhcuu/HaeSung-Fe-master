@@ -7,11 +7,11 @@ const FGPackingLotPrint = ({ listData }) => {
     styleBorderAndCenter: {
       borderRight: '1px solid black',
       textAlign: 'center',
-      fontSize: '22px',
+      fontSize: '18px',
     },
     borderBot: {
       borderBottom: '1px solid black',
-      padding: '10px',
+      // padding: '10px',
     },
   };
 
@@ -30,27 +30,27 @@ const FGPackingLotPrint = ({ listData }) => {
                     <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>CODE</td>
                     <td
                       colSpan={2}
-                      style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: '0px 3px !important' }}
+                      style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: '1px !important' }}
                     >
-                      <b style={{ fontSize: '22px' }}>{dataPrint?.MaterialCode}</b>
+                      <b style={{ fontSize: '15px' }}>{dataPrint?.MaterialCode}</b>
                     </td>
                     <td rowSpan={2} style={{ ...style.borderBot, extAlign: 'center' }}>
-                      <QRCode value={`${dataPrint?.PackingLabelId}`} size={80} />
+                      <QRCode value={`${dataPrint?.PackingLabelId}`} size={60} />
                     </td>
                   </tr>
 
                   <tr>
-                    <td colSpan={3} style={{ ...style.styleBorderAndCenter, fontSize: '18px', ...style.borderBot }}>
+                    <td colSpan={3} style={{ ...style.styleBorderAndCenter, fontSize: '12px', ...style.borderBot }}>
                       {dataPrint?.MaterialDescription}
                     </td>
                   </tr>
                   <tr>
                     <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</td>
-                    <td style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: '0px 3px !important' }}>
-                      <b style={{ fontSize: '22px' }}>{dataPrint?.Qty + ' ' + dataPrint?.UnitName} </b>
+                    <td style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: '0px !important' }}>
+                      <b style={{ fontSize: '15px' }}>{dataPrint?.Qty + ' ' + dataPrint?.UnitName} </b>
                     </td>
                     <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</td>
-                    <td style={{ ...style.borderBot, textAlign: 'center', padding: '5px !important' }}>HANLIM</td>
+                    <td style={{ ...style.borderBot, textAlign: 'center', padding: '1px !important' }}>HANLIM</td>
                   </tr>
                   <tr>
                     <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>Packing #</td>
@@ -65,15 +65,15 @@ const FGPackingLotPrint = ({ listData }) => {
                       {moment(dataPrint?.PackingDate).add(7, 'hours').format('HH:mm:ss')}
                     </td>
                     <td colSpan={3} style={{ ...style.borderBot, textAlign: 'center' }}>
-                      <b style={{ fontSize: '22px' }}>{dataPrint?.PackingSerial}</b>
+                      <b style={{ fontSize: '15px' }}>{dataPrint?.PackingSerial}</b>
                     </td>
                   </tr>
                   <tr>
-                    <td style={{ ...style.styleBorderAndCenter, padding: '10px' }}>
+                    <td style={{ ...style.styleBorderAndCenter, padding: '1px' }}>
                       {`W${moment(dataPrint?.QCDate).week()} / T${moment(dataPrint?.QCDate).format('MM')}`}
                     </td>
                     <td colSpan={3} style={{ textAlign: 'center' }}>
-                      <b style={{ fontSize: '22px' }}>{dataPrint?.SamsungLabelCode}</b>
+                      <b style={{ fontSize: '15px' }}>{dataPrint?.SamsungLabelCode}</b>
                     </td>
                   </tr>
                 </tbody>
