@@ -28,6 +28,10 @@ import { Button, ButtonGroup, Tooltip, Typography } from '@mui/material';
 import { locationService, materialPutAwayService, wmsLayoutService, eslService, iqcService } from '@services';
 import WMSLayoutPrintBinDialog from './WMSLayoutPrintBinDialog';
 import WMSLayoutPrintLotDialog from './WMSLayoutPrintLotDialog';
+import WMSLayoutPrintLot from './WMSLayoutPrintLot';
+import WMSLayoutPrintBin from './WMSLayoutPrintBin';
+import WMSLayoutPrintBinList from './WMSLayoutPrintBinList';
+import ReactDOMServer from 'react-dom/server';
 
 const SCENE_BASE_WIDTH = 1080;
 const SCENE_BASE_HEIGHT = 700;
@@ -643,6 +647,30 @@ const WMSLayout = (props) => {
     }
   };
 
+  const handleButtonPrintLot = async () => {
+    const newWindow = window.open('', '', '');
+    const res = await wmsLayoutService.getLotByBinId({ page: 1, pageSize: 0, BinId: BinId });
+    const htmlContent = ReactDOMServer.renderToString(<WMSLayoutPrintLot listData={res.Data} />);
+    newWindow.document.write(htmlContent);
+    newWindow.document.close();
+  };
+
+  const handleButtonPrintBin = async () => {
+    const newWindow = window.open('', '', '');
+    const res = await wmsLayoutService.getBinById({ BinId: BinId });
+    const htmlContent = ReactDOMServer.renderToString(<WMSLayoutPrintBin item={res.Data} />);
+    newWindow.document.write(htmlContent);
+    newWindow.document.close();
+  };
+
+  const handleButtonPrintBinList = async () => {
+    const newWindow = window.open('', '', '');
+    const res = await getBins();
+    const htmlContent = ReactDOMServer.renderToString(<WMSLayoutPrintBinList listData={res.Data} />);
+    newWindow.document.write(htmlContent);
+    newWindow.document.close();
+  };
+
   return (
     <React.Fragment>
       <Grid container direction="row" justifyContent="space-between" spacing={2}>
@@ -786,7 +814,12 @@ const WMSLayout = (props) => {
                 sx={{ ml: 1, float: 'right' }}
                 disabled={selectedShelfId ? false : true}
               >
-                <MuiButton text="print" onClick={toggle} sx={{ mt: 0 }} />
+                <MuiButton
+                  text="print"
+                  onClick={handleButtonPrintBinList}
+                  // onClick={toggle}
+                  sx={{ mt: 0 }}
+                />
               </ButtonGroup>
             </Grid>
 
@@ -813,12 +846,21 @@ const WMSLayout = (props) => {
                   disabled={BinId > 0 ? false : true}
                   sx={{ whiteSpace: 'nowrap' }}
                 />
+
+                <MuiButton
+                  text="print"
+                  sx={{ mt: 0, mb: 0 }}
+                  onClick={handleButtonPrintBin}
+                  disabled={BinId > 0 ? false : true}
+                />
               </Grid>
               <Grid item sx={{ mt: 2, mb: 2, textAlign: 'right' }}>
                 <MuiButton
                   text="print"
+                  color="secondary"
                   sx={{ mt: 0, mb: 0 }}
-                  onClick={toggle2}
+                  // onClick={toggle2}
+                  onClick={handleButtonPrintLot}
                   disabled={lotState.data.length > 0 ? false : true}
                 />
               </Grid>
