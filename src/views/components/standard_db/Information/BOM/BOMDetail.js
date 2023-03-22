@@ -92,22 +92,27 @@ export default function BOMDetail({ BomId, newDataChild }) {
     {
       field: 'MaterialCode',
       headerName: intl.formatMessage({ id: 'bom.MaterialId' }),
-      width: 200,
+      flex: 0.5,
+    },
+    {
+      field: 'Description',
+      headerName: intl.formatMessage({ id: 'material.Description' }),
+      flex: 0.7,
     },
     {
       field: 'MaterialUnit',
       headerName: intl.formatMessage({ id: 'bom.Unit' }),
-      flex: 0.5,
+      flex: 0.3,
     },
     {
       field: 'BomLevel',
       headerName: intl.formatMessage({ id: 'bom.BomLevel' }),
-      flex: 0.5,
+      flex: 0.3,
     },
     {
       field: 'Amount',
       headerName: intl.formatMessage({ id: 'bom.Amount' }),
-      flex: 0.5,
+      flex: 0.3,
     },
     {
       field: 'Remark',

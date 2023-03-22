@@ -102,6 +102,11 @@ export default function BOM() {
       flex: 0.5,
     },
     {
+      field: 'Description',
+      headerName: intl.formatMessage({ id: 'material.Description' }),
+      flex: 0.6,
+    },
+    {
       field: 'Remark',
       headerName: intl.formatMessage({ id: 'bom.Remark' }),
       flex: 0.7,

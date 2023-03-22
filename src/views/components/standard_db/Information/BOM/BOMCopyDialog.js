@@ -94,6 +94,7 @@ const BOMCopyDialog = ({ initModal, isOpen, onClose, resetData, newDataChild, se
     { field: 'BomCode', headerName: intl.formatMessage({ id: 'bom.BomCode' }), flex: 0.5 },
     { field: 'ParentCode', headerName: intl.formatMessage({ id: 'bom.ParentCode' }), flex: 0.6 },
     { field: 'MaterialCode', headerName: intl.formatMessage({ id: 'bom.MaterialId' }), flex: 0.6 },
+    { field: 'Description', headerName: intl.formatMessage({ id: 'material.Description' }), flex: 0.6 },
     { field: 'BomLevel', headerName: intl.formatMessage({ id: 'bom.BomLevel' }), flex: 0.3 },
     { field: 'Amount', headerName: intl.formatMessage({ id: 'bom.Amount' }), flex: 0.3 },
     { field: 'Remark', headerName: intl.formatMessage({ id: 'bom.Remark' }), flex: 0.6 },
