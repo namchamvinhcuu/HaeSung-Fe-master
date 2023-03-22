@@ -53,7 +53,7 @@ export default function BOM() {
     {
       field: 'action',
       headerName: '',
-      flex: 0.3,
+      width: 70,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
@@ -89,27 +89,27 @@ export default function BOM() {
     {
       field: 'BomCode',
       headerName: intl.formatMessage({ id: 'bom.BomCode' }),
-      flex: 0.5,
+      width: 150,
     },
     {
       field: 'Version',
       headerName: intl.formatMessage({ id: 'bom.Version' }),
-      flex: 0.3,
+      width: 80,
     },
     {
       field: 'MaterialCode',
       headerName: intl.formatMessage({ id: 'bom.MaterialId' }),
-      flex: 0.5,
+      width: 200,
     },
     {
       field: 'Description',
       headerName: intl.formatMessage({ id: 'material.Description' }),
-      flex: 0.6,
+      width: 300,
     },
     {
       field: 'Remark',
       headerName: intl.formatMessage({ id: 'bom.Remark' }),
-      flex: 0.7,
+      width: 200,
       renderCell: (params) => {
         return (
           <Tooltip title={params.row.Remark ?? ''} className="col-text-elip">
@@ -121,24 +121,24 @@ export default function BOM() {
     {
       field: 'createdName',
       headerName: intl.formatMessage({ id: 'general.createdName' }),
-      flex: 0.5,
+      width: 150,
     },
     {
       field: 'createdDate',
       headerName: intl.formatMessage({ id: 'general.createdDate' }),
-      flex: 0.5,
+      width: 150,
       valueFormatter: (params) =>
         params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
     {
       field: 'modifiedName',
       headerName: intl.formatMessage({ id: 'general.modifiedName' }),
-      flex: 0.5,
+      width: 150,
     },
     {
       field: 'modifiedDate',
       headerName: intl.formatMessage({ id: 'general.modifiedDate' }),
-      flex: 0.5,
+      width: 150,
       valueFormatter: (params) =>
         params?.value ? moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss') : null,
     },
@@ -334,7 +334,9 @@ export default function BOM() {
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData)) return `Mui-created`;
         }}
-        initialState={{ pinnedColumns: { right: ['action'] } }}
+        initialState={{
+          pinnedColumns: { right: ['action'], left: ['id', 'BomCode', 'Version', 'MaterialCode', 'Description'] },
+        }}
       />
 
       <BOMDialog
