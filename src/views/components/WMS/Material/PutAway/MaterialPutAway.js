@@ -177,7 +177,7 @@ const MaterialPutAway = (props) => {
     {
       field: 'action',
       headerName: '',
-      width: 80,
+      width: 120,
       // headerAlign: 'center',
       disableClickEventBubbling: true,
       sortable: false,
