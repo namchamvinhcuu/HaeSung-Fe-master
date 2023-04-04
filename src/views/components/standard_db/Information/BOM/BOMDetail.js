@@ -46,7 +46,7 @@ export default function BOMDetail({ BomId, newDataChild }) {
     {
       field: 'action',
       headerName: '',
-      flex: 0.3,
+      width: 70,
       disableClickEventBubbling: true,
       sortable: false,
       disableColumnMenu: true,
@@ -82,12 +82,12 @@ export default function BOMDetail({ BomId, newDataChild }) {
     {
       field: 'BomCode',
       headerName: intl.formatMessage({ id: 'bom.BomCode' }),
-      flex: 0.5,
+      width: 150,
     },
     {
       field: 'ParentCode',
       headerName: intl.formatMessage({ id: 'bom.ParentCode' }),
-      flex: 0.5,
+      width: 150,
     },
     {
       field: 'MaterialCode',
@@ -95,24 +95,29 @@ export default function BOMDetail({ BomId, newDataChild }) {
       width: 200,
     },
     {
+      field: 'Description',
+      headerName: intl.formatMessage({ id: 'material.Description' }),
+      width: 300,
+    },
+    {
       field: 'MaterialUnit',
       headerName: intl.formatMessage({ id: 'bom.Unit' }),
-      flex: 0.5,
+      width: 100,
     },
     {
       field: 'BomLevel',
       headerName: intl.formatMessage({ id: 'bom.BomLevel' }),
-      flex: 0.5,
+      width: 80,
     },
     {
       field: 'Amount',
       headerName: intl.formatMessage({ id: 'bom.Amount' }),
-      flex: 0.5,
+      width: 80,
     },
     {
       field: 'Remark',
       headerName: intl.formatMessage({ id: 'bom.Remark' }),
-      flex: 0.7,
+      width: 200,
       renderCell: (params) => {
         return (
           <Tooltip title={params.row.Remark ?? ''} className="col-text-elip">
@@ -124,7 +129,7 @@ export default function BOMDetail({ BomId, newDataChild }) {
     {
       field: 'createdName',
       headerName: intl.formatMessage({ id: 'general.createdName' }),
-      flex: 0.5,
+      width: 150,
     },
     {
       field: 'createdDate',
@@ -136,7 +141,7 @@ export default function BOMDetail({ BomId, newDataChild }) {
     {
       field: 'modifiedName',
       headerName: intl.formatMessage({ id: 'general.modifiedName' }),
-      flex: 0.5,
+      width: 150,
     },
     {
       field: 'modifiedDate',
@@ -340,7 +345,9 @@ export default function BOMDetail({ BomId, newDataChild }) {
         getRowClassName={(params) => {
           if (_.isEqual(params.row, newData) || _.isEqual(params.row, newDataChild)) return `Mui-created`;
         }}
-        initialState={{ pinnedColumns: { right: ['action'] } }}
+        initialState={{
+          pinnedColumns: { right: ['action'], left: ['id', 'BomCode', 'ParentCode', 'MaterialCode', 'Description'] },
+        }}
       />
 
       <BOMDetailDialog

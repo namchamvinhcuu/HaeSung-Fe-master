@@ -57,7 +57,7 @@ const FGPackingLotPrint = ({ listData }) => {
                     <td colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
                       {dataPrint?.PackingLabelId}
                     </td>
-                    <td style={{ ...style.borderBot, textAlign: 'center' }}>{dataPrint?.QCResult ? 'OK' : 'NG'}</td>
+                    <td style={{ ...style.borderBot, textAlign: 'center' }}>OK</td>
                   </tr>
                   <tr>
                     <td style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: 5, whiteSpace: 'nowrap' }}>

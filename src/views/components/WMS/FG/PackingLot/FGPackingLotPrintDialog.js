@@ -91,7 +91,7 @@ const FGPackingLotPrintDialog = ({ listData, isOpen, onClose }) => {
                               {dataPrint?.PackingLabelId}
                             </TableCell>
                             <TableCell sx={{ textAlign: 'center' }} style={style.borderBot}>
-                              {dataPrint?.QCResult ? 'OK' : 'NG'}
+                             OK
                             </TableCell>
                           </TableRow>
                           <TableRow>

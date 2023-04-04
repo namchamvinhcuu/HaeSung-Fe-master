@@ -32,7 +32,7 @@ const ActualPrint = ({ listData }) => {
                       colSpan={2}
                       style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: '1px !important' }}
                     >
-                      <b style={{ fontSize: '15px' }}>{item?.MaterialColorCode}</b>
+                      <b style={{ fontSize: '15px' }}>{item?.MaterialCode}</b>
                     </td>
                     <td rowSpan={2} style={{ ...style.borderBot, textAlign: 'center' }}>
                       <QRCode value={`${item?.Id}`} size={60} />
