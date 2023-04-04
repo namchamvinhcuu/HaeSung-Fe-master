@@ -1,4 +1,4 @@
 import useFormCustom from './useFormCustom';
 import usePrevious from './usePrevious';
-
-export { useFormCustom, usePrevious };
+import usePrintBIXOLON from './usePrintBIXOLON';
+export { useFormCustom, usePrevious, usePrintBIXOLON };

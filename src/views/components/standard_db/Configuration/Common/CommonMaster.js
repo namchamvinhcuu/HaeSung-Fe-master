@@ -3,6 +3,8 @@ import { bindActionCreators } from 'redux';
 import { CombineStateToProps, CombineDispatchToProps } from '@plugins/helperJS';
 import { User_Operations } from '@appstate/user';
 import { Store } from '@appstate';
+import { usePrintBIXOLON } from '@hooks';
+
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
@@ -24,6 +26,8 @@ import UndoIcon from '@mui/icons-material/Undo';
 import { GetLocalStorage, SetLocalStorage, RemoveLocalStorage } from '@utils';
 import * as ConfigConstants from '@constants/ConfigConstants';
 
+import '@static/zebra/BrowserPrint-3.0.216.min.js';
+import ChooseDevicePrintDialog from './ChooseDevicePrintDialog.js';
 const CommonMaster = () => {
   const intl = useIntl();
   const initCommonMasterModel = {
@@ -43,7 +47,7 @@ const CommonMaster = () => {
       showDelete: true,
     },
   });
-
+  usePrintBIXOLON();
   const RoleUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
   const setRoleArray = RoleUser.RoleNameList.replace(' ', '');
   const RoleArr = setRoleArray.split(',');
@@ -52,6 +56,8 @@ const CommonMaster = () => {
 
   const [isOpenModifyDialog, setIsOpenModifyDialog] = useState(false);
   const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false);
+
+  const [isOpenChooseDevicePrintDialog, setIsOpenChooseDevicePrinDialog] = useState(false);
 
   const changeSearchData = (e, inputName) => {
     let newSearchData = { ...commomMasterState.searchData };
@@ -264,12 +270,44 @@ const CommonMaster = () => {
     { field: 'modifiedBy', headerName: 'modifiedBy', flex: 0.3, hide: true },
     { field: 'row_version', headerName: 'row_version', flex: 0.3, hide: true },
   ];
-
+  const handlePrintBIXOLON = () => {
+    window.dispatchEvent(
+      new CustomEvent('printBIXILON', {
+        detail: [
+          {
+            MATERIAL_NUMBER: 'MATERIAL_NUMBER',
+            DESCRIPTION_LOC: 'DESCRIPTION_LOC',
+            TOTAL_QTY: '99',
+            ORIGIN_CODE: 'VI',
+            PLANT_CODE: 'P000',
+            SL_CD: 'SL_CD',
+            ITEM_ACCT: 'ITEM_ACCT',
+            LOT_CD: 'LOT_CD',
+            createdDate: moment().format('YYYY-MM-DD'),
+            BP_NM: 'BP_NM',
+            MFG_DT: moment().format('YYYY-MM-DD'),
+          },
+        ],
+      })
+      //new CustomEvent('printBIXILON', { detail: [1111111111] })
+    );
+  };
   return (
     <React.Fragment>
       <Grid container direction="row" justifyContent="space-between" alignItems="flex-end" sx={{ mb: 1, pr: 1 }}>
-        <Grid item xs={6}>
+        <Grid item xs={3}>
           <MuiButton text="create" color="success" onClick={toggleCreateCommonMSDialog} />
+        </Grid>
+        <Grid item xs={3}>
+          <MuiButton
+            text="print"
+            color="primary"
+            onClick={() => {
+              //writeToSelectedPrinter(testString);
+              setIsOpenChooseDevicePrinDialog(true);
+            }}
+          />
+          <MuiButton text="print" color="success" onClick={handlePrintBIXOLON} />
         </Grid>
         <Grid item xs>
           <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
@@ -347,6 +385,10 @@ const CommonMaster = () => {
       <Grid item sm={6} sx={{ margin: 1, background: '#fff' }}>
         {selectedRow && <CommonDetail rowmaster={selectedRow} />}
       </Grid>
+      <ChooseDevicePrintDialog
+        isOpen={isOpenChooseDevicePrintDialog}
+        onClose={() => setIsOpenChooseDevicePrinDialog(!isOpenChooseDevicePrintDialog)}
+      />
     </React.Fragment>
   );
 };

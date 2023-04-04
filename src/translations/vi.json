@@ -79,7 +79,10 @@
     "datetime_format_invalid": "Format ngày giờ không hợp lệ",
     "over_range_999": "Sequence is over 999",
     "qty_notEnough": "Số lượng không đủ",
-    "excel_error": "Lỗi file Excel: [{error}]"
+    "excel_error": "Lỗi file Excel: [{error}]",
+    "choose_printer": "Chọn máy in",
+    "not_select_printer": "Bạn chưa chọn máy in ấn",
+    "cannot_connect_printer": "Không thể kết nối máy in"
   },
   "login": {
     "account_password_invalid": "Tài khoản/Mật khẩu không hợp lệ",
@@ -207,7 +210,7 @@
     "duplicated_code": "Mold Code đã trùng",
     "duplicated_serial": "Mold Serial đã trùng",
     "SerialCode": "Serial / Code",
-    "duplicated_code_seri" :"Code và Serial đã trùng"
+    "duplicated_code_seri": "Code và Serial đã trùng"
   },
   "staff": {
     "StaffCode": "Mã Nhân Viên",
