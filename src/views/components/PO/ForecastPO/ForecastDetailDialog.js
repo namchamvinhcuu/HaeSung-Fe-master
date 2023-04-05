@@ -25,6 +25,7 @@ const ForecastDetailDialog = (props) => {
   const { initModal, isOpen, onClose, setNewData, setUpdateData, mode, FPoMasterId, fetchData } = props;
   const [year, setYear] = useState(new Date().getFullYear());
   const [week, setWeek] = useState(getCurrentWeek());
+  const [ExcelHistory, setExcelHistory] = useState([]);
   const refFile = useRef();
   const intl = useIntl();
   const defaultValue = {
@@ -90,6 +91,7 @@ const ForecastDetailDialog = (props) => {
     });
     // refFile.current.value = '';
     // refFile.current.text = '';
+    setExcelHistory([]);
     resetForm();
     onClose();
   };
@@ -202,22 +204,26 @@ const ForecastDetailDialog = (props) => {
     });
 
     const res = await forecastService.createDetailByExcel(rows);
-
-    if (res.HttpResponseCode === 200) {
-      SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    setExcelHistory([]);
+    if (res.ResponseMessage !== '') {
+      // SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
       fetchData();
-      handleCloseDialog();
+      // handleCloseDialog();
+      setExcelHistory(res.ResponseMessage.split(','));
     } else {
-      if (res.HttpResponseCode === 400 && res.ResponseMessage === 'forecast.material_type_not_fg') {
-        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-      }
-      if (res.HttpResponseCode === 400 && res.ResponseMessage === 'forecast.duplicated_product_buyer') {
-        ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-      }
-      if (res.HttpResponseCode === 400 && res.ResponseMessage === '') {
-        ErrorAlert(intl.formatMessage({ id: 'Files.Data_Invalid' }));
-      }
+      ErrorAlert(intl.formatMessage({ id: 'Files.Data_Invalid' }));
     }
+    // else {
+    //   if (res.HttpResponseCode === 400 && res.ResponseMessage === 'forecast.material_type_not_fg') {
+    //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //   }
+    //   if (res.HttpResponseCode === 400 && res.ResponseMessage === 'forecast.duplicated_product_buyer') {
+    //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+    //   }
+    //   if (res.HttpResponseCode === 400 && res.ResponseMessage === '') {
+    //     ErrorAlert(intl.formatMessage({ id: 'Files.Data_Invalid' }));
+    //   }
+    // }
   };
 
   const handleUpload = async () => {
@@ -499,6 +505,22 @@ const ForecastDetailDialog = (props) => {
                         </tr>
                       );
                     })
+                  ) : ExcelHistory.length > 0 ? (
+                    <>
+                      <tr>
+                        <th colSpan={3}>History</th>
+                      </tr>
+                      {ExcelHistory.map((item, index) => {
+                        if (item != '')
+                          return (
+                            <tr key={`ITEM${index}`}>
+                              <td style={{ width: '15%' }}>{index + 1}</td>
+                              <td style={{ width: '20%' }}>{item.split('|')[0]}</td>
+                              <td style={{ width: '65%' }}>{item.split('|')[1]}</td>
+                            </tr>
+                          );
+                      })}
+                    </>
                   ) : (
                     <tr>
                       <td colSpan="100" className="text-center">
