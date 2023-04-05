@@ -232,23 +232,24 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
   };
 
   const onSubmit = async (data) => {
+    console.log('🚀 ~ file: ActualDialog.js:241 ~ onSubmit ~ data:', data);
     setDialogState({ ...dialogState, isSubmit: true });
     if (!state.status) {
       handleDataDemo();
     } else {
-      const res = await actualService.createByWo(data);
-      if (res && isRendered) {
-        if (res.HttpResponseCode === 200) {
-          SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-          fetchData(woId);
-          getWoInfo(woId, true);
-        } else {
-          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-          handleReset();
-        }
-      } else {
-        ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
-      }
+      // const res = await actualService.createByWo(data);
+      // if (res && isRendered) {
+      //   if (res.HttpResponseCode === 200) {
+      //     SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      //     fetchData(woId);
+      //     getWoInfo(woId, true);
+      //   } else {
+      //     ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+      //     handleReset();
+      //   }
+      // } else {
+      //   ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
+      // }
     }
     setDialogState({ ...dialogState, isSubmit: false });
   };
@@ -320,13 +321,13 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
       >
         <form onSubmit={handleSubmit}>
           <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }} alignItems="flex-end">
-            <Grid item container spacing={2} xs={12}>
+            {/* <Grid item container spacing={2} xs={12}>
               <Grid item xs={3}>
                 <MuiTextField
                   autoFocus
                   required
-                  // disabled={state.status ? state.status : dialogState.isSubmit}
-                  disabled={true}
+                  disabled={state.status ? state.status : dialogState.isSubmit}
+                  // disabled={true}
                   label={intl.formatMessage({ id: 'actual.Qty' })}
                   type="number"
                   name="Qty"
@@ -381,19 +382,27 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
                   helperText={touched.QCId && errors.QCId}
                 />
               </Grid>
-            </Grid>
+            </Grid> */}
             <Grid item xs={12}>
               <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} alignItems="flex-end">
-                <Grid item xs={4}>
+                <Grid item>
                   <MuiButton text="scan" onClick={() => toggle2()} sx={{ whiteSpace: 'nowrap' }} />
+                  <Badge badgeContent={rowSelected.length} color="warning">
+                    <MuiButton
+                      text="print"
+                      color="success"
+                      disabled={rowSelected.length == 0 ? true : false}
+                      onClick={() => handlePrint()}
+                    />
+                  </Badge>
                 </Grid>
                 <Grid item>
-                  <MuiSubmitButton text="create" loading={dialogState.isSubmit} disabled={state.status} />
-                  <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} />
+                  {/* <MuiSubmitButton text="create" loading={dialogState.isSubmit} disabled={state.status} />
+                  <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} /> */}
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <MuiDataGrid
                 showLoading={state.isLoading}
                 isPagingServer={true}
@@ -407,8 +416,8 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
                 getRowId={(rows) => rows.Id}
                 hideFooter
               />
-            </Grid>
-            <Grid item xs={12}>
+            </Grid> */}
+            {/* <Grid item xs={12}>
               <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} alignItems="flex-end">
                 <Grid item>
                   <MuiSubmitButton text="save" loading={dialogState.isSubmit} disabled={!state.status} />
@@ -431,7 +440,7 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
                   />
                 </Grid>
               </Grid>
-            </Grid>
+            </Grid> */}
           </Grid>
         </form>
         <Grid container rowSpacing={2.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }} alignItems="width-end">
@@ -444,7 +453,7 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
               rows={state.data}
               checkboxSelection
               onSelectionModelChange={(ids) => setRowSelected(ids)}
-              gridHeight={200}
+              gridHeight={780}
               page={state.page - 1}
               pageSize={state.pageSize}
               rowCount={state.totalRow}
@@ -480,7 +489,15 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
         </Grid>
       </MuiDialog>
 
-      <ActualScanBarcode openScan={isShowing2} onClose={toggle2} woId={woId} />
+      <ActualScanBarcode
+        openScan={isShowing2}
+        onClose={toggle2}
+        woId={woId}
+        materialId={WOInfo.MaterialId}
+        materialCode={WOInfo.MaterialCode}
+        refreshLotDataGrid={fetchData}
+        getWoInfo={getWoInfo}
+      />
       <ActualPrintDialog isOpen={isShowing} onClose={toggle} listData={listData} />
     </React.Fragment>
   );

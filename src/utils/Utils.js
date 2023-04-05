@@ -59,7 +59,7 @@ function dateToTicks(date) {
 
   const ticks = epochOffset + date.getTime() * ticksPerMillisecond;
 
-  return Math.floor(ticks / 10000);
+  return Math.floor(ticks / 10000 + Math.random() * 100000);
 }
 
 const addDays = (date, days) => {

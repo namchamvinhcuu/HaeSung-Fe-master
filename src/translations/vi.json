@@ -441,7 +441,9 @@
     "TotalLotQty": "Total Lot Qty",
     "Remain": "Remain",
     "Qc": "QC",
-    "QCResult": "QC Result"
+    "QCResult": "QC Result",
+    "Barcode_has_been_scanned": "Mã đã được quét",
+    "Scan_wrong_code": "Mã không hợp lệ"
   },
   "lot": {
     "received": "Đã nhận",

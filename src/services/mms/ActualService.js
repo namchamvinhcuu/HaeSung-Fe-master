@@ -78,3 +78,13 @@ export const handleDeleteLot = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+export const handleCheckBarcodeScan = async (params) => {
+  try {
+    return await axios.get(`${API}/check-barcode-scan`, {
+      params: { ...params },
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
