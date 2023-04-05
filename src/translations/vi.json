@@ -427,7 +427,8 @@
     "OrderQty_GreaterThan_0": "SL yêu cầu phải lớn hơn 0",
     "StartDate_required": "Ngày bắt đầu không được để trống",
     "StartDate_invalid": "Ngày bắt đầu không đúng định dạng",
-    "Error_Update_WO": "WO không thể sửa"
+    "Error_Update_WO": "WO không thể sửa",
+    "No_More_Than_QTY": "Không được lớn hơn số lượng yêu cầu"
   },
   "actual": {
     "Qty": "Qty",

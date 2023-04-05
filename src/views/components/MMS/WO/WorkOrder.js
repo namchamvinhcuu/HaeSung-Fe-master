@@ -25,8 +25,10 @@ import moment from 'moment';
 import { useIntl } from 'react-intl';
 import WorkOrderDialog from './WorkOrderDialog';
 import { useMemo } from 'react';
+import ChooseDevicePrintDialog from './ChooseDevicePrintDialog';
 
 const WorkOrder = (props) => {
+  const [showPrint, setShowPrint] = useState(false);
   let isRendered = useRef(true);
   const intl = useIntl();
   const initStartDate = new Date();
@@ -76,32 +78,6 @@ const WorkOrder = (props) => {
     // Return the result of the comparison between itemStartDate and currentDate
     return itemStartDate !== currentDate;
   };
-
-  // const showingWO = async (workOrder) => {
-  //   if (
-  //     window.confirm(
-  //       intl.formatMessage({
-  //         id: 'general.confirm_showing',
-  //       })
-  //     )
-  //   ) {
-  //     try {
-  //       let res = await workOrderService.handleShowingWO(workOrder);
-  //       if (res) {
-  //         if (res && res.HttpResponseCode === 200) {
-  //           await fetchData();
-  //           SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-  //         } else {
-  //           ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-  //         }
-  //       } else {
-  //         ErrorAlert(intl.formatMessage({ id: 'general.system_error' }));
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  // };
 
   const showingWO = async (workOrder) => {
     // Show a confirmation window
@@ -213,31 +189,6 @@ const WorkOrder = (props) => {
     }
   };
 
-  // const changeSearchData = (e, inputName) => {
-  //   let newSearchData = { ...workOrderState.searchData };
-
-  //   newSearchData[inputName] = e;
-
-  //   switch (inputName) {
-  //     case 'StartSearchingDate':
-  //     case 'EndSearchingDate':
-  //       newSearchData[inputName] = e;
-  //       break;
-  //     case 'MaterialId':
-  //       newSearchData[inputName] = e ? e.MaterialId : WorkOrderDto.MaterialId;
-  //       newSearchData['MaterialCode'] = e ? e.MaterialCode : WorkOrderDto.MaterialCode;
-  //       break;
-
-  //     default:
-  //       newSearchData[inputName] = e.target.value;
-  //       break;
-  //   }
-
-  //   setWorkOrderState({
-  //     ...workOrderState,
-  //     searchData: { ...newSearchData },
-  //   });
-  // };
   const changeSearchData = (e, inputName) => {
     // Destructure the MaterialId and MaterialCode properties from the selected material object, if it exists
     const { MaterialId, MaterialCode } = e || {};
@@ -270,60 +221,6 @@ const WorkOrder = (props) => {
     const res = await workOrderService.getSearchMaterialArr(0, 0);
     return res;
   };
-
-  // const fetchData = async () => {
-  //   let flag = true;
-  //   let message = '';
-  //   const checkObj = { ...workOrderState.searchData };
-  //   _.forOwn(checkObj, (value, key) => {
-  //     switch (key) {
-  //       case 'StartSearchingDate':
-  //         if (value == 'Invalid Date') {
-  //           message = 'general.StartSearchingDate_invalid';
-  //           flag = false;
-  //         }
-  //         break;
-  //       case 'EndSearchingDate':
-  //         if (value == 'Invalid Date') {
-  //           message = 'general.EndSearchingDate_invalid';
-  //           flag = false;
-  //         }
-  //         break;
-
-  //       default:
-  //         break;
-  //     }
-  //   });
-
-  //   if (flag && isRendered) {
-  //     setWorkOrderState({
-  //       ...workOrderState,
-  //       isLoading: true,
-  //     });
-
-  //     const params = {
-  //       page: workOrderState.page,
-  //       pageSize: workOrderState.pageSize,
-  //       WoCode: workOrderState.searchData.WoCode.trim(),
-  //       MaterialId: workOrderState.searchData.MaterialId,
-  //       StartSearchingDate: new Date(workOrderState.searchData.StartSearchingDate),
-  //       EndSearchingDate: new Date(workOrderState.searchData.EndSearchingDate),
-  //       isActived: showActivedData,
-  //     };
-
-  //     const res = await workOrderService.get(params);
-
-  //     if (res && isRendered)
-  //       setWorkOrderState({
-  //         ...workOrderState,
-  //         data: !res.Data ? [] : [...res.Data],
-  //         totalRow: res.TotalRow,
-  //         isLoading: false,
-  //       });
-  //   } else {
-  //     ErrorAlert(intl.formatMessage({ id: message }));
-  //   }
-  // };
 
   // Function to check if dates are valid
   const checkInvalidDates = (checkObj) => {
@@ -501,7 +398,7 @@ const WorkOrder = (props) => {
                 aria-label="print"
                 size="small"
                 sx={[{ '&:hover': { border: '1px solid #9c27b0' }, color: '#9c27b0' }]}
-                onClick={() => handlePrint(params.row)}
+                onClick={togglePrint}
               >
                 <LocalPrintshopIcon fontSize="inherit" />
               </IconButton>
@@ -637,6 +534,9 @@ const WorkOrder = (props) => {
     },
   ];
 
+  const togglePrint = () => {
+    setShowPrint(!showPrint);
+  };
   return (
     <React.Fragment>
       <Grid container spacing={2} justifyContent="flex-end" alignItems="flex-end">
@@ -759,6 +659,7 @@ const WorkOrder = (props) => {
         mode={mode}
         fetchData={fetchData}
       />
+      <ChooseDevicePrintDialog isOpen={showPrint} onClose={togglePrint} dataPrint={selectedRow} />
     </React.Fragment>
   );
 };

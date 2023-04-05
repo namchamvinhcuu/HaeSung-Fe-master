@@ -427,7 +427,8 @@
     "OrderQty_GreaterThan_0": "Order Qty must be greater than zero",
     "StartDate_required": "Working Date is required",
     "StartDate_invalid": "Working Date format is invalid",
-    "Error_Update_WO": "WO can't modify"
+    "Error_Update_WO": "WO can't modify",
+    "No_More_Than_QTY": "No more than required quantity"
   },
   "actual": {
     "Qty": "Qty",
