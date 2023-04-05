@@ -4,7 +4,7 @@ import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { useModal } from '@basesShared';
+import { useModal, useModal2 } from '@basesShared';
 import {
   MuiAutocomplete,
   MuiButton,
@@ -26,10 +26,15 @@ import ActualPrintDialog from './ActualPrintDialog';
 import ActualPrint from './ActualPrint';
 import ReactDOMServer from 'react-dom/server';
 
+import ActualScanBarcode from './ActualScanBarcode';
+
 const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
   const intl = useIntl();
   let isRendered = useRef(true);
+
   const { isShowing, toggle } = useModal();
+  const { isShowing2, toggle2 } = useModal2();
+
   const [WOInfo, setWOInfo] = useState({ ActualQty: 0, OrderQty: 0, TotalLotQty: 0, Remain: 0, QCMasterId: 0 });
   const [rowSelected, setRowSelected] = useState([]);
   const [listData, setListData] = useState([]);
@@ -48,7 +53,7 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
 
   const defaultValue = {
     WoId: woId,
-    Qty: 12,
+    Qty: 0,
     LotNumber: 1,
     LotSerial: '',
     QCResult: 'OK',
@@ -306,7 +311,7 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
   return (
     <React.Fragment>
       <MuiDialog
-        maxWidth="lg"
+        maxWidth="xl"
         title={intl.formatMessage({ id: 'general.create' })}
         isOpen={isOpen}
         disabledCloseBtn={dialogState.isSubmit}
@@ -320,7 +325,8 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
                 <MuiTextField
                   autoFocus
                   required
-                  disabled={state.status ? state.status : dialogState.isSubmit}
+                  // disabled={state.status ? state.status : dialogState.isSubmit}
+                  disabled={true}
                   label={intl.formatMessage({ id: 'actual.Qty' })}
                   type="number"
                   name="Qty"
@@ -333,7 +339,8 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
               <Grid item xs={3}>
                 <MuiTextField
                   required
-                  disabled={state.status ? state.status : dialogState.isSubmit}
+                  // disabled={state.status ? state.status : dialogState.isSubmit}
+                  disabled={true}
                   label={intl.formatMessage({ id: 'actual.LotNumber' })}
                   type="number"
                   name="LotNumber"
@@ -376,8 +383,15 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              <MuiSubmitButton text="create" loading={dialogState.isSubmit} disabled={state.status} />
-              <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} />
+              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} alignItems="flex-end">
+                <Grid item xs={4}>
+                  <MuiButton text="scan" onClick={() => toggle2()} sx={{ whiteSpace: 'nowrap' }} />
+                </Grid>
+                <Grid item>
+                  <MuiSubmitButton text="create" loading={dialogState.isSubmit} disabled={state.status} />
+                  <MuiResetButton onClick={handleReset} disabled={dialogState.isSubmit} />
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item xs={12}>
               <MuiDataGrid
@@ -465,6 +479,8 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
           </Grid>
         </Grid>
       </MuiDialog>
+
+      <ActualScanBarcode openScan={isShowing2} onClose={toggle2} woId={woId} />
       <ActualPrintDialog isOpen={isShowing} onClose={toggle} listData={listData} />
     </React.Fragment>
   );
