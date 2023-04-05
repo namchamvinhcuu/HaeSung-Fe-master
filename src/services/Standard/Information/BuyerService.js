@@ -3,6 +3,7 @@ import * as ConfigConstants from '@constants/ConfigConstants';
 import { GetLocalStorage } from '@utils';
 
 const apiBuyer = '/api/buyer';
+
 const getBuyerList = async (params) => {
   try {
     return await axios.get(`${apiBuyer}/get-all`, {
@@ -10,6 +11,14 @@ const getBuyerList = async (params) => {
         ...params,
       },
     });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+const getForSelect = async () => {
+  try {
+    return await axios.get(`${apiBuyer}/get-for-select`);
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }
@@ -82,4 +91,4 @@ const downloadExcel = async (params) => {
   }
 };
 
-export { getBuyerList, createBuyer, modifyBuyer, deleteBuyer, createBuyerByExcel, downloadExcel };
+export { getBuyerList, getForSelect, createBuyer, modifyBuyer, deleteBuyer, createBuyerByExcel, downloadExcel };

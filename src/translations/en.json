@@ -250,6 +250,7 @@
     "Unit": "Unit",
     "QCMasterId": "QC Master",
     "SupplierId": "Suppliers",
+    "BuyerId": "Buyers",
     "Description": "Description",
     "Grade": "Grade",
     "StockQty": "StockQty",

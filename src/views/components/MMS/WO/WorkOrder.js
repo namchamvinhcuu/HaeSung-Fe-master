@@ -13,6 +13,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UndoIcon from '@mui/icons-material/Undo';
+import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 import { FormControlLabel, Switch } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -414,6 +415,8 @@ const WorkOrder = (props) => {
     }
   };
 
+  const handlePrint = () => {};
+
   useEffect(() => {
     fetchData();
 
@@ -455,21 +458,19 @@ const WorkOrder = (props) => {
   }, [selectedRow]);
 
   const columns = [
-    { field: 'WoId', headerName: '', hide: true },
-
     {
       field: 'id',
       headerName: '',
       width: 100,
       filterable: false,
       renderCell: (index) =>
-        index.api.getRowIndex(index.row.WoId) + 1 + (workOrderState.page - 1) * workOrderState.pageSize,
+        index.api.getRowIndex(index.row.id) + 1 + (workOrderState.page - 1) * workOrderState.pageSize,
     },
 
     {
       field: 'action',
       headerName: '',
-      width: 120,
+      width: 130,
       // headerAlign: 'center',
       disableClickEventBubbling: true,
       sortable: false,
@@ -477,9 +478,9 @@ const WorkOrder = (props) => {
       renderCell: (params) => {
         return (
           <Grid container spacing={1} alignItems="center" justifyContent="center">
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <IconButton
-                aria-label="edit"
+                aria-label="show"
                 color="primary"
                 size="small"
                 sx={[{ '&:hover': { border: '1px solid blue' } }]}
@@ -495,7 +496,17 @@ const WorkOrder = (props) => {
                 )}
               </IconButton>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={3}>
+              <IconButton
+                aria-label="print"
+                size="small"
+                sx={[{ '&:hover': { border: '1px solid #9c27b0' }, color: '#9c27b0' }]}
+                onClick={() => handlePrint(params.row)}
+              >
+                <LocalPrintshopIcon fontSize="inherit" />
+              </IconButton>
+            </Grid>
+            <Grid item xs={3}>
               <IconButton
                 aria-label="edit"
                 color="warning"
@@ -509,7 +520,7 @@ const WorkOrder = (props) => {
               </IconButton>
             </Grid>
 
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <IconButton
                 aria-label="delete"
                 color="error"
@@ -525,19 +536,19 @@ const WorkOrder = (props) => {
       },
     },
 
+    // {
+    //   field: 'WoCode',
+    //   headerName: intl.formatMessage({ id: 'work_order.WoCode' }),
+    //   /*flex: 0.7,*/ width: 200,
+    // },
     {
-      field: 'WoCode',
-      headerName: intl.formatMessage({ id: 'work_order.WoCode' }),
-      /*flex: 0.7,*/ width: 200,
+      field: 'MaterialCode',
+      headerName: intl.formatMessage({ id: 'work_order.MaterialCode' }),
+      /*flex: 0.7,*/ width: 120,
     },
     {
       field: 'BomVersion',
       headerName: intl.formatMessage({ id: 'work_order.BomVersion' }),
-      /*flex: 0.7,*/ width: 120,
-    },
-    {
-      field: 'MaterialCode',
-      headerName: intl.formatMessage({ id: 'work_order.MaterialCode' }),
       /*flex: 0.7,*/ width: 120,
     },
 

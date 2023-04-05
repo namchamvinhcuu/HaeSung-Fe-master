@@ -431,6 +431,7 @@ const WorkOrderDialog = (props) => {
                               : null
                           }
                           onChange={(e, item) => {
+                            console.log('🚀 ~ file: WorkOrderDialog.js:479 ~ WorkOrderDialog ~ item:', item);
                             setFieldValue('FPOId', item?.FPOId || 0);
                             setFieldValue('MaterialBuyerCode', item?.MaterialBuyerCode || '');
                             setFieldValue('BomId', item?.BomId || 0);
@@ -440,6 +441,7 @@ const WorkOrderDialog = (props) => {
                             setFieldValue('LineId', 0);
                             setFieldValue('LineCode', '');
                             setMaterialType(item?.GroupMaterial);
+                            setFieldValue('MaterialId', item?.MaterialId || 0);
                           }}
                           error={touched.FPOId && Boolean(errors.FPOId)}
                           helperText={touched.FPOId && errors.FPOId}
@@ -540,6 +542,7 @@ const WorkOrderDialog = (props) => {
                               : null
                           }
                           onChange={(e, item) => {
+                            console.log('🚀 ~ file: WorkOrderDialog.js:553 ~ WorkOrderDialog ~ item:', item);
                             setFieldValue('MoldCode', item?.MoldCode || '');
                             setFieldValue('MoldId', item?.MoldId || 0);
                           }}
