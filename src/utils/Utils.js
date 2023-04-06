@@ -54,12 +54,19 @@ function toCamel(o) {
 }
 
 function dateToTicks(date) {
-  const epochOffset = 621355968000000000;
+  // const epochOffset = 621355968000000000;
+  // const ticksPerMillisecond = 10000;
+
+  // const ticks = epochOffset + date.getTime() * ticksPerMillisecond;
+
+  // return Math.floor(ticks / 10000);
+
+  const epochOffset = 62135596800000;
   const ticksPerMillisecond = 10000;
 
   const ticks = epochOffset + date.getTime() * ticksPerMillisecond;
 
-  return Math.floor(ticks / 10000 + Math.random() * 100000);
+  return Math.floor(ticks + Math.random() * 100000);
 }
 
 const addDays = (date, days) => {
