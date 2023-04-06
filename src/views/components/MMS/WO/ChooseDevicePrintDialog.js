@@ -88,7 +88,9 @@ const ChooseDevicePrintDialog = (props) => {
 
   const handleCloseDialog = () => {
     setDialogState({
-      ...dialogState,
+      isSubmit: false,
+      from: 1,
+      to: 1,
     });
     onClose();
   };
@@ -102,12 +104,20 @@ const ChooseDevicePrintDialog = (props) => {
     setDialogState((state) => ({ ...state, [name]: value }));
   };
   const handlePrint = () => {
-    if (dialogState.to > dataPrint.OrderQty) {
+    if (!printer) {
+      ErrorAlert(intl.formatMessage({ id: 'general.not_select_printer' }));
+      return;
+    }
+    if (!dialogState.from || !dialogState.to || Number(dialogState.from) < 1 || Number(dialogState.to) < 1) {
+      ErrorAlert(intl.formatMessage({ id: 'general.field_min' }, { min: 1 }));
+      return;
+    }
+    if (Number(dialogState.to) > dataPrint.OrderQty) {
       ErrorAlert(intl.formatMessage({ id: 'work_order.No_More_Than_QTY' }));
       return;
     }
-    if (!printer) {
-      ErrorAlert(intl.formatMessage({ id: 'general.not_select_printer' }));
+    if (Number(dialogState.from) > Number(dialogState.to)) {
+      ErrorAlert(intl.formatMessage({ id: 'general.field_invalid' }));
       return;
     }
 
@@ -128,7 +138,7 @@ const ChooseDevicePrintDialog = (props) => {
     ^LRN
     ^CI27
     ^PA0,1,1,0`;
-    for (let i = 1; i <= dialogState.to; i++) {
+    for (let i = Number(dialogState.from); i <= Number(dialogState.to); i++) {
       let outputString = `${dataPrint.MaterialCode}-` + i.toString().padStart(5, '0');
       stringPrint += `^XZ
       ^XA
@@ -161,9 +171,8 @@ const ChooseDevicePrintDialog = (props) => {
               type="number"
               name="from"
               min={1}
-              disabled
               value={dialogState.from ?? ''}
-              //onChange={handleChange}
+              onChange={handleChange}
             />
           </Grid>
           <Grid item xs={6}>

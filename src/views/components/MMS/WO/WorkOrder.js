@@ -361,7 +361,7 @@ const WorkOrder = (props) => {
       width: 100,
       filterable: false,
       renderCell: (index) =>
-        index.api.getRowIndex(index.row.id) + 1 + (workOrderState.page - 1) * workOrderState.pageSize,
+        index.api.getRowIndex(index.row.WoId) + 1 + (workOrderState.page - 1) * workOrderState.pageSize,
     },
 
     {
