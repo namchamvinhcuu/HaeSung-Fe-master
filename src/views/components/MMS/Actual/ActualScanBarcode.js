@@ -9,7 +9,7 @@ import {
   MuiSubmitButton,
   MuiTextField,
 } from '@controls';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import moment from 'moment';
 import { ErrorAlert, SuccessAlert, dateToTicks } from '@utils';
 import { actualService } from '@services';
@@ -28,6 +28,7 @@ const ActualScanBarcode = ({ woId, materialId, materialCode, openScan, onClose, 
   };
 
   const [state, setState] = useState(initState);
+  const [count, setCount] = useState(0);
 
   const barCodeRef = useRef(null);
 
@@ -43,6 +44,7 @@ const ActualScanBarcode = ({ woId, materialId, materialCode, openScan, onClose, 
 
   const closeScanBarcodeDialog = () => {
     setState(initState);
+    setCount(0);
     onClose();
   };
 
@@ -101,7 +103,7 @@ const ActualScanBarcode = ({ woId, materialId, materialCode, openScan, onClose, 
 
         if (res === 'general.success') {
           setState({ ...state, dataDemo: [newRow, ...state.dataDemo] });
-
+          setCount(count + 1);
           SuccessAlert(intl.formatMessage({ id: res }));
         } else {
           ErrorAlert(intl.formatMessage({ id: res }));
@@ -122,13 +124,13 @@ const ActualScanBarcode = ({ woId, materialId, materialCode, openScan, onClose, 
       filterable: false,
       renderCell: (index) => index.api.getRowIndex(index.row.Id) + 1 + (state.page - 1) * state.pageSize,
     },
-    { field: 'Id', headerName: 'Id', width: 200 },
-    { field: 'MaterialCode', headerName: 'Code', width: 200 },
+    { field: 'Id', headerName: 'Id', width: 200, hide: true },
     {
       field: 'Barcode',
       headerName: 'Data',
       width: 300,
     },
+    { field: 'MaterialCode', headerName: 'Code', width: 200 },
     {
       field: 'createdDate',
       headerName: 'Time',
@@ -172,7 +174,15 @@ const ActualScanBarcode = ({ woId, materialId, materialCode, openScan, onClose, 
             </Grid>
             <Grid item xs={7}>
               <MuiButton text="scan" onClick={scanBtnClick} sx={{ whiteSpace: 'nowrap' }} />
-              <MuiButton text="save" color="success" onClick={handleSaveBarcodeScan} sx={{ whiteSpace: 'nowrap' }} />
+              <MuiButton
+                text="save"
+                color="success"
+                onClick={handleSaveBarcodeScan}
+                sx={{ whiteSpace: 'nowrap', marginRight: '10px' }}
+              />
+              <Typography sx={{ display: 'inline-block', marginLeft: '10px', fontWeight: '700', whiteSpace: 'nowrap' }}>
+                Count: {count}
+              </Typography>
             </Grid>
 
             <Grid item xs={12}>
