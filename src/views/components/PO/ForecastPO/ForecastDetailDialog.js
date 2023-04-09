@@ -315,6 +315,7 @@ const ForecastDetailDialog = (props) => {
                   fetchDataFunc={getMaterialList}
                   displayLabel="MaterialCode"
                   displayValue="MaterialId"
+                  displayGroup="GroupMaterial"
                   defaultValue={
                     mode == CREATE_ACTION
                       ? null
