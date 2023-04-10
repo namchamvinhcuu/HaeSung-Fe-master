@@ -381,13 +381,13 @@ const FixedPO = (props) => {
     },
     {
       field: 'MaterialCode',
-      headerName: intl.formatMessage({ id: 'forecast.MaterialCode' }),
+      headerName: intl.formatMessage({ id: 'delivery_order.MaterialCode' }),
       width: 150,
     },
 
     {
       field: 'DescriptionMaterial',
-      headerName: intl.formatMessage({ id: 'forecast.DescriptionMaterial' }),
+      headerName: intl.formatMessage({ id: 'general.description' }),
       width: 300,
       renderCell: (params) => {
         return (
@@ -497,6 +497,7 @@ const FixedPO = (props) => {
             fetchDataFunc={getSearchMaterialArr}
             displayLabel="MaterialCode"
             displayValue="MaterialId"
+            displayGroup="GroupMaterial"
             value={
               fixedPOState.searchData.MaterialId !== 0
                 ? {

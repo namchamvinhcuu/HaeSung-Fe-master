@@ -174,7 +174,7 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
 
     {
       field: 'MaterialColorCode',
-      headerName: 'Assy Code',
+      headerName: intl.formatMessage({ id: 'general.code' }),
       /*flex: 0.7,*/ width: 200,
     },
     {
@@ -421,7 +421,7 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
         <Grid item xs>
           <MuiSearchField
             disabled={FGsoId ? false : true}
-            label="forecast.MaterialCode"
+            label="general.code"
             name="MaterialColorCode"
             onClick={() => fetchData(FGsoId)}
             onChange={(e) => handleSearch(e.target.value, 'MaterialCode')}

@@ -227,7 +227,7 @@ const DeliveryOrderDialog = (props) => {
       if (res.ResponseMessage !== '') {
         fetchData();
         setExcelHistory(res.ResponseMessage.split(','));
-        SuccessAlert(intl.formatMessage({ id: 'general.success' }));
+        // SuccessAlert(intl.formatMessage({ id: 'general.success' }));
       } else {
         ErrorAlert(intl.formatMessage({ id: 'Files.Data_Invalid' }));
       }
