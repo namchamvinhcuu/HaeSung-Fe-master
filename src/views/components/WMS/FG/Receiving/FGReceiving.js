@@ -227,7 +227,7 @@ const FGReceiving = (props) => {
           <Grid container spacing={2} direction="row" justifyContent="space-between" alignItems="center">
             <Grid item xs={5}>
               <MuiAutocomplete
-                label="Assy Code"
+                label="Code"
                 fetchDataFunc={getMaterial}
                 displayLabel="MaterialCode"
                 displayValue="MaterialId"
