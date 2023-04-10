@@ -113,3 +113,20 @@ export const getShelf = async (StockAdjustmentId) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+export const getMaterial = async (params) => {
+  try {
+    return await axios.get(`${apiName}/get-material`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+export const createSADetailByMaterial = async (params) => {
+  try {
+    return await axios.post(`${apiName}/create-detail-by-material`, {
+      ...params,
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};

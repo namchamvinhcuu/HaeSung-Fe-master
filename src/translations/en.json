@@ -573,6 +573,9 @@
     "confirmedBy": "User Confirmed",
     "confirm": "Confirm",
 
-    "cannot_delete_confirmed": "Cannot delete because it is confirmed"
+    "cannot_delete_confirmed": "Cannot delete because it is confirmed",
+    "Material": "Material",
+    "Error_SelectMaterialForScan": "Select Material for scan",
+    "nodata_to_scan": "No data to scan"
   }
 }
