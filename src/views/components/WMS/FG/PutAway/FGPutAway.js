@@ -207,7 +207,7 @@ const FGPutAway = (props) => {
     },
     {
       field: 'MaterialColorCode',
-      headerName: 'Assy Code',
+      headerName: 'Code',
       width: 250,
     },
 
