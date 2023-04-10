@@ -573,6 +573,9 @@
     "confirmedBy": "User Confirmed",
     "confirm": "Confirm",
 
-    "cannot_delete_confirmed": "Không thể xóa vì đã được confirmed"
+    "cannot_delete_confirmed": "Không thể xóa vì đã được confirmed",
+    "Material": "Material",
+    "Error_SelectMaterialForScan": "Select Material for scan",
+    "nodata_to_scan": "Không có dữ liệu để scan"
   }
 }

@@ -10,7 +10,7 @@ import {
 } from '@controls';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UndoIcon from '@mui/icons-material/Undo';
-import { Button, Grid, IconButton, Tooltip, Typography, TextField } from '@mui/material';
+import { Button, Grid, IconButton, Tooltip, Typography, TextField, Box } from '@mui/material';
 import { stockAdjustmentService } from '@services';
 import { ErrorAlert, SuccessAlert, isNumber } from '@utils';
 import moment from 'moment';
@@ -18,6 +18,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
 
 export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
   const intl = useIntl();
@@ -36,7 +40,8 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
   const [updateData, setUpdateData] = useState({});
   const [ShelfId, setShelfId] = useState(null);
   const [rowData, setRowData] = useState({});
-
+  const [currentTab, setCurrentTab] = React.useState('tab1');
+  const [materialId, setMaterialId] = useState(null);
   const lotInputRef = useRef(null);
 
   const columns = [
@@ -245,7 +250,7 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
   const scanBtnClick = async () => {
     let inputVal = '';
     if (ShelfId != null) {
-      if (lotInputRef.current.value) {
+      if (lotInputRef.current?.value) {
         inputVal = lotInputRef.current.value.trim().toUpperCase();
 
         var res = await stockAdjustmentService.createSADetail({
@@ -264,6 +269,24 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
       }
     } else {
       return ErrorAlert(intl.formatMessage({ id: 'stockAdjustment.Error_SelectShelfForScan' }));
+    }
+  };
+  const scanMaterialBtnClick = async () => {
+    if (materialId != null) {
+      if (window.confirm('Scan material?')) {
+        const res = await stockAdjustmentService.createSADetailByMaterial({
+          MaterialId: materialId,
+          StockAdjustmentId: StockAdjustmentId,
+        });
+        console.log({ res });
+        if (res.HttpResponseCode === 200) {
+          fetchData(StockAdjustmentId);
+        } else {
+          ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+        }
+      }
+    } else {
+      return ErrorAlert(intl.formatMessage({ id: 'stockAdjustment.Error_SelectMaterialForScan' }));
     }
   };
 
@@ -298,12 +321,10 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
     if (res.HttpResponseCode === 200 && res.Data) {
       SuccessAlert(intl.formatMessage({ id: 'general.success' }));
       setUpdateData(res.Data);
-      lotInputRef.current.value = '';
     } else {
       ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
-      lotInputRef.current.value = '';
     }
-
+    if (lotInputRef.current) lotInputRef.current.value = '';
     return newRow;
   };
 
@@ -319,39 +340,76 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
 
   return (
     <>
-      <Grid container direction="row" justifyContent="space-between" sx={{ mb: 1, mt: 0 }} spacing={2}>
-        <Grid item xs={3}>
-          <MuiAutocomplete
-            label={intl.formatMessage({ id: 'stockAdjustment.Shelf' })}
-            fetchDataFunc={() => stockAdjustmentService.getShelf(StockAdjustmentId)}
-            disabled={StockAdjustmentId ? false : true}
-            displayLabel="ShelfCode"
-            displayValue="ShelfId"
-            onChange={(e, value) => setShelfId(value?.ShelfId)}
-          />
-        </Grid>
-        <Grid item xs={3}>
-          <MuiTextField
-            fullWidth
-            name="Lot"
-            disabled={StockAdjustmentId ? false : true}
-            ref={lotInputRef}
-            label="lot"
-            onChange={(e) => (lotInputRef.current.value = e.target.value)}
-            onKeyDown={keyPress}
-          />
-        </Grid>
-        <Grid item xs={1}>
-          <MuiButton
-            text="scan"
-            color="success"
-            onClick={scanBtnClick}
-            sx={{ mt: 0.18, whiteSpace: 'nowrap' }}
-            disabled={StockAdjustmentId ? false : true}
-          />
-        </Grid>
-        <Grid item xs={5}></Grid>
-      </Grid>
+      <TabContext value={currentTab}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: 5 }}>
+          <TabList onChange={(event, newValue) => setCurrentTab(newValue)} aria-label="lab API tabs example">
+            <Tab label="By lot" value="tab1" />
+            <Tab label="By Material" value="tab2" />
+          </TabList>
+        </Box>
+        <TabPanel value="tab1" style={{ padding: 0 }}>
+          <Grid container direction="row" justifyContent="space-between" sx={{ mb: 1, mt: 0 }} spacing={2}>
+            <Grid item xs={3}>
+              <MuiAutocomplete
+                label={intl.formatMessage({ id: 'stockAdjustment.Shelf' })}
+                fetchDataFunc={() => stockAdjustmentService.getShelf(StockAdjustmentId)}
+                disabled={StockAdjustmentId ? false : true}
+                displayLabel="ShelfCode"
+                displayValue="ShelfId"
+                onChange={(e, value) => setShelfId(value?.ShelfId)}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <MuiTextField
+                fullWidth
+                name="Lot"
+                disabled={StockAdjustmentId ? false : true}
+                ref={lotInputRef}
+                label="lot"
+                onChange={(e) => {
+                  if (lotInputRef.current) lotInputRef.current.value = e.target.value;
+                }}
+                onKeyDown={keyPress}
+              />
+            </Grid>
+            <Grid item xs={1}>
+              <MuiButton
+                text="scan"
+                color="success"
+                onClick={scanBtnClick}
+                sx={{ mt: 0.18, whiteSpace: 'nowrap' }}
+                disabled={StockAdjustmentId ? false : true}
+              />
+            </Grid>
+            <Grid item xs={5}></Grid>
+          </Grid>
+        </TabPanel>
+        <TabPanel value="tab2" style={{ padding: 0 }}>
+          <Grid container direction="row" sx={{ mb: 1, mt: 0 }} spacing={2}>
+            <Grid item xs={3}>
+              <MuiAutocomplete
+                label={intl.formatMessage({ id: 'stockAdjustment.Material' })}
+                fetchDataFunc={() => stockAdjustmentService.getMaterial()}
+                disabled={StockAdjustmentId ? false : true}
+                displayLabel="MaterialCode"
+                displayValue="MaterialId"
+                onChange={(e, value) => setMaterialId(value?.MaterialId)}
+              />
+            </Grid>
+
+            <Grid item xs={2}>
+              <MuiButton
+                text="scan"
+                color="success"
+                onClick={scanMaterialBtnClick}
+                sx={{ mt: 0.18, whiteSpace: 'nowrap' }}
+                disabled={StockAdjustmentId ? false : true}
+              />
+            </Grid>
+          </Grid>
+        </TabPanel>
+      </TabContext>
+
       <MuiDataGrid
         showLoading={state.isLoading}
         isPagingServer={true}

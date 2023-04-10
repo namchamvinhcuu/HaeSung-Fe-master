@@ -10,7 +10,7 @@ import { MuiAutocomplete, MuiButton, MuiDataGrid, MuiDateField } from '@controls
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UndoIcon from '@mui/icons-material/Undo';
-import { Badge, FormControlLabel, Grid, IconButton, Switch, Button, Typography } from '@mui/material';
+import { Badge, FormControlLabel, Grid, IconButton, Switch, Button, Typography, Box } from '@mui/material';
 import { stockAdjustmentService } from '@services';
 import { addDays, ErrorAlert, SuccessAlert } from '@utils';
 import moment from 'moment';
@@ -21,6 +21,10 @@ import InventoryAdjustmentDetail from './InventoryAdjustmentDetail';
 // import FGPackingDialog from './FGPackingDialog';
 // import FGPackingLotDetail from './FGPackingLotDetail';
 // import FGPackingLotPrintDialog from './FGPackingLotPrintDialog';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
 
 const InventoryAdjustment = (props) => {
   const intl = useIntl();
@@ -47,7 +51,7 @@ const InventoryAdjustment = (props) => {
   const [rowData, setRowData] = useState({});
   const [StockAdjustmentId, setStockAdjustmentId] = useState(null);
   const [DataPrint, setDataPrint] = useState([]);
-
+  const [currentTab, setCurrentTab] = React.useState('tab1');
   const columns = [
     {
       field: 'id',
