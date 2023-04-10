@@ -207,7 +207,7 @@ const ForecastDetailDialog = (props) => {
     setExcelHistory([]);
     if (res.ResponseMessage !== '') {
       // SuccessAlert(intl.formatMessage({ id: res.ResponseMessage }));
-      fetchData();
+      fetchData(FPoMasterId);
       // handleCloseDialog();
       setExcelHistory(res.ResponseMessage.split(','));
     } else {

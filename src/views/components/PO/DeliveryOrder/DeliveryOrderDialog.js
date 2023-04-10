@@ -172,7 +172,7 @@ const DeliveryOrderDialog = (props) => {
       type: Number,
       required: true,
     },
-    'ASSY CODE': {
+    CODE: {
       prop: 'MaterialCode',
       type: String,
       required: true,

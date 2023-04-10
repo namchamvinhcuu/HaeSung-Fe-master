@@ -383,7 +383,7 @@
     "PoCode": "PO Code",
     "FPoCode": "ForcastPO Code",
     "FPoMasterCode": "Plan",
-    "MaterialCode": "Assy Code",
+    "MaterialCode": "Code",
     "OrderQty": "Order Qty",
     "RemainQty": "Remain Qty",
     "PackingNote": "Packing Note",
