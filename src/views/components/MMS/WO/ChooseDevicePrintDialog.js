@@ -70,13 +70,16 @@ const ChooseDevicePrintDialog = (props) => {
   const setupPrinter = () => {
     window.BrowserPrint.getLocalDevices(
       (device_list) => {
+        const data = [];
         for (let i = 0; i < device_list.length; i++) {
           let device = device_list[i];
-          deviceList.push(device);
+          data.push(device);
         }
+        setDeviceList(data);
       },
       () => {
         ErrorAlert(intl.formatMessage({ id: 'general.cannot_connect_printer' }));
+        setDeviceList([]);
       },
       'printer'
     );
