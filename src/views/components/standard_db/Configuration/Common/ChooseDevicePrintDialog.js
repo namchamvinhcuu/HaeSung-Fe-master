@@ -135,7 +135,7 @@ const ChooseDevicePrintDialog = (props) => {
         const data = [];
         for (let i = 0; i < device_list.length; i++) {
           let device = device_list[i];
-          deviceList.push(device);
+          data.push(device);
         }
         setDeviceList(data);
       },
