@@ -313,7 +313,10 @@ const MaterialStock = (props) => {
         <Grid item xs={3}></Grid>
         <Grid item xs>
           <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
-            <Grid item style={{ width: '21%' }}>
+            <Grid item style={{ width: '10%' }}>
+              <MuiButton text="excel" color="warning" onClick={materialStockService.downloadExcel} sx={{ mt: 1 }} />
+            </Grid>
+            <Grid item style={{ width: '18%' }}>
               <MuiSearchField
                 variant="keyWord"
                 label="general.code"
@@ -321,7 +324,7 @@ const MaterialStock = (props) => {
                 onChange={(e) => handleSearch(e.target.value, 'keyWord')}
               />
             </Grid>
-            <Grid item style={{ width: '21%' }}>
+            <Grid item style={{ width: '18%' }}>
               <MuiAutocomplete
                 label={intl.formatMessage({ id: 'material.MaterialType' })}
                 fetchDataFunc={materialStockService.getMaterialType}
@@ -331,7 +334,7 @@ const MaterialStock = (props) => {
                 variant="standard"
               />
             </Grid>
-            <Grid item style={{ width: '21%' }}>
+            <Grid item style={{ width: '15%' }}>
               <MuiAutocomplete
                 label={intl.formatMessage({ id: 'material.Unit' })}
                 fetchDataFunc={materialStockService.getUnit}
@@ -341,7 +344,7 @@ const MaterialStock = (props) => {
                 variant="standard"
               />
             </Grid>
-            <Grid item style={{ width: '21%' }}>
+            <Grid item style={{ width: '18%' }}>
               <MuiAutocomplete
                 label={intl.formatMessage({ id: 'material.SupplierId' })}
                 fetchDataFunc={materialStockService.getSupplier}
@@ -352,7 +355,7 @@ const MaterialStock = (props) => {
                 fullWidth
               />
             </Grid>
-            <Grid item>
+            <Grid item style={{ width: '15%' }}>
               <MuiButton text="search" color="info" onClick={fetchData} sx={{ mr: 3, mb: 1 }} />
             </Grid>
           </Grid>
