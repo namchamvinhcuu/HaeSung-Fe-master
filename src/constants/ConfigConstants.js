@@ -1,14 +1,14 @@
 /**
  * Local
  */
-// export const API_URL = 'https://localhost:44301/api/';
-// export const BASE_URL = 'https://localhost:44301';
+export const API_URL = 'https://localhost:44301/api/';
+export const BASE_URL = 'https://localhost:44301';
 
 /**
  * Autonsi
  */
-export const API_URL = 'http://baseapi.autonsi.com/api/';
-export const BASE_URL = 'http://baseapi.autonsi.com';
+// export const API_URL = 'http://baseapi.autonsi.com/api/';
+// export const BASE_URL = 'http://baseapi.autonsi.com';
 
 /**
  * Hanlim
