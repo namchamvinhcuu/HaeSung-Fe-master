@@ -128,6 +128,13 @@ const IQC = (props) => {
       field: 'Qty',
       headerName: 'Qty',
       width: 100,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'QCDate',

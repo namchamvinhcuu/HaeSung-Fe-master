@@ -77,6 +77,13 @@ export default function FGPackingLotDetail({ PackingLabelId, newDataChild, handl
       field: 'Qty',
       headerName: intl.formatMessage({ id: 'packing.Qty' }),
       flex: 0.5,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'PackingDate',

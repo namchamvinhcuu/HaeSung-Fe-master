@@ -249,6 +249,13 @@ const ForecastPODetail = ({ FPoMasterId }) => {
       field: 'Amount',
       headerName: intl.formatMessage({ id: 'forecast.Amount' }),
       width: 100,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
 
     {

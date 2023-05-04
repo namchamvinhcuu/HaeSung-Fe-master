@@ -74,7 +74,15 @@ const WIPShipToNG = (props) => {
       width: 180,
     },
     { field: 'MaterialColorCode', headerName: 'Material Code', flex: 0.4 },
-    { field: 'Qty', headerName: 'Qty', flex: 0.3 },
+    {
+      field: 'Qty', headerName: 'Qty', flex: 0.3, renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
+    },
     {
       field: 'QCDate',
       headerName: 'QC Date',

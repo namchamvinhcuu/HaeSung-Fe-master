@@ -80,6 +80,13 @@ const MappingTray = (props) => {
       field: 'Qty',
       headerName: 'Qty',
       flex: 0.5,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'createdName',

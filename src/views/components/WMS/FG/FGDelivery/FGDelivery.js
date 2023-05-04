@@ -329,12 +329,26 @@ const FGDelivery = (props) => {
       field: 'OrderQty',
       headerName: intl.formatMessage({ id: 'delivery_order.OrderQty' }),
       /*flex: 0.7,*/ width: 120,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
 
     {
       field: 'RemainQty',
       headerName: intl.formatMessage({ id: 'delivery_order.RemainQty' }),
       /*flex: 0.7,*/ width: 120,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
 
     {

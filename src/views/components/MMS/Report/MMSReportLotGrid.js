@@ -53,7 +53,16 @@ const MMSReportLotGrid = ({ woId }) => {
         );
       },
     },
-    { field: 'Qty', headerName: intl.formatMessage({ id: 'actual.Qty' }), flex: 0.4 },
+    {
+      field: 'Qty', headerName: intl.formatMessage({ id: 'actual.Qty' }), flex: 0.4,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
+    },
   ];
 
   useEffect(() => {

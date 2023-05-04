@@ -196,11 +196,25 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
       field: 'Qty',
       headerName: intl.formatMessage({ id: 'material-so-detail.Qty' }),
       /*flex: 0.7,*/ width: 150,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'TotalSOQty',
       headerName: intl.formatMessage({ id: 'material-so-detail.TotalSOQty' }),
       /*flex: 0.7,*/ width: 150,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'SOrderQty',
@@ -222,12 +236,12 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
             variant="standard"
             fullWidth
             disabled={true}
-            value={params.row.SOrderQty ?? 0}
-            // inputProps={{
-            //   onDoubleClick: () => {
-            //     setDisableText(false);
-            //   },
-            // }}
+            value={params.row.SOrderQty.toLocaleString() ?? 0}
+          // inputProps={{
+          //   onDoubleClick: () => {
+          //     setDisableText(false);
+          //   },
+          // }}
           />
         );
       },
@@ -295,11 +309,25 @@ const MaterialSODetail = ({ MsoId, fromPicking, MsoStatus }) => {
       field: 'Qty',
       headerName: intl.formatMessage({ id: 'material-so-detail.Qty' }),
       /*flex: 0.7,*/ width: 150,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'SOrderQty',
       headerName: intl.formatMessage({ id: 'material-so-detail.SOrderQty' }),
       /*flex: 0.7,*/ width: 150,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
 
     {

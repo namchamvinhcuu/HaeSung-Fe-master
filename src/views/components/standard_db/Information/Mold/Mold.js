@@ -116,6 +116,13 @@ export default function Mold() {
       field: 'MachineTon',
       headerName: intl.formatMessage({ id: 'mold.MachineTon' }),
       width: 150,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'ETADate',

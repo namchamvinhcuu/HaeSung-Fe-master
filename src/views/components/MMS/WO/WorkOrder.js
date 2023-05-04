@@ -203,8 +203,8 @@ const WorkOrder = (props) => {
           ? MaterialId || WorkOrderDto.MaterialId
           : // If inputName is 'StartSearchingDate' or 'EndSearchingDate', use the provided date value
           inputName === 'StartSearchingDate' || inputName === 'EndSearchingDate'
-          ? e
-          : // Otherwise, use the input value
+            ? e
+            : // Otherwise, use the input value
             e.target.value,
       // Use the MaterialCode from the selected material object or the default from WorkOrderDto
       MaterialCode: MaterialCode || WorkOrderDto.MaterialCode,
@@ -312,7 +312,7 @@ const WorkOrder = (props) => {
     }
   };
 
-  const handlePrint = () => {};
+  const handlePrint = () => { };
 
   useEffect(() => {
     fetchData();
@@ -471,21 +471,49 @@ const WorkOrder = (props) => {
       field: 'OrderQty',
       headerName: intl.formatMessage({ id: 'work_order.OrderQty' }),
       /*flex: 0.7,*/ width: 120,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'HMIQty',
       headerName: 'HMI Qty',
       /*flex: 0.7,*/ width: 100,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'ActualQty',
       headerName: intl.formatMessage({ id: 'work_order.ActualQty' }),
       /*flex: 0.7,*/ width: 120,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'NGQty',
       headerName: 'NG Qty',
       /*flex: 0.7,*/ width: 120,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'StartDate',
@@ -569,9 +597,9 @@ const WorkOrder = (props) => {
             value={
               workOrderState.searchData.MaterialId !== 0
                 ? {
-                    MaterialId: workOrderState.searchData.MaterialId,
-                    MaterialCode: workOrderState.searchData.MaterialCode,
-                  }
+                  MaterialId: workOrderState.searchData.MaterialId,
+                  MaterialCode: workOrderState.searchData.MaterialCode,
+                }
                 : null
             }
             onChange={(e, item) => {

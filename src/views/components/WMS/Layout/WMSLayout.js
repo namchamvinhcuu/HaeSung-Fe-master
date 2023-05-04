@@ -118,6 +118,13 @@ const WMSLayout = (props) => {
       field: 'Qty',
       headerName: 'Qty',
       flex: 0.3,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
       // editable: true,
       // renderCell: (params) => {
       //   return (

@@ -123,7 +123,16 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
       flex: 0.3,
       valueFormatter: (params) => (params?.value ? 'OK' : 'NG'),
     },
-    { field: 'Qty', headerName: intl.formatMessage({ id: 'actual.Qty' }), flex: 0.3 },
+    {
+      field: 'Qty', headerName: intl.formatMessage({ id: 'actual.Qty' }), flex: 0.3,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
+    },
     { field: 'QCCode', headerName: intl.formatMessage({ id: 'actual.Qc' }), flex: 0.4 },
     { field: 'createdName', headerName: intl.formatMessage({ id: 'general.createdName' }), width: 120 },
     {

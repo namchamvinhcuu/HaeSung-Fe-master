@@ -51,6 +51,13 @@ const WIPStock = (props) => {
       align: 'right',
       headerName: intl.formatMessage({ id: 'material.StockQty' }),
       width: 120,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'MaterialTypeName',
@@ -235,6 +242,13 @@ const DetailPanelContent = ({ row: rowProp }) => {
       field: 'Qty',
       headerName: 'Qty',
       width: 200,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'QCResult',

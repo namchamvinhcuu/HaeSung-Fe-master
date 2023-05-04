@@ -205,6 +205,13 @@ export default function ForecastPOMaster(props) {
       field: 'TotalOrderQty',
       headerName: intl.formatMessage({ id: 'forecast.Total_Order_Qty' }),
       width: 170,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
 
     {
@@ -318,7 +325,7 @@ export default function ForecastPOMaster(props) {
       />
       <ForeCastPODetail
         FPoMasterId={FPoMasterId}
-        // newDataChild={newDataChild}
+      // newDataChild={newDataChild}
       />
     </>
   );

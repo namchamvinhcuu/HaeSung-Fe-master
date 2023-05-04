@@ -85,7 +85,15 @@ export default function FixedPODetail({ PoId, updateDataPO, setUpdateDataPO, new
     { field: 'PoCode', headerName: intl.formatMessage({ id: 'purchase_order.PoCode' }), flex: 0.5 },
     { field: 'MaterialCode', headerName: intl.formatMessage({ id: 'purchase_order.MaterialId' }), flex: 0.5 },
     { field: 'Description', headerName: intl.formatMessage({ id: 'purchase_order.Description' }), flex: 0.8 },
-    { field: 'TotalQty', headerName: intl.formatMessage({ id: 'purchase_order.Qty' }), flex: 0.4 },
+    {
+      field: 'TotalQty', headerName: intl.formatMessage({ id: 'purchase_order.Qty' }), flex: 0.4, renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
+    },
     { field: 'RemainQty', headerName: intl.formatMessage({ id: 'purchase_order.RemainQty' }), flex: 0.4 },
     { field: 'Week', headerName: intl.formatMessage({ id: 'forecast.Week' }), width: 150 },
     { field: 'Year', headerName: intl.formatMessage({ id: 'forecast.Year' }), width: 150 },

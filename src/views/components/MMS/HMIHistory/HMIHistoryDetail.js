@@ -48,6 +48,13 @@ const HMIHistoryDetail = ({ WoId }) => {
       field: 'PostQty',
       headerName: 'Post Qty',
       width: 200,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
 
     {

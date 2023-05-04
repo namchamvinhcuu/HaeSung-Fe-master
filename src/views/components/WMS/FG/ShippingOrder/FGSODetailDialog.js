@@ -187,11 +187,25 @@ const FGSODetailDialog = (props) => {
       field: 'Qty',
       headerName: intl.formatMessage({ id: 'lot.Qty' }),
       /*flex: 0.7,*/ width: 150,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'TotalSOQty',
       headerName: intl.formatMessage({ id: 'material-so-detail.TotalSOQty' }),
       /*flex: 0.7,*/ width: 150,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'RequestQty',
@@ -206,7 +220,7 @@ const FGSODetailDialog = (props) => {
             variant="standard"
             fullWidth
             disabled={true}
-            value={params.row.RequestQty ?? 0}
+            value={params.row.RequestQty.toLocaleString() ?? 0}
           />
         );
       },
@@ -316,16 +330,16 @@ const FGSODetailDialog = (props) => {
                 mode == CREATE_ACTION
                   ? null
                   : {
-                      MaterialId: initModal.MaterialId,
-                      MaterialCode: initModal.MaterialCode,
-                    }
+                    MaterialId: initModal.MaterialId,
+                    MaterialCode: initModal.MaterialCode,
+                  }
               }
               value={
                 values.MaterialId
                   ? {
-                      MaterialId: values.MaterialId,
-                      MaterialCode: values.MaterialCode,
-                    }
+                    MaterialId: values.MaterialId,
+                    MaterialCode: values.MaterialCode,
+                  }
                   : null
               }
               onChange={async (e, value) => {

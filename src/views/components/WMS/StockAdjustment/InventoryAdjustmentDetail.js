@@ -103,6 +103,13 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
       field: 'StockQty',
       headerName: intl.formatMessage({ id: 'stockAdjustment.StockQty' }),
       flex: 0.4,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'CheckQty',
@@ -123,12 +130,12 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
             variant="standard"
             fullWidth
             disabled={true}
-            value={params.row.CheckQty ?? 0}
-            // inputProps={{
-            //   onDoubleClick: () => {
-            //     setDisableText(false);
-            //   },
-            // }}
+            value={params.row.CheckQty.toLocaleString() ?? 0}
+          // inputProps={{
+          //   onDoubleClick: () => {
+          //     setDisableText(false);
+          //   },
+          // }}
           />
         );
       },
@@ -138,6 +145,13 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
       field: 'GapQty',
       headerName: intl.formatMessage({ id: 'stockAdjustment.GapQty' }),
       flex: 0.4,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'CheckStatus',

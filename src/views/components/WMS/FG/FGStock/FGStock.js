@@ -74,6 +74,13 @@ const DetailPanelContent = ({ row: rowProp }) => {
       field: 'Qty',
       headerName: 'Qty',
       width: 100,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
 
     {
@@ -140,7 +147,7 @@ const DetailPanelContent = ({ row: rowProp }) => {
             //   handleRowSelection(newSelectedRowId);
             // }}
             getRowId={(rows) => rows.Id}
-            // initialState={{ pinnedColumns: { left: ['id', 'MaterialCode'] } }}
+          // initialState={{ pinnedColumns: { left: ['id', 'MaterialCode'] } }}
           />
         </Stack>
       </Paper>
@@ -263,6 +270,13 @@ const FGStock = (props) => {
       field: 'StockQty',
       headerName: intl.formatMessage({ id: 'product.StockQty' }),
       width: 150,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString("es-US")
+          );
+        }
+      },
     },
   ];
 

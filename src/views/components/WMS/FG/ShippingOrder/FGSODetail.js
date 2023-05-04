@@ -188,11 +188,25 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
       field: 'Qty',
       headerName: intl.formatMessage({ id: 'material-so-detail.Qty' }),
       /*flex: 0.7,*/ width: 150,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'TotalSOQty',
       headerName: intl.formatMessage({ id: 'material-so-detail.TotalSOQty' }),
       /*flex: 0.7,*/ width: 150,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'FGsoOrderQty',
@@ -214,12 +228,12 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
             variant="standard"
             fullWidth
             disabled={true}
-            value={params.row.FGsoOrderQty ?? 0}
-            // inputProps={{
-            //   onDoubleClick: () => {
-            //     setDisableText(false);
-            //   },
-            // }}
+            value={params.row.FGsoOrderQty.toLocaleString() ?? 0}
+          // inputProps={{
+          //   onDoubleClick: () => {
+          //     setDisableText(false);
+          //   },
+          // }}
           />
         );
       },
@@ -277,6 +291,13 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
       field: 'Qty',
       headerName: intl.formatMessage({ id: 'material-so-detail.Qty' }),
       /*flex: 0.7,*/ width: 150,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'FGsoOrderQty',

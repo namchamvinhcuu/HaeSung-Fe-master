@@ -63,11 +63,25 @@ const MMSReport = (props) => {
       field: 'OrderQty',
       headerName: intl.formatMessage({ id: 'work_order.OrderQty' }),
       /*flex: 0.7,*/ width: 120,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'ActualQty',
       headerName: intl.formatMessage({ id: 'work_order.ActualQty' }),
       /*flex: 0.7,*/ width: 120,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'StartDate',

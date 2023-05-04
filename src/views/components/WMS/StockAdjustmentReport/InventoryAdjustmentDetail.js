@@ -54,6 +54,13 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
       field: 'StockQty',
       headerName: intl.formatMessage({ id: 'stockAdjustment.StockQty' }),
       flex: 0.4,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'CheckQty',
@@ -64,7 +71,7 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
       renderCell: (params) => {
         return (
           <Tooltip title={params.row.isConfirm ? '' : intl.formatMessage({ id: 'material-so-detail.SOrderQty_tip' })}>
-            <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.CheckQty}</Typography>
+            <Typography sx={{ fontSize: 14, width: '100%' }}>{params.row.CheckQty.toLocaleString()}</Typography>
           </Tooltip>
         );
       },
@@ -74,6 +81,13 @@ export default function InventoryAdjustmentDetail({ StockAdjustmentId }) {
       field: 'GapQty',
       headerName: intl.formatMessage({ id: 'stockAdjustment.GapQty' }),
       flex: 0.4,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'CheckStatus',

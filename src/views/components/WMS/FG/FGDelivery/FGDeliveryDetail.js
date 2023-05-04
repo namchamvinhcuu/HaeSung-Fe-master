@@ -172,6 +172,13 @@ const FGDeliveryDetail = ({ dataRow }) => {
       field: 'Qty',
       headerName: intl.formatMessage({ id: 'delivery_order.OrderQty' }),
       /*flex: 0.7,*/ width: 120,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
 
     {

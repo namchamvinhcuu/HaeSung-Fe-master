@@ -401,6 +401,13 @@ const FixedPO = (props) => {
       field: 'Amount',
       headerName: intl.formatMessage({ id: 'forecast.Amount' }),
       width: 150,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'OrderQty',
@@ -501,9 +508,9 @@ const FixedPO = (props) => {
             value={
               fixedPOState.searchData.MaterialId !== 0
                 ? {
-                    MaterialId: fixedPOState.searchData.MaterialId,
-                    MaterialCode: fixedPOState.searchData.MaterialCode,
-                  }
+                  MaterialId: fixedPOState.searchData.MaterialId,
+                  MaterialCode: fixedPOState.searchData.MaterialCode,
+                }
                 : null
             }
             onChange={(e, item) => {

@@ -18,7 +18,6 @@ import moment from 'moment';
 
 const DetailPanelContent = ({ row: rowProp }) => {
   let isDetailRendered = useRef(true);
-
   const [detailPanelState, setDetailPanelState] = useState({
     isLoading: false,
     data: [],
@@ -73,6 +72,13 @@ const DetailPanelContent = ({ row: rowProp }) => {
       field: 'Qty',
       headerName: 'Qty',
       width: 100,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
 
     {
@@ -130,7 +136,7 @@ const DetailPanelContent = ({ row: rowProp }) => {
                 Desc: {rowProp.Description}
               </Typography>
               <Typography variant="body1" align="right">
-                Stock: {rowProp.StockQty ?? 0}
+                Stock: {rowProp.StockQty.toLocaleString('en-US') ?? 0}
               </Typography>
             </Grid>
           </Grid>
@@ -151,7 +157,7 @@ const DetailPanelContent = ({ row: rowProp }) => {
             //   handleRowSelection(newSelectedRowId);
             // }}
             getRowId={(rows) => rows.Id}
-            // initialState={{ pinnedColumns: { left: ['id', 'MaterialCode'] } }}
+          // initialState={{ pinnedColumns: { left: ['id', 'MaterialCode'] } }}
           />
         </Stack>
       </Paper>
@@ -181,6 +187,8 @@ const MaterialStock = (props) => {
     },
   });
 
+
+
   const columns = [
     {
       field: 'id',
@@ -202,6 +210,13 @@ const MaterialStock = (props) => {
       align: 'right',
       headerName: intl.formatMessage({ id: 'material.StockQty' }),
       width: 120,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'MaterialTypeName',
@@ -267,6 +282,7 @@ const MaterialStock = (props) => {
   //useEffect
   useEffect(() => {
     fetchData();
+
     return () => {
       isRendered = false;
     };
@@ -281,6 +297,7 @@ const MaterialStock = (props) => {
       setState({ ...state, searchData: { ...newSearchData } });
     }
   };
+  state.data ? console.log("abc", state.data) : ''
 
   async function fetchData() {
     setState({ ...state, isLoading: true });

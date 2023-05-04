@@ -133,6 +133,13 @@ const FGPackingLot = (props) => {
       field: 'Qty',
       headerName: intl.formatMessage({ id: 'packing.Qty' }),
       flex: 0.3,
+      renderCell: (params) => {
+        if (params.value !== null) {
+          return (
+            params.value.toLocaleString()
+          );
+        }
+      },
     },
     {
       field: 'PackingDate',
