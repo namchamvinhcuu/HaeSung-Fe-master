@@ -55,19 +55,21 @@ const downloadExcel = async (params) => {
       },
     };
 
-    fetch(`${ConfigConstants.API_URL}material-stock/download-excel`, options).then((response) => {
-      response.blob().then((blob) => {
-        let url = URL.createObjectURL(blob);
-        let downloadLink = document.createElement('a');
-        downloadLink.href = url;
-        downloadLink.download = `materialstock-${moment().format('YYYYMMDDhhmmss')}.xlsx`;
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
+    fetch(`${ConfigConstants.API_URL}material-stock/download-excel?${new URLSearchParams(params)}`, options).then(
+      (response) => {
+        response.blob().then((blob) => {
+          let url = URL.createObjectURL(blob);
+          let downloadLink = document.createElement('a');
+          downloadLink.href = url;
+          downloadLink.download = `materialstock-${moment().format('YYYYMMDDhhmmss')}.xlsx`;
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
 
-        document.body.removeChild(downloadLink);
-        URL.revokeObjectURL(url);
-      });
-    });
+          document.body.removeChild(downloadLink);
+          URL.revokeObjectURL(url);
+        });
+      }
+    );
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }

@@ -320,6 +320,14 @@ const MaterialStock = (props) => {
   const getAisles = async () => {
     return await wmsLayoutService.getAisles(63801163474140);
   };
+  const handleDownloadExcel = () => {
+    let params = {};
+    if (state.searchData.MaterialType) params.MaterialType = state.searchData.MaterialType;
+    if (state.searchData.LocationId) params.LocationId = state.searchData.LocationId;
+    if (state.searchData.SupplierId) params.SupplierId = state.searchData.SupplierId;
+    if (state.searchData.keyWord) params.keyWord = state.searchData.keyWord;
+    materialStockService.downloadExcel(params);
+  };
   return (
     <React.Fragment>
       <Grid container direction="row" justifyContent="space-between" alignItems="width-end">
@@ -327,7 +335,7 @@ const MaterialStock = (props) => {
         <Grid item xs>
           <Grid container columnSpacing={2} direction="row" justifyContent="flex-end" alignItems="flex-end">
             <Grid item style={{ width: '10%' }}>
-              <MuiButton text="excel" color="warning" onClick={materialStockService.downloadExcel} sx={{ mt: 1 }} />
+              <MuiButton text="excel" color="warning" onClick={handleDownloadExcel} sx={{ mt: 1 }} />
             </Grid>
             <Grid item style={{ width: '18%' }}>
               <MuiSearchField
