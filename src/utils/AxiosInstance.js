@@ -16,11 +16,13 @@ const instance = axios.create({
   baseURL: API_URL,
   // timeout: 10 * 1000,
   // mode: 'no-cors',
+  withCredentials: false,
   headers: {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
     'Content-Type': 'application/json',
     Authorization: '',
   },
-  // withCredentials: true
 });
 
 const currentExecutingRequests = {};
