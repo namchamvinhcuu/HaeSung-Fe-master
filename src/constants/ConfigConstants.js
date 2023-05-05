@@ -1,8 +1,11 @@
 /**
  * Local
  */
-export const API_URL = 'http://localhost:5261/api/';
-export const BASE_URL = 'http://localhost:5261';
+// export const API_URL = 'http://localhost:5261/api/';
+// export const BASE_URL = 'http://localhost:5261';
+
+export const API_URL = 'https://localhost:44301/api/';
+export const BASE_URL = 'https://localhost:44301';
 
 /**
  * Autonsi
