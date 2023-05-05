@@ -13,6 +13,8 @@
     "close": "Close",
     "save": "Save",
     "copy": "Copy",
+    "print_zebra": "Print Zebra",
+    "print_bixolon": "Print Bixolon",
     "print": "Print",
     "scan": "Scan",
     "cancel": "cancel",
@@ -80,7 +82,7 @@
     "over_range_999": "Sequence is over 999",
     "qty_notEnough": "Quantity is not enough",
     "excel_error": "Excel file error: [{error}]",
-    "choose_printer": "Choose printer",
+    "choose_printer": "Choose printer Zebra",
     "not_select_printer": "You have not selected a printer",
     "cannot_connect_printer": "Cannot connect printer"
   },

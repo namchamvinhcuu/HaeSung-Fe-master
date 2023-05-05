@@ -13,6 +13,8 @@
     "close": "Đóng",
     "save": "Lưu",
     "copy": "Sao chép",
+    "print_zebra": "In Zebra",
+    "print_bixolon": "In Bixolon",
     "print": "In",
     "scan": "Quét Mã",
     "cancel": "Hủy",
@@ -80,7 +82,7 @@
     "over_range_999": "Sequence is over 999",
     "qty_notEnough": "Số lượng không đủ",
     "excel_error": "Lỗi file Excel: [{error}]",
-    "choose_printer": "Chọn máy in",
+    "choose_printer": "Chọn máy in Zebra",
     "not_select_printer": "Bạn chưa chọn máy in ấn",
     "cannot_connect_printer": "Không thể kết nối máy in"
   },
