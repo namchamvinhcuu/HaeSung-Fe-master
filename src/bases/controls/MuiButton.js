@@ -46,6 +46,8 @@ const MuiButton = React.forwardRef((props, ref) => {
       case 'excel':
         return <FileDownloadIcon />;
       case 'print':
+      case 'print_zebra':
+      case 'print_bixolon':
         return <LocalPrintshopIcon />;
       case 'scan':
         return <CropFreeIcon />;

@@ -12,7 +12,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import PropTypes from 'prop-types';
-import { materialStockService } from '@services';
+import { materialStockService, wmsLayoutService } from '@services';
 import { useIntl } from 'react-intl';
 import moment from 'moment';
 
@@ -74,9 +74,7 @@ const DetailPanelContent = ({ row: rowProp }) => {
       width: 100,
       renderCell: (params) => {
         if (params.value !== null) {
-          return (
-            params.value.toLocaleString()
-          );
+          return params.value.toLocaleString();
         }
       },
     },
@@ -157,7 +155,7 @@ const DetailPanelContent = ({ row: rowProp }) => {
             //   handleRowSelection(newSelectedRowId);
             // }}
             getRowId={(rows) => rows.Id}
-          // initialState={{ pinnedColumns: { left: ['id', 'MaterialCode'] } }}
+            // initialState={{ pinnedColumns: { left: ['id', 'MaterialCode'] } }}
           />
         </Stack>
       </Paper>
@@ -181,13 +179,11 @@ const MaterialStock = (props) => {
     searchData: {
       keyWord: '',
       MaterialType: null,
-      Unit: null,
+      LocationId: null,
       SupplierId: null,
       showDelete: true,
     },
   });
-
-
 
   const columns = [
     {
@@ -212,9 +208,7 @@ const MaterialStock = (props) => {
       width: 120,
       renderCell: (params) => {
         if (params.value !== null) {
-          return (
-            params.value.toLocaleString()
-          );
+          return params.value.toLocaleString();
         }
       },
     },
@@ -297,7 +291,7 @@ const MaterialStock = (props) => {
       setState({ ...state, searchData: { ...newSearchData } });
     }
   };
-  state.data ? console.log("abc", state.data) : ''
+  state.data ? console.log('abc', state.data) : '';
 
   async function fetchData() {
     setState({ ...state, isLoading: true });
@@ -306,7 +300,7 @@ const MaterialStock = (props) => {
       pageSize: state.pageSize,
       keyWord: state.searchData.keyWord,
       MaterialType: state.searchData.MaterialType,
-      Unit: state.searchData.Unit,
+      LocationId: state.searchData.LocationId,
       SupplierId: state.searchData.SupplierId,
       showDelete: state.searchData.showDelete,
     };
@@ -323,7 +317,9 @@ const MaterialStock = (props) => {
   const getDetailPanelContent = React.useCallback(({ row }) => <DetailPanelContent row={row} />, []);
 
   const getDetailPanelHeight = React.useCallback(() => 450, []);
-
+  const getAisles = async () => {
+    return await wmsLayoutService.getAisles(63801163474140);
+  };
   return (
     <React.Fragment>
       <Grid container direction="row" justifyContent="space-between" alignItems="width-end">
@@ -352,12 +348,22 @@ const MaterialStock = (props) => {
               />
             </Grid>
             <Grid item style={{ width: '15%' }}>
-              <MuiAutocomplete
+              {/* <MuiAutocomplete
                 label={intl.formatMessage({ id: 'material.Unit' })}
                 fetchDataFunc={materialStockService.getUnit}
                 displayLabel="commonDetailName"
                 displayValue="commonDetailId"
                 onChange={(e, item) => handleSearch(item ? item.commonDetailId ?? null : null, 'Unit')}
+                variant="standard"
+              /> */}
+              <MuiAutocomplete
+                label={intl.formatMessage({ id: 'wms-layout.aisle' })}
+                fetchDataFunc={getAisles}
+                displayLabel="LocationCode"
+                displayValue="LocationId"
+                onChange={(e, item) => {
+                  handleSearch(item ? item.LocationId ?? null : null, 'LocationId');
+                }}
                 variant="standard"
               />
             </Grid>

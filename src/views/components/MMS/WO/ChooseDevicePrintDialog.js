@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl';
 import { MuiButton } from '@controls';
 import { ErrorAlert } from '@utils';
 import axios from 'axios';
+import { usePrintBIXOLON } from '@hooks';
 
 const testString = `CT~~CD,~CC^~CT~
 ^XA
@@ -60,7 +61,7 @@ const ChooseDevicePrintDialog = (props) => {
   const [deviceList, setDeviceList] = useState([]);
   const [printer, setPrinter] = useState(null);
   const { isOpen, onClose, dataPrint } = props;
-
+  const { printBIXILON } = usePrintBIXOLON();
   const [dialogState, setDialogState] = useState({
     isSubmit: false,
     from: 1,
@@ -157,6 +158,36 @@ const ChooseDevicePrintDialog = (props) => {
     // ^FH\^FD>:${outputString}^FS
     printer.send(stringPrint, undefined, errorPrintCallback);
   };
+  const handlePrintBIXOLON = () => {
+    if (!dialogState.from || !dialogState.to || Number(dialogState.from) < 1 || Number(dialogState.to) < 1) {
+      ErrorAlert(intl.formatMessage({ id: 'general.field_min' }, { min: 1 }));
+      return;
+    }
+    if (Number(dialogState.to) > dataPrint.OrderQty) {
+      ErrorAlert(intl.formatMessage({ id: 'work_order.No_More_Than_QTY' }));
+      return;
+    }
+    if (Number(dialogState.from) > Number(dialogState.to)) {
+      ErrorAlert(intl.formatMessage({ id: 'general.field_invalid' }));
+      return;
+    }
+    let data = [];
+    for (let i = Number(dialogState.from); i <= Number(dialogState.to); i++) {
+      let outputString = `${dataPrint.MaterialCode}-` + i.toString().padStart(5, '0');
+      data.push({ MaterialCode: outputString });
+    }
+    console.log(data);
+    printBIXILON(data);
+    // window.dispatchEvent(
+    //   new CustomEvent('printBIXILON', {
+    //     detail: [
+    //       {
+    //         MaterialCode: dataPrint.MaterialCode,
+    //       },
+    //     ],
+    //   })
+    // );
+  };
   return (
     <MuiDialog
       maxWidth="sm"
@@ -208,7 +239,8 @@ const ChooseDevicePrintDialog = (props) => {
 
           <Grid item xs={12}>
             <Grid container direction="row-reverse">
-              <MuiButton text="print" color="primary" onClick={handlePrint} />
+              <MuiButton text="print_zebra" color="primary" onClick={handlePrint} />
+              <MuiButton text="print_bixolon" color="success" onClick={handlePrintBIXOLON} />
             </Grid>
           </Grid>
         </Grid>
