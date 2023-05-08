@@ -337,7 +337,7 @@ const WMSLayout = (props) => {
     if (res && res.Data) {
       const masterStage = new Konva.Stage({
         container: 'master-konva',
-        width: area.width + 500,
+        width: area.width + 1000,
         height: area.height + 1000,
         // width: 1500,
         // height: 1500,
