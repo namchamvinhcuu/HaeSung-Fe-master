@@ -411,7 +411,7 @@ const WMSLayout = (props) => {
   const drawingDetailFunc = async () => {
     const detailStage = new Konva.Stage({
       container: 'detail-konva',
-      width: area.width + 500,
+      width: area.width + 1000,
       height: area.height,
     });
 
