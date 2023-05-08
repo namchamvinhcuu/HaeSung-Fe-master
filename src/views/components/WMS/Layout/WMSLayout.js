@@ -120,9 +120,7 @@ const WMSLayout = (props) => {
       flex: 0.3,
       renderCell: (params) => {
         if (params.value !== null) {
-          return (
-            params.value.toLocaleString()
-          );
+          return params.value.toLocaleString();
         }
       },
       // editable: true,
@@ -340,7 +338,7 @@ const WMSLayout = (props) => {
       const masterStage = new Konva.Stage({
         container: 'master-konva',
         width: area.width + 500,
-        height: area.height,
+        height: area.height + 1000,
         // width: 1500,
         // height: 1500,
       });
