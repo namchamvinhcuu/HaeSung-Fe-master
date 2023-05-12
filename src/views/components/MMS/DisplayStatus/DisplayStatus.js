@@ -104,7 +104,6 @@ const DisplayStatus = (props) => {
           <div style={{ width: '350px', fontSize: '16px', padding: '25px 30px', textAlign: 'right', display: 'flex', flexDirection: 'column', backgroundColor: 'white' }}>
             <span>{new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(new Date())}</span>
             <Clock format={'YYYY-MM-DD HH:mm:ss'} ticking={true} />
-
           </div>
         </div>
         <div style={{ backgroundColor: '#1E2749', height: '100%', padding: '0 90px', }}>
@@ -160,11 +159,10 @@ const DisplayStatus = (props) => {
             <div></div>
           </div>
 
-          <div style={{ paddingTop: '50px' }}>
-            <TableContainer component={Paper} sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#1E2749', width: '100%' }}>
-
-              {/* table 1 */}
-              <Table aria-label="simple table" sx={{ width: '35%', border: '1px solid #4BACC6' }}>
+          <div style={{ paddingTop: '50px', display: 'flex', justifyContent: 'space-between' }}>
+            {/* table 1 */}
+            <TableContainer component={Paper} sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#1E2749', width: '35%' }}>
+              <Table aria-label="simple table" sx={{ width: '100%', border: '1px solid #4BACC6' }}>
                 <TableHead >
                   <TableRow sx={{ ...style.grid, color: 'white', backgroundColor: '#0DE0C8' }}>
                     <TableCell align="center" sx={{ width: '50px', ...style.border }}>No</TableCell>
@@ -175,9 +173,9 @@ const DisplayStatus = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row) => (
+                  {rows.map((row, index) => (
                     <TableRow
-                      key={row.no}
+                      key={index}
                     >
                       <TableCell component="th" align="center" scope="row" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.no}</TableCell>
                       <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.model}</TableCell>
@@ -188,9 +186,11 @@ const DisplayStatus = (props) => {
                   ))}
                 </TableBody>
               </Table>
+            </TableContainer>
 
-              {/* table 2 */}
-              <Table aria-label="simple table" sx={{ width: '35%', border: '1px solid #4BACC6' }}>
+            {/* table 2 */}
+            <TableContainer component={Paper} sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#1E2749', width: '35%' }}>
+              <Table aria-label="simple table" sx={{ width: '100%', border: '1px solid #4BACC6' }}>
                 <TableHead >
                   <TableRow sx={{ color: 'white', backgroundColor: '#0DE0C8' }}>
                     <TableCell align="center" sx={{ width: '50px', ...style.border }}>No</TableCell>
@@ -201,9 +201,9 @@ const DisplayStatus = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows2.map((row) => (
+                  {rows2.map((row, index) => (
                     <TableRow
-                      key={row.no}
+                      key={index}
                     >
                       <TableCell component="th" align="center" scope="row" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.no}</TableCell>
                       <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.model}</TableCell>
@@ -214,9 +214,11 @@ const DisplayStatus = (props) => {
                   ))}
                 </TableBody>
               </Table>
+            </TableContainer>
 
-              {/* table 3 */}
-              <Table aria-label="simple table" sx={{ width: '25%', border: '1px solid #4BACC6' }}>
+            {/* table 3 */}
+            <TableContainer component={Paper} sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#1E2749', width: '25%' }}>
+              <Table aria-label="simple table" sx={{ width: '100%', border: '1px solid #4BACC6' }}>
                 <TableHead >
                   <TableRow sx={{ color: 'white', backgroundColor: '#0DE0C8' }}>
                     <TableCell align="center" sx={{ width: '50px', ...style.border }}>No</TableCell>
@@ -225,9 +227,9 @@ const DisplayStatus = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows3.map((row) => (
+                  {rows3.map((row, index) => (
                     <TableRow
-                      key={row.no}
+                      key={index}
                     >
                       <TableCell component="th" align="center" scope="row" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.no}</TableCell>
                       <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.model}</TableCell>
@@ -238,6 +240,7 @@ const DisplayStatus = (props) => {
               </Table>
             </TableContainer>
           </div>
+
           <div style={{ height: '100px', display: 'flex', alignItems: 'center' }}>
             <div style={{ color: 'white', display: 'flex', justifyContent: 'end', width: '100%' }}>
               <span>NG</span>
