@@ -44,6 +44,7 @@ import KPIAssy from './KPI/Assy/KPIAssy';
 //MMS
 import Actual from './MMS/Actual/Actual';
 import Display from './MMS/Display/Display';
+import DisplayStatus from './MMS/DisplayStatus/DisplayStatus';
 import MMSReport from './MMS/Report/MMSReport';
 import WorkOrder from './MMS/WO/WorkOrder';
 import MappingTray from './MMS/MappingTray/MappingTray';
@@ -146,6 +147,7 @@ export {
   //MMS
   Actual,
   Display,
+  DisplayStatus,
   MMSReport,
   WorkOrder,
   MappingTray,
