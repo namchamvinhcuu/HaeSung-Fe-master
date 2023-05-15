@@ -21,7 +21,9 @@ const DisplayStatus = (props) => {
   let isRendered = useRef(true);
   const handle = useFullScreenHandle();
   const intl = useIntl();
-  //const [data, setData] = useState({ totalOrderQty: 0, totalActualQty: 0, totalEfficiency: 0, data: [] });
+
+  const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
+  console.log('🚀 ~ file: DisplayStatus.js:26 ~ DisplayStatus ~ data:', data);
 
   const style = {
     grid: {
@@ -33,8 +35,8 @@ const DisplayStatus = (props) => {
     },
     border: {
       border: '1px solid #4BACC6',
-      fontWeight: '600'
-    }
+      fontWeight: '600',
+    },
   };
   function createData(no, model, target, ok, ng) {
     return { no, model, target, ok, ng };
@@ -77,15 +79,13 @@ const DisplayStatus = (props) => {
 
   const styleNg = (value) => {
     if (value % 2 === 0 && value < 10) {
-      return "#00B050"
+      return '#00B050';
     } else if (value % 2 !== 0 && value < 10) {
-      return "#F9F914"
+      return '#F9F914';
+    } else {
+      return 'red';
     }
-    else {
-      return "red";
-    }
-
-  }
+  };
   return (
     <React.Fragment>
       <Grid item xs={4} sx={{ mb: 1 }}>
@@ -95,34 +95,57 @@ const DisplayStatus = (props) => {
       </Grid>
       <FullScreen handle={handle} style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: 'white' }}>
-          <div style={{ width: '350px', fontSize: '25px', padding: '25px 50px', backgroundColor: '#D9D9D9', justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
+          <div
+            style={{
+              width: '350px',
+              fontSize: '25px',
+              padding: '25px 50px',
+              backgroundColor: '#D9D9D9',
+              justifyContent: 'center',
+              alignItems: 'center',
+              display: 'flex',
+            }}
+          >
             <span>Hanlim Vina</span>
           </div>
           <div style={{ fontSize: '40px', display: 'flex', alignItems: 'center', backgroundColor: 'white' }}>
             <span>Status of Hanlim​</span>
           </div>
-          <div style={{ width: '350px', fontSize: '16px', padding: '25px 30px', textAlign: 'right', display: 'flex', flexDirection: 'column', backgroundColor: 'white' }}>
+          <div
+            style={{
+              width: '350px',
+              fontSize: '16px',
+              padding: '25px 30px',
+              textAlign: 'right',
+              display: 'flex',
+              flexDirection: 'column',
+              backgroundColor: 'white',
+            }}
+          >
             <span>{new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(new Date())}</span>
             <Clock format={'YYYY-MM-DD HH:mm:ss'} ticking={true} />
           </div>
         </div>
-        <div style={{ backgroundColor: '#1E2749', height: '100%', padding: '0 90px', }}>
+        <div style={{ backgroundColor: '#1E2749', height: '100%', padding: '0 90px' }}>
           <div style={{ paddingTop: '50px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-
               {/* Injection */}
               <div style={{ border: '1px solid', width: '35%', border: '1px solid white', borderRadius: '10px' }}>
                 <div style={{ ...style.grid, color: 'white', borderBottom: '1px solid white' }}>Injection</div>
                 <div style={{ display: 'flex', width: '100%', padding: '10px' }}>
-                  <div style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}>
-                    <span>Target    : 12,000​</span>
+                  <div
+                    style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}
+                  >
+                    <span>Target : 12,000​</span>
                     <span>OK       :  8,270</span>
                     <span>NG       :  1,102</span>
                   </div>
-                  <div style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}>
+                  <div
+                    style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}
+                  >
                     <span>​</span>
                     <span>Efficiency  :  71 %</span>
-                    <span>NG Rate    :   9%</span>
+                    <span>NG Rate : 9%</span>
                   </div>
                 </div>
               </div>
@@ -131,15 +154,19 @@ const DisplayStatus = (props) => {
               <div style={{ border: '1px solid', width: '35%', border: '1px solid white', borderRadius: '10px' }}>
                 <div style={{ ...style.grid, color: 'white', borderBottom: '1px solid white' }}>Assembly</div>
                 <div style={{ display: 'flex', width: '100%', padding: '10px' }}>
-                  <div style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}>
-                    <span>Target    : 12,000​</span>
+                  <div
+                    style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}
+                  >
+                    <span>Target : 12,000​</span>
                     <span>OK       :  8,270</span>
                     <span>NG       :  1,102</span>
                   </div>
-                  <div style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}>
+                  <div
+                    style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}
+                  >
                     <span>​</span>
                     <span>Efficiency  :  71 %</span>
-                    <span>NG Rate    :   0.1%​</span>
+                    <span>NG Rate : 0.1%​</span>
                   </div>
                 </div>
               </div>
@@ -148,10 +175,12 @@ const DisplayStatus = (props) => {
               <div style={{ border: '1px solid', width: '25%', border: '1px solid white', borderRadius: '10px' }}>
                 <div style={{ ...style.grid, color: 'white', borderBottom: '1px solid white' }}>D. O</div>
                 {/* <div style={{ display: 'flex', width: '100%',  }}> */}
-                <div style={{ ...style.grid, display: 'flex', flexDirection: 'column', color: 'white', padding: '10px' }}>
-                  <span>Total   :   9​​</span>
+                <div
+                  style={{ ...style.grid, display: 'flex', flexDirection: 'column', color: 'white', padding: '10px' }}
+                >
+                  <span>Total : 9​​</span>
                   <span>OK  :  6</span>
-                  <span>Wait   :   3​</span>
+                  <span>Wait : 3​</span>
                   {/* </div> */}
                 </div>
               </div>
@@ -161,27 +190,60 @@ const DisplayStatus = (props) => {
 
           <div style={{ paddingTop: '50px', display: 'flex', justifyContent: 'space-between' }}>
             {/* table 1 */}
-            <TableContainer component={Paper} sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#1E2749', width: '35%' }}>
+            <TableContainer
+              component={Paper}
+              sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#1E2749', width: '35%' }}
+            >
               <Table aria-label="simple table" sx={{ width: '100%', border: '1px solid #4BACC6' }}>
-                <TableHead >
+                <TableHead>
                   <TableRow sx={{ ...style.grid, color: 'white', backgroundColor: '#0DE0C8' }}>
-                    <TableCell align="center" sx={{ width: '50px', ...style.border }}>No</TableCell>
-                    <TableCell align="center" sx={{ ...style.border }}>Model</TableCell>
-                    <TableCell align="center" sx={{ ...style.border }}>Target</TableCell>
-                    <TableCell align="center" sx={{ ...style.border }}>OK</TableCell>
-                    <TableCell align="center" sx={{ ...style.border }}>NG</TableCell>
+                    <TableCell align="center" sx={{ width: '50px', ...style.border }}>
+                      No
+                    </TableCell>
+                    <TableCell align="center" sx={{ ...style.border }}>
+                      Model
+                    </TableCell>
+                    <TableCell align="center" sx={{ ...style.border }}>
+                      Target
+                    </TableCell>
+                    <TableCell align="center" sx={{ ...style.border }}>
+                      OK
+                    </TableCell>
+                    <TableCell align="center" sx={{ ...style.border }}>
+                      NG
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {rows.map((row, index) => (
-                    <TableRow
-                      key={index}
-                    >
-                      <TableCell component="th" align="center" scope="row" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.no}</TableCell>
-                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.model}</TableCell>
-                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.target}</TableCell>
-                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.ok}</TableCell>
-                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'black', backgroundColor: row.ng !== null ? styleNg(row.ng) : '#1E2749' }}>{row.ng}</TableCell>
+                    <TableRow key={index}>
+                      <TableCell
+                        component="th"
+                        align="center"
+                        scope="row"
+                        sx={{ border: '1px solid #4BACC6', color: 'white' }}
+                      >
+                        {row.no}
+                      </TableCell>
+                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
+                        {row.model}
+                      </TableCell>
+                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
+                        {row.target}
+                      </TableCell>
+                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
+                        {row.ok}
+                      </TableCell>
+                      <TableCell
+                        align="center"
+                        sx={{
+                          border: '1px solid #4BACC6',
+                          color: 'black',
+                          backgroundColor: row.ng !== null ? styleNg(row.ng) : '#1E2749',
+                        }}
+                      >
+                        {row.ng}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -189,27 +251,60 @@ const DisplayStatus = (props) => {
             </TableContainer>
 
             {/* table 2 */}
-            <TableContainer component={Paper} sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#1E2749', width: '35%' }}>
+            <TableContainer
+              component={Paper}
+              sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#1E2749', width: '35%' }}
+            >
               <Table aria-label="simple table" sx={{ width: '100%', border: '1px solid #4BACC6' }}>
-                <TableHead >
+                <TableHead>
                   <TableRow sx={{ color: 'white', backgroundColor: '#0DE0C8' }}>
-                    <TableCell align="center" sx={{ width: '50px', ...style.border }}>No</TableCell>
-                    <TableCell align="center" sx={{ ...style.border }}>Model</TableCell>
-                    <TableCell align="center" sx={{ ...style.border }}>Target</TableCell>
-                    <TableCell align="center" sx={{ ...style.border }}>OK</TableCell>
-                    <TableCell align="center" sx={{ ...style.border }}>NG</TableCell>
+                    <TableCell align="center" sx={{ width: '50px', ...style.border }}>
+                      No
+                    </TableCell>
+                    <TableCell align="center" sx={{ ...style.border }}>
+                      Model
+                    </TableCell>
+                    <TableCell align="center" sx={{ ...style.border }}>
+                      Target
+                    </TableCell>
+                    <TableCell align="center" sx={{ ...style.border }}>
+                      OK
+                    </TableCell>
+                    <TableCell align="center" sx={{ ...style.border }}>
+                      NG
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {rows2.map((row, index) => (
-                    <TableRow
-                      key={index}
-                    >
-                      <TableCell component="th" align="center" scope="row" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.no}</TableCell>
-                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.model}</TableCell>
-                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.target}</TableCell>
-                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.ok}</TableCell>
-                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'black', backgroundColor: row.ng !== null ? styleNg(row.ng) : '#1E2749' }}>{row.ng}</TableCell>
+                    <TableRow key={index}>
+                      <TableCell
+                        component="th"
+                        align="center"
+                        scope="row"
+                        sx={{ border: '1px solid #4BACC6', color: 'white' }}
+                      >
+                        {row.no}
+                      </TableCell>
+                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
+                        {row.model}
+                      </TableCell>
+                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
+                        {row.target}
+                      </TableCell>
+                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
+                        {row.ok}
+                      </TableCell>
+                      <TableCell
+                        align="center"
+                        sx={{
+                          border: '1px solid #4BACC6',
+                          color: 'black',
+                          backgroundColor: row.ng !== null ? styleNg(row.ng) : '#1E2749',
+                        }}
+                      >
+                        {row.ng}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -217,23 +312,48 @@ const DisplayStatus = (props) => {
             </TableContainer>
 
             {/* table 3 */}
-            <TableContainer component={Paper} sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#1E2749', width: '25%' }}>
+            <TableContainer
+              component={Paper}
+              sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#1E2749', width: '25%' }}
+            >
               <Table aria-label="simple table" sx={{ width: '100%', border: '1px solid #4BACC6' }}>
-                <TableHead >
+                <TableHead>
                   <TableRow sx={{ color: 'white', backgroundColor: '#0DE0C8' }}>
-                    <TableCell align="center" sx={{ width: '50px', ...style.border }}>No</TableCell>
-                    <TableCell align="center" sx={{ ...style.border }}>Model</TableCell>
-                    <TableCell align="center" sx={{ ...style.border }}>Status</TableCell>
+                    <TableCell align="center" sx={{ width: '50px', ...style.border }}>
+                      No
+                    </TableCell>
+                    <TableCell align="center" sx={{ ...style.border }}>
+                      Model
+                    </TableCell>
+                    <TableCell align="center" sx={{ ...style.border }}>
+                      Status
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {rows3.map((row, index) => (
-                    <TableRow
-                      key={index}
-                    >
-                      <TableCell component="th" align="center" scope="row" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.no}</TableCell>
-                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>{row.model}</TableCell>
-                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white', backgroundColor: row.target === 'OK' ? '#0E8901' : '' }}>{row.target}</TableCell>
+                    <TableRow key={index}>
+                      <TableCell
+                        component="th"
+                        align="center"
+                        scope="row"
+                        sx={{ border: '1px solid #4BACC6', color: 'white' }}
+                      >
+                        {row.no}
+                      </TableCell>
+                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
+                        {row.model}
+                      </TableCell>
+                      <TableCell
+                        align="center"
+                        sx={{
+                          border: '1px solid #4BACC6',
+                          color: 'white',
+                          backgroundColor: row.target === 'OK' ? '#0E8901' : '',
+                        }}
+                      >
+                        {row.target}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -244,15 +364,23 @@ const DisplayStatus = (props) => {
           <div style={{ height: '100px', display: 'flex', alignItems: 'center' }}>
             <div style={{ color: 'white', display: 'flex', justifyContent: 'end', width: '100%' }}>
               <span>NG</span>
-              <span style={{ ...style.grid, backgroundColor: 'green', padding: '0 15px', marginLeft: '15px' }}>0 ~ 1 %​</span>
-              <span style={{ ...style.grid, backgroundColor: 'yellow', padding: '0 15px', marginLeft: '15px' }}>1  ~ 2 %​​</span>
-              <span style={{ ...style.grid, backgroundColor: 'orange', padding: '0 15px', marginLeft: '15px' }}>2 ~ 3 %​</span>
-              <span style={{ ...style.grid, backgroundColor: 'red', padding: '0 15px', marginLeft: '15px' }}>3 ~ %​</span>
+              <span style={{ ...style.grid, backgroundColor: 'green', padding: '0 15px', marginLeft: '15px' }}>
+                0 ~ 1 %​
+              </span>
+              <span style={{ ...style.grid, backgroundColor: 'yellow', padding: '0 15px', marginLeft: '15px' }}>
+                1 ~ 2 %​​
+              </span>
+              <span style={{ ...style.grid, backgroundColor: 'orange', padding: '0 15px', marginLeft: '15px' }}>
+                2 ~ 3 %​
+              </span>
+              <span style={{ ...style.grid, backgroundColor: 'red', padding: '0 15px', marginLeft: '15px' }}>
+                3 ~ %​
+              </span>
             </div>
           </div>
         </div>
       </FullScreen>
-    </React.Fragment >
+    </React.Fragment>
   );
 };
 

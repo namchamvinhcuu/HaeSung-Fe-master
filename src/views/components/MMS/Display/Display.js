@@ -23,7 +23,6 @@ const Display = (props) => {
   const handle = useFullScreenHandle();
   //const [data, setData] = useState({ totalOrderQty: 0, totalActualQty: 0, totalEfficiency: 0, data: [] });
   const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
-
   const style = {
     grid: {
       textAlign: 'center',
