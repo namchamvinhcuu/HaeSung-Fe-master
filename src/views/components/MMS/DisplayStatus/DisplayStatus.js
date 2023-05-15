@@ -115,7 +115,7 @@ const DisplayStatus = (props) => {
                 <div style={{ ...style.grid, color: 'white', borderBottom: '1px solid white' }}>Injection</div>
                 <div style={{ display: 'flex', width: '100%', padding: '10px' }}>
                   <div style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}>
-                    <span>Target    : 12,000​</span>
+                    <span>Target      : 12,000​</span>
                     <span>OK       :  8,270</span>
                     <span>NG       :  1,102</span>
                   </div>
@@ -132,7 +132,7 @@ const DisplayStatus = (props) => {
                 <div style={{ ...style.grid, color: 'white', borderBottom: '1px solid white' }}>Assembly</div>
                 <div style={{ display: 'flex', width: '100%', padding: '10px' }}>
                   <div style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}>
-                    <span>Target    : 12,000​</span>
+                    <span>Target     : 12,000​</span>
                     <span>OK       :  8,270</span>
                     <span>NG       :  1,102</span>
                   </div>
@@ -150,7 +150,7 @@ const DisplayStatus = (props) => {
                 {/* <div style={{ display: 'flex', width: '100%',  }}> */}
                 <div style={{ ...style.grid, display: 'flex', flexDirection: 'column', color: 'white', padding: '10px' }}>
                   <span>Total   :   9​​</span>
-                  <span>OK  :  6</span>
+                  <span>OK    :  6</span>
                   <span>Wait   :   3​</span>
                   {/* </div> */}
                 </div>
