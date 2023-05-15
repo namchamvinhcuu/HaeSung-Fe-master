@@ -23,7 +23,7 @@ const DisplayStatus = (props) => {
   const intl = useIntl();
 
   const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
-  console.log("🚀 ~ file: DisplayStatus.js:26 ~ DisplayStatus ~ data:", data)
+  // console.log("🚀 ~ file: DisplayStatus.js:26 ~ DisplayStatus ~ data:", data)
 
   const style = {
     grid: {
@@ -190,12 +190,12 @@ const DisplayStatus = (props) => {
                     <span>​</span>
                     <span>Efficiency:&ensp;
                       {
-                        totalTableData(false, "ok") / totalTableData(false, "target") * 100
+                        (totalTableData(false, "ok") / totalTableData(false, "target") * 100).toFixed(1)
                       }%
                     </span>
                     <span>NG Rate:&ensp;
                       {
-                        totalTableData(false, "ng") / totalTableData(false, "target") * 100
+                        (totalTableData(false, "ng") / totalTableData(false, "target") * 100).toFixed(1)
                       }%
                     </span>
                   </div>
@@ -223,12 +223,12 @@ const DisplayStatus = (props) => {
                     <span>​</span>
                     <span>Efficiency:&ensp;
                       {
-                        totalTableData(true, "ok") / totalTableData(true, "target") * 100
+                        (totalTableData(true, "ok") / totalTableData(true, "target") * 100).toFixed(1)
                       }%
                     </span>
                     <span>NG Rate:&ensp;
                       {
-                        totalTableData(true, "ng") / totalTableData(true, "target") * 100
+                        (totalTableData(true, "ng") / totalTableData(true, "target") * 100).toFixed(1)
                       }%
                     </span>
                   </div>
