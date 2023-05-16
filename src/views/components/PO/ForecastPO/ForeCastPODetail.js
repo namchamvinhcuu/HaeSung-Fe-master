@@ -188,6 +188,9 @@ const ForecastPODetail = ({ FPoMasterId }) => {
       field: 'Inch',
       headerName: 'Inch',
       width: 100,
+      renderCell: (params) => {
+        return <span>{params.row?.Inch == 0 ? '' : params.row?.Inch}</span>;
+      },
     },
 
     {
@@ -251,9 +254,7 @@ const ForecastPODetail = ({ FPoMasterId }) => {
       width: 100,
       renderCell: (params) => {
         if (params.value !== null) {
-          return (
-            params.value.toLocaleString()
-          );
+          return params.value.toLocaleString();
         }
       },
     },

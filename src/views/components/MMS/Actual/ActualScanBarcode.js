@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   MuiAutocomplete,
   MuiButton,
@@ -14,6 +14,8 @@ import moment from 'moment';
 import { ErrorAlert, SuccessAlert, dateToTicks } from '@utils';
 import { actualService } from '@services';
 import { useIntl } from 'react-intl';
+import { GridActionsCellItem } from '@mui/x-data-grid';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const ActualScanBarcode = ({ woId, materialId, materialCode, openScan, onClose, refreshLotDataGrid, getWoInfo }) => {
   const intl = useIntl();
@@ -114,6 +116,10 @@ const ActualScanBarcode = ({ woId, materialId, materialCode, openScan, onClose, 
       barCodeRef.current.focus();
     }
   };
+  const deleteItem = (Id) => {
+    console.log(Id);
+    setState((prev) => ({ ...prev, dataDemo: prev.dataDemo.filter((x) => x.Id != Id) }));
+  };
 
   const demoColumns = [
     {
@@ -139,6 +145,20 @@ const ActualScanBarcode = ({ woId, materialId, materialCode, openScan, onClose, 
         // console.log('🚀 ~ file: ActualScanBarcode.js:106 ~ ActualScanBarcode ~ params:', params);
         return params?.value ? moment(params?.value).format('YYYY-MM-DD HH:mm:ss') : null;
       },
+    },
+    {
+      field: 'actions',
+      type: 'actions',
+      headerName: 'Delete',
+      width: 100,
+      getActions: (params) => [
+        <GridActionsCellItem
+          color="warning"
+          icon={<DeleteIcon />}
+          label="Delete"
+          onClick={() => deleteItem(params.row.Id)}
+        />,
+      ],
     },
   ];
 
