@@ -103,6 +103,7 @@ const ForecastDetailDialog = (props) => {
   });
   const { handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched, isValid, resetForm } = formik;
   const onSubmit = async (data) => {
+    delete data?.Inch;
     setDialogState({ ...dialogState, isSubmit: true });
     if (mode == CREATE_ACTION) {
       const res = await forecastService.createForecast(data);
