@@ -14,6 +14,8 @@ import { deliveryOrderService } from '@services';
 import { ErrorAlert } from '@utils';
 import _ from 'lodash';
 import moment from 'moment';
+import IconButton from '@mui/material/IconButton';
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import { useIntl } from 'react-intl';
 import FGDeliveryDetail from './FGDeliveryDetail';
 
@@ -469,6 +471,38 @@ const FGDelivery = (props) => {
         if (params.value !== null) {
           return moment(params?.value).add(7, 'hours').format('YYYY-MM-DD HH:mm:ss');
         }
+      },
+    },
+    {
+      field: 'action',
+      headerName: '',
+      width: 60,
+      // headerAlign: 'center',
+      disableClickEventBubbling: true,
+      sortable: false,
+      disableColumnMenu: true,
+      renderCell: (params) => {
+        return (
+          <Grid container spacing={1} alignItems="center" justifyContent="center">
+            <Grid item xs={6}>
+              <IconButton
+                aria-label="edit"
+                color="warning"
+                size="small"
+                sx={[{ '&:hover': { border: '1px solid orange' } }]}
+                onClick={async () => {
+                  if (confirm(params.row.IsWorking ? "Do you want to disable it ?" : "Do you want to enable it ?")) {
+                    console.log(params.row);
+                    await deliveryOrderService.toggleWorking(params.row.DoId);
+                    fetchData();
+                  }
+                }}
+              >
+                <QuestionAnswerIcon color={params.row.IsWorking ? 'inherit' : "action"} fontSize="inherit" />
+              </IconButton>
+            </Grid>
+          </Grid>
+        );
       },
     },
   ];

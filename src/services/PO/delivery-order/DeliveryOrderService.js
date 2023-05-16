@@ -64,6 +64,15 @@ export const handleDelete = async (params) => {
   }
 };
 
+
+export const toggleWorking = async (doId) => {
+  try {
+    return await axios.patch(`${API}/toggle-do/${doId}`);
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
 export const createByExcel = async (params) => {
   try {
     return await axios.post(`${API}/create-by-excel`, params);
