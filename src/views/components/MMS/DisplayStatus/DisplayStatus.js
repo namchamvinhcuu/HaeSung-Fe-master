@@ -1,7 +1,7 @@
 import { Store } from '@appstate';
 import { User_Operations } from '@appstate/user';
 import { CombineDispatchToProps, CombineStateToProps } from '@plugins/helperJS';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Paper from '@mui/material/Paper';
@@ -16,14 +16,43 @@ import { Button, Grid } from '@mui/material';
 import { FullScreen, useFullScreenHandle } from 'react-full-screen';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import Clock from 'react-live-clock';
+import { HubConnectionBuilder, LogLevel, HttpTransportType, HubConnectionState } from '@microsoft/signalr';
+import * as ConfigConstants from '@constants/ConfigConstants';
+
 
 const DisplayStatus = (props) => {
   let isRendered = useRef(true);
   const handle = useFullScreenHandle();
   const intl = useIntl();
-
   const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
   // console.log("🚀 ~ file: DisplayStatus.js:26 ~ DisplayStatus ~ data:", data)
+  useEffect(() => {
+    const connection = new HubConnectionBuilder()
+      .withUrl(`${ConfigConstants.BASE_URL}/signalr`, {
+        skipNegotiation: true,
+        transport: HttpTransportType.WebSockets,
+      })
+      .configureLogging(LogLevel.None) // Disable logging
+      .withAutomaticReconnect({
+        nextRetryDelayInMilliseconds: (retryContext) => {
+          return 5000 + Math.random() * 15000;
+        },
+      })
+      .build();
+    if (connection.state === HubConnectionState.Disconnected) {
+      connection.start().then(() => {
+        connection.on("ReceivedWorkingDeliveryOrder", (response) => {
+          console.log(response);
+          setDoData(response);
+        });
+        connection.invoke('SendWorkingDeliveryOrder');
+      });
+    }
+
+    return connection;
+  }, []);
+  
+  const [doData, setDoData] = useState();
 
   const style = {
     grid: {
@@ -56,6 +85,19 @@ const DisplayStatus = (props) => {
           }
         }
       }
+    });
+    return rowData;
+  }
+
+  const handleDORowData = () => {
+    const rowData = []
+    for (let i = 1; i <= 9; i++) {
+      rowData.push({ no: i, materialCode: '', isActived : ''});
+    }
+    let i = 0;
+    doData?.forEach(ele => {
+      console.log(ele);
+      rowData[i++] = { no: i, materialCode: ele?.materialCode, isActived : ele.isActived ? "OK" : "" };
     });
     return rowData;
   }
@@ -98,17 +140,17 @@ const DisplayStatus = (props) => {
   //   createData('', '', '', '', null),
   //   createData('', '', '', '', null),
   // ];
-  const rows3 = [
-    createData(1, 'BN83-18295A​​', 'OK'),
-    createData(2, 'BN83-18769A​​​', 'OK'),
-    createData(3, 'BN83-18958A​​', 'OK'),
-    createData(4, 'BN83-19197A​', ''),
-    createData(5, 'BN83-19407A​', 'OK'),
-    createData(6, 'BN83-19408A​', ''),
-    createData(7, 'BN83-19769A​', 'OK'),
-    createData(8, 'BN83-19904A​', ''),
-    createData(9, 'BN83-20121A​', 'OK'),
-  ];
+  // const rows3 = [
+  //   createData(1, 'BN83-18295A​​', 'OK'),
+  //   createData(2, 'BN83-18769A​​​', 'OK'),
+  //   createData(3, 'BN83-18958A​​', 'OK'),
+  //   createData(4, 'BN83-19197A​', ''),
+  //   createData(5, 'BN83-19407A​', 'OK'),
+  //   createData(6, 'BN83-19408A​', ''),
+  //   createData(7, 'BN83-19769A​', 'OK'),
+  //   createData(8, 'BN83-19904A​', ''),
+  //   createData(9, 'BN83-20121A​', 'OK'),
+  // ];
 
   const styleNg = (ng, target) => {
     if (ng / target * 100 >= 0 || ng / target * 100 < 1) {
@@ -394,7 +436,7 @@ const DisplayStatus = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows3.map((row, index) => (
+                  {handleDORowData().map((row, index) => (
                     <TableRow key={index}>
                       <TableCell
                         component="th"
@@ -405,17 +447,17 @@ const DisplayStatus = (props) => {
                         {row.no}
                       </TableCell>
                       <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
-                        {row.model}
+                        {row.materialCode}
                       </TableCell>
                       <TableCell
                         align="center"
                         sx={{
                           border: '1px solid #4BACC6',
                           color: 'white',
-                          backgroundColor: row.target === 'OK' ? '#0E8901' : '',
+                          backgroundColor: row.isActived === 'OK' ? '#0E8901' : '',
                         }}
                       >
-                        {row.target}
+                        {row.isActived}
                       </TableCell>
                     </TableRow>
                   ))}
