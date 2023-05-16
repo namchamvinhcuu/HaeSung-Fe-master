@@ -111,16 +111,17 @@ const DisplayStatus = (props) => {
   ];
 
   const styleNg = (ng, target) => {
-    if (ng / target * 100 >= 0 || ng / target * 100 < 1) {
+    if (ng / target * 100 >= 0 && ng / target * 100 < 1) {
       return '#00B050';
-    } else if (ng / target * 100 >= 1 || ng / target * 100 < 2) {
+    } else if (ng / target * 100 >= 1 && ng / target * 100 < 2) {
       return '#F9F914';
-    } else if (ng / target * 100 >= 2 || ng / target * 100 < 3) {
+    } else if (ng / target * 100 >= 2 && ng / target * 100 < 3) {
       return '#FFA500';
     } else {
       return 'red';
     }
   };
+
   return (
     <React.Fragment>
       <Grid item xs={4} sx={{ mb: 1 }}>
@@ -190,12 +191,12 @@ const DisplayStatus = (props) => {
                     <span>​</span>
                     <span>Efficiency:&ensp;
                       {
-                        (totalTableData(false, "ok") / totalTableData(false, "target") * 100).toFixed(1)
+                        (totalTableData(false, "ok") / totalTableData(false, "target") * 100 || 0).toFixed(1)
                       }%
                     </span>
                     <span>NG Rate:&ensp;
                       {
-                        (totalTableData(false, "ng") / totalTableData(false, "target") * 100).toFixed(1)
+                        (totalTableData(false, "ng") / totalTableData(false, "target") * 100 || 0).toFixed(1)
                       }%
                     </span>
                   </div>
@@ -223,12 +224,12 @@ const DisplayStatus = (props) => {
                     <span>​</span>
                     <span>Efficiency:&ensp;
                       {
-                        (totalTableData(true, "ok") / totalTableData(true, "target") * 100).toFixed(1)
+                        (totalTableData(true, "ok") / totalTableData(true, "target") * 100 || 0).toFixed(1)
                       }%
                     </span>
                     <span>NG Rate:&ensp;
                       {
-                        (totalTableData(true, "ng") / totalTableData(true, "target") * 100).toFixed(1)
+                        (totalTableData(true, "ng") / totalTableData(true, "target") * 100 || 0).toFixed(1)
                       }%
                     </span>
                   </div>
@@ -302,7 +303,7 @@ const DisplayStatus = (props) => {
                           sx={{
                             border: '1px solid #4BACC6',
                             color: 'black',
-                            backgroundColor: row.ng !== null ? styleNg(row.ng, row.target) : '#1E2749',
+                            backgroundColor: row?.ng !== null ? styleNg(row.ng, row.target) : '#1E2749',
                           }}
                         >
                           {row?.ng?.toLocaleString()}
