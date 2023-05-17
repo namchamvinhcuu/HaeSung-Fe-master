@@ -250,8 +250,8 @@ const FGDeliveryDetail = ({ dataRow }) => {
   const handleReceivingLot = async (inputValue) => {
     const res = await fgDeliveryService.scanFGDelivery({
       PackingLabelId: inputValue,
-      DoId: String(dataRow?.arrIds),
-      row_version: dataRow?.row_version
+      DoId: String(dataRow?.arrIds)
+      // IsWorking: dataRow?.isWorking
     });
 
     if (res && isRendered) {

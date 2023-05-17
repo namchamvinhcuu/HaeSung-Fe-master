@@ -78,7 +78,7 @@ const FGDelivery = (props) => {
     if (rowSelected && rowSelected.length > 0 && rowSelected[0]?.IsWorking === true) {
       setDataRow({
         arrIds: arrIds[0],
-        row_version: rowSelected[0]?.row_version
+        IsWorking: rowSelected[0]?.IsWorking
       });
       setSelectedRow({ ...rowSelected[0] });
     } else {
@@ -258,6 +258,7 @@ const FGDelivery = (props) => {
       });
     }
   }, [selectedRow]);
+
 
   const columns = [
     { field: 'DoId', headerName: '', hide: true },
@@ -499,9 +500,12 @@ const FGDelivery = (props) => {
                 sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={async () => {
                   if (confirm(params.row.IsWorking ? "Do you want to disable it ?" : "Do you want to enable it ?")) {
-                    console.log(params.row);
-                    await deliveryOrderService.toggleWorking(params.row.DoId);
-                    fetchData();
+                    const res = await deliveryOrderService.toggleWorking(params?.row.DoId, params?.row?.row_version);
+                    if (res?.Data) {
+                      fetchData();
+                    } else {
+                      ErrorAlert(intl.formatMessage({ id: res.ResponseMessage }));
+                    }
                   }
                 }}
               >

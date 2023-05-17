@@ -65,9 +65,11 @@ export const handleDelete = async (params) => {
 };
 
 
-export const toggleWorking = async (doId) => {
+export const toggleWorking = async (doId, row_version) => {
   try {
-    return await axios.patch(`${API}/toggle-do/${doId}`);
+    const abc = await axios.patch(`${API}/toggle-do/${doId}/${row_version}`);
+    console.log("🚀 ~ file: DeliveryOrderService.js:72 ~ toggleWorking ~ abc:", abc)
+    return abc;
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }

@@ -11,6 +11,8 @@ export const getAll = async (params) => {
 };
 
 export const scanFGDelivery = async (params) => {
+  console.log("🚀 ~ file: FGDeliveryService.js:14 ~ scanFGDelivery ~ params:", params)
+
   try {
     return await axios.put(`${apiName}/scan-fg-delivery`, {
       ...params,
