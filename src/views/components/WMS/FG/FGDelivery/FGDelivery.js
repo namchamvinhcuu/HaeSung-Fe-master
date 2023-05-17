@@ -75,9 +75,14 @@ const FGDelivery = (props) => {
       return item.DoId === arrIds[0];
     });
 
-    if (rowSelected && rowSelected.length > 0) {
+    if (rowSelected && rowSelected.length > 0 && rowSelected[0]?.IsWorking === true) {
+      setDataRow({
+        arrIds: arrIds[0],
+        row_version: rowSelected[0]?.row_version
+      });
       setSelectedRow({ ...rowSelected[0] });
     } else {
+      setDataRow(0)
       setSelectedRow({ ...DeliveryOrderDto });
     }
   };
@@ -198,6 +203,8 @@ const FGDelivery = (props) => {
           totalRow: res.TotalRow,
           isLoading: false,
         });
+
+      console.log("🚀 ~ file: FGDelivery.js:193 ~ fetchData ~ res:", res.Data)
     } else {
       ErrorAlert(intl.formatMessage({ id: message }));
     }
@@ -487,7 +494,7 @@ const FGDelivery = (props) => {
             <Grid item xs={6}>
               <IconButton
                 aria-label="edit"
-                color="warning"
+                color={params?.row?.IsWorking ? "primary" : "warning"}
                 size="small"
                 sx={[{ '&:hover': { border: '1px solid orange' } }]}
                 onClick={async () => {
@@ -584,7 +591,8 @@ const FGDelivery = (props) => {
         }}
         getRowId={(rows) => rows.DoId}
         onSelectionModelChange={(newSelectedRowId) => {
-          setDataRow(newSelectedRowId[0]);
+          console.log("🚀 ~ file: FGDelivery.js:606 ~ FGDelivery ~ newSelectedRowId:", newSelectedRowId)
+
           handleRowSelection(newSelectedRowId);
         }}
         getRowClassName={(params) => {
@@ -596,7 +604,10 @@ const FGDelivery = (props) => {
           pinnedColumns: { left: ['id', 'FPoMasterCode', 'FPoCode', 'DoCode', 'MaterialCode'], right: ['action'] },
         }}
       />
-      <FGDeliveryDetail dataRow={dataRow} />
+      {
+        dataRow !== 0 ? <FGDeliveryDetail dataRow={dataRow} /> : ""
+      }
+
     </React.Fragment>
   );
 };

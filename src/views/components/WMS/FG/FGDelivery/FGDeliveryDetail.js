@@ -30,7 +30,7 @@ const FGDeliveryDetail = ({ dataRow }) => {
     searchData: {
       ...PackingLabelDto,
     },
-    DoId: dataRow,
+    DoId: dataRow?.arrIds,
   });
 
   const [newData, setNewData] = useState({ ...PackingLabelDto });
@@ -92,8 +92,9 @@ const FGDeliveryDetail = ({ dataRow }) => {
     const params = {
       page: deliveryFGDetail.page,
       pageSize: deliveryFGDetail.pageSize,
-      DoId: dataRow,
+      DoId: dataRow?.arrIds,
     };
+    console.log("🚀 ~ file: FGDeliveryDetail.js:97 ~ fetchData ~ params:", params)
     const res = await fgDeliveryService.getAll(params);
     if (res && res.Data && isRendered)
       setdeliveryFGDetail({
@@ -249,7 +250,8 @@ const FGDeliveryDetail = ({ dataRow }) => {
   const handleReceivingLot = async (inputValue) => {
     const res = await fgDeliveryService.scanFGDelivery({
       PackingLabelId: inputValue,
-      DoId: String(dataRow),
+      DoId: String(dataRow?.arrIds),
+      row_version: dataRow?.row_version
     });
 
     if (res && isRendered) {
@@ -275,7 +277,7 @@ const FGDeliveryDetail = ({ dataRow }) => {
             // value={lotInputRef.current.value}
             onChange={handleLotInputChange}
             onKeyDown={keyPress}
-            disabled={dataRow > 0 ? false : true}
+            disabled={dataRow?.arrIds > 0 ? false : true}
           />
         </Grid>
         <Grid item>
@@ -284,7 +286,7 @@ const FGDeliveryDetail = ({ dataRow }) => {
             color="success"
             onClick={scanBtnClick}
             sx={{ whiteSpace: 'nowrap' }}
-            disabled={dataRow > 0 ? false : true}
+            disabled={dataRow?.arrIds > 0 ? false : true}
           />
         </Grid>
       </Grid>
