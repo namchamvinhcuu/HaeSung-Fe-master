@@ -5,7 +5,10 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
+
 var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+
 module.exports = {
   mode: 'production',
   entry: {
@@ -147,6 +150,9 @@ module.exports = {
       filename: 'css/[name].[contenthash:8].css',
       ignoreOrder: false,
       allChunks: true,
+    }),
+    new Dotenv({
+      path: path.resolve(__dirname, '.env.production'),
     }),
   ],
   optimization: {
