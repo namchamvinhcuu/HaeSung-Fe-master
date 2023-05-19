@@ -19,40 +19,13 @@ import Clock from 'react-live-clock';
 import { HubConnectionBuilder, LogLevel, HttpTransportType, HubConnectionState } from '@microsoft/signalr';
 import * as ConfigConstants from '@constants/ConfigConstants';
 
-
 const DisplayStatus = (props) => {
   let isRendered = useRef(true);
   const handle = useFullScreenHandle();
   const intl = useIntl();
-  const { totalOrderQty, totalActualQty, totalEfficiency, data } = props;
+  const { totalOrderQty, totalActualQty, totalEfficiency, data, deliveryOrder } = props;
+  console.log({ deliveryOrder });
   // console.log("🚀 ~ file: DisplayStatus.js:26 ~ DisplayStatus ~ data:", data)
-  useEffect(() => {
-    const connection = new HubConnectionBuilder()
-      .withUrl(`${ConfigConstants.BASE_URL}/signalr`, {
-        skipNegotiation: true,
-        transport: HttpTransportType.WebSockets,
-      })
-      .configureLogging(LogLevel.None) // Disable logging
-      .withAutomaticReconnect({
-        nextRetryDelayInMilliseconds: (retryContext) => {
-          return 5000 + Math.random() * 15000;
-        },
-      })
-      .build();
-    if (connection.state === HubConnectionState.Disconnected) {
-      connection.start().then(() => {
-        connection.on("ReceivedWorkingDeliveryOrder", (response) => {
-          console.log(response);
-          setDoData(response);
-        });
-        connection.invoke('SendWorkingDeliveryOrder');
-      });
-    }
-
-    return connection;
-  }, []);
-
-  const [doData, setDoData] = useState();
 
   const style = {
     grid: {
@@ -68,60 +41,62 @@ const DisplayStatus = (props) => {
     },
   };
 
-
-
   const handleRowData = (type) => {
-    const rowData = []
+    const rowData = [];
     for (let i = 1; i <= 9; i++) {
-      rowData.push({ no: i, model: '', target: null, ok: "", ng: null })
+      rowData.push({ no: i, model: '', target: null, ok: '', ng: null });
     }
-    data?.forEach(ele => {
+    data?.forEach((ele) => {
       if (ele?.woProcess === type && ele?.isShowing === true) {
         for (let i = 1; i <= rowData?.length; i++) {
-          if (parseInt(ele?.lineName?.split("#")[1]) === i) {
-            rowData[i - 1] = { no: i, model: ele?.materialCode, target: ele?.orderQty, ok: ele?.actualQty - ele?.ngQty, ng: ele?.ngQty }
+          if (parseInt(ele?.lineName?.split('#')[1]) === i) {
+            rowData[i - 1] = {
+              no: i,
+              model: ele?.materialCode,
+              target: ele?.orderQty,
+              ok: ele?.actualQty - ele?.ngQty,
+              ng: ele?.ngQty,
+            };
           }
         }
       }
     });
     return rowData;
-  }
+  };
 
   const handleDORowData = () => {
-    const rowData = []
+    const rowData = [];
     for (let i = 1; i <= 9; i++) {
       rowData.push({ no: i, materialCode: '', isActived: '' });
     }
     let i = 0;
-    doData?.forEach(ele => {
-      console.log(ele);
-      rowData[i++] = { no: i, materialCode: ele?.materialCode, isActived: ele.isActived ? "OK" : "" };
+    deliveryOrder?.forEach((ele) => {
+      rowData[i++] = { no: i, materialCode: ele?.materialCode, isActived: ele.isActived ? 'OK' : '' };
     });
     return rowData;
-  }
+  };
 
   const totalTableData = (type, value) => {
     let total = 0;
     for (let i = 0; i < data.length; i++) {
-      if (data[i]?.woProcess === type && data[i]?.isShowing === true && value === "target") {
-        total += data[i]?.orderQty
-      } else if (data[i]?.woProcess === type && data[i]?.isShowing === true && value === "ok") {
-        total += (data[i]?.actualQty - data[i]?.ngQty)
-      } else if (data[i]?.woProcess === type && data[i]?.isShowing === true && value === "ng") {
-        total += data[i]?.ngQty
+      if (data[i]?.woProcess === type && data[i]?.isShowing === true && value === 'target') {
+        total += data[i]?.orderQty;
+      } else if (data[i]?.woProcess === type && data[i]?.isShowing === true && value === 'ok') {
+        total += data[i]?.actualQty - data[i]?.ngQty;
+      } else if (data[i]?.woProcess === type && data[i]?.isShowing === true && value === 'ng') {
+        total += data[i]?.ngQty;
       }
     }
 
     return total;
-  }
-
+  };
 
   const styleNg = (ng, target) => {
-    if (ng / target * 100 >= 0 && ng / target * 100 < 1) {
+    if ((ng / target) * 100 >= 0 && (ng / target) * 100 < 1) {
       return '#00B050';
-    } else if (ng / target * 100 >= 1 && ng / target * 100 < 2) {
+    } else if ((ng / target) * 100 >= 1 && (ng / target) * 100 < 2) {
       return '#F9F914';
-    } else if (ng / target * 100 >= 2 && ng / target * 100 < 3) {
+    } else if ((ng / target) * 100 >= 2 && (ng / target) * 100 < 3) {
       return '#FFA500';
     } else {
       return 'red';
@@ -171,39 +146,34 @@ const DisplayStatus = (props) => {
         <div style={{ backgroundColor: '#1E2749', height: '100%', padding: '0 90px' }}>
           <div style={{ paddingTop: '50px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-
               {/* Injection */}
               <div style={{ border: '1px solid', width: '35%', border: '1px solid white', borderRadius: '10px' }}>
                 <div style={{ ...style.grid, color: 'white', borderBottom: '1px solid white' }}>Injection</div>
                 <div style={{ display: 'flex', width: '100%', padding: '10px' }}>
-                  <div style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}>
-                    <span>Target:&ensp;
-                      {
-                        totalTableData(false, "target").toLocaleString()
-                      }
+                  <div
+                    style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}
+                  >
+                    <span>
+                      Target:&ensp;
+                      {totalTableData(false, 'target').toLocaleString()}
                     </span>
-                    <span>OK:&ensp;
-                      {
-                        totalTableData(false, "ok").toLocaleString()
-                      }
+                    <span>
+                      OK:&ensp;
+                      {totalTableData(false, 'ok').toLocaleString()}
                     </span>
-                    <span>NG:&ensp; {
-                      totalTableData(false, "ng").toLocaleString()
-                    }</span>
+                    <span>NG:&ensp; {totalTableData(false, 'ng').toLocaleString()}</span>
                   </div>
                   <div
                     style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}
                   >
                     <span>​</span>
-                    <span>Efficiency:&ensp;
-                      {
-                        (totalTableData(false, "ok") / totalTableData(false, "target") * 100 || 0).toFixed(1)
-                      }%
+                    <span>
+                      Efficiency:&ensp;
+                      {((totalTableData(false, 'ok') / totalTableData(false, 'target')) * 100 || 0).toFixed(1)}%
                     </span>
-                    <span>NG Rate:&ensp;
-                      {
-                        (totalTableData(false, "ng") / totalTableData(false, "target") * 100 || 0).toFixed(1)
-                      }%
+                    <span>
+                      NG Rate:&ensp;
+                      {((totalTableData(false, 'ng') / totalTableData(false, 'target')) * 100 || 0).toFixed(1)}%
                     </span>
                   </div>
                 </div>
@@ -213,30 +183,30 @@ const DisplayStatus = (props) => {
               <div style={{ border: '1px solid', width: '35%', border: '1px solid white', borderRadius: '10px' }}>
                 <div style={{ ...style.grid, color: 'white', borderBottom: '1px solid white' }}>Assembly</div>
                 <div style={{ display: 'flex', width: '100%', padding: '10px' }}>
-                  <div style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}>
-                    <span>Target:&ensp;
-                      {totalTableData(true, "target").toLocaleString()}
+                  <div
+                    style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}
+                  >
+                    <span>
+                      Target:&ensp;
+                      {totalTableData(true, 'target').toLocaleString()}
                     </span>
-                    <span>OK:&ensp;
-                      {totalTableData(true, "ok").toLocaleString()}
+                    <span>
+                      OK:&ensp;
+                      {totalTableData(true, 'ok').toLocaleString()}
                     </span>
-                    <span>NG:&ensp; {
-                      totalTableData(true, "ng").toLocaleString()
-                    }</span>
+                    <span>NG:&ensp; {totalTableData(true, 'ng').toLocaleString()}</span>
                   </div>
                   <div
                     style={{ ...style.grid, display: 'flex', width: '50%', flexDirection: 'column', color: 'white' }}
                   >
                     <span>​</span>
-                    <span>Efficiency:&ensp;
-                      {
-                        (totalTableData(true, "ok") / totalTableData(true, "target") * 100 || 0).toFixed(1)
-                      }%
+                    <span>
+                      Efficiency:&ensp;
+                      {((totalTableData(true, 'ok') / totalTableData(true, 'target')) * 100 || 0).toFixed(1)}%
                     </span>
-                    <span>NG Rate:&ensp;
-                      {
-                        (totalTableData(true, "ng") / totalTableData(true, "target") * 100 || 0).toFixed(1)
-                      }%
+                    <span>
+                      NG Rate:&ensp;
+                      {((totalTableData(true, 'ng') / totalTableData(true, 'target')) * 100 || 0).toFixed(1)}%
                     </span>
                   </div>
                 </div>
@@ -246,10 +216,12 @@ const DisplayStatus = (props) => {
               <div style={{ border: '1px solid', width: '25%', border: '1px solid white', borderRadius: '10px' }}>
                 <div style={{ ...style.grid, color: 'white', borderBottom: '1px solid white' }}>D. O</div>
                 {/* <div style={{ display: 'flex', width: '100%',  }}> */}
-                <div style={{ ...style.grid, display: 'flex', flexDirection: 'column', color: 'white', padding: '10px' }}>
-                  <span>Total   :   9​​</span>
+                <div
+                  style={{ ...style.grid, display: 'flex', flexDirection: 'column', color: 'white', padding: '10px' }}
+                >
+                  <span>Total : 9​​</span>
                   <span>OK    :  6</span>
-                  <span>Wait   :   3​</span>
+                  <span>Wait : 3​</span>
                   {/* </div> */}
                 </div>
               </div>
@@ -284,38 +256,37 @@ const DisplayStatus = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {
-                    handleRowData(false).map((row, index) => (
-                      <TableRow key={index}>
-                        <TableCell
-                          component="th"
-                          align="center"
-                          scope="row"
-                          sx={{ border: '1px solid #4BACC6', color: 'white' }}
-                        >
-                          {row.no}
-                        </TableCell>
-                        <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
-                          {row.model}
-                        </TableCell>
-                        <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
-                          {row?.target?.toLocaleString()}
-                        </TableCell>
-                        <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
-                          {row?.ok?.toLocaleString()}
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{
-                            border: '1px solid #4BACC6',
-                            color: 'black',
-                            backgroundColor: row?.ng !== null ? styleNg(row.ng, row.target) : '#1E2749',
-                          }}
-                        >
-                          {row?.ng?.toLocaleString()}
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                  {handleRowData(false).map((row, index) => (
+                    <TableRow key={index}>
+                      <TableCell
+                        component="th"
+                        align="center"
+                        scope="row"
+                        sx={{ border: '1px solid #4BACC6', color: 'white' }}
+                      >
+                        {row.no}
+                      </TableCell>
+                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
+                        {row.model}
+                      </TableCell>
+                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
+                        {row?.target?.toLocaleString()}
+                      </TableCell>
+                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
+                        {row?.ok?.toLocaleString()}
+                      </TableCell>
+                      <TableCell
+                        align="center"
+                        sx={{
+                          border: '1px solid #4BACC6',
+                          color: 'black',
+                          backgroundColor: row?.ng !== null ? styleNg(row.ng, row.target) : '#1E2749',
+                        }}
+                      >
+                        {row?.ng?.toLocaleString()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -464,10 +435,10 @@ const mapStateToProps = (state) => {
   } = CombineStateToProps(state.AppReducer, [[Store.User_Reducer]]);
 
   const {
-    Display_Reducer: { totalOrderQty, totalActualQty, totalNGQty, totalEfficiency, data },
+    Display_Reducer: { totalOrderQty, totalActualQty, totalNGQty, totalEfficiency, data, deliveryOrder },
   } = CombineStateToProps(state.AppReducer, [[Store.Display_Reducer]]);
 
-  return { language, totalOrderQty, totalActualQty, totalNGQty, totalEfficiency, data };
+  return { language, totalOrderQty, totalActualQty, totalNGQty, totalEfficiency, data, deliveryOrder };
 };
 
 const mapDispatchToProps = (dispatch) => {

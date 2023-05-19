@@ -51,30 +51,31 @@ const KPIDashboard = (props) => {
   const [connection, setConnection] = useState(initConnection);
 
   const startConnection = async () => {
-    try {
-      if (connection) {
-        connection.on('ReceivedWorkOrders', (data) => {
-          if (data && data.length > 0 && isRendered) {
-            setWorkOrders([...data]);
-            // setSelectedRow({ ...data[0] });
-            handleHighcharts([...data]);
-          }
-        });
-        connection.onclose(async (e) => {
-          if (isRendered) setConnection(null);
-        });
-      }
+    alert('Connecting');
+    // try {
+    //   if (connection) {
+    //     connection.on('ReceivedWorkOrders', (data) => {
+    //       if (data && data.length > 0 && isRendered) {
+    //         setWorkOrders([...data]);
+    //         // setSelectedRow({ ...data[0] });
+    //         handleHighcharts([...data]);
+    //       }
+    //     });
+    //     connection.onclose(async (e) => {
+    //       if (isRendered) setConnection(null);
+    //     });
+    //   }
 
-      if (connection.state === HubConnectionState.Disconnected) {
-        await connection.start();
-        console.log('websocket connect success');
-        await connection.invoke('SendWorkOrders');
-      } else if (connection.state === HubConnectionState.Connected) {
-        await connection.invoke('SendWorkOrders');
-      }
-    } catch (error) {
-      console.log('websocket connect error: ', error);
-    }
+    //   if (connection.state === HubConnectionState.Disconnected) {
+    //     await connection.start();
+    //     console.log('websocket connect success');
+    //     await connection.invoke('SendWorkOrders');
+    //   } else if (connection.state === HubConnectionState.Connected) {
+    //     await connection.invoke('SendWorkOrders');
+    //   }
+    // } catch (error) {
+    //   console.log('websocket connect error: ', error);
+    // }
   };
 
   const closeConnection = async () => {

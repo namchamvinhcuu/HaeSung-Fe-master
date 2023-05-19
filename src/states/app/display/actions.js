@@ -1,4 +1,4 @@
-import { SAVE_DISPLAY_DATA } from './types';
+import { SAVE_DISPLAY_DATA, SET_DELIVERY_ORDER } from './types';
 
 const saveDisplayData = (payload) => {
   return (dispatch) => {
@@ -8,5 +8,12 @@ const saveDisplayData = (payload) => {
     });
   };
 };
-
-export { saveDisplayData };
+const setDeliveryOrder = (payload) => {
+  return (dispatch) => {
+    dispatch({
+      type: SET_DELIVERY_ORDER,
+      data: payload,
+    });
+  };
+};
+export { saveDisplayData, setDeliveryOrder };

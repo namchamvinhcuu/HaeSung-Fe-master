@@ -1,4 +1,4 @@
-import { SAVE_DISPLAY_DATA } from './types';
+import { SAVE_DISPLAY_DATA, SET_DELIVERY_ORDER } from './types';
 
 const initializeState = {
   totalOrderQty: 0,
@@ -12,6 +12,7 @@ const initializeState = {
 
   totalEfficiency: 0,
   data: [],
+  deliveryOrder: [],
 };
 
 const reducer = (state = initializeState, action) => {
@@ -19,9 +20,11 @@ const reducer = (state = initializeState, action) => {
 
   switch (action.type) {
     case SAVE_DISPLAY_DATA:
-      newState = { ...action.data };
+      newState = { ...newState, ...action.data };
       break;
-
+    case SET_DELIVERY_ORDER:
+      newState = { ...newState, deliveryOrder: action.data };
+      break;
     default:
       break;
   }

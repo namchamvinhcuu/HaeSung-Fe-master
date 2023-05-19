@@ -1,3 +1,3 @@
-import { saveDisplayData } from './actions';
+import { saveDisplayData, setDeliveryOrder } from './actions';
 
-export { saveDisplayData };
+export { saveDisplayData, setDeliveryOrder };

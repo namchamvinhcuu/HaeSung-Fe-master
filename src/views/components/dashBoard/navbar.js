@@ -180,10 +180,14 @@ class NavBar extends Component {
           saveDisplayData(res);
         }
       });
-
+      this.connection.on('ReceivedWorkingDeliveryOrder', (res) => {
+        const { setDeliveryOrder } = this.props;
+        setDeliveryOrder(res ?? []);
+      });
       // Invoke the 'SendOnlineUsers' and 'GetDisplayWO' methods on the server
       await this.connection.invoke('SendOnlineUsers');
       await this.connection.invoke('GetDisplayWO');
+      await this.connection.invoke('SendWorkingDeliveryOrder');
 
       // Register a callback for the close event
       this.connection.onclose((e) => {
@@ -302,10 +306,10 @@ class NavBar extends Component {
     const currentUser = GetLocalStorage(ConfigConstants.CURRENT_USER);
 
     const uArr = this.state.onlineUsers.filter(function (item) {
-      return item.userId === currentUser.userId && item.lastLoginOnWeb === currentUser.lastLoginOnWeb;
+      return item.userId === currentUser?.userId && item.lastLoginOnWeb === currentUser?.lastLoginOnWeb;
     });
 
-    if (uArr.length === 0 && currentUser) {
+    if (uArr.length === 0 || !currentUser) {
       const { deleteAll } = this.props;
       deleteAll();
 

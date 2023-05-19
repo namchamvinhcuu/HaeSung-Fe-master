@@ -62,7 +62,7 @@ const mapDispatchToProps = (dispatch) => {
     // , User_Operations: {
     //     changeLanguage
     // },
-    Display_Operations: { saveDisplayData },
+    Display_Operations: { saveDisplayData, setDeliveryOrder },
   } = CombineDispatchToProps(dispatch, bindActionCreators, [
     [Dashboard_Operations],
     // , [User_Operations]
@@ -80,6 +80,7 @@ const mapDispatchToProps = (dispatch) => {
 
     //,changeLanguage
     saveDisplayData,
+    setDeliveryOrder,
   };
 };
 
