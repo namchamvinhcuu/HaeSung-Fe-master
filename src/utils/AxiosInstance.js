@@ -88,7 +88,7 @@ instance.interceptors.request.use(
           }
         }
       } else {
-        await instance.Logout();
+        if (originalRequest.url != '/api/login/checklogin') await instance.Logout();
       }
 
       return originalRequest;
