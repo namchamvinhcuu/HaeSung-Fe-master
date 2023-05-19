@@ -51,7 +51,7 @@ const DisplayStatus = (props) => {
 
     return connection;
   }, []);
-  
+
   const [doData, setDoData] = useState();
 
   const style = {
@@ -68,9 +68,7 @@ const DisplayStatus = (props) => {
     },
   };
 
-  function createData(no, model, target, ok, ng) {
-    return { no, model, target, ok, ng };
-  }
+
 
   const handleRowData = (type) => {
     const rowData = []
@@ -92,12 +90,12 @@ const DisplayStatus = (props) => {
   const handleDORowData = () => {
     const rowData = []
     for (let i = 1; i <= 9; i++) {
-      rowData.push({ no: i, materialCode: '', isActived : ''});
+      rowData.push({ no: i, materialCode: '', isActived: '' });
     }
     let i = 0;
     doData?.forEach(ele => {
       console.log(ele);
-      rowData[i++] = { no: i, materialCode: ele?.materialCode, isActived : ele.isActived ? "OK" : "" };
+      rowData[i++] = { no: i, materialCode: ele?.materialCode, isActived: ele.isActived ? "OK" : "" };
     });
     return rowData;
   }
@@ -117,40 +115,6 @@ const DisplayStatus = (props) => {
     return total;
   }
 
-  // const rows = [
-  //   createData(1, 'BN69 - 24568A​', 1000, 800, 4),
-  //   createData(2, 'BN69 - 00288A​', 800, 600, 4),
-  //   createData(3, 'BN69 - 24568A​', 400, 350, 3),
-  //   createData(4, 'BN69 - 24568A​', 1000, 600, 4),
-  //   createData(5, 'BN69 - 24568A', 1000, 600, 20),
-  //   createData(6, 'BN69 - 24568A', 2500, 1100, 4),
-  //   createData(7, 'BN69 - 24568A', 1300, 1120, 8),
-  //   createData(8, '', '', '', null),
-  //   createData(9, 'BN69 - 24568A', 2000, 1400, 40),
-  // ];
-
-  // const rows2 = [
-  //   createData(1, 'BN69 - 24568A​', 1000, 500, 4),
-  //   createData(2, 'BN69 - 00288A​', 1300, 900, 1),
-  //   createData(3, 'BN69 - 24568A​', 800, 870, 20),
-  //   createData(4, 'BN69 - 24568A​', 900, 600, 5),
-  //   createData(5, 'BN69 - 24568A', 500, 450, 4),
-  //   createData(6, 'BN69 - 24568A', 300, 120, 1),
-  //   createData('', '', '', '', null),
-  //   createData('', '', '', '', null),
-  //   createData('', '', '', '', null),
-  // ];
-  // const rows3 = [
-  //   createData(1, 'BN83-18295A​​', 'OK'),
-  //   createData(2, 'BN83-18769A​​​', 'OK'),
-  //   createData(3, 'BN83-18958A​​', 'OK'),
-  //   createData(4, 'BN83-19197A​', ''),
-  //   createData(5, 'BN83-19407A​', 'OK'),
-  //   createData(6, 'BN83-19408A​', ''),
-  //   createData(7, 'BN83-19769A​', 'OK'),
-  //   createData(8, 'BN83-19904A​', ''),
-  //   createData(9, 'BN83-20121A​', 'OK'),
-  // ];
 
   const styleNg = (ng, target) => {
     if (ng / target * 100 >= 0 && ng / target * 100 < 1) {
