@@ -1,28 +1,6 @@
-/**
- * Local
- */
-// export const API_URL = 'http://localhost:5261/api/';
-// export const BASE_URL = 'http://localhost:5261';
+export const API_URL = process.env.API_URL;
+export const BASE_URL = process.env.BASE_URL;
 
-// export const API_URL = 'http://localhost:44301/api/';
-// export const BASE_URL = 'http://localhost:44301';
-
-/**
- * Autonsi
- */
-export const API_URL = 'http://baseapi.autonsi.com/api/';
-export const BASE_URL = 'http://baseapi.autonsi.com';
-
-// export const API_URL = process.env.API_URL;
-// export const BASE_URL = process.env.BASE_URL;
-/**
- * Hanlim
- */
-// export const API_URL = 'http://192.168.1.35:81/api/';
-// export const BASE_URL = 'http://192.168.1.35:81';
-
-// export const LOGIN_URL = '/api/login/checklogin';
-// export const REFRESH_TOKEN_URL = '/api/refreshtoken';
 export const LOGIN_URL = process.env.LOGIN_URL;
 export const REFRESH_TOKEN_URL = process.env.REFRESH_TOKEN_URL;
 
