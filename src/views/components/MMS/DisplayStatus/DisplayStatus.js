@@ -102,7 +102,15 @@ const DisplayStatus = (props) => {
       return 'red';
     }
   };
-
+  const statusOK = () => {
+    let totalOK = 0;
+    deliveryOrder?.forEach(element => {
+      if (element?.isActived) {
+        totalOK += 1;
+      }
+    })
+    return totalOK;
+  }
   return (
     <React.Fragment>
       <Grid item xs={4} sx={{ mb: 1 }}>
@@ -220,8 +228,16 @@ const DisplayStatus = (props) => {
                   style={{ ...style.grid, display: 'flex', flexDirection: 'column', color: 'white', padding: '10px' }}
                 >
                   <span>Total : 9​​</span>
-                  <span>OK    :  6</span>
-                  <span>Wait : 3​</span>
+                  <span>OK    :
+                    {
+                      statusOK()
+                    }
+                  </span>
+                  <span>Wait :
+                    {
+                      9 - statusOK()
+                    }
+                  </span>
                   {/* </div> */}
                 </div>
               </div>
