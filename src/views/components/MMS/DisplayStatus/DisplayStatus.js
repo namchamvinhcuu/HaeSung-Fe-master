@@ -22,9 +22,10 @@ import * as ConfigConstants from '@constants/ConfigConstants';
 const DisplayStatus = (props) => {
   let isRendered = useRef(true);
   const handle = useFullScreenHandle();
+  const [reload, setReload] = useState(0);
   const intl = useIntl();
   const { totalOrderQty, totalActualQty, totalEfficiency, data, deliveryOrder } = props;
-  console.log({ deliveryOrder });
+  // console.log({ deliveryOrder });
   // console.log("🚀 ~ file: DisplayStatus.js:26 ~ DisplayStatus ~ data:", data)
 
   const style = {
@@ -48,10 +49,10 @@ const DisplayStatus = (props) => {
     }
     data?.forEach((ele) => {
       if (ele?.woProcess === type && ele?.isShowing === true) {
-        for (let i = 1; i <= rowData?.length; i++) {
-          if (parseInt(ele?.lineName?.split('#')[1]) === i) {
-            rowData[i - 1] = {
-              no: i,
+        for (let j = 0; j <= rowData?.length; j++) {
+          if (parseInt(ele?.lineName?.split('#')[1]) === j) {
+            rowData[j - 1] = {
+              no: j,
               model: ele?.materialCode,
               target: ele?.orderQty,
               ok: ele?.actualQty - ele?.ngQty,
@@ -102,6 +103,7 @@ const DisplayStatus = (props) => {
       return 'red';
     }
   };
+
   const statusOK = () => {
     let totalOK = 0;
     deliveryOrder?.forEach(element => {
@@ -111,6 +113,11 @@ const DisplayStatus = (props) => {
     })
     return totalOK;
   }
+
+  useEffect(() => {
+    console.log("===============", data);
+    setReload(1)
+  }, [data])
   return (
     <React.Fragment>
       <Grid item xs={4} sx={{ mb: 1 }}>
@@ -227,13 +234,13 @@ const DisplayStatus = (props) => {
                 <div
                   style={{ ...style.grid, display: 'flex', flexDirection: 'column', color: 'white', padding: '10px' }}
                 >
-                  <span>Total : 9​​</span>
-                  <span>OK    :
+                  <span>Total: &ensp;9​​</span>
+                  <span>OK:&ensp;
                     {
                       statusOK()
                     }
                   </span>
-                  <span>Wait :
+                  <span>Wait:&ensp;
                     {
                       9 - statusOK()
                     }

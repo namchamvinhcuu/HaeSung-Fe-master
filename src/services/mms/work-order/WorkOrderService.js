@@ -91,9 +91,11 @@ export const createByExcel = async (params) => {
 
 export const modify = async (params) => {
   try {
-    return await axios.put(`${API}/modify-wo`, {
+    const result = await axios.put(`${API}/modify-wo`, {
       ...params,
-    });
+    })
+    console.log("🚀 ~ file: WorkOrderService.js:101 ~ modify ~ result:", result)
+    return result
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }
