@@ -93,7 +93,7 @@ import SplitLot from './WMS/SplitMergeLot/SplitLot';
 import MergeLot from './WMS/SplitMergeLot/MergeLot';
 //PO
 import DeliveryOrder from './PO/DeliveryOrder/DeliveryOrder';
-import ForecastPO from './PO/ForecastPO/ForecastPO';
+import ForecastPO from './PO/ForecastPO/ForeCastPO';
 import FixedPO from './PO/FixedPO/FixedPO';
 
 //account manager

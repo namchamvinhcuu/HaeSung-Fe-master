@@ -18,7 +18,7 @@ import * as standardQCService from './Standard/Information/StandardQCService';
 import * as bomService from './Standard/Information/BomService';
 import * as bomDetailService from './Standard/Information/BomDetailService';
 import * as qcMasterService from './Standard/Information/QCMaterService';
-import * as qcDetailService from './Standard/Information/qcDetailService';
+import * as qcDetailService from './Standard/Information/QCDetailService';
 import * as locationService from './Standard/Information/LocationService';
 import * as versionAppService from './Standard/Configuration/VersionAppService';
 import * as documentService from './Standard/Configuration/DocumentService';
@@ -28,10 +28,10 @@ import * as deliveryOrderService from './PO/delivery-order/DeliveryOrderService'
 import * as forecastService from './PO/Forecast/ForecastService';
 import * as forecastMasterService from './PO/Forecast/ForecastMasterService';
 
-import * as workOrderService from './MMS/work-order/WorkOrderService';
-import * as actualService from './MMS/ActualService';
-import * as mmsReportService from './MMS/MMSReportService';
-import * as mappingTrayService from './MMS/MappingTrayService';
+import * as workOrderService from './mms/work-order/WorkOrderService';
+import * as actualService from './mms/ActualService';
+import * as mmsReportService from './mms/MMSReportService';
+import * as mappingTrayService from './mms/MappingTrayService';
 
 import * as fixedPOService from './PO/purchase-order/FixedPOService';
 import * as iqcService from './WMS/Material/IQCService';

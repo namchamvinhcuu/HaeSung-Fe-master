@@ -9,7 +9,7 @@ import QCMasterDto from './QCMasterDto';
 import QCDetailDto from './QCDetailDto';
 import LocationDto from './LocationDto';
 import PurchaseOrderDto from './PurchaseOrderDto';
-import PODetailDto from './PoDetailDto';
+import PODetailDto from './PODetailDto';
 import ForecastPODto from './ForecastPODto';
 import DeliveryOrderDto from './DeliveryOrderDto';
 import WorkOrderDto from './WorkOrderDto';
