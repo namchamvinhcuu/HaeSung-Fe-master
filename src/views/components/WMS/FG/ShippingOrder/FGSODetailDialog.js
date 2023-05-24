@@ -189,9 +189,7 @@ const FGSODetailDialog = (props) => {
       /*flex: 0.7,*/ width: 150,
       renderCell: (params) => {
         if (params.value !== null) {
-          return (
-            params.value.toLocaleString()
-          );
+          return params.value.toLocaleString();
         }
       },
     },
@@ -201,9 +199,7 @@ const FGSODetailDialog = (props) => {
       /*flex: 0.7,*/ width: 150,
       renderCell: (params) => {
         if (params.value !== null) {
-          return (
-            params.value.toLocaleString()
-          );
+          return params.value.toLocaleString();
         }
       },
     },
@@ -220,7 +216,7 @@ const FGSODetailDialog = (props) => {
             variant="standard"
             fullWidth
             disabled={true}
-            value={params.row.RequestQty.toLocaleString() ?? 0}
+            value={params.row.RequestQty ? params.row.RequestQty.toLocaleString() : 0}
           />
         );
       },
@@ -330,16 +326,16 @@ const FGSODetailDialog = (props) => {
                 mode == CREATE_ACTION
                   ? null
                   : {
-                    MaterialId: initModal.MaterialId,
-                    MaterialCode: initModal.MaterialCode,
-                  }
+                      MaterialId: initModal.MaterialId,
+                      MaterialCode: initModal.MaterialCode,
+                    }
               }
               value={
                 values.MaterialId
                   ? {
-                    MaterialId: values.MaterialId,
-                    MaterialCode: values.MaterialCode,
-                  }
+                      MaterialId: values.MaterialId,
+                      MaterialCode: values.MaterialCode,
+                    }
                   : null
               }
               onChange={async (e, value) => {

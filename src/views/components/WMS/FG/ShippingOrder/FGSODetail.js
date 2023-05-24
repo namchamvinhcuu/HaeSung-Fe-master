@@ -190,9 +190,7 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
       /*flex: 0.7,*/ width: 150,
       renderCell: (params) => {
         if (params.value !== null) {
-          return (
-            params.value.toLocaleString()
-          );
+          return params.value.toLocaleString();
         }
       },
     },
@@ -202,9 +200,7 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
       /*flex: 0.7,*/ width: 150,
       renderCell: (params) => {
         if (params.value !== null) {
-          return (
-            params.value.toLocaleString()
-          );
+          return params.value.toLocaleString();
         }
       },
     },
@@ -228,12 +224,12 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
             variant="standard"
             fullWidth
             disabled={true}
-            value={params.row.FGsoOrderQty.toLocaleString() ?? 0}
-          // inputProps={{
-          //   onDoubleClick: () => {
-          //     setDisableText(false);
-          //   },
-          // }}
+            value={params.row.FGsoOrderQty ? params.row.FGsoOrderQty.toLocaleString() : 0}
+            // inputProps={{
+            //   onDoubleClick: () => {
+            //     setDisableText(false);
+            //   },
+            // }}
           />
         );
       },
@@ -293,9 +289,7 @@ const FGSODetail = ({ FGsoId, fromPicking, FGsoStatus }) => {
       /*flex: 0.7,*/ width: 150,
       renderCell: (params) => {
         if (params.value !== null) {
-          return (
-            params.value.toLocaleString()
-          );
+          return params.value.toLocaleString();
         }
       },
     },
