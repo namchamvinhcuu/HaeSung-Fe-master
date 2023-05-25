@@ -22,7 +22,7 @@ import * as ConfigConstants from '@constants/ConfigConstants';
 const DisplayStatus = (props) => {
   let isRendered = useRef(true);
   const handle = useFullScreenHandle();
-  const [reload, setReload] = useState(0);
+  // const [reload, setReload] = useState(0);
   const intl = useIntl();
   const { totalOrderQty, totalActualQty, totalEfficiency, data, deliveryOrder } = props;
   // console.log({ deliveryOrder });
@@ -45,7 +45,7 @@ const DisplayStatus = (props) => {
   const handleRowData = (type) => {
     const rowData = [];
     for (let i = 1; i <= 9; i++) {
-      rowData.push({ no: i, model: '', target: null, ok: '', ng: null });
+      rowData.push({ no: i, model: '', target: null, hmiQty: null, ok: '', ng: null });
     }
     data?.forEach((ele) => {
       if (ele?.woProcess === type && ele?.isShowing === true) {
@@ -55,6 +55,7 @@ const DisplayStatus = (props) => {
               no: j,
               model: ele?.materialCode,
               target: ele?.orderQty,
+              hmiQty: ele?.hmiQty,
               ok: ele?.actualQty - ele?.ngQty,
               ng: ele?.ngQty,
             };
@@ -114,10 +115,10 @@ const DisplayStatus = (props) => {
     return totalOK;
   }
 
-  useEffect(() => {
-    console.log("===============", data);
-    setReload(1)
-  }, [data])
+  // useEffect(() => {
+  //   console.log("===============", data);
+  //   setReload(1)
+  // }, [data])
   return (
     <React.Fragment>
       <Grid item xs={4} sx={{ mb: 1 }}>
@@ -271,6 +272,9 @@ const DisplayStatus = (props) => {
                       Target
                     </TableCell>
                     <TableCell align="center" sx={{ ...style.border }}>
+                      Inject MC
+                    </TableCell>
+                    <TableCell align="center" sx={{ ...style.border }}>
                       OK
                     </TableCell>
                     <TableCell align="center" sx={{ ...style.border }}>
@@ -294,6 +298,9 @@ const DisplayStatus = (props) => {
                       </TableCell>
                       <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
                         {row?.target?.toLocaleString()}
+                      </TableCell>
+                      <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
+                        {row?.hmiQty?.toLocaleString()}
                       </TableCell>
                       <TableCell align="center" sx={{ border: '1px solid #4BACC6', color: 'white' }}>
                         {row?.ok?.toLocaleString()}
