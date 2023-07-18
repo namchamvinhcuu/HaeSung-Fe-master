@@ -93,9 +93,9 @@ export const modify = async (params) => {
   try {
     const result = await axios.put(`${API}/modify-wo`, {
       ...params,
-    })
-    console.log("🚀 ~ file: WorkOrderService.js:101 ~ modify ~ result:", result)
-    return result
+    });
+    console.log('🚀 ~ file: WorkOrderService.js:101 ~ modify ~ result:', result);
+    return result;
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }
@@ -115,6 +115,16 @@ export const handleDelete = async (params) => {
   try {
     return await axios.put(`${API}/delete-reuse-wo`, {
       ...params,
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
+
+export const getInfoMaterialForPrint = async (params) => {
+  try {
+    return await axios.get(`${API}/get-info-material-for-print`, {
+      params: { ...params },
     });
   } catch (error) {
     console.log(`ERROR: ${error}`);

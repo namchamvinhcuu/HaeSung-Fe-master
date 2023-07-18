@@ -1,61 +1,12 @@
-import { MuiDialog, MuiResetButton, MuiSubmitButton, MuiTextField } from '@controls';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Autocomplete, Checkbox, FormControlLabel, Grid, Radio, TextField } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
-import { useIntl } from 'react-intl';
-import { MuiButton } from '@controls';
-import { ErrorAlert } from '@utils';
-import axios from 'axios';
+import { MuiButton, MuiDialog, MuiTextField } from '@controls';
 import { usePrintBIXOLON } from '@hooks';
+import { Autocomplete, Grid, TextField } from '@mui/material';
+import { workOrderService } from '@services';
+import { ErrorAlert } from '@utils';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { useIntl } from 'react-intl';
 
-const testString = `CT~~CD,~CC^~CT~
-^XA
-~TA000
-~JSN
-^LT0
-^MNW
-^MTT
-^PON
-^PMN
-^LH0,0
-^JMA
-^PR7,7
-~SD25
-^JUS
-^LRN
-^CI27
-^PA0,1,1,0
-^XZ
-^XA
-^MMT
-^PW591
-^LL150
-^LS0
-^BY4,3,41^FT116,56^BCN,,Y,N
-^FH\^FD>;BN63-18827A-0001^FS
-^PQ1,0,1,Y
-^XZ
-^XZ
-^XA
-^MMT
-^PW591
-^LL150
-^LS0
-^BY4,3,41^FT116,56^BCN,,Y,N
-^FH\^FD>;BN63-18827A-0002^FS
-^PQ1,0,1,Y
-^XZ
-^XZ
-^XA
-^MMT
-^PW591
-^LL150
-^LS0
-^BY4,3,41^FT116,56^BCN,,Y,N
-^FH\^FD>;BN63-18827A-0003^FS
-^PQ1,0,1,Y
-^XZ
-`;
 const ChooseDevicePrintDialog = (props) => {
   const intl = useIntl();
   const [deviceList, setDeviceList] = useState([]);
@@ -107,7 +58,7 @@ const ChooseDevicePrintDialog = (props) => {
     const { value, name } = e.target;
     setDialogState((state) => ({ ...state, [name]: value }));
   };
-  const handlePrint = () => {
+  const handlePrint = async () => {
     if (!printer) {
       ErrorAlert(intl.formatMessage({ id: 'general.not_select_printer' }));
       return;
@@ -124,7 +75,10 @@ const ChooseDevicePrintDialog = (props) => {
       ErrorAlert(intl.formatMessage({ id: 'general.field_invalid' }));
       return;
     }
-
+    const title = await workOrderService.getInfoMaterialForPrint({
+      BomCode: dataPrint.MaterialCode,
+      Version: dataPrint.BomVersion,
+    });
     let stringPrint = `CT~~CD,~CC^~CT~
     ^XA
     ~TA000
@@ -137,21 +91,28 @@ const ChooseDevicePrintDialog = (props) => {
     ^LH0,0
     ^JMA
     ^PR7,7
-    ~SD25
+    ~SD15
     ^JUS
     ^LRN
     ^CI27
     ^PA0,1,1,0`;
+    let datePrint = moment().format('YYYYMMDD');
     for (let i = Number(dialogState.from); i <= Number(dialogState.to); i++) {
       let outputString = `${dataPrint.MaterialCode}-` + i.toString().padStart(5, '0');
+
       stringPrint += `^XZ
       ^XA
       ^MMT
       ^PW591
-      ^LL150
+      ^LL94
       ^LS0
-      ^BY2,3,45^FT68,66^BCN,,Y,N
-      ^A0N,30,30^FH^FD>:${outputString}^FS
+      ^FT11,98^BQN,2,4
+      ^FH\^FDLA,${outputString}^FS
+      ^FT519,77^BQN,2,3
+      ^FH\^FDLA,${outputString}^FS
+      ^FT105,26^A0N,21,15^FH\^CI28^FD${title}^FS^CI27
+      ^FPH,2^FT105,54^A0N,21,15^FH\^CI28^FD${outputString}^FS^CI27
+      ^FPH,2^FT105,81^A0N,21,15^FH\^CI28^FD${datePrint}^FS^CI27
       ^PQ1,0,1,Y
       ^XZ`;
     }
