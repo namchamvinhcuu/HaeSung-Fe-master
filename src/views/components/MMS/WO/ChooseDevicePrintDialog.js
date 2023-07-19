@@ -110,9 +110,9 @@ const ChooseDevicePrintDialog = (props) => {
       ^FH\^FDLA,${outputString}^FS
       ^FT519,77^BQN,2,3
       ^FH\^FDLA,${outputString}^FS
-      ^FT105,26^A0N,21,15^FH\^CI28^FD${title}^FS^CI27
       ^FPH,2^FT105,54^A0N,21,15^FH\^CI28^FD${outputString}^FS^CI27
       ^FPH,2^FT105,81^A0N,21,15^FH\^CI28^FD${datePrint}^FS^CI27
+      ^FT105,26^A0N,21,15^FH\^CI28^FD${title}^FS^CI27
       ^PQ1,0,1,Y
       ^XZ`;
     }
