@@ -37,8 +37,23 @@ const ChooseDevicePrintDialog = (props) => {
     );
   };
 
+  const fetchData = async () => {
+    const data = await workOrderService.getInfoMaterialForPrint({
+      BomCode: dataPrint.MaterialCode,
+      Version: dataPrint.BomVersion,
+      WOProcess: dataPrint.WOProcess,
+    });
+    setDialogState((prev) => ({
+      ...prev,
+      [dataPrint.WOProcess ? 'materials' : 'title']: dataPrint.WOProcess ? data : data.title,
+    }));
+  };
+
   useEffect(() => {
-    isOpen && setupPrinter();
+    if (isOpen) {
+      setupPrinter();
+      fetchData();
+    }
   }, [isOpen]);
 
   const handleCloseDialog = () => {
@@ -75,10 +90,12 @@ const ChooseDevicePrintDialog = (props) => {
       ErrorAlert(intl.formatMessage({ id: 'general.field_invalid' }));
       return;
     }
-    const title = await workOrderService.getInfoMaterialForPrint({
-      BomCode: dataPrint.MaterialCode,
-      Version: dataPrint.BomVersion,
-    });
+
+    if (dataPrint.WOProcess && !dialogState.MaterialCode) {
+      ErrorAlert('Please Select Spacer');
+      return;
+    }
+    let datePrint = moment().format(dataPrint.WOProcess ? 'YYYY.MM.DD' : 'YYYYMMDD');
     let stringPrint = `CT~~CD,~CC^~CT~
     ^XA
     ~TA000
@@ -96,7 +113,7 @@ const ChooseDevicePrintDialog = (props) => {
     ^LRN
     ^CI27
     ^PA0,1,1,0`;
-    let datePrint = moment().format('YYYYMMDD');
+
     for (let i = Number(dialogState.from); i <= Number(dialogState.to); i++) {
       let outputString = `${dataPrint.MaterialCode}-` + i.toString().padStart(5, '0');
 
@@ -106,13 +123,22 @@ const ChooseDevicePrintDialog = (props) => {
       ^PW591
       ^LL94
       ^LS0
-      ^FT11,98^BQN,2,4
+      ${
+        dataPrint.WOProcess
+          ? `^FT497,101^BQN,2,4
+      ^FH\^FDLA,${outputString}^FS
+      ^FT13,39^A0N,34,25^FH\^CI28^FD${outputString}^FS^CI27
+      ^FT13,75^A0N,21,20^FH\^CI28^FDSPACER ${dialogState.MaterialCode}  ${dialogState.Amount}${dialogState.Unit}^FS^CI27
+      ^FT389,75^A0N,21,20^FH\^CI28^FDEB1I^FS^CI27
+      ^FT389,39^A0N,21,20^FH\^CI28^FD${datePrint}^FS^CI27`
+          : `^FT11,98^BQN,2,4
       ^FH\^FDLA,${outputString}^FS
       ^FT519,77^BQN,2,3
       ^FH\^FDLA,${outputString}^FS
       ^FPH,2^FT105,54^A0N,21,15^FH\^CI28^FD${outputString}^FS^CI27
       ^FPH,2^FT105,81^A0N,21,15^FH\^CI28^FD${datePrint}^FS^CI27
-      ^FT105,26^A0N,21,15^FH\^CI28^FD${title}^FS^CI27
+      ^FT105,26^A0N,21,15^FH\^CI28^FD${title}^FS^CI27`
+      }
       ^PQ1,0,1,Y
       ^XZ`;
     }
@@ -137,17 +163,8 @@ const ChooseDevicePrintDialog = (props) => {
       let outputString = `${dataPrint.MaterialCode}-` + i.toString().padStart(5, '0');
       data.push({ MaterialCode: outputString });
     }
-    console.log(data);
+
     printBIXILON(data);
-    // window.dispatchEvent(
-    //   new CustomEvent('printBIXILON', {
-    //     detail: [
-    //       {
-    //         MaterialCode: dataPrint.MaterialCode,
-    //       },
-    //     ],
-    //   })
-    // );
   };
   return (
     <MuiDialog
@@ -197,6 +214,25 @@ const ChooseDevicePrintDialog = (props) => {
               )}
             />
           </Grid>
+          {dataPrint?.WOProcess && (
+            <Grid item xs={12}>
+              <Autocomplete
+                options={dialogState.materials ?? []}
+                getOptionLabel={(data) => `SPACER ${data.MaterialCode}  ${data.Amount}${data.Unit}`}
+                onChange={(e, value) => setDialogState((prev) => ({ ...prev, ...value }))}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    size="small"
+                    label={`Choose SPACER`}
+                    name="materials"
+                    variant="outlined"
+                  />
+                )}
+              />
+            </Grid>
+          )}
 
           <Grid item xs={12}>
             <Grid container direction="row-reverse">
