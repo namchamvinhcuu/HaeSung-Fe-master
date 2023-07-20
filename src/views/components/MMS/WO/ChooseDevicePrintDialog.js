@@ -125,12 +125,12 @@ const ChooseDevicePrintDialog = (props) => {
       ^LS0
       ${
         dataPrint.WOProcess
-          ? `^FT497,112^BQN,2,4
+          ? `^FT485,90^BQN,2,3
       ^FH\^FDLA,${outputString}^FS
-      ^FT13,39^A0N,34,25^FH\^CI28^FD${outputString}^FS^CI27
-      ^FT13,75^A0N,21,20^FH\^CI28^FDSPACER ${dialogState.MaterialCode}  ${dialogState.Amount}${dialogState.Unit}^FS^CI27
-      ^FT389,75^A0N,21,20^FH\^CI28^FDEB1I^FS^CI27
-      ^FT389,39^A0N,21,20^FH\^CI28^FD${datePrint}^FS^CI27`
+      ^FT24,39^A0N,34,25^FH\^CI28^FD${outputString}^FS^CI27
+      ^FT24,75^A0N,21,20^FH\^CI28^FDSPACER ${dialogState.MaterialCode}  ${dialogState.Amount}${dialogState.Unit}^FS^CI27
+      ^FT345,75^A0N,21,20^FH\^CI28^FDEB1I^FS^CI27
+      ^FT345,39^A0N,21,20^FH\^CI28^FD${datePrint}^FS^CI27`
           : `^FT11,104^BQN,2,4
       ^FH\^FDLA,${outputString}^FS
       ^FT519,82^BQN,2,3
