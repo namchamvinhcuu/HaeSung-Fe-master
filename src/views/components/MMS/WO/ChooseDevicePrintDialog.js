@@ -108,7 +108,7 @@ const ChooseDevicePrintDialog = (props) => {
     ^LH0,0
     ^JMA
     ^PR7,7
-    ~SD15
+    ~SD20
     ^JUS
     ^LRN
     ^CI27
@@ -123,7 +123,8 @@ const ChooseDevicePrintDialog = (props) => {
       ^PW591
       ^LL94
       ^LS0
-      ${dataPrint.WOProcess
+      ${
+        dataPrint.WOProcess
           ? `^FT497,101^BQN,2,4
       ^FH\^FDLA,${outputString}^FS
       ^FT13,39^A0N,34,25^FH\^CI28^FD${outputString}^FS^CI27
@@ -137,7 +138,7 @@ const ChooseDevicePrintDialog = (props) => {
       ^FPH,2^FT105,54^A0N,21,15^FH\^CI28^FD${outputString}^FS^CI27
       ^FPH,2^FT105,81^A0N,21,15^FH\^CI28^FD${datePrint}^FS^CI27
       ^FT105,26^A0N,21,15^FH\^CI28^FD${dialogState.title}^FS^CI27`
-        }
+      }
       ^PQ1,0,1,Y
       ^XZ`;
     }
