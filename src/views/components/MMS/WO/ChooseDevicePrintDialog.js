@@ -121,23 +121,23 @@ const ChooseDevicePrintDialog = (props) => {
       ^XA
       ^MMT
       ^PW591
-      ^LL94
+      ^LL118
       ^LS0
       ${
         dataPrint.WOProcess
-          ? `^FT497,101^BQN,2,4
+          ? `^FT497,112^BQN,2,4
       ^FH\^FDLA,${outputString}^FS
       ^FT13,39^A0N,34,25^FH\^CI28^FD${outputString}^FS^CI27
       ^FT13,75^A0N,21,20^FH\^CI28^FDSPACER ${dialogState.MaterialCode}  ${dialogState.Amount}${dialogState.Unit}^FS^CI27
       ^FT389,75^A0N,21,20^FH\^CI28^FDEB1I^FS^CI27
       ^FT389,39^A0N,21,20^FH\^CI28^FD${datePrint}^FS^CI27`
-          : `^FT11,98^BQN,2,4
+          : `^FT11,104^BQN,2,4
       ^FH\^FDLA,${outputString}^FS
-      ^FT519,77^BQN,2,3
+      ^FT519,82^BQN,2,3
       ^FH\^FDLA,${outputString}^FS
-      ^FPH,2^FT105,54^A0N,21,15^FH\^CI28^FD${outputString}^FS^CI27
-      ^FPH,2^FT105,81^A0N,21,15^FH\^CI28^FD${datePrint}^FS^CI27
-      ^FT105,26^A0N,21,15^FH\^CI28^FD${dialogState.title}^FS^CI27`
+      ^FPH,2^FT105,60^A0N,21,15^FH\^CI28^FD${outputString}^FS^CI27
+      ^FPH,2^FT105,87^A0N,21,15^FH\^CI28^FD${datePrint}^FS^CI27
+      ^FT105,31^A0N,21,15^FH\^CI28^FD${dialogState.title}^FS^CI27`
       }
       ^PQ1,0,1,Y
       ^XZ`;
