@@ -91,10 +91,11 @@ const ChooseDevicePrintDialog = (props) => {
       return;
     }
 
-    if (dataPrint.WOProcess && !dialogState.MaterialCode) {
-      ErrorAlert('Please Select Spacer');
-      return;
-    }
+    // if (dataPrint.WOProcess && !dialogState.MaterialCode) {
+    //   ErrorAlert('Please Select Spacer');
+    //   return;
+    // }
+
     let datePrint = moment().format(dataPrint.WOProcess ? 'YYYY.MM.DD' : 'YYYYMMDD');
     let stringPrint = `CT~~CD,~CC^~CT~
     ^XA
@@ -147,6 +148,7 @@ const ChooseDevicePrintDialog = (props) => {
     // ^FH\^FD>:${outputString}^FS
     printer.send(stringPrint, undefined, errorPrintCallback);
   };
+
   const handlePrintBIXOLON = () => {
     if (!dialogState.from || !dialogState.to || Number(dialogState.from) < 1 || Number(dialogState.to) < 1) {
       ErrorAlert(intl.formatMessage({ id: 'general.field_min' }, { min: 1 }));
@@ -168,6 +170,7 @@ const ChooseDevicePrintDialog = (props) => {
 
     printBIXILON(data);
   };
+
   return (
     <MuiDialog
       maxWidth="sm"
