@@ -1,0 +1,16 @@
+FROM node:16-alpine3.18 AS build
+WORKDIR /client
+COPY package.json .
+RUN npm i --force
+COPY . .
+RUN npm run build
+
+FROM nginx
+COPY --from=build /client/public /usr/share/nginx/html
+
+COPY default.conf /etc/nginx/conf.d/default.conf
+
+#docker build -f "Dockerfile.prod" --tag react-prod .
+#docker run --publish 8080:80 react-prod
+#docker tag image_id yourhubusername/reponame:tag
+#docker push evilhero/esd_be:20230802v1
