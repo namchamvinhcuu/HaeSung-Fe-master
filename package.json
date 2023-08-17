@@ -10,7 +10,8 @@
     "copy-linux": "cp 'web.config' 'public/'",
     "start": " webpack-dev-server --mode development",
     "dev2": "set NODE_OPTIONS=--openssl-legacy-provider && webpack-dev-server --mode development",
-    "build-docker-autonsi": "./build_docker_autonsi.bat"
+    "build_autonsi": "./build_autonsi.bat",
+    "build_hanlim": "./build_hanlim.bat"
   },
   "author": "",
   "license": "ISC",
