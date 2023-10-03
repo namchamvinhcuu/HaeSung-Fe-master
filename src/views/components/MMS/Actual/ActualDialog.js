@@ -27,6 +27,7 @@ import ActualPrint from './ActualPrint';
 import ReactDOMServer from 'react-dom/server';
 
 import ActualScanBarcode from './ActualScanBarcode';
+import TrolleyCreatePopup from './TrolleyCreatePopup';
 
 const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
   const intl = useIntl();
@@ -34,6 +35,7 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
 
   const { isShowing, toggle } = useModal();
   const { isShowing2, toggle2 } = useModal2();
+  const trolleyDialogToggle = useModal();
 
   const [WOInfo, setWOInfo] = useState({ ActualQty: 0, OrderQty: 0, TotalLotQty: 0, Remain: 0, QCMasterId: 0 });
   const [rowSelected, setRowSelected] = useState([]);
@@ -124,12 +126,12 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
       valueFormatter: (params) => (params?.value ? 'OK' : 'NG'),
     },
     {
-      field: 'Qty', headerName: intl.formatMessage({ id: 'actual.Qty' }), flex: 0.3,
+      field: 'Qty',
+      headerName: intl.formatMessage({ id: 'actual.Qty' }),
+      flex: 0.3,
       renderCell: (params) => {
         if (params.value !== null) {
-          return (
-            params.value.toLocaleString()
-          );
+          return params.value.toLocaleString();
         }
       },
     },
@@ -293,8 +295,6 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
         lotDataArr.push(item[0]);
       }
 
-      console.log('lotDataArr[0]', lotDataArr[0]);
-
       // Create/Update ESL
       const createResponse = await eslService.createLotOnESLServer(lotDataArr[0], 'Bin-1');
 
@@ -396,6 +396,12 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
               <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} alignItems="flex-end">
                 <Grid item>
                   <MuiButton text="scan" onClick={() => toggle2()} sx={{ whiteSpace: 'nowrap' }} />
+                  <MuiButton
+                    text="create"
+                    color="success"
+                    onClick={trolleyDialogToggle.toggle}
+                    sx={{ whiteSpace: 'nowrap' }}
+                  />
                   <Badge badgeContent={rowSelected.length} color="warning">
                     <MuiButton
                       text="print"
@@ -507,6 +513,17 @@ const ActualDialog = ({ woId, isOpen, onClose, setUpdateData }) => {
         refreshLotDataGrid={fetchData}
         getWoInfo={getWoInfo}
       />
+
+      <TrolleyCreatePopup
+        isShowing={trolleyDialogToggle.isShowing}
+        onClose={trolleyDialogToggle.toggle}
+        woId={woId}
+        materialId={WOInfo.MaterialId}
+        materialCode={WOInfo.MaterialCode}
+        refreshLotDataGrid={fetchData}
+        getWoInfo={getWoInfo}
+      />
+
       <ActualPrintDialog isOpen={isShowing} onClose={toggle} listData={listData} />
     </React.Fragment>
   );

@@ -88,3 +88,15 @@ export const handleCheckBarcodeScan = async (params) => {
     console.log(`ERROR: ${error}`);
   }
 };
+
+export const createTrolleyStamp = async (params) => {
+  console.log('🚀 ~ file: ActualService.js:93 ~ createTrolleyStamp ~ params:', params);
+
+  try {
+    return await axios.post(`${API}/create-trolley-stamp`, {
+      ...params,
+    });
+  } catch (error) {
+    console.log(`ERROR: ${error}`);
+  }
+};
