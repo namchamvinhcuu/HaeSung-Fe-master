@@ -78,11 +78,6 @@ const UserChangePassDialog = ({ isOpen, onClose }) => {
     }
   };
 
-  useEffect(() => {
-    console.log('touched: ', touched);
-    console.log('errors: ', errors);
-  }, [values]);
-
   return (
     <MuiDialog
       maxWidth="sm"
