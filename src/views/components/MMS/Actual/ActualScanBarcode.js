@@ -62,7 +62,7 @@ const ActualScanBarcode = ({ woId, materialId, materialCode, openScan, onClose, 
         BarcodeScan: state.dataDemo,
       };
 
-      const { HttpResponseCode, ResponseMessage } = await actualService.createByWo(postData);
+      let { HttpResponseCode, ResponseMessage } = await actualService.createByWo(postData);
 
       if (HttpResponseCode === 200) {
         SuccessAlert(intl.formatMessage({ id: ResponseMessage }));
@@ -71,8 +71,12 @@ const ActualScanBarcode = ({ woId, materialId, materialCode, openScan, onClose, 
 
         closeScanBarcodeDialog();
       } else {
-        ErrorAlert(intl.formatMessage({ id: ResponseMessage }));
-        // handleReset();
+        if (ResponseMessage && ResponseMessage.includes('lot.QtyStockNotEnough')) {
+          let convertMsg = ResponseMessage.split('-');
+          const msg = convertMsg.slice(0, 1).join('-');
+          const material = convertMsg.slice(1).join('-');
+          ErrorAlert(intl.formatMessage({ id: msg }) + ': ' + material);
+        } else ErrorAlert(intl.formatMessage({ id: ResponseMessage }));
       }
     } else {
       ErrorAlert('No data');

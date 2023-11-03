@@ -50,7 +50,7 @@ const TrolleyCreatePopup = memo(
       formik;
 
     const onSubmit = async (data) => {
-      const { HttpResponseCode, ResponseMessage } = await actualService.createTrolleyStamp({
+      let { HttpResponseCode, ResponseMessage } = await actualService.createTrolleyStamp({
         LotNumber: 1,
         WoId: data.woId,
         Qty: data.trolleyQty,
@@ -60,7 +60,12 @@ const TrolleyCreatePopup = memo(
         // await getWoInfo(woId, true);
         SuccessAlert(intl.formatMessage({ id: ResponseMessage }));
       } else {
-        ErrorAlert(intl.formatMessage({ id: ResponseMessage }));
+        if (ResponseMessage && ResponseMessage.includes('lot.QtyStockNotEnough')) {
+          let convertMsg = ResponseMessage.split('-');
+          const msg = convertMsg.slice(0, 1).join('-');
+          const material = convertMsg.slice(1).join('-');
+          ErrorAlert(intl.formatMessage({ id: msg }) + ': ' + material);
+        } else ErrorAlert(intl.formatMessage({ id: ResponseMessage }));
       }
     };
 
