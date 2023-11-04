@@ -26,7 +26,12 @@ const DisplayStatus = (props) => {
   const intl = useIntl();
   const { totalOrderQty, totalActualQty, totalEfficiency, data, deliveryOrder } = props;
   // console.log({ deliveryOrder });
-  // console.log("🚀 ~ file: DisplayStatus.js:26 ~ DisplayStatus ~ data:", data)
+  const [dataInjection, setDataInjection] = useState([]);
+  const [dataAssembly, setDataAssembly] = useState([]);
+  useEffect(() => {
+    setDataInjection(handleRowData(false));
+    setDataAssembly(handleRowData(true));
+  }, [data]);
 
   const style = {
     grid: {
@@ -49,26 +54,29 @@ const DisplayStatus = (props) => {
     }
     data?.forEach((ele) => {
       if (ele?.woProcess === type && ele?.isShowing === true) {
-        for (let j = 0; j <= rowData?.length; j++) {
+        for (let j = 1; j <= rowData?.length; j++) {
           if (parseInt(ele?.lineName?.split('#')[1]) === j) {
-            rowData[j - 1] = {
-              no: j,
-              model: ele?.materialCode,
-              target: ele?.orderQty,
-              hmiQty: ele?.hmiQty,
-              ok: ele?.actualQty - ele?.ngQty,
-              ng: ele?.ngQty,
-            };
+            if (rowData[j - 1] && !rowData[j - 1].model) {
+              rowData[j - 1] = {
+                no: j,
+                model: ele?.materialCode,
+                target: ele?.orderQty,
+                hmiQty: ele?.hmiQty,
+                ok: ele?.actualQty - ele?.ngQty,
+                ng: ele?.ngQty,
+              };
+            }
           }
         }
       }
     });
+    //console.log('🚀 rowData:', { type, rowData });
     return rowData;
   };
 
   const handleDORowData = () => {
     const rowData = [];
-    for (let i = 1; i <= 9; i++) {
+    for (let i = 0; i < 9; i++) {
       rowData.push({ no: i, materialCode: '', isActived: '' });
     }
     let i = 0;
@@ -80,40 +88,38 @@ const DisplayStatus = (props) => {
 
   const totalTableData = (type, value) => {
     let total = 0;
-    for (let i = 0; i < data.length; i++) {
-      if (data[i]?.woProcess === type && data[i]?.isShowing === true && value === 'target') {
-        total += data[i]?.orderQty;
-      } else if (data[i]?.woProcess === type && data[i]?.isShowing === true && value === 'ok') {
-        total += data[i]?.actualQty - data[i]?.ngQty;
-      } else if (data[i]?.woProcess === type && data[i]?.isShowing === true && value === 'ng') {
-        total += data[i]?.ngQty;
-      }
+    let newData = type ? dataAssembly : dataInjection;
+    for (let i = 0; i < newData.length; i++) {
+      total += newData[i][value] || 0;
     }
 
     return total;
   };
 
   const styleNg = (ng, target) => {
-    if ((ng / target) * 100 >= 0 && (ng / target) * 100 < 1) {
-      return '#00B050';
-    } else if ((ng / target) * 100 >= 1 && (ng / target) * 100 < 2) {
-      return '#F9F914';
-    } else if ((ng / target) * 100 >= 2 && (ng / target) * 100 < 3) {
-      return '#FFA500';
-    } else {
-      return 'red';
+    const percentage = (ng / target) * 100;
+
+    switch (true) {
+      case percentage >= 0 && percentage < 1:
+        return '#00B050';
+      case percentage >= 1 && percentage < 2:
+        return '#F9F914';
+      case percentage >= 2 && percentage < 3:
+        return '#FFA500';
+      default:
+        return 'red';
     }
   };
 
   const statusOK = () => {
     let totalOK = 0;
-    deliveryOrder?.forEach(element => {
+    deliveryOrder?.forEach((element) => {
       if (element?.isActived) {
         totalOK += 1;
       }
-    })
+    });
     return totalOK;
-  }
+  };
 
   // useEffect(() => {
   //   console.log("===============", data);
@@ -236,15 +242,13 @@ const DisplayStatus = (props) => {
                   style={{ ...style.grid, display: 'flex', flexDirection: 'column', color: 'white', padding: '10px' }}
                 >
                   <span>Total: &ensp;9​​</span>
-                  <span>OK:&ensp;
-                    {
-                      statusOK()
-                    }
+                  <span>
+                    OK:&ensp;
+                    {statusOK()}
                   </span>
-                  <span>Wait:&ensp;
-                    {
-                      9 - statusOK()
-                    }
+                  <span>
+                    Wait:&ensp;
+                    {9 - statusOK()}
                   </span>
                   {/* </div> */}
                 </div>
@@ -283,7 +287,7 @@ const DisplayStatus = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {handleRowData(false).map((row, index) => (
+                  {dataInjection.map((row, index) => (
                     <TableRow key={index}>
                       <TableCell
                         component="th"
@@ -347,7 +351,7 @@ const DisplayStatus = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {handleRowData(true).map((row, index) => (
+                  {dataAssembly.map((row, index) => (
                     <TableRow key={index}>
                       <TableCell
                         component="th"

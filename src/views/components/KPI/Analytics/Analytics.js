@@ -61,12 +61,12 @@ const Analytics = (props) => {
     { field: 'Description', headerName: intl.formatMessage({ id: 'forecast.Desciption' }), width: 120 },
     { field: 'Year', headerName: intl.formatMessage({ id: 'forecast.Year' }), width: 100 },
     {
-      field: 'StockQty', headerName: intl.formatMessage({ id: 'forecast.StockQty' }), width: 100,
+      field: 'StockQty',
+      headerName: intl.formatMessage({ id: 'forecast.StockQty' }),
+      width: 100,
       renderCell: (params) => {
         if (params.value !== null) {
-          return (
-            params.value.toLocaleString()
-          );
+          return params.value?.toLocaleString();
         }
       },
     },
@@ -106,9 +106,7 @@ const Analytics = (props) => {
         align: 'right',
         renderCell: (params) => {
           if (params.value !== null) {
-            return (
-              params.value.toLocaleString()
-            );
+            return params.value?.toLocaleString();
           }
         },
       });
