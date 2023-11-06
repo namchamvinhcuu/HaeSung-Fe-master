@@ -211,7 +211,6 @@ const WorkOrder = (props) => {
       MaterialCode: MaterialCode || WorkOrderDto.MaterialCode,
     };
 
-    console.log("🤔🤔🤔 ~ file: WorkOrder.js:198 ~ changeSearchData ~ newSearchData:", newSearchData)
     // Update the workOrderState with the updated searchData object
     setWorkOrderState({
       ...workOrderState,
