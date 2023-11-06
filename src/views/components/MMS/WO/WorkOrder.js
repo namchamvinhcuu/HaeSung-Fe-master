@@ -207,9 +207,11 @@ const WorkOrder = (props) => {
             : // Otherwise, use the input value
             e.target.value,
       // Use the MaterialCode from the selected material object or the default from WorkOrderDto
+
       MaterialCode: MaterialCode || WorkOrderDto.MaterialCode,
     };
 
+    console.log("🤔🤔🤔 ~ file: WorkOrder.js:198 ~ changeSearchData ~ newSearchData:", newSearchData)
     // Update the workOrderState with the updated searchData object
     setWorkOrderState({
       ...workOrderState,
@@ -290,6 +292,7 @@ const WorkOrder = (props) => {
         page: workOrderState.page,
         pageSize: workOrderState.pageSize,
         WoCode: workOrderState.searchData.WoCode.trim(),
+        LineName: workOrderState.searchData.LineName.trim(),
         MaterialId: workOrderState.searchData.MaterialId,
         StartSearchingDate: workOrderState.searchData.StartSearchingDate,
         EndSearchingDate: workOrderState.searchData.EndSearchingDate,
@@ -381,7 +384,7 @@ const WorkOrder = (props) => {
                 color="primary"
                 size="small"
                 sx={[{ '&:hover': { border: '1px solid blue' } }]}
-                disabled={params.row.IsShowing || !params.row.LineId || setDisableShowingWO(params.row.StartDate)}
+                // disabled={params.row.IsShowing || !params.row.LineId || setDisableShowingWO(params.row.StartDate)}
                 onClick={() => {
                   showingWO(params.row);
                 }}
@@ -584,6 +587,15 @@ const WorkOrder = (props) => {
             name="WoCode"
             onClick={fetchData}
             onChange={(e) => changeSearchData(e, 'WoCode')}
+          />
+        </Grid>
+        <Grid item xs>
+          <MuiSearchField
+            label="work_order.LineName"
+            name="LineName"
+            value={WorkOrderDto?.LineName || ""}
+            onClick={fetchData}
+            onChange={(e) => changeSearchData(e, 'LineName')}
           />
         </Grid>
 
