@@ -24,7 +24,7 @@ module.exports = (env, argv) => {
     },
     devtool: 'eval-cheap-source-map',
     devServer: {
-      port: 3002,
+      port: 3001,
       open: true,
       stats: 'errors-only',
       inline: true,
