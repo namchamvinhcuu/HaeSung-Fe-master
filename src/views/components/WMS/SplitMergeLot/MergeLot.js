@@ -153,7 +153,10 @@ const MergeLot = (props) => {
                   <Table>
                     <TableBody>
                       <TableRow>
-                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>CODE</TableCell>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          {`W${moment(LotModel.QCDate).week()} / T${moment(LotModel.QCDate).format('MM')}`}
+
+                        </TableCell>
                         <TableCell
                           colSpan={2}
                           style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
@@ -165,11 +168,19 @@ const MergeLot = (props) => {
                           <QRCode value={`${LotModel?.Id}`} size={80} />
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
-                        <TableCell colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          <p style={{ margin: 0 }}>
+                            {moment(LotModel?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
+                          </p>
+                          {moment(LotModel?.createdDate).add(7, 'hours').format('hh:mm:ss')}
+                        </TableCell>
+                        <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
                           {LotModel.MaterialDescription}
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
                         <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</TableCell>
                         <TableCell
@@ -183,6 +194,7 @@ const MergeLot = (props) => {
                           {LotModel.SupplierCode || 'HANLIM'}
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
                         <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>LOT No.</TableCell>
                         <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
@@ -192,7 +204,20 @@ const MergeLot = (props) => {
                           {LotModel?.QCResult ? 'OK' : 'NG'}
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          <QRCode value={`${LotModel?.Id}`} size={80} />
+                        </TableCell>
+                        <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          <b style={{ fontSize: '22px' }}>{LotModel?.LotSerial}</b>
+                        </TableCell>
+                        <TableCell style={{ ...style.borderBot, display: 'flex', alignItems: 'end', border: 'none', fontSize: '20px' }}>
+                          {'Name'}
+                        </TableCell>
+                      </TableRow>
+
+                      {/* <TableRow>
                         <TableCell
                           style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: 5 }}
                           sx={{ whiteSpace: 'nowrap' }}
@@ -209,15 +234,16 @@ const MergeLot = (props) => {
                         >
                           <b style={{ fontSize: '22px' }}>{LotModel?.LotSerial}</b>
                         </TableCell>
-                      </TableRow>
-                      <TableRow>
+                      </TableRow> */}
+                      {/* <TableRow>
                         <TableCell
                           style={style.styleBorderAndCenter}
                           sx={{ padding: '10px', borderBottom: '1px solid black' }}
                         >
                           {`W${moment(LotModel.QCDate).week()} / T${moment(LotModel.QCDate).format('MM')}`}
                         </TableCell>
-                      </TableRow>
+                      </TableRow> */}
+
                       <TableRow>
                         <TableCell colSpan={4} style={{ textAlign: 'center', borderTop: '1px solid black' }}>
                           <MuiButton
@@ -254,7 +280,10 @@ const MergeLot = (props) => {
                   <Table>
                     <TableBody>
                       <TableRow>
-                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>CODE</TableCell>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          {`W${moment(LotModel2.QCDate).week()} / T${moment(LotModel2.QCDate).format('MM')}`}
+
+                        </TableCell>
                         <TableCell
                           colSpan={2}
                           style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
@@ -262,15 +291,23 @@ const MergeLot = (props) => {
                         >
                           <b style={{ fontSize: '22px' }}>{LotModel2?.MaterialCode}</b>
                         </TableCell>
-                        <TableCell rowSpan={2} sx={{ textAlign: 'center' }} style={{ ...style.borderBot }}>
-                          {LotModel2.Id != null && <QRCode value={`${LotModel2?.Id}`} size={80} />}
+                        <TableCell rowSpan={2} sx={{ textAlign: 'center' }} style={style.borderBot}>
+                          <QRCode value={`${LotModel2?.MaterialCode}`} size={80} />
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
-                        <TableCell colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          <p style={{ margin: 0 }}>
+                            {moment(LotModel2?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
+                          </p>
+                          {moment(LotModel2?.createdDate).add(7, 'hours').format('hh:mm:ss')}
+                        </TableCell>
+                        <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
                           {LotModel2.MaterialDescription}
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
                         <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</TableCell>
                         <TableCell
@@ -284,6 +321,7 @@ const MergeLot = (props) => {
                           {LotModel2.SupplierCode || 'HANLIM'}
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
                         <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>LOT No.</TableCell>
                         <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
@@ -293,30 +331,16 @@ const MergeLot = (props) => {
                           {LotModel2?.QCResult ? 'OK' : 'NG'}
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
-                        <TableCell
-                          style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: 5 }}
-                          sx={{ whiteSpace: 'nowrap' }}
-                        >
-                          <p style={{ margin: 0 }}>
-                            {moment(LotModel2?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
-                          </p>
-                          {moment(LotModel2?.createdDate).add(7, 'hours').format('hh:mm:ss')}
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          <QRCode value={`${LotModel2?.Id}`} size={80} />
                         </TableCell>
-                        <TableCell
-                          rowSpan={2}
-                          colSpan={3}
-                          sx={{ textAlign: 'center', borderBottom: '1px solid black' }}
-                        >
+                        <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
                           <b style={{ fontSize: '22px' }}>{LotModel2?.LotSerial}</b>
                         </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell
-                          style={{ ...style.styleBorderAndCenter, borderBottom: '1px solid black' }}
-                          sx={{ padding: '10px' }}
-                        >
-                          {`W${moment(LotModel2.QCDate).week()} / T${moment(LotModel2.QCDate).format('MM')}`}
+                        <TableCell style={{ ...style.borderBot, display: 'flex', alignItems: 'end', border: 'none', fontSize: '20px' }}>
+                          {'Name'}
                         </TableCell>
                       </TableRow>
                       <TableRow>

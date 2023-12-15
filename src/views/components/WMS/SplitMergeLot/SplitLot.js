@@ -198,7 +198,10 @@ const SplitLot = (props) => {
                   <Table>
                     <TableBody>
                       <TableRow>
-                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>CODE</TableCell>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          {`W${moment(LotModel.QCDate).week()} / T${moment(LotModel.QCDate).format('MM')}`}
+
+                        </TableCell>
                         <TableCell
                           colSpan={2}
                           style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
@@ -207,14 +210,22 @@ const SplitLot = (props) => {
                           <b style={{ fontSize: '22px' }}>{LotModel?.MaterialCode}</b>
                         </TableCell>
                         <TableCell rowSpan={2} sx={{ textAlign: 'center' }} style={style.borderBot}>
-                          <QRCode value={`${LotModel?.Id}`} size={80} />
+                          <QRCode value={`${LotModel?.MaterialCode}`} size={80} />
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
-                        <TableCell colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
-                          {LotModel?.MaterialDescription}
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          <p style={{ margin: 0 }}>
+                            {moment(LotModel?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
+                          </p>
+                          {moment(LotModel?.createdDate).add(7, 'hours').format('hh:mm:ss')}
+                        </TableCell>
+                        <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          {LotModel.MaterialDescription}
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
                         <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</TableCell>
                         <TableCell
@@ -228,6 +239,7 @@ const SplitLot = (props) => {
                           {LotModel.SupplierCode || 'HANLIM'}
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
                         <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>LOT No.</TableCell>
                         <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
@@ -237,23 +249,16 @@ const SplitLot = (props) => {
                           {LotModel?.QCResult ? 'OK' : 'NG'}
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
-                        <TableCell
-                          style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: 5 }}
-                          sx={{ whiteSpace: 'nowrap' }}
-                        >
-                          <p style={{ margin: 0 }}>
-                            {moment(LotModel?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
-                          </p>
-                          {moment(LotModel?.createdDate).add(7, 'hours').format('hh:mm:ss')}
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          <QRCode value={`${LotModel?.Id}`} size={80} />
                         </TableCell>
-                        <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
+                        <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
                           <b style={{ fontSize: '22px' }}>{LotModel?.LotSerial}</b>
                         </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell style={style.styleBorderAndCenter} sx={{ padding: '10px' }}>
-                          {`W${moment(LotModel.QCDate).week()} / T${moment(LotModel.QCDate).format('MM')}`}
+                        <TableCell style={{ ...style.borderBot, display: 'flex', alignItems: 'end', border: 'none', fontSize: '20px' }}>
+                          {'Name'}
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -281,7 +286,10 @@ const SplitLot = (props) => {
                   <Table>
                     <TableBody>
                       <TableRow>
-                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>CODE</TableCell>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          {`W${moment(LotModelSplit.QCDate).week()} / T${moment(LotModelSplit.QCDate).format('MM')}`}
+
+                        </TableCell>
                         <TableCell
                           colSpan={2}
                           style={{ ...style.styleBorderAndCenter, ...style.borderBot }}
@@ -289,15 +297,23 @@ const SplitLot = (props) => {
                         >
                           <b style={{ fontSize: '22px' }}>{LotModelSplit?.MaterialCode}</b>
                         </TableCell>
-                        <TableCell rowSpan={2} sx={{ textAlign: 'center' }} style={{ ...style.borderBot }}>
-                          {LotModelSplit.Id != null && <QRCode value={`${LotModelSplit?.Id}`} size={80} />}
+                        <TableCell rowSpan={2} sx={{ textAlign: 'center' }} style={style.borderBot}>
+                          <QRCode value={`${LotModelSplit?.MaterialCode}`} size={80} />
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
-                        <TableCell colSpan={3} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          <p style={{ margin: 0 }}>
+                            {moment(LotModelSplit?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
+                          </p>
+                          {moment(LotModelSplit?.createdDate).add(7, 'hours').format('hh:mm:ss')}
+                        </TableCell>
+                        <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
                           {LotModelSplit.MaterialDescription}
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
                         <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</TableCell>
                         <TableCell
@@ -311,6 +327,7 @@ const SplitLot = (props) => {
                           {LotModelSplit.SupplierCode || 'HANLIM'}
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
                         <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>LOT No.</TableCell>
                         <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
@@ -320,23 +337,16 @@ const SplitLot = (props) => {
                           {LotModelSplit?.QCResult ? 'OK' : 'NG'}
                         </TableCell>
                       </TableRow>
+
                       <TableRow>
-                        <TableCell
-                          style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: 5 }}
-                          sx={{ whiteSpace: 'nowrap' }}
-                        >
-                          <p style={{ margin: 0 }}>
-                            {moment(LotModelSplit?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
-                          </p>
-                          {moment(LotModelSplit?.createdDate).add(7, 'hours').format('hh:mm:ss')}
+                        <TableCell style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                          <QRCode value={`${LotModelSplit?.Id}`} size={80} />
                         </TableCell>
-                        <TableCell rowSpan={2} colSpan={3} sx={{ textAlign: 'center' }}>
+                        <TableCell colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
                           <b style={{ fontSize: '22px' }}>{LotModelSplit?.LotSerial}</b>
                         </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell style={style.styleBorderAndCenter} sx={{ padding: '10px' }}>
-                          {`W${moment(LotModelSplit.QCDate).week()} / T${moment(LotModelSplit.QCDate).format('MM')}`}
+                        <TableCell style={{ ...style.borderBot, display: 'flex', alignItems: 'end', border: 'none', fontSize: '20px' }}>
+                          {'Name'}
                         </TableCell>
                       </TableRow>
                     </TableBody>
