@@ -17,67 +17,79 @@ const FGPackingLotPrint = ({ listData }) => {
 
   return (
     <React.Fragment>
-      {listData?.map((dataPrint, index) => {
+      {listData?.map((item, index) => {
         return (
-          dataPrint != null && (
+          item != null && (
             <div
               style={{ border: '1px solid black', marginBottom: '30px', pageBreakAfter: 'always', width: '100%' }}
               key={`IQCQRCODE_${index}`}
             >
+
               <table style={{ borderCollapse: 'collapse', textAlign: 'center', width: '100%' }}>
                 <tbody>
                   <tr>
-                    <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>CODE</td>
+                    <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
+                      {`W${moment(item?.QCDate).week()} / T${moment(item?.QCDate).format('MM')}`}
+                    </td>
                     <td
                       colSpan={2}
                       style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: '1px !important' }}
                     >
-                      <b style={{ fontSize: '15px' }}>{dataPrint?.MaterialCode}</b>
+                      <b style={{ fontSize: '15px' }}>{item?.MaterialCode}</b>
                     </td>
-                    <td rowSpan={2} style={{ ...style.borderBot, extAlign: 'center' }}>
-                      <QRCode value={`${dataPrint?.PackingLabelId}`} size={60} />
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td colSpan={3} style={{ ...style.styleBorderAndCenter, fontSize: '12px', ...style.borderBot }}>
-                      {dataPrint?.MaterialDescription}
+                    <td rowSpan={2} style={{ ...style.borderBot, textAlign: 'center' }}>
+                      <QRCode value={`${item?.MaterialCode}`} size={60} />
                     </td>
                   </tr>
                   <tr>
-                    <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>QTY</td>
-                    <td style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: '0px !important' }}>
-                      <b style={{ fontSize: '15px' }}>{dataPrint?.Qty + ' ' + dataPrint?.UnitName} </b>
+                    <td style={{ ...style.styleBorderAndCenter, ...style.borderBot, whiteSpace: 'nowrap' }}>
+                      {moment(item?.createdDate).add(7, 'hours').format('YYYY-MM-DD')}
+                      <span style={{ display: 'block' }}>
+                        {moment(item?.createdDate).add(7, 'hours').format('HH:mm:ss')}
+                      </span>
                     </td>
-                    <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>VENDOR</td>
-                    <td style={{ ...style.borderBot, textAlign: 'center', padding: '1px !important' }}>HANLIM</td>
+                    <td colSpan={2} style={{ ...style.styleBorderAndCenter, fontSize: '12px', ...style.borderBot }}>
+                      {item?.MaterialDescription}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ ...style.styleBorderAndCenter, ...style.borderBot, width: '25%' }}>QTY</td>
+                    <td
+                      style={{
+                        ...style.styleBorderAndCenter,
+                        ...style.borderBot,
+                        width: '25%',
+                        padding: '0px 3px !important',
+                      }}
+                    >
+                      <b style={{ fontSize: '15px' }}>{`${item?.Qty} ${item?.UnitName}`} </b>
+                    </td>
+                    <td style={{ ...style.styleBorderAndCenter, ...style.borderBot, width: '25%' }}>VENDOR</td>
+                    <td style={{ ...style.borderBot, textAlign: 'center', padding: '1px !important', width: '25%' }}>
+                      HANLIM
+                    </td>
                   </tr>
                   <tr>
                     <td style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>Packing #</td>
                     <td colSpan={2} style={{ ...style.styleBorderAndCenter, ...style.borderBot }}>
-                      {dataPrint?.PackingLabelId}
+                      {item?.PackingLabelId}
                     </td>
                     <td style={{ ...style.borderBot, textAlign: 'center' }}>OK</td>
                   </tr>
                   <tr>
-                    <td style={{ ...style.styleBorderAndCenter, ...style.borderBot, padding: 5, whiteSpace: 'nowrap' }}>
-                      <p style={{ margin: 0 }}>{moment(dataPrint?.PackingDate).add(7, 'hours').format('YYYY-MM-DD')}</p>
-                      {moment(dataPrint?.PackingDate).add(7, 'hours').format('HH:mm:ss')}
+                    <td style={{ ...style.styleBorderAndCenter, textAlign: 'center' }}>
+                      <QRCode value={`${item?.PackingLabelId}`} size={60} />
                     </td>
-                    <td colSpan={3} style={{ ...style.borderBot, textAlign: 'center' }}>
-                      <b style={{ fontSize: '15px' }}>{dataPrint?.PackingSerial}</b>
+                    <td colSpan={2} style={{ ...style.styleBorderAndCenter, textAlign: 'center' }}>
+                      <b style={{ fontSize: '15px' }}>{item?.PackingSerial}</b>
                     </td>
-                  </tr>
-                  <tr>
-                    <td style={{ ...style.styleBorderAndCenter, padding: '1px' }}>
-                      {`W${moment(dataPrint?.QCDate).week()} / T${moment(dataPrint?.QCDate).format('MM')}`}
-                    </td>
-                    <td colSpan={3} style={{ textAlign: 'center' }}>
-                      <b style={{ fontSize: '15px' }}>{dataPrint?.SamsungLabelCode}</b>
+                    <td style={{ ...style.styleBorderAndCenter, display: 'flex', alignItems: 'end', border: 'none' }}>
+                      <b style={{ fontSize: '15px' }}>Name</b>
                     </td>
                   </tr>
                 </tbody>
               </table>
+
             </div>
           )
         );
